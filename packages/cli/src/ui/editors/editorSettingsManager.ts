@@ -1,0 +1,74 @@
+/**
+ * @license
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
+ * Modifications Copyright 2025 The Enfiy Community Contributors
+ *
+ * This file has been modified from its original version by contributors
+ * to the Enfiy Community project.
+ */
+
+import {
+  allowEditorTypeInSandbox,
+  checkHasEditorType,
+  type EditorType,
+} from '@enfiy/core';
+
+export interface EditorDisplay {
+  name: string;
+  type: EditorType | 'not_set';
+  disabled: boolean;
+}
+
+export const EDITOR_DISPLAY_NAMES: Record<EditorType, string> = {
+  zed: 'Zed',
+  vscode: 'VS Code',
+  windsurf: 'Windsurf',
+  cursor: 'Cursor',
+  vim: 'Vim',
+};
+
+class EditorSettingsManager {
+  private readonly availableEditors: EditorDisplay[];
+
+  constructor() {
+    const editorTypes: EditorType[] = [
+      'zed',
+      'vscode',
+      'windsurf',
+      'cursor',
+      'vim',
+    ];
+    this.availableEditors = [
+      {
+        name: 'None',
+        type: 'not_set',
+        disabled: false,
+      },
+      ...editorTypes.map((type) => {
+        const hasEditor = checkHasEditorType(type);
+        const isAllowedInSandbox = allowEditorTypeInSandbox(type);
+
+        let labelSuffix = !isAllowedInSandbox
+          ? ' (Not available in sandbox)'
+          : '';
+        labelSuffix = !hasEditor ? ' (Not installed)' : labelSuffix;
+
+        return {
+          name: EDITOR_DISPLAY_NAMES[type] + labelSuffix,
+          type,
+          disabled: !hasEditor || !isAllowedInSandbox,
+        };
+      }),
+    ];
+  }
+
+  getAvailableEditorDisplays(): EditorDisplay[] {
+    return this.availableEditors;
+  }
+}
+
+export const editorSettingsManager = new EditorSettingsManager();

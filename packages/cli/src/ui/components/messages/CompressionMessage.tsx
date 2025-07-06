@@ -1,0 +1,56 @@
+/**
+ * @license
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
+ * Modifications Copyright 2025 The Enfiy Community Contributors
+ *
+ * This file has been modified from its original version by contributors
+ * to the Enfiy Community project.
+ */
+
+import React from 'react';
+import { Box, Text } from 'ink';
+import { CompressionProps } from '../../types.js';
+import Spinner from 'ink-spinner';
+import { Colors } from '../../colors.js';
+
+export interface CompressionDisplayProps {
+  compression: CompressionProps;
+}
+
+/*
+ * Compression messages appear when the /compress command is ran, and show a loading spinner
+ * while compression is in progress, followed up by some compression stats.
+ */
+export const CompressionMessage: React.FC<CompressionDisplayProps> = ({
+  compression,
+}) => {
+  const text = compression.isPending
+    ? 'Compressing chat history'
+    : `Chat history compressed from ${compression.originalTokenCount ?? 'unknown'}` +
+      ` to ${compression.newTokenCount ?? 'unknown'} tokens.`;
+
+  return (
+    <Box flexDirection="row">
+      <Box marginRight={1}>
+        {compression.isPending ? (
+          <Spinner type="dots" />
+        ) : (
+          <Text color={Colors.AccentBlue}>✦</Text>
+        )}
+      </Box>
+      <Box>
+        <Text
+          color={
+            compression.isPending ? Colors.AccentBlue : Colors.AccentGreen
+          }
+        >
+          {text}
+        </Text>
+      </Box>
+    </Box>
+  );
+};

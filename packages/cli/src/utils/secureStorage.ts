@@ -1,0 +1,369 @@
+/**
+ * @license
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
+ * Modifications Copyright 2025 The Enfiy Community Contributors
+ *
+ * This file has been modified from its original version by contributors
+ * to the Enfiy Community project.
+ */
+
+import { debugLogger } from './debugLogger.ts';
+
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as os from 'node:os';
+import * as crypto from 'node:crypto';
+
+const ENFIY_CONFIG_DIR = path.join(os.homedir(), '.enfiy');
+const SECURE_CONFIG_FILE = path.join(ENFIY_CONFIG_DIR, 'secure.json');
+const KEY_FILE = path.join(ENFIY_CONFIG_DIR, '.key');
+
+interface SecureConfig {
+  providers: {
+    [key: string]: {
+      apiKey?: string;
+      endpoint?: string;
+      authMethod?: string;
+      encrypted: boolean;
+    };
+  };
+  version: string;
+}
+
+/**
+ * Generate or retrieve encryption key
+ */
+function _getEncryptionKey(): Buffer {
+  try {
+    if (fs.existsSync(KEY_FILE)) {
+      return fs.readFileSync(KEY_FILE);
+    }
+  } catch (_error) {
+    // If we can't read the key file, generate a new one
+  }
+  
+  // Generate new key
+  const key = crypto.randomBytes(32);
+  
+  try {
+    // Ensure directory exists
+    if (!fs.existsSync(ENFIY_CONFIG_DIR)) {
+      fs.mkdirSync(ENFIY_CONFIG_DIR, { mode: 0o700 });
+    }
+    
+    // Write key with restricted permissions
+    fs.writeFileSync(KEY_FILE, key, { mode: 0o600 });
+  } catch (_error) {
+    console.warn('Warning: Could not save encryption key. API keys will not persist between sessions.');
+  }
+  
+  return key;
+}
+
+/**
+ * Encrypt data using AES-256-GCM
+ */
+function encrypt(data: string): { encrypted: string; iv: string; tag: string } {
+  const key = _getEncryptionKey();
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+  let encrypted = cipher.update(data, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  const tag = cipher.getAuthTag().toString('hex');
+  return { encrypted, iv: iv.toString('hex'), tag };
+}
+
+/**
+ * Decrypt data using AES-256-GCM
+ */
+function decrypt(encryptedData: { encrypted: string; iv: string; tag: string }): string {
+  const key = _getEncryptionKey();
+  const iv = Buffer.from(encryptedData.iv, 'hex');
+  const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+  decipher.setAuthTag(Buffer.from(encryptedData.tag, 'hex'));
+  let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
+}
+
+/**
+ * Load secure configuration
+ */
+export function loadSecureConfig(): SecureConfig {
+  const defaultConfig: SecureConfig = {
+    providers: {},
+    version: '1.0.0',
+  };
+  
+  try {
+    if (!fs.existsSync(SECURE_CONFIG_FILE)) {
+      return defaultConfig;
+    }
+    
+    const configData = fs.readFileSync(SECURE_CONFIG_FILE, 'utf8');
+    const config = JSON.parse(configData) as SecureConfig;
+    
+    // Decrypt API keys
+    for (const [providerName, providerConfig] of Object.entries(config.providers)) {
+      if (providerConfig.encrypted && providerConfig.apiKey) {
+        try {
+          const encryptedData = JSON.parse(providerConfig.apiKey);
+          config.providers[providerName].apiKey = decrypt(encryptedData);
+          config.providers[providerName].encrypted = false; // Mark as decrypted in memory
+        } catch (_error) {
+          console.warn(`Warning: Could not decrypt API key for ${providerName}`);
+          delete config.providers[providerName].apiKey;
+        }
+      }
+    }
+    
+    return config;
+  } catch (_error) {
+    console.warn('Warning: Could not load secure configuration, using defaults');
+    return defaultConfig;
+  }
+}
+
+/**
+ * Save secure configuration
+ */
+export function saveSecureConfig(config: SecureConfig): void {
+  try {
+    // Ensure directory exists
+    if (!fs.existsSync(ENFIY_CONFIG_DIR)) {
+      fs.mkdirSync(ENFIY_CONFIG_DIR, { mode: 0o700 });
+    }
+    
+    // Create a copy for encryption
+    const configToSave = JSON.parse(JSON.stringify(config));
+    
+    // Encrypt API keys
+    for (const [providerName, providerConfig] of Object.entries(configToSave.providers)) {
+      if (providerConfig && typeof providerConfig === 'object' && 'apiKey' in providerConfig && 'encrypted' in providerConfig) {
+        if (providerConfig.apiKey && !providerConfig.encrypted) {
+          const encryptedData = encrypt(providerConfig.apiKey as string);
+          configToSave.providers[providerName].apiKey = JSON.stringify(encryptedData);
+          configToSave.providers[providerName].encrypted = true;
+        }
+      }
+    }
+    
+    // Write with restricted permissions
+    fs.writeFileSync(SECURE_CONFIG_FILE, JSON.stringify(configToSave, null, 2), { mode: 0o600 });
+  } catch (_error) {
+    console.warn('Warning: Could not save secure configuration:', _error);
+  }
+}
+
+/**
+ * Store API key securely
+ */
+export function storeApiKey(provider: string, apiKey: string, endpoint?: string, authMethod?: string): void {
+  const config = loadSecureConfig();
+  
+  // Clean bracketed paste characters and escape sequences from API key
+  const cleanedApiKey = apiKey
+    .replace(/\[200~|\[201~/g, '') // Remove bracketed paste markers
+    // eslint-disable-next-line no-control-regex
+    .replace(/\\u001b|[\u001b]/g, '') // Remove escape characters
+    // eslint-disable-next-line no-control-regex
+    .replace(/[\u0000-\u001F\u007F]/g, '') // Remove all control characters
+    .trim();
+  
+  console.log('🔧 Storing API key for', provider, {
+    originalLength: apiKey.length,
+    cleanedLength: cleanedApiKey.length,
+    hasControlChars: apiKey !== cleanedApiKey,
+  });
+  
+  config.providers[provider] = {
+    apiKey: cleanedApiKey,
+    endpoint,
+    authMethod,
+    encrypted: false, // Will be encrypted during save
+  };
+  
+  saveSecureConfig(config);
+}
+
+/**
+ * Retrieve API key
+ */
+export function getApiKey(provider: string): string | undefined {
+  const config = loadSecureConfig();
+  return config.providers[provider]?.apiKey;
+}
+
+/**
+ * Remove API key
+ */
+export function removeApiKey(provider: string): void {
+  const config = loadSecureConfig();
+  delete config.providers[provider];
+  saveSecureConfig(config);
+}
+
+/**
+ * Check if provider has stored credentials
+ */
+export function hasStoredCredentials(provider: string): boolean {
+  const config = loadSecureConfig();
+  return !!config.providers[provider]?.apiKey;
+}
+
+/**
+ * List configured providers
+ */
+export function getConfiguredProviders(): string[] {
+  const config = loadSecureConfig();
+  return Object.keys(config.providers);
+}
+
+/**
+ * Load API keys from secure storage into environment variables
+ */
+export function loadApiKeysIntoEnvironment(): void {
+  const config = loadSecureConfig();
+  
+  for (const [provider, providerConfig] of Object.entries(config.providers)) {
+    if (providerConfig.apiKey) {
+      // Map provider names to environment variable names
+      const envVar = getEnvVarForProvider(provider);
+      if (envVar && !process.env[envVar]) {
+        process.env[envVar] = providerConfig.apiKey;
+      }
+    }
+  }
+}
+
+/**
+ * Get environment variable name for provider
+ */
+function getEnvVarForProvider(provider: string): string | undefined {
+  const envVarMap: { [key: string]: string } = {
+    // Cloud AI Providers
+    openai: 'OPENAI_API_KEY',
+    anthropic: 'ANTHROPIC_API_KEY', 
+    gemini: 'GEMINI_API_KEY',
+    google: 'GOOGLE_API_KEY',
+    mistral: 'MISTRAL_API_KEY',
+    cohere: 'COHERE_API_KEY',
+    perplexity: 'PERPLEXITY_API_KEY',
+    groq: 'GROQ_API_KEY',
+    together: 'TOGETHER_API_KEY',
+    fireworks: 'FIREWORKS_API_KEY',
+    anyscale: 'ANYSCALE_API_KEY',
+    
+    // HuggingFace
+    huggingface: 'HUGGINGFACE_API_KEY',
+    hf: 'HUGGINGFACE_API_KEY',
+    
+    // Azure
+    azure: 'AZURE_OPENAI_API_KEY',
+    'azure-openai': 'AZURE_OPENAI_API_KEY',
+  };
+  
+  return envVarMap[provider.toLowerCase()];
+}
+
+/**
+ * Validate API key format
+ */
+export function validateApiKey(provider: string, apiKey: string): boolean {
+  debugLogger.info('api-validation', 'Starting API key validation', {
+    provider,
+    providerType: typeof provider,
+    keyLength: apiKey.length,
+    keyPrefix: apiKey.substring(0, 6),
+    fullKey: apiKey
+  });
+  
+  // Enhanced validation patterns for security
+  const patterns = {
+    // OpenAI
+    openai: /^sk-[A-Za-z0-9]{48,}$/,
+    
+    // Anthropic
+    anthropic: /^sk-ant-api03-[A-Za-z0-9_-]{95}$/,
+    
+    // Google (Gemini) - Very flexible pattern to accept any reasonable key format
+    gemini: /^AIza.{30,}$/,
+    google: /^AIza.{30,}$/,
+    
+    // Mistral
+    mistral: /^[A-Za-z0-9]{32,}$/,
+    
+    // HuggingFace
+    huggingface: /^hf_[A-Za-z0-9]{34}$/,
+    hf: /^hf_[A-Za-z0-9]{34}$/,
+    
+    // Cohere
+    cohere: /^[A-Za-z0-9]{40,}$/,
+    
+    // Groq
+    groq: /^gsk_[A-Za-z0-9]{52}$/,
+    
+    // Together
+    together: /^[A-Za-z0-9]{64}$/,
+    
+    // Fireworks
+    fireworks: /^[A-Za-z0-9]{40,}$/,
+    
+    // Anyscale
+    anyscale: /^esecret_[A-Za-z0-9]{32,}$/,
+    
+    // Perplexity
+    perplexity: /^pplx-[A-Za-z0-9]{32,}$/,
+    
+    // Azure OpenAI
+    azure: /^[A-Za-z0-9]{32}$/,
+    'azure-openai': /^[A-Za-z0-9]{32}$/,
+  };
+  
+  const providerKey = provider.toLowerCase();
+  const pattern = patterns[providerKey as keyof typeof patterns];
+  
+  debugLogger.info('api-validation', 'Pattern matching details', {
+    providerKey,
+    patternFound: !!pattern,
+    pattern: pattern?.toString(),
+    availablePatterns: Object.keys(patterns)
+  });
+  
+  if (pattern) {
+    const result = pattern.test(apiKey);
+    debugLogger.info('api-validation', 'Pattern test result', { result });
+    
+    if (!result && (providerKey === 'gemini' || providerKey === 'google')) {
+      debugLogger.warn('api-validation', 'Gemini pattern match failed', {
+        actualKey: apiKey,
+        keyLength: apiKey.length,
+        startsWithAIza: apiKey.startsWith('AIza'),
+        afterAIza: apiKey.substring(4),
+        afterAIzaLength: apiKey.substring(4).length,
+        pattern: pattern.toString(),
+        characterCodes: apiKey.substring(4).split('').map(c => ({ char: c, code: c.charCodeAt(0) }))
+      });
+      
+      // Temporary: Allow any key that starts with AIza and is reasonable length
+      if (apiKey.startsWith('AIza') && apiKey.length >= 20 && apiKey.length <= 200) {
+        debugLogger.info('api-validation', 'Allowing Gemini key via fallback criteria');
+        return true;
+      }
+    }
+    return result;
+  }
+  
+  // For local providers like Ollama, no API key required
+  const localProviders = ['ollama', 'llamacpp', 'vllm', 'textgenui', 'koboldcpp', 'lmstudio'];
+  if (localProviders.includes(provider.toLowerCase())) {
+    return true; // No API key validation needed for local providers
+  }
+  
+  // For unknown providers, basic validation
+  return apiKey.length >= 10 && apiKey.length <= 200 && /^[A-Za-z0-9_-]+$/.test(apiKey);
+}

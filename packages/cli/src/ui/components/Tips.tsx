@@ -1,0 +1,55 @@
+/**
+ * @license
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
+ * Modifications Copyright 2025 The Enfiy Community Contributors
+ *
+ * This file has been modified from its original version by contributors
+ * to the Enfiy Community project.
+ */
+
+import React from 'react';
+import { Box, Text } from 'ink';
+import { Colors } from '../colors.js';
+import { type Config } from '@enfiy/core';
+import { t } from '../utils/i18n.js';
+
+interface TipsProps {
+  config: Config;
+}
+
+export const Tips: React.FC<TipsProps> = ({ config }) => {
+  const _enfiyMdFileCount = config.getEnfiyMdFileCount(); // TODO: rename this method
+  return (
+    <Box flexDirection="column" marginBottom={1}>
+      <Text color={Colors.AccentBlue} bold>
+        {t('tipsTitle')}
+      </Text>
+      <Box marginTop={1} flexDirection="column">
+        <Text color={Colors.Foreground}>
+          <Text bold color={Colors.AccentBlue}>/provider</Text> - {t('tipProvider')}
+        </Text>
+        <Text color={Colors.Foreground}>
+          <Text bold color={Colors.AccentBlue}>/mcp</Text> - {t('tipMcp')}
+        </Text>
+        <Text color={Colors.Foreground}>
+          <Text bold color={Colors.AccentBlue}>/tool</Text> - {t('tipTool')}
+        </Text>
+        <Text color={Colors.Foreground}>
+          <Text bold color={Colors.AccentBlue}>/help</Text> - {t('tipHelp')}
+        </Text>
+        <Text color={Colors.Foreground}>
+          {t('tipGeneral')}
+        </Text>
+      </Box>
+      <Box marginTop={1}>
+        <Text color={Colors.Gray}>
+          {t('tipLocalCloud')}
+        </Text>
+      </Box>
+    </Box>
+  );
+};
