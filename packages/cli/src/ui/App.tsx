@@ -197,6 +197,10 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
     config.setModel(model);
     setCurrentModel(model);
     
+    // Save to settings for persistence across sessions
+    settings.setValue(SettingScope.User, 'selectedProvider', provider);
+    settings.setValue(SettingScope.User, 'selectedModel', model);
+    
     addItem(
       {
         type: MessageType.INFO,
@@ -522,13 +526,35 @@ ${t('helpMessage')}`,
       const hasValidProvider = settings.merged.selectedProvider && settings.merged.selectedProvider !== '';
       const hasValidModel = settings.merged.selectedModel && settings.merged.selectedModel !== '';
       
-      // Show provider selection if no valid provider/model or if it's the first run
-      if (!hasValidProvider || !hasValidModel || isFirstRun) {
+      // Check if API key exists for the configured provider
+      let hasApiKey = false;
+      if (hasValidProvider && settings.merged.selectedProvider) {
+        const { hasStoredCredentials } = await import('../utils/secureStorage.js');
+        hasApiKey = hasStoredCredentials(settings.merged.selectedProvider);
+        
+        // For local providers, API key is not required
+        const localProviders = ['ollama', 'llamacpp', 'vllm', 'textgenui', 'koboldcpp', 'lmstudio'];
+        if (localProviders.includes(settings.merged.selectedProvider.toLowerCase())) {
+          hasApiKey = true;
+        }
+      }
+      
+      // Only show provider selection if configuration is incomplete
+      // Remove isFirstRun from the condition - rely on actual configuration state
+      if (!hasValidProvider || !hasValidModel || !hasApiKey) {
         
         // プロバイダー検出を実行
         try {
           const { getRecommendedProvider } = await import('@enfiy/core');
           const recommended = await getRecommendedProvider();
+          
+          console.log('Configuration check:', { 
+            hasValidProvider, 
+            hasValidModel, 
+            hasApiKey,
+            provider: settings.merged.selectedProvider,
+            model: settings.merged.selectedModel
+          });
           
           // Only show provider detection message if not first run
           if (!isFirstRun) {
@@ -557,14 +583,32 @@ ${t('helpMessage')}`,
           }, 500);
         }
       } else {
+        // Provider, model, and API key are all configured
+        // Restore the last used model to the current state
+        if (settings.merged.selectedModel && settings.merged.selectedModel !== currentModel) {
+          console.log('Restoring last used model:', settings.merged.selectedModel);
+          setCurrentModel(settings.merged.selectedModel);
+          config.setModel(settings.merged.selectedModel);
+        }
+        
         if (isFirstRun) {
           setIsFirstRun(false);
+          
+          // Show a brief welcome message with current configuration
+          const providerName = settings.merged.selectedProvider?.toUpperCase() || 'Unknown';
+          addItem(
+            {
+              type: MessageType.INFO,
+              text: `✓ Using ${providerName} | Model: ${settings.merged.selectedModel}`,
+            },
+            Date.now(),
+          );
         }
       }
     };
     
     checkProviderConfiguration();
-  }, [config, addItem, isFirstRun, showProviderSelection, showProviderSetup, showCloudAISetup, showAPISettings, settings.merged.selectedModel, settings.merged.selectedProvider]);
+  }, [config, addItem, isFirstRun, showProviderSelection, showProviderSetup, showCloudAISetup, showAPISettings, settings.merged.selectedModel, settings.merged.selectedProvider, currentModel]);
 
   const errorCount = useMemo(
     () => consoleMessages.filter((msg) => msg.type === 'error').length,

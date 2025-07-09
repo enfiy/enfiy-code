@@ -3,6 +3,10 @@
 
 <p align="center"><code>npm install @enfiy/enfiy-code</code></p>
 
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=npm,nodejs,windows,linux,apple,ubuntu" />
+</p>
+
 ![Enfiy Code Screenshot](./docs/assets/enfiy-cli-screenshot.png)
 
 This repository contains the Enfiy Code, a command-line AI workflow tool that connects to your
@@ -23,20 +27,42 @@ With Enfiy Code you can:
 2. **Run the CLI:** Execute the following command in your terminal:
 
    ```bash
-   npx https://github.com/enfiy-ecosystem/enfiy-cli
+   npx @enfiy/enfiy-code
    ```
 
-   Or install it with:
+   Or install it globally with:
 
    ```bash
    npm install -g @enfiy/enfiy-code
    enfiy
    ```
 
-3. **Pick a color theme**
-4. **Authenticate:** When prompted, sign in with your AI provider account. This will grant you access to various AI models depending on your provider configuration.
+3. **First-time setup:** When you run Enfiy Code for the first time, you'll be guided through:
+   - Picking a color theme
+   - Selecting an AI provider (local or cloud)
+   - Configuring authentication for your chosen provider
+
+4. **Smart configuration:** Once configured, Enfiy Code will remember your settings and automatically use your last selected model on subsequent runs.
 
 You are now ready to use Enfiy Code!
+
+## Supported AI Providers
+
+Enfiy Code supports both local and cloud AI providers:
+
+### Cloud Providers
+- **Anthropic Claude** - Industry-leading AI for coding tasks
+- **OpenAI GPT** - Popular and versatile language models
+- **Google Gemini** - Multimodal AI with excellent reasoning capabilities
+- **Mistral AI** - Open-source focused AI models
+- **HuggingFace** - Access to a wide variety of open-source models
+
+### Local Providers
+- **Ollama** - Run models locally with full privacy
+- **LM Studio** - User-friendly local model hosting
+- **llama.cpp** - Efficient C++ implementation for local inference
+- **vLLM** - High-performance inference engine
+- **Text Generation UI** - Web-based interface for local models
 
 ## Development Installation
 
@@ -61,21 +87,31 @@ npm link
 enfiy
 ```
 
-### For advanced use or increased limits:
+### Manual API Key Configuration
 
-If you need to use a specific model or require a higher request capacity, you can configure API keys for various AI providers:
+If you prefer to configure API keys manually or need advanced configuration:
 
 1. **For Gemini**: Generate a key from [Google AI Studio](https://aistudio.google.com/apikey).
    ```bash
    export GEMINI_API_KEY="YOUR_API_KEY"
    ```
 
-   **For Ollama**: Set up your local Ollama server.
+2. **For Anthropic**: Get your API key from [Anthropic Console](https://console.anthropic.com/).
+   ```bash
+   export ANTHROPIC_API_KEY="YOUR_API_KEY"
+   ```
+
+3. **For OpenAI**: Generate a key from [OpenAI Platform](https://platform.openai.com/api-keys).
+   ```bash
+   export OPENAI_API_KEY="YOUR_API_KEY"
+   ```
+
+4. **For Ollama**: Set up your local Ollama server.
    ```bash
    export OLLAMA_HOST="http://localhost:11434"
    ```
 
-2. **For other providers**: See the [authentication](./docs/cli/authentication.md) guide for configuration details.
+5. **For other providers**: See the [authentication](./docs/cli/authentication.md) guide for configuration details.
 
 ## Examples
 
@@ -150,6 +186,26 @@ Use MCP servers to integrate your local system tools with your enterprise collab
 ```text
 > Organise my PDF invoices by month of expenditure.
 ```
+
+## Features
+
+### Smart Provider Management
+- **Automatic configuration detection** - Skip setup dialogs when already configured
+- **Last model restoration** - Automatically restore your previously used model
+- **Secure credential storage** - API keys are encrypted and stored securely
+- **Multi-provider support** - Easily switch between different AI providers
+
+### Enhanced User Experience
+- **Streamlined startup** - Get to coding faster with intelligent configuration checks
+- **Persistent settings** - Your preferences are remembered across sessions
+- **Intuitive setup flow** - Clear guidance for first-time users
+- **Flexible authentication** - Support for API keys, OAuth, and subscription plans
+
+### Development Tools
+- **Large codebase support** - Handle projects of any size with intelligent context management
+- **Multi-file editing** - Make changes across multiple files simultaneously
+- **Code analysis** - Understand complex codebases with AI-powered insights
+- **Workflow automation** - Automate repetitive coding tasks
 
 ## Contributing
 

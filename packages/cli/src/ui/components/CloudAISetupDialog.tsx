@@ -14,7 +14,7 @@ import {
   getApiKey, 
   validateApiKey 
 } from '../../utils/secureStorage.js';
-import { debugLogger } from '../../utils/debugLogger.ts';
+import { debugLogger } from '../../utils/debugLogger.js';
 import { getOauthClient } from '@enfiy/core';
 
 interface CloudAISetupDialogProps {
@@ -70,8 +70,21 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       keyPreview: existingKey ? existingKey.substring(0, 10) + '...' : 'none'
     });
     
-    // If we have an existing key and not forcing auth selection, go to management
+    // If we have an existing key and not forcing auth selection
     if (existingKey && !forceAuthSelection) {
+      // If not managing (i.e., called from provider selection), complete immediately
+      if (!isManaging) {
+        console.log('API key already exists, completing immediately');
+        // Call onComplete immediately in useEffect to avoid state update during render
+        setTimeout(() => {
+          onComplete({
+            type: provider,
+            apiKey: existingKey,
+          });
+        }, 0);
+        return 'complete';
+      }
+      // If managing, go to management screen
       console.log('Going to management screen (existing key found)');
       return 'api-key-management';
     }
@@ -507,6 +520,23 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     }
   };
 
+  // Early return if we're auto-completing due to existing config
+  const [isAutoCompleting, setIsAutoCompleting] = useState(false);
+  
+  useEffect(() => {
+    if (step === 'complete' && !isManaging && !forceAuthSelection) {
+      const existingKey = getApiKey(provider);
+      if (existingKey) {
+        setIsAutoCompleting(true);
+      }
+    }
+  }, [step, provider, isManaging, forceAuthSelection]);
+  
+  // Don't render anything if we're auto-completing
+  if (isAutoCompleting) {
+    return null;
+  }
+  
   const renderContent = () => {
     const width = Math.min(terminalWidth - 4, 80);
 
