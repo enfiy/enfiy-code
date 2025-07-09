@@ -6,8 +6,6 @@
 
 <img src="https://skillicons.dev/icons?i=npm,nodejs,windows,linux,apple,ubuntu" />
 
-<br>
-
 <p align="center"><code>npm install -g @enfiy/enfiy-code</code></p>
 
 </div>
@@ -143,7 +141,7 @@ enfiy
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/enfiy/enfiy-code.git
+git clone https://github.com/enfiy-ecosystem/enfiy-code.git
 cd enfiy-code
 ```
 
@@ -183,3 +181,16 @@ We welcome contributions to Enfiy Code! Please see our [contributing guidelines]
 ## License
 
 Enfiy Code is licensed under the [Apache 2.0 License](./LICENSE).
+
+---
+
+<div align="center">
+  <br>
+  <p style="color: #fb923c; font-size: 1.1em; font-weight: 600;">
+    Thank you for using Enfiy Code! 🧡
+  </p>
+  <p style="color: #6b7280; font-size: 0.9em;">
+    Built with ❤️ by the Enfiy Community
+  </p>
+  <br>
+</div>
