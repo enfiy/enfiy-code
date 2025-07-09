@@ -198,7 +198,7 @@ enfiy
 <summary>Development Setup</summary>
 
 ```bash
-git clone https://github.com/enfiy-ecosystem/enfiy-code.git
+git clone https://github.com/enfiy/enfiy-code.git
 cd enfiy-code
 npm install
 npm run build
@@ -248,7 +248,7 @@ This automatically:
 - Creates a formatted report
 - Provides troubleshooting steps
 
-**Alternative:** [GitHub Issues](https://github.com/enfiy-ecosystem/enfiy-code/issues)
+**Alternative:** [GitHub Issues](https://github.com/enfiy/enfiy-code/issues)
 
 ---
 
@@ -305,6 +305,6 @@ We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guideline
 
 **Built with ❤️ by the Enfiy Community**
 
-[Website](https://enfiy.dev) • [Documentation](./docs) • [Community](https://github.com/enfiy-ecosystem) • [Support](mailto:support@enfiy.dev)
+[Website](https://enfiy.dev) • [Documentation](./docs) • [Community](https://github.com/enfiy) • [Support](mailto:support@enfiy.dev)
 
 </div>
