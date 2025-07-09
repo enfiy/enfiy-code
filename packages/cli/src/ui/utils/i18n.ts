@@ -80,7 +80,7 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     localAIDescription: 'Run AI models on your machine (private, fast, no API fees)',
     cloudAIDescription: 'Use cloud-based AI services (most powerful, API fees apply)',
     
-    tipsTitle: 'Enfiy Code - AI-Powered Development Assistant',
+    tipsTitle: 'Enfiy Code - Your Universal AI Coding Agent',
     tipProvider: 'Select AI provider and model',
     tipGeneral: 'Ask questions, edit files, run commands',
     tipSpecific: 'Be specific for better results',
