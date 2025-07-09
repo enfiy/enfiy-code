@@ -16,468 +16,104 @@
 
 ## Quickstart
 
-### 1. Prerequisites
-
 Ensure you have [Node.js v18 or higher](https://nodejs.org/en/download) installed.
 
-### 2. Run the CLI
-
-To run Enfiy Code without installing:
-
 ```bash
+# Run immediately
 npx @enfiy/enfiy-code
-```
 
-To install it globally:
-
-```bash
+# Or install globally
 npm install -g @enfiy/enfiy-code
 enfiy
 ```
 
-### 3. First-Time Setup
+On first run, you'll be guided through selecting a theme, AI provider, and authentication method. Your settings persist automatically.
 
-When you run Enfiy Code for the first time, you'll be guided through:
-
-- Choosing a color theme
-- Selecting an AI provider (local or cloud)
-- Configuring authentication for the selected provider
-
-### 4. Smart Configuration
-
-After setup, Enfiy Code remembers your preferences and automatically uses your last selected model on future runs.
-
-### About Enfiy Code
+## About
 
 Enfiy Code is a command-line AI workflow tool that integrates with your development environment. It understands your code and helps you work more efficiently, whether you're working locally or in the cloud.
 
-#### With Enfiy Code, you can:
+### Key Features
 
-- Query and edit large codebases using advanced AI models with extended context support.
-- Generate applications from PDFs or sketches using multimodal AI.
-- Automate tasks like querying pull requests or handling complex rebases.
-- Connect external tools and MCP servers to enable media generation features such as Imagen, Veo, or Lyria.
-- Enhance AI queries with web search capabilities when supported by your selected provider.
+- Query and edit large codebases using advanced AI models with extended context support
+- Generate applications from PDFs or sketches using multimodal AI
+- Automate tasks like querying pull requests or handling complex rebases
+- Connect external tools through MCP (Model Context Protocol)
+- Support for multiple AI providers - both cloud and local
 
-## Experimental Technology Disclaimer
-
-Enfiy Code is an experimental AI-powered development tool that integrates with various AI providers and services. Please be aware of the following:
-
-- **Experimental Nature**: This software is under active development and may contain bugs, unexpected behavior, or incomplete features.
-- **AI Model Limitations**: AI responses may be incorrect, biased, or inappropriate. Always review and validate AI-generated code and suggestions.
-- **Data Security**: While we implement security measures, be cautious when working with sensitive codebases or proprietary information.
-- **Third-Party Dependencies**: Enfiy Code integrates with external AI services and tools. We are not responsible for the availability, performance, or policies of these third-party services.
-- **Breaking Changes**: As an experimental tool, future updates may introduce breaking changes without extensive deprecation periods.
-
-**Use at your own risk and discretion. Always backup your code and review AI-generated changes before implementation.**
-
-## Why Enfiy Code?
-
-In the rapidly evolving landscape of software development, developers face increasing complexity in managing large codebases, integrating multiple tools, and keeping up with diverse technologies. Enfiy Code addresses these challenges by providing:
-
-### **Universal AI Integration**
-- **One Tool, Many Models**: Switch seamlessly between different AI providers (OpenAI, Anthropic, Google, Mistral, local models) without changing your workflow.
-- **Best-in-Class Selection**: Choose the most appropriate AI model for your specific task, from code generation to analysis to documentation.
-
-### **Intelligent Code Understanding**
-- **Context-Aware Analysis**: Understand large codebases with AI that can process thousands of lines of code and maintain context across multiple files.
-- **Smart Suggestions**: Get relevant suggestions based on your project's architecture, coding patterns, and dependencies.
-
-### **Workflow Acceleration**
-- **Automated Tasks**: Reduce repetitive work with AI-powered automation for testing, documentation, refactoring, and deployment.
-- **Rapid Prototyping**: Build applications faster with AI assistance for boilerplate code, architecture decisions, and implementation strategies.
-
-### **Privacy and Control**
-- **Local and Cloud Options**: Choose between cloud-based AI services for power or local models for complete privacy.
-- **Secure Storage**: API keys and sensitive data are encrypted and stored locally with industry-standard security practices.
-
-### **Extensible Architecture**
-- **MCP Integration**: Connect to any tool or service through the Model Context Protocol (MCP) for unlimited extensibility.
-- **Custom Tools**: Build and integrate custom tools that fit your specific development workflow.
-
-## Supported AI Providers
-
-Enfiy Code supports both local and cloud AI providers:
+## AI Providers
 
 ### Cloud Providers
-- **Anthropic Claude** - Industry-leading AI for coding tasks
-- **OpenAI GPT** - Popular and versatile language models
-- **Google Gemini** - Multimodal AI with excellent reasoning capabilities
-- **Mistral AI** - Open-source focused AI models
-- **HuggingFace** - Access to a wide variety of open-source models
+
+| Provider | Description |
+|---------|-------------|
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="24" /> **Google Gemini** | Multimodal AI with strong reasoning capabilities |
+| <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg" width="24" /> **OpenAI GPT** | Popular and versatile language models |
+| <img src="https://avatars.githubusercontent.com/u/108914997?s=200&v=4" width="24" /> **Anthropic Claude** | Industry-leading AI for coding tasks |
+| <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" width="24" /> **HuggingFace** | Access to a wide variety of open-source models |
+| <img src="https://avatars.githubusercontent.com/u/139761605?s=200&v=4" width="24" /> **Mistral AI** | Open-source focused AI models |
+
+---
 
 ### Local Providers
-- **Ollama** - Run models locally with full privacy and easy model management
-- **LM Studio** - User-friendly local model hosting with GUI interface
-- **llama.cpp** - Efficient C++ implementation for local inference
-- **vLLM** - High-performance inference engine for production workloads
-- **Text Generation UI** - Web-based interface for local models (oobabooga)
-- **KoboldCpp** - Gaming-focused local AI with advanced sampling
-- **LocalAI** - OpenAI-compatible local API server
-- **GPT4All** - Cross-platform local AI with offline capabilities
-- **Jan** - Open-source ChatGPT alternative that runs locally
-- **Anythingllm** - Full-stack local AI application platform
 
-### Manual API Key Configuration
+| Provider | Description |
+|---------|-------------|
+| <img src="https://ollama.com/public/ollama-mark.svg" width="24" /> **Ollama** | Local model runner with full privacy |
+| <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" width="24" /> **HuggingFace (Local)** | Host and run models locally |
+| 🦙 **llama.cpp** | Efficient local inference in C++ |
+| ⚡ **vLLM** | High-performance inference engine |
+| 🖥️ **Text Generation UI** | Web-based UI for local models (Oobabooga) |
+| 🕹️ **KoboldCpp** | Local model runner with advanced sampling for storytelling |
 
-If you prefer to configure API keys manually or need advanced configuration:
-
-1. **For Gemini**: Generate a key from [Google AI Studio](https://aistudio.google.com/apikey).
-   ```bash
-   export GEMINI_API_KEY="YOUR_API_KEY"
-   ```
-
-2. **For Anthropic**: Get your API key from [Anthropic Console](https://console.anthropic.com/).
-   ```bash
-   export ANTHROPIC_API_KEY="YOUR_API_KEY"
-   ```
-
-3. **For OpenAI**: Generate a key from [OpenAI Platform](https://platform.openai.com/api-keys).
-   ```bash
-   export OPENAI_API_KEY="YOUR_API_KEY"
-   ```
-
-4. **For Ollama**: Set up your local Ollama server.
-   ```bash
-   export OLLAMA_HOST="http://localhost:11434"
-   ```
-
-5. **For other providers**: See the [authentication](./docs/cli/authentication.md) guide for configuration details.
 
 ## Core Commands
 
-### `/provider` - AI Provider Management
+- `/provider` - Manage AI providers and models
+- `/mcp` - Manage MCP servers and integrations
+- `/tools` - List available development tools
+- `/bug` - Report issues with automatic diagnostics
 
-The `/provider` command allows you to manage AI providers and switch between different models:
-
-```bash
-# List available providers
-/provider
-
-# Switch to a specific provider
-/provider anthropic
-
-# List models for current provider
-/provider models
-
-# Switch to a specific model
-/provider model claude-3-sonnet-20240229
-
-# Show current provider status
-/provider status
-
-# Configure provider settings
-/provider config
-```
-
-**Provider Management Features:**
-- **Dynamic Switching**: Change AI providers without restarting the application
-- **Model Selection**: Choose from available models for each provider
-- **Configuration**: Set up API keys, endpoints, and provider-specific settings
-- **Status Monitoring**: Check connection status and model availability
-- **Fallback Support**: Automatically switch to backup providers if primary fails
-
-### `/mcp` - Model Context Protocol Integration
-
-The `/mcp` command manages MCP (Model Context Protocol) servers for extending Enfiy Code's capabilities:
-
-```bash
-# List installed MCP servers
-/mcp list
-
-# Install a new MCP server
-/mcp install <server-name>
-
-# Start/Stop MCP servers
-/mcp start <server-name>
-/mcp stop <server-name>
-
-# Configure MCP server settings
-/mcp config <server-name>
-
-# Show MCP server status
-/mcp status
-
-# Enable/disable tool descriptions
-/mcp desc
-/mcp nodesc
-```
-
-**MCP Integration Features:**
-- **Extensible Tools**: Connect to databases, APIs, cloud services, and more
-- **Custom Servers**: Build and integrate your own MCP servers
-- **Real-time Communication**: Bi-directional communication with external tools
-- **Security**: Secure communication protocols and permission management
-- **Popular MCP Servers**: File system, Git, database, web search, and many more
-
-### Tools - Built-in Development Tools
-
-Enfiy Code includes a comprehensive set of built-in tools for development tasks:
-
-#### **File Operations**
-```bash
-# Read files with syntax highlighting
-> Read the main.py file and explain its structure
-
-# Edit multiple files simultaneously
-> Update both the API endpoint and the frontend component to add user authentication
-
-# Create new files and directories
-> Create a new React component for user settings
-```
-
-#### **Code Analysis**
-```bash
-# Analyze code quality and suggest improvements
-> Review this codebase for security vulnerabilities
-
-# Generate documentation
-> Create comprehensive documentation for this API
-
-# Refactor code
-> Refactor this function to use modern JavaScript features
-```
-
-#### **Version Control**
-```bash
-# Git operations
-> Create a feature branch for the new login system
-
-# Commit and push changes
-> Commit these changes with an appropriate message
-
-# Handle merge conflicts
-> Help me resolve this merge conflict
-```
-
-#### **Testing and Debugging**
-```bash
-# Generate tests
-> Write unit tests for this component
-
-# Debug issues
-> Help me debug this error in the console
-
-# Performance analysis
-> Analyze the performance of this algorithm
-```
-
-#### **System Integration**
-```bash
-# Shell commands
-> Run the test suite and show me the results
-
-# Environment management
-> Set up the development environment for this project
-
-# Build and deployment
-> Build the project and deploy it to staging
-```
+For detailed command documentation, see [CLI Commands](./docs/cli/commands.md).
 
 ## Examples
 
-Once the CLI is running, you can start interacting with AI models from your shell.
-
-You can start a project from a new directory:
-
-```sh
-cd new-project/
+```bash
+# Start a new project
+cd my-project/
 enfiy
-> Write me a Discord bot that answers questions using a FAQ.md file I will provide
+> Create a React app with TypeScript and authentication
+
+# Analyze existing code
+> Review this codebase for security vulnerabilities
+
+# Automate workflows
+> Write comprehensive tests for the API endpoints
 ```
 
-Or work with an existing project:
+## Documentation
 
-```sh
-git clone https://github.com/enfiy-ecosystem/enfiy-cli
-cd enfiy-cli
-enfiy
-> Give me a summary of all of the changes that went in yesterday
-```
+- [Installation Guide](./docs/installation.md)
+- [CLI Commands](./docs/cli/commands.md)
+- [API Key Configuration](./docs/api-configuration.md)
+- [MCP Integration](./docs/mcp-integration.md)
+- [Privacy & Security](./docs/privacy-security.md)
+- [Troubleshooting](./docs/troubleshooting.md)
 
-### Next steps
-
-- Explore the available **[CLI Commands](./docs/cli/commands.md)**.
-- If you encounter any issues, review the **[Troubleshooting guide](./docs/troubleshooting.md)**.
-- For more comprehensive documentation, see the [full documentation](./docs/index.md).
-- Take a look at some [popular tasks](#popular-tasks) for more inspiration.
-
-## Popular tasks
-
-### Explore a new codebase
-
-Start by `cd`ing into an existing or newly-cloned repository and running `enfiy`.
-
-```text
-> Describe the main pieces of this system's architecture.
-```
-
-```text
-> What security mechanisms are in place?
-```
-
-### Work with your existing code
-
-```text
-> Implement a first draft for GitHub issue #123.
-```
-
-```text
-> Help me migrate this codebase to the latest version of Java. Start with a plan.
-```
-
-### Automate your workflows
-
-Use MCP servers to integrate your local system tools with your enterprise collaboration suite.
-
-```text
-> Make me a slide deck showing the git history from the last 7 days, grouped by feature and team member.
-```
-
-```text
-> Make a full-screen web app for a wall display to show our most interacted-with GitHub issues.
-```
-
-### Interact with your system
-
-```text
-> Convert all the images in this directory to png, and rename them to use dates from the exif data.
-```
-
-```text
-> Organise my PDF invoices by month of expenditure.
-```
-
-## Features
-
-### Smart Provider Management
-- **Automatic configuration detection** - Skip setup dialogs when already configured
-- **Last model restoration** - Automatically restore your previously used model
-- **Secure credential storage** - API keys are encrypted and stored securely
-- **Multi-provider support** - Easily switch between different AI providers
-
-### Enhanced User Experience
-- **Streamlined startup** - Get to coding faster with intelligent configuration checks
-- **Persistent settings** - Your preferences are remembered across sessions
-- **Intuitive setup flow** - Clear guidance for first-time users
-- **Flexible authentication** - Support for API keys, OAuth, and subscription plans
-
-### Development Tools
-- **Large codebase support** - Handle projects of any size with intelligent context management
-- **Multi-file editing** - Make changes across multiple files simultaneously
-- **Code analysis** - Understand complex codebases with AI-powered insights
-- **Workflow automation** - Automate repetitive coding tasks
-
-## Bug Reports and Issues
-
-We appreciate your help in improving Enfiy Code! If you encounter any bugs or issues, please use the following command within the application:
+## Development
 
 ```bash
-/bug "Description of the issue you encountered"
+git clone https://github.com/enfiy/enfiy-code.git
+cd enfiy-code
+npm install
+npm run build
+npm start
 ```
-
-This will:
-- Collect relevant system information
-- Capture logs and error details
-- Create a formatted bug report
-- Provide guidance on next steps
-
-### Alternative Reporting Methods
-
-If you cannot use the `/bug` command, you can also:
-
-1. **GitHub Issues**: Report bugs at [https://github.com/enfiy-ecosystem/enfiy-code/issues](https://github.com/enfiy-ecosystem/enfiy-code/issues)
-2. **Include the following information**:
-   - Enfiy Code version (`enfiy --version`)
-   - Operating system and version
-   - Node.js version
-   - Steps to reproduce the issue
-   - Expected vs actual behavior
-   - Any error messages or logs
-
-### Security Issues
-
-For security-related issues, please do not create public GitHub issues. Instead:
-- Use the `/bug` command with security-related details
-- Contact us directly at security@enfiy.dev
-- Follow responsible disclosure practices
-
-## Data Collection, Use, and Retention
-
-Enfiy Code is designed with privacy and security in mind. Here's what you need to know about data handling:
-
-### What Data We Collect
-
-#### **Local Data (Stored on Your Device)**
-- **Configuration Settings**: Theme preferences, provider selections, and application settings
-- **API Keys**: Encrypted and stored locally in your home directory (`~/.enfiy/`)
-- **Usage Logs**: Local debugging information and error logs
-- **Project Context**: Temporary context about your current project (not transmitted unless explicitly requested)
-
-#### **Telemetry Data (Optional)**
-- **Usage Statistics**: Command usage patterns and feature adoption (anonymized)
-- **Error Reports**: Crash reports and error information when using `/bug` command
-- **Performance Metrics**: Application performance and response times
-
-### How We Use Your Data
-
-- **Improve Enfiy Code**: Identify common issues and optimize performance
-- **Debug Issues**: Help troubleshoot problems when you report bugs
-- **Feature Development**: Understand which features are most valuable to users
-- **Security**: Detect and prevent misuse of the service
-
-### Data Transmission
-
-#### **AI Provider Communications**
-- **Your Code**: Sent to selected AI providers (OpenAI, Anthropic, Google, etc.) for processing
-- **Context Information**: Project structure and file contents when explicitly requested
-- **Your Choice**: You control which AI provider to use and what data to share
-
-#### **MCP Server Communications**
-- **Tool Interactions**: Data shared with MCP servers based on your commands
-- **External Services**: Third-party MCP servers may have their own data policies
-
-### Data Retention
-
-- **Local Data**: Stored indefinitely on your device until manually deleted
-- **Telemetry**: Anonymized usage data retained for up to 2 years
-- **Bug Reports**: Stored for up to 1 year or until issue resolution
-- **AI Provider Data**: Subject to each provider's retention policies
-
-### Your Data Rights
-
-- **Opt-Out**: Disable telemetry in settings (`/settings telemetry false`)
-- **Local Control**: All configuration and keys stored locally
-- **Data Deletion**: Remove all local data by deleting `~/.enfiy/` directory
-- **Transparency**: View collected data through debug commands
-
-### Data Security
-
-- **Encryption**: API keys encrypted using AES-256-GCM
-- **Local Storage**: No sensitive data stored on our servers
-- **Secure Transmission**: All communications use TLS encryption
-- **Access Control**: Strict access controls on any collected telemetry
-
-### Third-Party Data Policies
-
-When using external AI providers or MCP servers, you are also subject to their privacy policies:
-
-- **OpenAI**: [OpenAI Privacy Policy](https://openai.com/privacy)
-- **Anthropic**: [Anthropic Privacy Policy](https://www.anthropic.com/privacy)
-- **Google**: [Google Privacy Policy](https://policies.google.com/privacy)
-- **Local Models**: No external data transmission
-
-### Contact Information
-
-For privacy-related questions or concerns:
-- Email: privacy@enfiy.dev
-- Use the `/bug` command for privacy-related issues
-- GitHub: [Privacy Policy Issues](https://github.com/enfiy-ecosystem/enfiy-code/issues)
 
 ## Contributing
 
-We welcome contributions to Enfiy Code! Please see our [contributing guidelines](./CONTRIBUTING.md) for more information on how to get started.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ## License
 
-Enfiy Code is licensed under the [Apache 2.0 License](./LICENSE).
+[Apache 2.0 License](./LICENSE)
