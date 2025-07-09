@@ -8,60 +8,58 @@
 
 <br>
 
-<p align="center"><code>npm install @enfiy/enfiy-code</code></p>
+<p align="center"><code>npm install -g @enfiy/enfiy-code</code></p>
 
 </div>
 
-## 🚧 Roadmap & Development Status
-
-**Enfiy Code is actively developed with exciting features in progress:**
-
-🔄 **In Development**
-- Enhanced MCP server marketplace and discovery
-- Advanced code analysis with security vulnerability detection
-- Multi-language support and internationalization
-- Improved performance for large codebase operations
-
-🎯 **Planned Features**
-- Visual diff interface for code changes
-- Integrated debugging tools with AI assistance
-- Custom AI model fine-tuning capabilities
-- Team collaboration features and shared workspaces
-
-🤝 **Community Contributions Welcome**
-- Help expand AI provider integrations
-- Contribute to documentation and examples
-- Test and report issues across different platforms
-- Suggest new features and improvements
-
 ![Enfiy Code Screenshot](./docs/assets/enfiy-cli-screenshot.png)
 
-## ⚡ Quick Start
-```bash
-# Run immediately
-npx @enfiy/enfiy-code
+## Quickstart
 
-# Or install globally
+### 1. Prerequisites
+
+Ensure you have [Node.js v18 or higher](https://nodejs.org/en/download) installed.
+
+### 2. Run the CLI
+
+To run Enfiy Code without installing:
+
+```bash
+npx @enfiy/enfiy-code
+```
+
+To install it globally:
+
+```bash
 npm install -g @enfiy/enfiy-code
 enfiy
 ```
 
-On first run, choose your theme, AI provider, and authentication method. Your settings persist automatically.
+### 3. First-Time Setup
 
+When you run Enfiy Code for the first time, you'll be guided through:
 
-This repository contains the Enfiy Code, a command-line AI workflow tool that connects to your
-tools, understands your code and accelerates your workflows.
+- Choosing a color theme
+- Selecting an AI provider (local or cloud)
+- Configuring authentication for the selected provider
 
-With Enfiy Code you can:
+### 4. Smart Configuration
 
-- Query and edit large codebases with powerful AI models including support for large context windows.
-- Generate new apps from PDFs or sketches, using multimodal AI capabilities.
-- Automate operational tasks, like querying pull requests or handling complex rebases.
-- Use tools and MCP servers to connect new capabilities, including [media generation with Imagen,
-  Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
-- Ground your queries with web search capabilities when using supported AI providers.
+After setup, Enfiy Code remembers your preferences and automatically uses your last selected model on future runs.
 
-## ⚠️ Experimental Technology Disclaimer
+### About Enfiy Code
+
+Enfiy Code is a command-line AI workflow tool that integrates with your development environment. It understands your code and helps you work more efficiently, whether you're working locally or in the cloud.
+
+#### With Enfiy Code, you can:
+
+- Query and edit large codebases using advanced AI models with extended context support.
+- Generate applications from PDFs or sketches using multimodal AI.
+- Automate tasks like querying pull requests or handling complex rebases.
+- Connect external tools and MCP servers to enable media generation features such as Imagen, Veo, or Lyria.
+- Enhance AI queries with web search capabilities when supported by your selected provider.
+
+## Experimental Technology Disclaimer
 
 Enfiy Code is an experimental AI-powered development tool that integrates with various AI providers and services. Please be aware of the following:
 
@@ -77,50 +75,25 @@ Enfiy Code is an experimental AI-powered development tool that integrates with v
 
 In the rapidly evolving landscape of software development, developers face increasing complexity in managing large codebases, integrating multiple tools, and keeping up with diverse technologies. Enfiy Code addresses these challenges by providing:
 
-### 🎯 **Universal AI Integration**
+### **Universal AI Integration**
 - **One Tool, Many Models**: Switch seamlessly between different AI providers (OpenAI, Anthropic, Google, Mistral, local models) without changing your workflow.
 - **Best-in-Class Selection**: Choose the most appropriate AI model for your specific task, from code generation to analysis to documentation.
 
-### 🔧 **Intelligent Code Understanding**
+### **Intelligent Code Understanding**
 - **Context-Aware Analysis**: Understand large codebases with AI that can process thousands of lines of code and maintain context across multiple files.
 - **Smart Suggestions**: Get relevant suggestions based on your project's architecture, coding patterns, and dependencies.
 
-### 🚀 **Workflow Acceleration**
+### **Workflow Acceleration**
 - **Automated Tasks**: Reduce repetitive work with AI-powered automation for testing, documentation, refactoring, and deployment.
 - **Rapid Prototyping**: Build applications faster with AI assistance for boilerplate code, architecture decisions, and implementation strategies.
 
-### 🔒 **Privacy and Control**
+### **Privacy and Control**
 - **Local and Cloud Options**: Choose between cloud-based AI services for power or local models for complete privacy.
 - **Secure Storage**: API keys and sensitive data are encrypted and stored locally with industry-standard security practices.
 
-### 🛠️ **Extensible Architecture**
+### **Extensible Architecture**
 - **MCP Integration**: Connect to any tool or service through the Model Context Protocol (MCP) for unlimited extensibility.
 - **Custom Tools**: Build and integrate custom tools that fit your specific development workflow.
-
-## Quickstart
-
-1. **Prerequisites:** Ensure you have [Node.js version 18](https://nodejs.org/en/download) or higher installed.
-2. **Run the CLI:** Execute the following command in your terminal:
-
-   ```bash
-   npx @enfiy/enfiy-code
-   ```
-
-   Or install it globally with:
-
-   ```bash
-   npm install -g @enfiy/enfiy-code
-   enfiy
-   ```
-
-3. **First-time setup:** When you run Enfiy Code for the first time, you'll be guided through:
-   - Picking a color theme
-   - Selecting an AI provider (local or cloud)
-   - Configuring authentication for your chosen provider
-
-4. **Smart configuration:** Once configured, Enfiy Code will remember your settings and automatically use your last selected model on subsequent runs.
-
-You are now ready to use Enfiy Code!
 
 ## Supported AI Providers
 
@@ -134,34 +107,16 @@ Enfiy Code supports both local and cloud AI providers:
 - **HuggingFace** - Access to a wide variety of open-source models
 
 ### Local Providers
-- **Ollama** - Run models locally with full privacy
-- **LM Studio** - User-friendly local model hosting
+- **Ollama** - Run models locally with full privacy and easy model management
+- **LM Studio** - User-friendly local model hosting with GUI interface
 - **llama.cpp** - Efficient C++ implementation for local inference
-- **vLLM** - High-performance inference engine
-- **Text Generation UI** - Web-based interface for local models
-
-## Development Installation
-
-For development or to use the latest features:
-
-```bash
-# Clone the repository
-git clone https://github.com/enfiy-ecosystem/enfiy-code.git
-cd enfiy-code
-
-# Install dependencies
-npm install
-
-# Build the project
-npm run build
-
-# Run locally
-npm start
-
-# Or link for global development use
-npm link
-enfiy
-```
+- **vLLM** - High-performance inference engine for production workloads
+- **Text Generation UI** - Web-based interface for local models (oobabooga)
+- **KoboldCpp** - Gaming-focused local AI with advanced sampling
+- **LocalAI** - OpenAI-compatible local API server
+- **GPT4All** - Cross-platform local AI with offline capabilities
+- **Jan** - Open-source ChatGPT alternative that runs locally
+- **Anythingllm** - Full-stack local AI application platform
 
 ### Manual API Key Configuration
 
