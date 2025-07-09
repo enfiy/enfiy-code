@@ -11,7 +11,7 @@
  * to the Enfiy Community project.
  */
 
-import { debugLogger } from './debugLogger.ts';
+import { debugLogger } from './debugLogger.js';
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -21,6 +21,13 @@ import * as crypto from 'node:crypto';
 const ENFIY_CONFIG_DIR = path.join(os.homedir(), '.enfiy');
 const SECURE_CONFIG_FILE = path.join(ENFIY_CONFIG_DIR, 'secure.json');
 const KEY_FILE = path.join(ENFIY_CONFIG_DIR, '.key');
+
+// Security constants
+const KEY_DERIVATION_ITERATIONS = 100000; // PBKDF2 iterations
+const SALT_LENGTH = 32;
+const KEY_LENGTH = 32;
+const IV_LENGTH = 16;
+const TAG_LENGTH = 16;
 
 interface SecureConfig {
   providers: {
@@ -35,28 +42,47 @@ interface SecureConfig {
 }
 
 /**
- * Generate or retrieve encryption key
+ * Generate or retrieve encryption key with enhanced security
  */
 function _getEncryptionKey(): Buffer {
   try {
     if (fs.existsSync(KEY_FILE)) {
-      return fs.readFileSync(KEY_FILE);
+      const keyData = fs.readFileSync(KEY_FILE);
+      // Validate key length
+      if (keyData.length === KEY_LENGTH) {
+        return keyData;
+      }
+      // Invalid key, regenerate
+      debugLogger.warn('secure-storage', 'Invalid key file, regenerating');
     }
   } catch (_error) {
     // If we can't read the key file, generate a new one
   }
   
-  // Generate new key
-  const key = crypto.randomBytes(32);
+  // Generate new key using hardware random if available
+  const key = crypto.randomBytes(KEY_LENGTH);
   
   try {
-    // Ensure directory exists
+    // Ensure directory exists with strict permissions
     if (!fs.existsSync(ENFIY_CONFIG_DIR)) {
-      fs.mkdirSync(ENFIY_CONFIG_DIR, { mode: 0o700 });
+      fs.mkdirSync(ENFIY_CONFIG_DIR, { mode: 0o700, recursive: true });
+    }
+    
+    // Check directory permissions
+    const stats = fs.statSync(ENFIY_CONFIG_DIR);
+    if ((stats.mode & 0o077) !== 0) {
+      // Directory is accessible by others, fix permissions
+      fs.chmodSync(ENFIY_CONFIG_DIR, 0o700);
     }
     
     // Write key with restricted permissions
     fs.writeFileSync(KEY_FILE, key, { mode: 0o600 });
+    
+    // Verify file permissions
+    const keyStats = fs.statSync(KEY_FILE);
+    if ((keyStats.mode & 0o077) !== 0) {
+      fs.chmodSync(KEY_FILE, 0o600);
+    }
   } catch (_error) {
     console.warn('Warning: Could not save encryption key. API keys will not persist between sessions.');
   }
@@ -65,29 +91,87 @@ function _getEncryptionKey(): Buffer {
 }
 
 /**
- * Encrypt data using AES-256-GCM
+ * Encrypt data using AES-256-GCM with additional security measures
  */
-function encrypt(data: string): { encrypted: string; iv: string; tag: string } {
+function encrypt(data: string): { encrypted: string; iv: string; tag: string; salt?: string; version: number } {
+  // Validate input
+  if (!data || typeof data !== 'string') {
+    throw new Error('Invalid data for encryption');
+  }
+  
   const key = _getEncryptionKey();
-  const iv = crypto.randomBytes(16);
+  const iv = crypto.randomBytes(IV_LENGTH);
+  
+  // Use a salt for key derivation in future versions
+  const salt = crypto.randomBytes(SALT_LENGTH);
+  
+  // Create cipher with authenticated encryption
   const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+  
+  // Add additional authenticated data (AAD)
+  const aad = Buffer.from('enfiy-secure-storage-v2');
+  cipher.setAAD(aad);
+  
   let encrypted = cipher.update(data, 'utf8', 'hex');
   encrypted += cipher.final('hex');
-  const tag = cipher.getAuthTag().toString('hex');
-  return { encrypted, iv: iv.toString('hex'), tag };
+  const tag = cipher.getAuthTag();
+  
+  // Validate tag length
+  if (tag.length !== TAG_LENGTH) {
+    throw new Error('Invalid tag length');
+  }
+  
+  return { 
+    encrypted, 
+    iv: iv.toString('hex'), 
+    tag: tag.toString('hex'),
+    salt: salt.toString('hex'),
+    version: 2
+  };
 }
 
 /**
- * Decrypt data using AES-256-GCM
+ * Decrypt data using AES-256-GCM with validation
  */
-function decrypt(encryptedData: { encrypted: string; iv: string; tag: string }): string {
+function decrypt(encryptedData: { encrypted: string; iv: string; tag: string; salt?: string; version?: number }): string {
+  // Validate input
+  if (!encryptedData || !encryptedData.encrypted || !encryptedData.iv || !encryptedData.tag) {
+    throw new Error('Invalid encrypted data format');
+  }
+  
   const key = _getEncryptionKey();
+  
+  // Validate hex strings
+  if (!/^[0-9a-f]+$/i.test(encryptedData.iv) || 
+      !/^[0-9a-f]+$/i.test(encryptedData.tag) ||
+      !/^[0-9a-f]+$/i.test(encryptedData.encrypted)) {
+    throw new Error('Invalid hex format in encrypted data');
+  }
+  
   const iv = Buffer.from(encryptedData.iv, 'hex');
+  const tag = Buffer.from(encryptedData.tag, 'hex');
+  
+  // Validate lengths
+  if (iv.length !== IV_LENGTH || tag.length !== TAG_LENGTH) {
+    throw new Error('Invalid IV or tag length');
+  }
+  
   const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
-  decipher.setAuthTag(Buffer.from(encryptedData.tag, 'hex'));
-  let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
-  return decrypted;
+  decipher.setAuthTag(tag);
+  
+  // Add AAD for version 2
+  if (encryptedData.version === 2) {
+    const aad = Buffer.from('enfiy-secure-storage-v2');
+    decipher.setAAD(aad);
+  }
+  
+  try {
+    let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+  } catch (error) {
+    throw new Error('Decryption failed - data may be corrupted or tampered with');
+  }
 }
 
 /**
@@ -165,14 +249,24 @@ export function saveSecureConfig(config: SecureConfig): void {
 export function storeApiKey(provider: string, apiKey: string, endpoint?: string, authMethod?: string): void {
   const config = loadSecureConfig();
   
-  // Clean bracketed paste characters and escape sequences from API key
+  // Sanitize API key input
   const cleanedApiKey = apiKey
     .replace(/\[200~|\[201~/g, '') // Remove bracketed paste markers
     // eslint-disable-next-line no-control-regex
     .replace(/\\u001b|[\u001b]/g, '') // Remove escape characters
     // eslint-disable-next-line no-control-regex
     .replace(/[\u0000-\u001F\u007F]/g, '') // Remove all control characters
+    .replace(/[^\x20-\x7E]/g, '') // Remove non-printable ASCII
     .trim();
+  
+  // Additional validation
+  if (cleanedApiKey.length === 0) {
+    throw new Error('API key cannot be empty');
+  }
+  
+  if (cleanedApiKey.length > 512) {
+    throw new Error('API key is too long');
+  }
   
   console.log('🔧 Storing API key for', provider, {
     originalLength: apiKey.length,

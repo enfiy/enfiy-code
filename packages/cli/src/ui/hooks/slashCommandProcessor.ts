@@ -41,7 +41,7 @@ import { formatDuration, formatMemoryUsage } from '../utils/formatters.js';
 import { getCliVersion } from '../../utils/version.js';
 import { LoadedSettings } from '../../config/settings.js';
 import { ModelManager } from '../../services/modelManager.js';
-import { debugLogger } from '../../utils/debugLogger.ts';
+import { debugLogger } from '../../utils/debugLogger.js';
 
 export interface SlashCommandActionReturn {
   shouldScheduleTool?: boolean;

@@ -111,17 +111,6 @@ describe('InputPrompt', () => {
       inputWidth: 80,
       suggestionsWidth: 80,
       focus: true,
-      // Add missing required props
-      model: 'test-model',
-      targetDir: '/test/project/src',
-      branchName: 'main',
-      debugMode: false,
-      debugMessage: '',
-      corgiMode: false,
-      errorCount: 0,
-      showErrorDetails: false,
-      showMemoryUsage: false,
-      totalTokenCount: 0,
     };
   });
 
