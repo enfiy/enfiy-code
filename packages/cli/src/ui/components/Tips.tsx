@@ -42,6 +42,9 @@ export const Tips: React.FC<TipsProps> = ({ config }) => {
           <Text bold color={Colors.AccentBlue}>/help</Text> - {t('tipHelp')}
         </Text>
         <Text color={Colors.Foreground}>
+          <Text bold color={Colors.AccentBlue}>/bug</Text> - {t('tipBug')}
+        </Text>
+        <Text color={Colors.Foreground}>
           {t('tipGeneral')}
         </Text>
       </Box>

@@ -43,6 +43,7 @@ export interface TranslationKeys {
   tipHelp: string;
   tipMcp: string;
   tipTool: string;
+  tipBug: string;
   tipLocalCloud: string;
   
   // Navigation
@@ -88,6 +89,7 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipHelp: 'Show available commands',
     tipMcp: 'Connect to MCP servers for enhanced capabilities',
     tipTool: 'Access specialized tools and integrations',
+    tipBug: 'Report bugs or issues',
     tipLocalCloud: 'Local AI (Private) | Cloud AI (Powerful)',
     
     navMove: '↑↓ Move',
@@ -130,6 +132,7 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipHelp: '/help - 使用可能なコマンド一覧',
     tipMcp: '/mcp - MCPサーバーに接続して機能拡張',
     tipTool: '/tool - 専用ツールや統合機能にアクセス',
+    tipBug: '/bug - バグや問題を報告',
     tipLocalCloud: 'ローカルAI (プライベート) | クラウドAI (高性能) | 簡単切り替え',
     
     navMove: '↑↓ 移動',
@@ -172,6 +175,7 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipHelp: '/help - 사용 가능한 명령 표시',
     tipMcp: '/mcp - MCP 서버에 연결하여 기능 확장',
     tipTool: '/tool - 전용 도구 및 통합 기능에 액세스',
+    tipBug: '/bug - 버그 또는 문제 신고',
     tipLocalCloud: '🏠 로컬 AI (개인정보 보호) | ☁️ 클라우드 AI (강력함) | 🔄 쉬운 전환',
     
     navMove: '↑↓ 이동',
@@ -214,6 +218,7 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipHelp: '/help - Mostrar comandos disponibles',
     tipMcp: '/mcp - Conectar a servidores MCP para capacidades mejoradas',
     tipTool: '/tool - Acceder a herramientas especializadas e integraciones',
+    tipBug: '/bug - Reportar errores o problemas',
     tipLocalCloud: '🏠 IA Local (Privada) | ☁️ IA en la Nube (Potente) | 🔄 Cambio fácil',
     
     navMove: '↑↓ Mover',
@@ -256,6 +261,7 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipHelp: '/help - Afficher les commandes disponibles',
     tipMcp: '/mcp - Se connecter aux serveurs MCP pour des capacités étendues',
     tipTool: '/tool - Accéder aux outils spécialisés et intégrations',
+    tipBug: '/bug - Signaler des bugs ou des problèmes',
     tipLocalCloud: '🏠 IA Locale (Privée) | ☁️ IA Cloud (Puissante) | 🔄 Changement facile',
     
     navMove: '↑↓ Déplacer',
@@ -298,6 +304,7 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipHelp: '/help - Verfügbare Befehle anzeigen',
     tipMcp: '/mcp - Mit MCP-Servern für erweiterte Funktionen verbinden',
     tipTool: '/tool - Auf spezialisierte Tools und Integrationen zugreifen',
+    tipBug: '/bug - Bugs oder Probleme melden',
     tipLocalCloud: '🏠 Lokale KI (Privat) | ☁️ Cloud-KI (Leistungsstark) | 🔄 Einfacher Wechsel',
     
     navMove: '↑↓ Bewegen',
@@ -340,6 +347,7 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipHelp: '/help - Показать доступные команды',
     tipMcp: '/mcp - Подключиться к серверам MCP для расширенных возможностей',
     tipTool: '/tool - Доступ к специализированным инструментам и интеграциям',
+    tipBug: '/bug - Сообщить об ошибках или проблемах',
     tipLocalCloud: '🏠 Локальный ИИ (Приватный) | ☁️ Облачный ИИ (Мощный) | 🔄 Легкое переключение',
     
     navMove: '↑↓ Перемещение',
