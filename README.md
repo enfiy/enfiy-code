@@ -2,7 +2,7 @@
 
 # Enfiy Code
 
-### *A universal AI coding agent — local or cloud, your choice*
+### *Your Universal AI Coding Agent*
 
 <img src="https://skillicons.dev/icons?i=npm,nodejs,windows,linux,apple,ubuntu" />
 
@@ -18,11 +18,13 @@
 
 Ensure you have [Node.js v18 or higher](https://nodejs.org/en/download) installed.
 
+**Option 1: Run without installing (Recommended for first-time users)**
 ```bash
-# Run immediately
 npx @enfiy/enfiy-code
+```
 
-# Or install globally
+**Option 2: Install globally (Recommended for regular use)**
+```bash
 npm install -g @enfiy/enfiy-code
 enfiy
 ```
@@ -43,77 +45,141 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 
 ## AI Providers
 
-### Cloud Providers
+### Cloud AI (Powerful)
 
-| Provider | Description |
-|---------|-------------|
-| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="24" /> **Google Gemini** | Multimodal AI with strong reasoning capabilities |
-| <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg" width="24" /> **OpenAI GPT** | Popular and versatile language models |
-| <img src="https://avatars.githubusercontent.com/u/108914997?s=200&v=4" width="24" /> **Anthropic Claude** | Industry-leading AI for coding tasks |
-| <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" width="24" /> **HuggingFace** | Access to a wide variety of open-source models |
-| <img src="https://avatars.githubusercontent.com/u/139761605?s=200&v=4" width="24" /> **Mistral AI** | Open-source focused AI models |
+- <img src="./docs/assets/provider/provider-anthropic-claude.png" width="24" height="24" align="left" /> **Anthropic Claude** — Industry‑leading AI for coding tasks
 
----
+- <img src="./docs/assets/provider/provider-openai-gpt.png" width="24" height="24" align="left" /> **OpenAI GPT** — Popular and versatile language models
 
-### Local Providers
+- <img src="./docs/assets/provider/provider-google-gemini.png" width="24" height="24" align="left" /> **Google Gemini** — Multimodal AI with strong reasoning capabilities
 
-| Provider | Description |
-|---------|-------------|
-| <img src="https://ollama.com/public/ollama-mark.svg" width="24" /> **Ollama** | Local model runner with full privacy |
-| <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" width="24" /> **HuggingFace (Local)** | Host and run models locally |
-| 🦙 **llama.cpp** | Efficient local inference in C++ |
-| ⚡ **vLLM** | High-performance inference engine |
-| 🖥️ **Text Generation UI** | Web-based UI for local models (Oobabooga) |
-| 🕹️ **KoboldCpp** | Local model runner with advanced sampling for storytelling |
+- <img src="./docs/assets/provider/provider-mistral-ai.png" width="24" height="24" align="left" /> **Mistral AI** — Open‑source focused AI models
 
+- <img src="./docs/assets/provider/provider-huggingface.png" width="24" height="24" align="left" /> **HuggingFace** — Access to a wide variety of open‑source models (supports both API and local modes)
+
+### Local AI (Private)
+
+- <img src="./docs/assets/provider/provider-ollama.png" width="24" height="24" align="left" /> **Ollama** — Run models locally with full privacy
+
+- <img src="./docs/assets/provider/provider-vllm.png" width="24" height="24" align="left" /> **vLLM** — High‑performance inference engine (coming soon)
 
 ## Core Commands
 
-- `/provider` - Manage AI providers and models
-- `/mcp` - Manage MCP servers and integrations
-- `/tools` - List available development tools
-- `/bug` - Report issues with automatic diagnostics
+Once Enfiy Code is running, use these commands to interact with the AI:
 
-For detailed command documentation, see [CLI Commands](./docs/cli/commands.md).
+- `/provider` - Select AI provider and model
+- `/mcp` - Connect to MCP servers for enhanced capabilities  
+- `/tool` - Access specialized tools and integrations
+- `/help` - Show available commands and usage information
+- `/bug` - Report bugs or issues to the development team
+- Ask questions, edit files, run commands
 
-## Examples
+## Usage Examples
 
+### Basic Usage
+```bash
+# Start Enfiy Code
+enfiy
+
+# Ask questions about your code
+> What does this function do?
+> How can I optimize this database query?
+
+# Request code changes
+> Add error handling to the user authentication
+> Refactor this component to use React hooks
+```
+
+### Project Development
 ```bash
 # Start a new project
 cd my-project/
 enfiy
 > Create a React app with TypeScript and authentication
+> Add a responsive navigation component
+> Set up Jest testing framework
+```
 
-# Analyze existing code
+### Code Analysis
+```bash
+# Analyze existing codebase
+enfiy
 > Review this codebase for security vulnerabilities
+> Identify performance bottlenecks
+> Suggest architectural improvements
+```
 
-# Automate workflows
+### Automation Tasks
+```bash
+# Automate development workflows
+enfiy
 > Write comprehensive tests for the API endpoints
+> Generate documentation for these functions
+> Create deployment scripts for production
 ```
 
 ## Documentation
 
-- [Installation Guide](./docs/installation.md)
-- [CLI Commands](./docs/cli/commands.md)
-- [API Key Configuration](./docs/api-configuration.md)
-- [MCP Integration](./docs/mcp-integration.md)
-- [Privacy & Security](./docs/privacy-security.md)
-- [Troubleshooting](./docs/troubleshooting.md)
+### Getting Started
+- [Installation Guide](./docs/installation.md) – How to install Enfiy Code and get started quickly.
+- [API Key Configuration](./docs/api-configuration.md) – Set up and manage keys for OpenAI, Anthropic, etc.
+
+### Using the CLI
+- [CLI Commands](./docs/cli/commands.md) – Full reference for available commands.
+- [MCP Integration](./docs/mcp-integration.md) – Extend Enfiy Code with Model Context Protocol.
+
+### Security & Support
+- [Privacy & Security](./docs/privacy-security.md) – Learn how your data is protected.
+- [Troubleshooting](./docs/troubleshooting.md) – Common issues and how to resolve them.
 
 ## Development
 
+### Prerequisites for Development
+- Node.js v18 or higher
+- npm or yarn package manager
+- Git
+
+### Setting Up Development Environment
+
+1. **Clone the repository**
 ```bash
 git clone https://github.com/enfiy/enfiy-code.git
 cd enfiy-code
+```
+
+2. **Install dependencies**
+```bash
 npm install
+```
+This will install all required packages listed in `package.json`.
+
+3. **Build the project**
+```bash
 npm run build
+```
+This compiles TypeScript and prepares the application for execution.
+
+4. **Start the development version**
+```bash
 npm start
 ```
+This launches Enfiy Code in development mode.
+
+### Development Commands
+
+- `npm run start` - Start in development mode
+- `npm run debug` - Start with debugging enabled
+- `npm run build` - Build for production
+- `npm run test` - Run test suite
+- `npm run lint` - Check code style and quality
+- `npm run format` - Format code automatically
+- `npm run typecheck` - TypeScript type checking
+- `npm run preflight` - Complete CI pipeline check
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+We welcome contributions to Enfiy Code! Please see our [contributing guidelines](./CONTRIBUTING.md) for more information on how to get started.
 
 ## License
 
-[Apache 2.0 License](./LICENSE)
+Enfiy Code is licensed under the [Apache 2.0 License](./LICENSE).
