@@ -17,6 +17,7 @@ export enum ProviderType {
   // Local AI Providers
   OLLAMA = 'ollama',
   HUGGINGFACE = 'huggingface',
+  VLLM = 'vllm',
   
   // Cloud AI Providers
   OPENAI = 'openai',

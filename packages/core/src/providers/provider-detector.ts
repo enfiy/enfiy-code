@@ -14,7 +14,7 @@
 import { ProviderType } from './types.js';
 
 export interface DetectedProvider {
-  type: ProviderType | 'lmstudio';
+  type: ProviderType;
   available: boolean;
   defaultModel?: string;
   reason?: string;
@@ -55,12 +55,12 @@ export async function detectLocalProviders(): Promise<DetectedProvider[]> {
     });
   }
 
-  // Detect LM Studio (default port: 1234)
+  // Detect vLLM (default port: 8000)
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
     
-    const response = await fetch('http://localhost:1234/v1/models', {
+    const response = await fetch('http://localhost:8000/v1/models', {
       method: 'GET',
       signal: controller.signal,
     });
@@ -68,7 +68,7 @@ export async function detectLocalProviders(): Promise<DetectedProvider[]> {
     clearTimeout(timeoutId);
     if (response.ok) {
       providers.push({
-        type: 'lmstudio' as const,
+        type: ProviderType.VLLM,
         available: true,
         defaultModel: 'local-model',
         reason: 'Running'
@@ -76,7 +76,7 @@ export async function detectLocalProviders(): Promise<DetectedProvider[]> {
     }
   } catch {
     providers.push({
-      type: 'lmstudio' as const,
+      type: ProviderType.VLLM,
       available: false,
       reason: 'Not running'
     });
