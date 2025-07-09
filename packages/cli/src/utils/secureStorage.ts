@@ -453,7 +453,7 @@ export function validateApiKey(provider: string, apiKey: string): boolean {
   }
   
   // For local providers like Ollama, no API key required
-  const localProviders = ['ollama', 'llamacpp', 'vllm', 'textgenui', 'koboldcpp', 'lmstudio'];
+  const localProviders = ['ollama', 'vllm', 'huggingface'];
   if (localProviders.includes(provider.toLowerCase())) {
     return true; // No API key validation needed for local providers
   }

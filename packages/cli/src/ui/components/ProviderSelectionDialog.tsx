@@ -93,7 +93,7 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
       id: 'local' as const, 
       name: t('localAI'), 
       description: t('localAIDescription'),
-      providers: [ProviderType.OLLAMA, ProviderType.HUGGINGFACE]
+      providers: [ProviderType.OLLAMA, ProviderType.HUGGINGFACE, ProviderType.VLLM]
     },
     { 
       id: 'cloud' as const, 
@@ -158,6 +158,8 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
         return 'Ollama';
       case ProviderType.HUGGINGFACE:
         return isLocal ? 'HuggingFace' : 'HuggingFace';
+      case ProviderType.VLLM:
+        return 'vLLM';
       case ProviderType.ANTHROPIC:
         return 'Anthropic';
       case ProviderType.OPENAI:
@@ -204,6 +206,8 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
         return isLocal 
           ? 'Open source AI ecosystem for local execution'
           : 'Open source AI ecosystem with cloud access';
+      case ProviderType.VLLM:
+        return 'High-performance inference engine for local models';
       case ProviderType.ANTHROPIC:
         return 'Claude API - Superior reasoning and safety';
       case ProviderType.OPENAI:

@@ -185,6 +185,7 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
     const providerCategories: Record<ProviderType, string> = {
       [ProviderType.OLLAMA]: t('localAI'),
       [ProviderType.HUGGINGFACE]: t('localAI'),
+      [ProviderType.VLLM]: t('localAI'),
       [ProviderType.ANTHROPIC]: t('cloudAI'),
       [ProviderType.OPENAI]: t('cloudAI'),
       [ProviderType.GEMINI]: t('cloudAI'),
@@ -533,7 +534,7 @@ ${t('helpMessage')}`,
         hasApiKey = hasStoredCredentials(settings.merged.selectedProvider);
         
         // For local providers, API key is not required
-        const localProviders = ['ollama', 'llamacpp', 'vllm', 'textgenui', 'koboldcpp', 'lmstudio'];
+        const localProviders = ['ollama', 'vllm', 'huggingface'];
         if (localProviders.includes(settings.merged.selectedProvider.toLowerCase())) {
           hasApiKey = true;
         }
