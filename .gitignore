@@ -36,3 +36,47 @@ packages/*/coverage/
 # Generated files
 packages/cli/src/generated/
 .integration-tests/
+
+# TypeScript declaration files and sourcemaps from compiled JS
+packages/cli/src/utils/*.d.ts
+packages/cli/src/utils/*.js
+packages/cli/src/utils/*.js.map
+packages/core/src/**/*.d.ts
+packages/core/src/**/*.js
+packages/core/src/**/*.js.map
+
+# Temporary and cache files
+*.log
+*.tmp
+*.temp
+.cache/
+tmp/
+
+# Editor and IDE files
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build outputs
+packages/*/lib/
+packages/*/build/
+
+# Lock files (keep only one)
+yarn.lock
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Debug files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
