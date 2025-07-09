@@ -21,6 +21,42 @@ With Enfiy Code you can:
   Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
 - Ground your queries with web search capabilities when using supported AI providers.
 
+## ⚠️ Experimental Technology Disclaimer
+
+Enfiy Code is an experimental AI-powered development tool that integrates with various AI providers and services. Please be aware of the following:
+
+- **Experimental Nature**: This software is under active development and may contain bugs, unexpected behavior, or incomplete features.
+- **AI Model Limitations**: AI responses may be incorrect, biased, or inappropriate. Always review and validate AI-generated code and suggestions.
+- **Data Security**: While we implement security measures, be cautious when working with sensitive codebases or proprietary information.
+- **Third-Party Dependencies**: Enfiy Code integrates with external AI services and tools. We are not responsible for the availability, performance, or policies of these third-party services.
+- **Breaking Changes**: As an experimental tool, future updates may introduce breaking changes without extensive deprecation periods.
+
+**Use at your own risk and discretion. Always backup your code and review AI-generated changes before implementation.**
+
+## Why Enfiy Code?
+
+In the rapidly evolving landscape of software development, developers face increasing complexity in managing large codebases, integrating multiple tools, and keeping up with diverse technologies. Enfiy Code addresses these challenges by providing:
+
+### 🎯 **Universal AI Integration**
+- **One Tool, Many Models**: Switch seamlessly between different AI providers (OpenAI, Anthropic, Google, Mistral, local models) without changing your workflow.
+- **Best-in-Class Selection**: Choose the most appropriate AI model for your specific task, from code generation to analysis to documentation.
+
+### 🔧 **Intelligent Code Understanding**
+- **Context-Aware Analysis**: Understand large codebases with AI that can process thousands of lines of code and maintain context across multiple files.
+- **Smart Suggestions**: Get relevant suggestions based on your project's architecture, coding patterns, and dependencies.
+
+### 🚀 **Workflow Acceleration**
+- **Automated Tasks**: Reduce repetitive work with AI-powered automation for testing, documentation, refactoring, and deployment.
+- **Rapid Prototyping**: Build applications faster with AI assistance for boilerplate code, architecture decisions, and implementation strategies.
+
+### 🔒 **Privacy and Control**
+- **Local and Cloud Options**: Choose between cloud-based AI services for power or local models for complete privacy.
+- **Secure Storage**: API keys and sensitive data are encrypted and stored locally with industry-standard security practices.
+
+### 🛠️ **Extensible Architecture**
+- **MCP Integration**: Connect to any tool or service through the Model Context Protocol (MCP) for unlimited extensibility.
+- **Custom Tools**: Build and integrate custom tools that fit your specific development workflow.
+
 ## Quickstart
 
 1. **Prerequisites:** Ensure you have [Node.js version 18](https://nodejs.org/en/download) or higher installed.
@@ -112,6 +148,136 @@ If you prefer to configure API keys manually or need advanced configuration:
    ```
 
 5. **For other providers**: See the [authentication](./docs/cli/authentication.md) guide for configuration details.
+
+## Core Commands
+
+### `/provider` - AI Provider Management
+
+The `/provider` command allows you to manage AI providers and switch between different models:
+
+```bash
+# List available providers
+/provider
+
+# Switch to a specific provider
+/provider anthropic
+
+# List models for current provider
+/provider models
+
+# Switch to a specific model
+/provider model claude-3-sonnet-20240229
+
+# Show current provider status
+/provider status
+
+# Configure provider settings
+/provider config
+```
+
+**Provider Management Features:**
+- **Dynamic Switching**: Change AI providers without restarting the application
+- **Model Selection**: Choose from available models for each provider
+- **Configuration**: Set up API keys, endpoints, and provider-specific settings
+- **Status Monitoring**: Check connection status and model availability
+- **Fallback Support**: Automatically switch to backup providers if primary fails
+
+### `/mcp` - Model Context Protocol Integration
+
+The `/mcp` command manages MCP (Model Context Protocol) servers for extending Enfiy Code's capabilities:
+
+```bash
+# List installed MCP servers
+/mcp list
+
+# Install a new MCP server
+/mcp install <server-name>
+
+# Start/Stop MCP servers
+/mcp start <server-name>
+/mcp stop <server-name>
+
+# Configure MCP server settings
+/mcp config <server-name>
+
+# Show MCP server status
+/mcp status
+
+# Enable/disable tool descriptions
+/mcp desc
+/mcp nodesc
+```
+
+**MCP Integration Features:**
+- **Extensible Tools**: Connect to databases, APIs, cloud services, and more
+- **Custom Servers**: Build and integrate your own MCP servers
+- **Real-time Communication**: Bi-directional communication with external tools
+- **Security**: Secure communication protocols and permission management
+- **Popular MCP Servers**: File system, Git, database, web search, and many more
+
+### Tools - Built-in Development Tools
+
+Enfiy Code includes a comprehensive set of built-in tools for development tasks:
+
+#### **File Operations**
+```bash
+# Read files with syntax highlighting
+> Read the main.py file and explain its structure
+
+# Edit multiple files simultaneously
+> Update both the API endpoint and the frontend component to add user authentication
+
+# Create new files and directories
+> Create a new React component for user settings
+```
+
+#### **Code Analysis**
+```bash
+# Analyze code quality and suggest improvements
+> Review this codebase for security vulnerabilities
+
+# Generate documentation
+> Create comprehensive documentation for this API
+
+# Refactor code
+> Refactor this function to use modern JavaScript features
+```
+
+#### **Version Control**
+```bash
+# Git operations
+> Create a feature branch for the new login system
+
+# Commit and push changes
+> Commit these changes with an appropriate message
+
+# Handle merge conflicts
+> Help me resolve this merge conflict
+```
+
+#### **Testing and Debugging**
+```bash
+# Generate tests
+> Write unit tests for this component
+
+# Debug issues
+> Help me debug this error in the console
+
+# Performance analysis
+> Analyze the performance of this algorithm
+```
+
+#### **System Integration**
+```bash
+# Shell commands
+> Run the test suite and show me the results
+
+# Environment management
+> Set up the development environment for this project
+
+# Build and deployment
+> Build the project and deploy it to staging
+```
 
 ## Examples
 
@@ -206,6 +372,112 @@ Use MCP servers to integrate your local system tools with your enterprise collab
 - **Multi-file editing** - Make changes across multiple files simultaneously
 - **Code analysis** - Understand complex codebases with AI-powered insights
 - **Workflow automation** - Automate repetitive coding tasks
+
+## Bug Reports and Issues
+
+We appreciate your help in improving Enfiy Code! If you encounter any bugs or issues, please use the following command within the application:
+
+```bash
+/bug "Description of the issue you encountered"
+```
+
+This will:
+- Collect relevant system information
+- Capture logs and error details
+- Create a formatted bug report
+- Provide guidance on next steps
+
+### Alternative Reporting Methods
+
+If you cannot use the `/bug` command, you can also:
+
+1. **GitHub Issues**: Report bugs at [https://github.com/enfiy-ecosystem/enfiy-code/issues](https://github.com/enfiy-ecosystem/enfiy-code/issues)
+2. **Include the following information**:
+   - Enfiy Code version (`enfiy --version`)
+   - Operating system and version
+   - Node.js version
+   - Steps to reproduce the issue
+   - Expected vs actual behavior
+   - Any error messages or logs
+
+### Security Issues
+
+For security-related issues, please do not create public GitHub issues. Instead:
+- Use the `/bug` command with security-related details
+- Contact us directly at security@enfiy.dev
+- Follow responsible disclosure practices
+
+## Data Collection, Use, and Retention
+
+Enfiy Code is designed with privacy and security in mind. Here's what you need to know about data handling:
+
+### What Data We Collect
+
+#### **Local Data (Stored on Your Device)**
+- **Configuration Settings**: Theme preferences, provider selections, and application settings
+- **API Keys**: Encrypted and stored locally in your home directory (`~/.enfiy/`)
+- **Usage Logs**: Local debugging information and error logs
+- **Project Context**: Temporary context about your current project (not transmitted unless explicitly requested)
+
+#### **Telemetry Data (Optional)**
+- **Usage Statistics**: Command usage patterns and feature adoption (anonymized)
+- **Error Reports**: Crash reports and error information when using `/bug` command
+- **Performance Metrics**: Application performance and response times
+
+### How We Use Your Data
+
+- **Improve Enfiy Code**: Identify common issues and optimize performance
+- **Debug Issues**: Help troubleshoot problems when you report bugs
+- **Feature Development**: Understand which features are most valuable to users
+- **Security**: Detect and prevent misuse of the service
+
+### Data Transmission
+
+#### **AI Provider Communications**
+- **Your Code**: Sent to selected AI providers (OpenAI, Anthropic, Google, etc.) for processing
+- **Context Information**: Project structure and file contents when explicitly requested
+- **Your Choice**: You control which AI provider to use and what data to share
+
+#### **MCP Server Communications**
+- **Tool Interactions**: Data shared with MCP servers based on your commands
+- **External Services**: Third-party MCP servers may have their own data policies
+
+### Data Retention
+
+- **Local Data**: Stored indefinitely on your device until manually deleted
+- **Telemetry**: Anonymized usage data retained for up to 2 years
+- **Bug Reports**: Stored for up to 1 year or until issue resolution
+- **AI Provider Data**: Subject to each provider's retention policies
+
+### Your Data Rights
+
+- **Opt-Out**: Disable telemetry in settings (`/settings telemetry false`)
+- **Local Control**: All configuration and keys stored locally
+- **Data Deletion**: Remove all local data by deleting `~/.enfiy/` directory
+- **Transparency**: View collected data through debug commands
+
+### Data Security
+
+- **Encryption**: API keys encrypted using AES-256-GCM
+- **Local Storage**: No sensitive data stored on our servers
+- **Secure Transmission**: All communications use TLS encryption
+- **Access Control**: Strict access controls on any collected telemetry
+
+### Third-Party Data Policies
+
+When using external AI providers or MCP servers, you are also subject to their privacy policies:
+
+- **OpenAI**: [OpenAI Privacy Policy](https://openai.com/privacy)
+- **Anthropic**: [Anthropic Privacy Policy](https://www.anthropic.com/privacy)
+- **Google**: [Google Privacy Policy](https://policies.google.com/privacy)
+- **Local Models**: No external data transmission
+
+### Contact Information
+
+For privacy-related questions or concerns:
+- Email: privacy@enfiy.dev
+- Use the `/bug` command for privacy-related issues
+- GitHub: [Privacy Policy Issues](https://github.com/enfiy-ecosystem/enfiy-code/issues)
 
 ## Contributing
 
