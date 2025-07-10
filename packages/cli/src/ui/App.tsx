@@ -1191,6 +1191,7 @@ ${t('helpMessage')}`,
                 constrainHeight ? availableTerminalHeight : undefined
               }
               terminalWidth={mainAreaWidth}
+              inputWidth={inputWidth}
             />
           ) : showAPISettings ? (
             <APISettingsDialog
@@ -1206,6 +1207,7 @@ ${t('helpMessage')}`,
               terminalWidth={mainAreaWidth}
               isManaging={isManagingProvider}
               forceAuthSelection={!isManagingProvider}
+              inputWidth={inputWidth}
             />
           ) : showProviderSetup && setupProvider ? (
             <ProviderSetupDialog

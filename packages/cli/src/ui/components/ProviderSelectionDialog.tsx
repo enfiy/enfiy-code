@@ -26,6 +26,7 @@ interface ProviderSelectionDialogProps {
   onOpenAPISettings?: () => void;
   _availableTerminalHeight?: number;
   terminalWidth: number;
+  inputWidth?: number;
 }
 
 type SelectionMode = 'category' | 'provider' | 'model' | 'api-settings';
@@ -38,6 +39,7 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
   onOpenAPISettings,
   _availableTerminalHeight,
   terminalWidth,
+  inputWidth,
 }) => {
   const [mode, setMode] = useState<SelectionMode>('category');
   const [selectedCategory, setSelectedCategory] = useState<'local' | 'cloud' | 'none' | null>(null);
@@ -370,6 +372,9 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
   });
 
 
+  // Use inputWidth if provided, otherwise fallback to a smaller width
+  const dialogWidth = inputWidth ? Math.min(inputWidth + 8, terminalWidth - 4) : Math.min(80, terminalWidth - 4);
+  
   return (
     <Box
       flexDirection="column"
@@ -377,7 +382,7 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
       borderColor={Colors.BorderGray}
       paddingX={2}
       paddingY={1}
-      width={terminalWidth - 4}
+      width={dialogWidth}
     >
       <Box marginBottom={1} justifyContent="center">
         <Text bold color={Colors.AccentBlue}>

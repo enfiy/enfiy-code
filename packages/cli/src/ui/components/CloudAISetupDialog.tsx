@@ -24,6 +24,7 @@ interface CloudAISetupDialogProps {
   terminalWidth: number;
   isManaging?: boolean;
   forceAuthSelection?: boolean;
+  inputWidth?: number;
 }
 
 interface CloudAIConfig {
@@ -51,6 +52,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
   terminalWidth,
   isManaging = false,
   forceAuthSelection = false,
+  inputWidth,
 }) => {
   const [step, setStep] = useState<SetupStep>(() => {
     console.log('CloudAISetupDialog initial step determination:', {
@@ -580,7 +582,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
   }
   
   const renderContent = () => {
-    const width = Math.min(terminalWidth - 4, 80);
+    const width = inputWidth ? Math.min(inputWidth, 80) : Math.min(terminalWidth - 4, 80);
 
     switch (step) {
       case 'auth-method-selection':
@@ -946,7 +948,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       borderColor={Colors.BorderGray}
       paddingX={2}
       paddingY={1}
-      width={terminalWidth - 4}
+      width={inputWidth ? Math.min(inputWidth + 8, terminalWidth - 4) : terminalWidth - 4}
     >
       <Box marginBottom={1} justifyContent="center">
         <Text bold color={Colors.AccentBlue}>
