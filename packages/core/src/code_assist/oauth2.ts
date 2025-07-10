@@ -90,7 +90,36 @@ export async function getOauthClient(): Promise<OAuth2Client> {
   
   try {
     console.log('Attempting to open URL with open package:', webLogin.authUrl);
-    await open(webLogin.authUrl);
+    
+    if (isWSL) {
+      console.log('🔧 WSL detected - trying Windows browser commands...');
+      try {
+        const { spawn } = await import('child_process');
+        // Try PowerShell to open browser from WSL
+        const result = spawn('powershell.exe', ['Start-Process', `'${webLogin.authUrl}'`], { stdio: 'inherit' });
+        result.on('error', (err) => {
+          console.log('PowerShell browser command failed:', err.message);
+          throw err;
+        });
+        console.log('✅ Browser opened successfully via PowerShell');
+      } catch (wslError) {
+        console.log('WSL PowerShell browser failed, trying wslview...');
+        try {
+          const { spawn } = await import('child_process');
+          const result = spawn('wslview', [webLogin.authUrl], { stdio: 'inherit' });
+          result.on('error', (err) => {
+            console.log('wslview command failed:', err.message);
+            throw err;
+          });
+          console.log('✅ Browser opened successfully via wslview');
+        } catch (wslviewError) {
+          console.log('wslview failed, falling back to open package...');
+          await open(webLogin.authUrl);
+        }
+      }
+    } else {
+      await open(webLogin.authUrl);
+    }
     console.log('✅ Browser opened successfully');
   } catch (error) {
     console.log('⚠️ Failed to open browser automatically');
