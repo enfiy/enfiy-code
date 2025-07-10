@@ -13,7 +13,7 @@
 
 import * as Diff from 'diff';
 
-export const DEFAULT_DIFF_OPTIONS: Diff.PatchOptions = {
+export const DEFAULT_DIFF_OPTIONS: any = {
   context: 3,
   ignoreWhitespace: true,
 };

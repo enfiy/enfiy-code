@@ -71,6 +71,8 @@ export const Footer: React.FC<FooterProps> = ({
     if (!apiKey) return '';
     
     // Check for subscription authentication
+    if (apiKey.includes('CLAUDE_PRO_OAUTH')) return ' (Pro)';
+    if (apiKey.includes('CLAUDE_MAX_OAUTH')) return ' (Max)';
     if (apiKey.includes('CLAUDE_PRO_SUBSCRIPTION')) return ' (Pro)';
     if (apiKey.includes('CLAUDE_MAX_SUBSCRIPTION')) return ' (Max)';
     if (apiKey === 'OAUTH_AUTHENTICATED') return ' (OAuth)';

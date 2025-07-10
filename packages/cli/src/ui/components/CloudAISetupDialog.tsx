@@ -15,7 +15,7 @@ import {
   validateApiKey 
 } from '../../utils/secureStorage.js';
 import { debugLogger } from '../../utils/debugLogger.js';
-import { getOauthClient } from '@enfiy/core';
+import { getOauthClient, getClaudeOAuthClient } from '@enfiy/core';
 
 interface CloudAISetupDialogProps {
   provider: ProviderType;
@@ -298,15 +298,19 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     setValidationError(null);
     
     try {
-      // This would integrate with Claude.ai authentication in real implementation
-      console.log('Opening Claude.ai for authentication...');
+      console.log('Opening Claude.ai for OAuth authentication...');
       
-      // Mock authentication process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Use Claude OAuth authentication
+      const oauthResponse = await getClaudeOAuthClient();
+      console.log('Claude OAuth authentication successful:', !!oauthResponse);
       
-      // For demo purposes, we'll store a special token indicating subscription auth
-      const subscriptionToken = `CLAUDE_${planType.toUpperCase()}_SUBSCRIPTION`;
-      storeApiKey(provider, subscriptionToken);
+      if (!oauthResponse || !oauthResponse.access_token) {
+        throw new Error('Failed to obtain Claude OAuth token');
+      }
+      
+      // Store the OAuth token with plan type indicator
+      const subscriptionToken = `CLAUDE_${planType.toUpperCase()}_OAUTH:${oauthResponse.access_token}`;
+      storeApiKey(provider, subscriptionToken, undefined, 'oauth');
       
       console.log(`Claude ${planType} subscription authentication successful`);
       
@@ -316,9 +320,9 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         apiKey: subscriptionToken
       });
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Claude subscription authentication failed:', error);
-      setValidationError(`Failed to authenticate with Claude ${planType} subscription: ${error}`);
+      setValidationError(`Failed to authenticate with Claude ${planType} subscription: ${error?.message || error}`);
     } finally {
       setIsAuthenticating(false);
     }
