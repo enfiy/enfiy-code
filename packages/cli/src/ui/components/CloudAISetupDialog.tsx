@@ -15,7 +15,7 @@ import {
   validateApiKey 
 } from '../../utils/secureStorage.js';
 import { debugLogger } from '../../utils/debugLogger.js';
-import { getOauthClient, getClaudeOAuthClient } from '@enfiy/core';
+import { getOauthClient, getClaudeOAuthClient, getHuggingFaceOAuthClient } from '@enfiy/core';
 
 interface CloudAISetupDialogProps {
   provider: ProviderType;
@@ -105,8 +105,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         ];
       case ProviderType.ANTHROPIC:
         return [
-          { id: 'claude-subscription', name: 'Claude Pro/Max', description: 'Sign in with your Claude.ai account' },
-          { id: 'api-key', name: 'API Key', description: 'Use Anthropic API key from console' }
+          { id: 'api-key', name: 'API Key', description: 'Use Anthropic API key from console.anthropic.com' }
         ];
       case ProviderType.OPENAI:
         return [
@@ -118,6 +117,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         ];
       case ProviderType.HUGGINGFACE:
         return [
+          { id: 'oauth', name: 'HuggingFace Account', description: 'Sign in with your HuggingFace account' },
           { id: 'api-key', name: 'API Key', description: 'Use HuggingFace token from huggingface.co' }
         ];
       default:
@@ -342,6 +342,8 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         try {
           console.log('About to call getOauthClient()...');
           console.log('Browser should open for authentication...');
+          console.log('Current platform:', process.platform);
+          console.log('WSL environment:', process.env.WSL_DISTRO_NAME, process.env.WSL_INTEROP);
           
           // Create a promise that resolves when we have the auth URL
           const oauthClient = await getOauthClient();
@@ -369,6 +371,33 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             stack: oauthError?.stack
           });
           throw new Error(`OAuth initialization failed: ${oauthError?.message || oauthError}`);
+        }
+      } else if (provider === ProviderType.HUGGINGFACE && authMethod === 'oauth') {
+        console.log('Initializing HuggingFace OAuth...');
+        
+        try {
+          console.log('About to call getHuggingFaceOAuthClient()...');
+          console.log('Browser should open for HuggingFace authentication...');
+          
+          const oauthResponse = await getHuggingFaceOAuthClient();
+          console.log('HuggingFace OAuth authentication successful:', !!oauthResponse);
+          
+          if (!oauthResponse || !oauthResponse.access_token) {
+            throw new Error('Failed to obtain HuggingFace OAuth token');
+          }
+          
+          // Store OAuth credentials
+          storeApiKey(provider, `HF_OAUTH:${oauthResponse.access_token}`, undefined, 'oauth');
+          console.log('HuggingFace OAuth credentials stored');
+          
+          setStep('complete');
+          onComplete({
+            type: provider,
+            apiKey: `HF_OAUTH:${oauthResponse.access_token}`,
+          });
+        } catch (oauthError: any) {
+          console.error('HuggingFace OAuth authentication failed:', oauthError);
+          throw new Error(`HuggingFace OAuth initialization failed: ${oauthError?.message || oauthError}`);
         }
       } else if (provider === ProviderType.ANTHROPIC && authMethod === 'claude-max') {
         console.log('Checking Claude Max subscription...');

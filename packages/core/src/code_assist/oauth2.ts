@@ -89,10 +89,12 @@ export async function getOauthClient(): Promise<OAuth2Client> {
   }
   
   try {
+    console.log('Attempting to open URL with open package:', webLogin.authUrl);
     await open(webLogin.authUrl);
     console.log('✅ Browser opened successfully');
   } catch (error) {
     console.log('⚠️ Failed to open browser automatically');
+    console.error('Browser open error:', error);
     console.log('Please manually copy and paste this URL into your browser:');
     console.log('');
     console.log(`🔗 ${webLogin.authUrl}`);
