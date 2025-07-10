@@ -75,14 +75,15 @@ import { useTextBuffer } from './components/shared/text-buffer.js';
 import * as fs from 'fs';
 import { UpdateNotification } from './components/UpdateNotification.js';
 import { checkForUpdates } from './utils/updateCheck.js';
-import ansiEscapes from 'ansi-escapes';
 import { OverflowProvider } from './contexts/OverflowContext.js';
 import { ShowMoreLines } from './components/ShowMoreLines.js';
 import { PrivacyNotice } from './privacy/PrivacyNotice.js';
-import { ProviderSelectionDialog } from './components/ProviderSelectionDialog.js';
-import { ProviderSetupDialog } from './components/ProviderSetupDialog.js';
-import { CloudAISetupDialog } from './components/CloudAISetupDialog.js';
-import { APISettingsDialog } from './components/APISettingsDialog.js';
+import { 
+  ProviderSelectionDialog,
+  ProviderSetupDialog,
+  CloudAISetupDialog,
+  APISettingsDialog
+} from './components/LazyComponents.js';
 import { ProviderType, AuthType } from '@enfiy/core';
 
 // Local interface for provider setup dialog compatibility
@@ -129,7 +130,7 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
   const [staticNeedsRefresh, setStaticNeedsRefresh] = useState(false);
   const [staticKey, setStaticKey] = useState(0);
   const refreshStatic = useCallback(() => {
-    stdout.write(ansiEscapes.clearTerminal);
+    stdout.write('\x1b[2J\x1b[H');
     setStaticKey((prev) => prev + 1);
   }, [setStaticKey, stdout]);
 
@@ -594,16 +595,6 @@ ${t('helpMessage')}`,
         
         if (isFirstRun) {
           setIsFirstRun(false);
-          
-          // Show a brief welcome message with current configuration
-          const providerName = settings.merged.selectedProvider?.toUpperCase() || 'Unknown';
-          addItem(
-            {
-              type: MessageType.INFO,
-              text: `✓ Using ${providerName} | Model: ${settings.merged.selectedModel}`,
-            },
-            Date.now(),
-          );
         }
       }
     };
@@ -1054,14 +1045,14 @@ ${t('helpMessage')}`,
       </Box>
     );
   }
-  const mainAreaWidth = Math.floor(terminalWidth * 0.9);
+  const mainAreaWidth = Math.floor(terminalWidth * 0.95);
   const debugConsoleMaxHeight = Math.floor(Math.max(terminalHeight * 0.2, 5));
   // Arbitrary threshold to ensure that items in the static area are large
   // enough but not too large to make the terminal hard to use.
   const staticAreaMaxItemHeight = Math.max(terminalHeight * 4, 100);
   return (
     <StreamingContext.Provider value={streamingState}>
-      <Box flexDirection="column" marginBottom={1} width="90%">
+      <Box flexDirection="column" marginBottom={0} width="95%">
         {/*
          * The Static component is an Ink intrinsic in which there can only be 1 per application.
          * Because of this restriction we're hacking it slightly by having a 'header' item here to
@@ -1357,6 +1348,7 @@ ${t('helpMessage')}`,
               sessionStats.currentResponse.candidatesTokenCount
             }
             totalTokenCount={sessionStats.currentResponse.totalTokenCount}
+            isSlashCommand={buffer.text.trim().startsWith('/')}
           />
         </Box>
       </Box>

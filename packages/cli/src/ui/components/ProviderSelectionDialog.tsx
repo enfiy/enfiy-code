@@ -513,11 +513,12 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
           ) : (
             availableModels.map((model, index) => (
               <Box key={model.id} paddingLeft={1}>
-                <Text
-                  color={index === highlightedIndex ? Colors.AccentBlue : Colors.Foreground}
-                  bold={index === highlightedIndex}
-                >
-                  {index === highlightedIndex ? '> ' : '  '}{model.name}   <Text color={index === highlightedIndex ? Colors.Comment : Colors.Gray}>{model.description} ({model.contextLength.toLocaleString()}t | {model.capabilities.join(', ')})</Text>
+                <Text color={index === highlightedIndex ? Colors.AccentBlue : Colors.Foreground}>
+                  {index === highlightedIndex ? '> ' : '  '}
+                  <Text bold={true}>{model.name}</Text>
+                  <Text color={index === highlightedIndex ? Colors.Comment : Colors.Gray}>
+                    {' '}{model.description} ({model.contextLength.toLocaleString()}t | {model.capabilities.join(', ')})
+                  </Text>
                 </Text>
               </Box>
             ))

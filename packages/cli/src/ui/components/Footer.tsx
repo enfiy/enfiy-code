@@ -14,10 +14,11 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
-import { shortenPath, tildeifyPath, tokenLimit } from '@enfiy/core';
+import { shortenPath, tildeifyPath, tokenLimit, ProviderType } from '@enfiy/core';
 import { ConsoleSummaryDisplay } from './ConsoleSummaryDisplay.js';
 import process from 'node:process';
 import { MemoryUsageDisplay } from './MemoryUsageDisplay.js';
+import { getApiKey } from '../../utils/secureStorage.js';
 
 interface FooterProps {
   model: string;
@@ -51,34 +52,51 @@ export const Footer: React.FC<FooterProps> = ({
   const limit = tokenLimit(model);
   const percentage = totalTokenCount / limit;
 
-  // Model display logic
+  // Get authentication type for current model
+  const getAuthType = (modelName: string): string => {
+    if (!modelName) return '';
+    
+    let provider: ProviderType | null = null;
+    if (modelName.includes('claude') || modelName.includes('anthropic')) {
+      provider = ProviderType.ANTHROPIC;
+    } else if (modelName.includes('gemini')) {
+      provider = ProviderType.GEMINI;
+    } else if (modelName.includes('gpt')) {
+      provider = ProviderType.OPENAI;
+    }
+    
+    if (!provider) return '';
+    
+    const apiKey = getApiKey(provider);
+    if (!apiKey) return '';
+    
+    // Check for subscription authentication
+    if (apiKey.includes('CLAUDE_PRO_SUBSCRIPTION')) return ' (Pro)';
+    if (apiKey.includes('CLAUDE_MAX_SUBSCRIPTION')) return ' (Max)';
+    if (apiKey === 'OAUTH_AUTHENTICATED') return ' (OAuth)';
+    
+    // Regular API key
+    return ' (API)';
+  };
+
+  // Model display logic with authentication type
+  const authType = getAuthType(model);
   const modelDisplay = !model ? (
     <Text color={Colors.Gray}>AI not selected</Text>
   ) : model.includes('llama') || model.includes('mistral') || model.includes('phi') || model.includes('qwen') ? (
     <Text color={Colors.AccentBlue}>[Local] {model}</Text>
   ) : model.includes('gemini') || model.includes('gpt') || model.includes('claude') || model.includes('anthropic') ? (
-    <Text color={Colors.AccentBlue}>[Cloud] {model}</Text>
+    <Text color={Colors.AccentBlue}>[Cloud] {model}{authType}</Text>
   ) : (
-    <Text color={Colors.AccentBlue}>{model}</Text>
+    <Text color={Colors.AccentBlue}>{model}{authType}</Text>
   );
 
   return (
     <Box flexDirection="column" width="100%">
-      {/* Model Status at top right */}
-      <Box justifyContent="space-between" width="100%" marginBottom={1}>
-        <Box flexGrow={1} />
-        <Box alignItems="center">
-          {modelDisplay}
-          <Text color={Colors.Gray}>
-            {' '}({((1 - percentage) * 100).toFixed(0)}% context left)
-          </Text>
-        </Box>
-      </Box>
-
-      {/* Details section - hidden when slash command is active */}
-      {!isSlashCommand && (
-        <Box justifyContent="space-between" width="100%" marginBottom={1}>
-          {/* Left: Project info */}
+      {/* First line: Directory info and Model status */}
+      <Box justifyContent="space-between" width="100%">
+        {/* Left: Project info - hidden when slash command is active */}
+        {!isSlashCommand ? (
           <Box alignItems="center">
             <Text color={Colors.LightBlue}>
               {shortenPath(tildeifyPath(targetDir), 40)}
@@ -89,27 +107,8 @@ export const Footer: React.FC<FooterProps> = ({
                 {' '}{debugMessage || '--debug'}
               </Text>
             )}
-          </Box>
 
-          {/* Right: Sandbox and additional info */}
-          <Box alignItems="center">
-            {/* Sandbox info */}
-            {process.env.SANDBOX && process.env.SANDBOX !== 'sandbox-exec' ? (
-              <Text color="green">
-                {process.env.SANDBOX.replace(/^gemini-(?:cli-)?/, '')}
-              </Text>
-            ) : process.env.SANDBOX === 'sandbox-exec' ? (
-              <Text color={Colors.AccentYellow}>
-                MacOS Seatbelt{' '}
-                <Text color={Colors.Gray}>({process.env.SEATBELT_PROFILE})</Text>
-              </Text>
-            ) : (
-              <Text color={Colors.AccentYellow}>
-                isolated environment <Text color={Colors.Gray}>(recommended)</Text>
-              </Text>
-            )}
-
-            {/* Corgi mode */}
+            {/* Additional info on same line */}
             {corgiMode && (
               <>
                 <Text color={Colors.Gray}> | </Text>
@@ -135,6 +134,38 @@ export const Footer: React.FC<FooterProps> = ({
                 <Text color={Colors.Gray}> | </Text>
                 <MemoryUsageDisplay />
               </>
+            )}
+          </Box>
+        ) : (
+          <Box flexGrow={1} />
+        )}
+
+        {/* Right: Model status */}
+        <Box alignItems="center">
+          {modelDisplay}
+          <Text color={Colors.Gray}>
+            {' '}({((1 - percentage) * 100).toFixed(0)}% context left)
+          </Text>
+        </Box>
+      </Box>
+
+      {/* Second line: Environment info (right-aligned) - hidden when slash command is active */}
+      {!isSlashCommand && (
+        <Box justifyContent="flex-end" width="100%">
+          <Box alignItems="center">
+            {process.env.SANDBOX && process.env.SANDBOX !== 'sandbox-exec' ? (
+              <Text color="green">
+                {process.env.SANDBOX.replace(/^gemini-(?:cli-)?/, '')}
+              </Text>
+            ) : process.env.SANDBOX === 'sandbox-exec' ? (
+              <Text color={Colors.AccentYellow}>
+                MacOS Seatbelt{' '}
+                <Text color={Colors.Gray}>({process.env.SEATBELT_PROFILE})</Text>
+              </Text>
+            ) : (
+              <Text color={Colors.AccentYellow}>
+                isolated environment <Text color={Colors.Gray}>(recommended)</Text>
+              </Text>
             )}
           </Box>
         </Box>

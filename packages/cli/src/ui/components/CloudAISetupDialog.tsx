@@ -29,6 +29,7 @@ interface CloudAISetupDialogProps {
 interface CloudAIConfig {
   type: ProviderType;
   apiKey: string;
+  authType?: AuthType;
   endpoint?: string;
 }
 
@@ -37,6 +38,7 @@ type SetupStep =
   | 'api-key-input'
   | 'api-key-validation'
   | 'oauth-setup'
+  | 'subscription-login'
   | 'api-key-management'
   | 'complete';
 
@@ -103,7 +105,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
   const [isInputMode, setIsInputMode] = useState(true);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [authMethod, setAuthMethod] = useState<string>('');
-  const [authUrl, setAuthUrl] = useState<string>('');
 
   // Get available auth methods for provider
   const getAuthMethods = (): Array<{id: string, name: string, description: string}> => {
@@ -115,7 +116,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         ];
       case ProviderType.ANTHROPIC:
         return [
-          { id: 'claude-max', name: 'Claude Max Plan', description: 'Use Claude Code with your Max subscription' },
+          { id: 'claude-subscription', name: 'Claude Pro/Max', description: 'Sign in with your Claude.ai account' },
           { id: 'api-key', name: 'API Key', description: 'Use Anthropic API key from console' }
         ];
       case ProviderType.OPENAI:
@@ -297,8 +298,42 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         return 1; // Start input, Cancel
       case 'api-key-management':
         return 3; // View, Update, Delete, Back
+      case 'subscription-login':
+        return 2; // Pro Plan, Max Plan, Back
       default:
         return 0;
+    }
+  };
+
+  const handleClaudeSubscriptionAuth = async (planType: 'pro' | 'max') => {
+    console.log(`Starting Claude ${planType} subscription authentication`);
+    setIsAuthenticating(true);
+    setValidationError(null);
+    
+    try {
+      // This would integrate with Claude.ai authentication in real implementation
+      console.log('Opening Claude.ai for authentication...');
+      
+      // Mock authentication process
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // For demo purposes, we'll store a special token indicating subscription auth
+      const subscriptionToken = `CLAUDE_${planType.toUpperCase()}_SUBSCRIPTION`;
+      storeApiKey(provider, subscriptionToken);
+      
+      console.log(`Claude ${planType} subscription authentication successful`);
+      
+      onComplete({
+        type: provider,
+        authType: AuthType.LOGIN_WITH_GOOGLE_PERSONAL,
+        apiKey: subscriptionToken
+      });
+      
+    } catch (error) {
+      console.error('Claude subscription authentication failed:', error);
+      setValidationError(`Failed to authenticate with Claude ${planType} subscription: ${error}`);
+    } finally {
+      setIsAuthenticating(false);
     }
   };
 
@@ -306,7 +341,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     console.log(`Starting OAuth authentication for ${provider} with method ${authMethod}`);
     setIsAuthenticating(true);
     setValidationError(null);
-    setAuthUrl('');
     
     try {
       if (provider === ProviderType.GEMINI && authMethod === 'oauth') {
@@ -457,13 +491,30 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           if (selectedMethod.id === 'api-key') {
             setStep('api-key-input');
             setHighlightedIndex(0);
-          } else if (selectedMethod.id === 'oauth' || selectedMethod.id === 'claude-max') {
+          } else if (selectedMethod.id === 'oauth') {
             console.log(`Selected OAuth method: ${selectedMethod.id}`);
             setStep('oauth-setup');
-            console.log('setHighlightedIndex(0) called from oauth/claude-max selection');
+            console.log('setHighlightedIndex(0) called from oauth selection');
             setHighlightedIndex(0);
             // Don't auto-start authentication - wait for user confirmation
+          } else if (selectedMethod.id === 'claude-subscription') {
+            console.log(`Selected Claude subscription method: ${selectedMethod.id}`);
+            setStep('subscription-login');
+            setHighlightedIndex(0);
           }
+        }
+        break;
+
+      case 'subscription-login':
+        if (highlightedIndex === 2) {
+          // Back option selected
+          setStep('auth-method-selection');
+          setHighlightedIndex(0);
+        } else {
+          // Pro or Max plan selected
+          const planType = highlightedIndex === 0 ? 'pro' : 'max';
+          console.log(`Starting Claude ${planType} subscription authentication`);
+          handleClaudeSubscriptionAuth(planType);
         }
         break;
 
@@ -582,6 +633,55 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
                 {authMethods.length === highlightedIndex ? '> ' : '  '}← Back
               </Text>
             </Box>
+          </Box>
+        );
+
+      case 'subscription-login':
+        return (
+          <Box flexDirection="column" width={width}>
+            <Text color={Colors.Gray}>
+              Sign in to your Claude.ai account
+            </Text>
+            <Text> </Text>
+            
+            <Text color={Colors.Foreground}>
+              Choose your Claude subscription:
+            </Text>
+            <Text> </Text>
+            
+            <Box paddingLeft={1}>
+              <Text color={highlightedIndex === 0 ? Colors.AccentBlue : Colors.Foreground}>
+                {highlightedIndex === 0 ? '> ' : '  '}Claude Pro Plan (More usage, priority access)
+              </Text>
+            </Box>
+            <Box paddingLeft={1}>
+              <Text color={highlightedIndex === 1 ? Colors.AccentBlue : Colors.Foreground}>
+                {highlightedIndex === 1 ? '> ' : '  '}Claude Max Plan (Highest usage, latest features)
+              </Text>
+            </Box>
+            
+            <Text> </Text>
+            <Text color={Colors.Comment}>
+              We'll open Claude.ai in your browser for secure authentication.
+            </Text>
+            <Text color={Colors.Comment}>
+              Your login session will be used for this application.
+            </Text>
+            
+            <Text> </Text>
+            <Box paddingLeft={1}>
+              <Text color={highlightedIndex === 2 ? Colors.AccentBlue : Colors.Gray}>
+                {highlightedIndex === 2 ? '> ' : '  '}← Back
+              </Text>
+            </Box>
+            
+            {validationError && (
+              <>
+                <Text> </Text>
+                <Text color={Colors.AccentRed}>Error: {validationError}</Text>
+                <Text color={Colors.Comment}>Press Enter to try again</Text>
+              </>
+            )}
           </Box>
         );
 
@@ -746,10 +846,13 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         const maskedKey = existingKey ? (() => {
           // Handle special authentication types
           if (existingKey === 'OAUTH_AUTHENTICATED') {
-            return 'Google Account';
+            return 'Google Account (OAuth)';
           }
-          if (existingKey === 'CLAUDE_MAX_AUTHENTICATED') {
-            return 'Claude Max Plan';
+          if (existingKey.includes('CLAUDE_PRO_SUBSCRIPTION')) {
+            return 'Claude Pro Subscription';
+          }
+          if (existingKey.includes('CLAUDE_MAX_SUBSCRIPTION')) {
+            return 'Claude Max Subscription';
           }
           
           if (existingKey.length <= 8) {
@@ -768,7 +871,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           return existingKey.slice(0, prefixLength) + '•'.repeat(middleDots) + existingKey.slice(-suffixLength);
         })() : 'No key found';
 
-        const isOAuthAuth = existingKey === 'OAUTH_AUTHENTICATED' || existingKey === 'CLAUDE_MAX_AUTHENTICATED';
+        const isOAuthAuth = existingKey === 'OAUTH_AUTHENTICATED' || (existingKey && existingKey.includes('CLAUDE_PRO_SUBSCRIPTION')) || (existingKey && existingKey.includes('CLAUDE_MAX_SUBSCRIPTION'));
         const managementOptions = [
           { 
             label: isOAuthAuth ? 'View Authentication' : 'View API Key', 

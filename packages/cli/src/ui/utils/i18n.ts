@@ -44,7 +44,6 @@ export interface TranslationKeys {
   tipMcp: string;
   tipTool: string;
   tipBug: string;
-  tipLocalCloud: string;
   
   // Navigation
   navMove: string;
@@ -90,7 +89,6 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipMcp: 'Connect to MCP servers for enhanced capabilities',
     tipTool: 'Access specialized tools and integrations',
     tipBug: 'Report bugs or issues',
-    tipLocalCloud: 'Local AI (Private) | Cloud AI (Powerful)',
     
     navMove: '↑↓ Move',
     navSelect: 'Enter Select',
@@ -133,14 +131,13 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipMcp: '/mcp - MCPサーバーに接続して機能拡張',
     tipTool: '/tool - 専用ツールや統合機能にアクセス',
     tipBug: '/bug - バグや問題を報告',
-    tipLocalCloud: 'ローカルAI (プライベート) | クラウドAI (高性能) | 簡単切り替え',
     
     navMove: '↑↓ 移動',
     navSelect: 'Enter 選択',
     navBack: '← 戻る',
     navCancel: 'Esc キャンセル',
     
-    setupComplete: 'AIプロバイダー設定完了:',
+    setupComplete: '✓ 使用中:',
     readyMessage: '準備完了！質問やコマンドを入力してください。/help でヘルプを表示',
     providerDetected: '推奨AI:',
     noModelsAvailable: 'で利用可能なモデルがありません。',
@@ -176,7 +173,6 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipMcp: '/mcp - MCP 서버에 연결하여 기능 확장',
     tipTool: '/tool - 전용 도구 및 통합 기능에 액세스',
     tipBug: '/bug - 버그 또는 문제 신고',
-    tipLocalCloud: '🏠 로컬 AI (개인정보 보호) | ☁️ 클라우드 AI (강력함) | 🔄 쉬운 전환',
     
     navMove: '↑↓ 이동',
     navSelect: 'Enter 선택',
@@ -219,7 +215,6 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipMcp: '/mcp - Conectar a servidores MCP para capacidades mejoradas',
     tipTool: '/tool - Acceder a herramientas especializadas e integraciones',
     tipBug: '/bug - Reportar errores o problemas',
-    tipLocalCloud: '🏠 IA Local (Privada) | ☁️ IA en la Nube (Potente) | 🔄 Cambio fácil',
     
     navMove: '↑↓ Mover',
     navSelect: 'Enter Seleccionar',
@@ -262,7 +257,6 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipMcp: '/mcp - Se connecter aux serveurs MCP pour des capacités étendues',
     tipTool: '/tool - Accéder aux outils spécialisés et intégrations',
     tipBug: '/bug - Signaler des bugs ou des problèmes',
-    tipLocalCloud: '🏠 IA Locale (Privée) | ☁️ IA Cloud (Puissante) | 🔄 Changement facile',
     
     navMove: '↑↓ Déplacer',
     navSelect: 'Entrée Sélectionner',
@@ -305,7 +299,6 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipMcp: '/mcp - Mit MCP-Servern für erweiterte Funktionen verbinden',
     tipTool: '/tool - Auf spezialisierte Tools und Integrationen zugreifen',
     tipBug: '/bug - Bugs oder Probleme melden',
-    tipLocalCloud: '🏠 Lokale KI (Privat) | ☁️ Cloud-KI (Leistungsstark) | 🔄 Einfacher Wechsel',
     
     navMove: '↑↓ Bewegen',
     navSelect: 'Eingabe Auswählen',
@@ -348,7 +341,6 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipMcp: '/mcp - Подключиться к серверам MCP для расширенных возможностей',
     tipTool: '/tool - Доступ к специализированным инструментам и интеграциям',
     tipBug: '/bug - Сообщить об ошибках или проблемах',
-    tipLocalCloud: '🏠 Локальный ИИ (Приватный) | ☁️ Облачный ИИ (Мощный) | 🔄 Легкое переключение',
     
     navMove: '↑↓ Перемещение',
     navSelect: 'Enter Выбрать',

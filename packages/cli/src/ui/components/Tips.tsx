@@ -48,11 +48,6 @@ export const Tips: React.FC<TipsProps> = ({ config }) => {
           {t('tipGeneral')}
         </Text>
       </Box>
-      <Box marginTop={1}>
-        <Text color={Colors.Gray}>
-          {t('tipLocalCloud')}
-        </Text>
-      </Box>
     </Box>
   );
 };

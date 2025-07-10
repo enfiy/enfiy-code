@@ -45,21 +45,23 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 
 ### Cloud AI (Powerful)
 
-- <img src="./docs/assets/provider/provider-anthropic-claude.png" width="24" height="24" align="left" /> **Anthropic Claude** — Industry‑leading AI for coding tasks
+| Provider | Description |
+|---------|-------------|
+| <img src="./docs/assets/provider/provider-anthropic-claude.png" width="32" /> | **Anthropic Claude**<br>Industry-leading AI for coding tasks |
+| <img src="./docs/assets/provider/provider-openai-gpt.png" width="32" /> | **OpenAI GPT**<br>Popular and versatile language models |
+| <img src="./docs/assets/provider/provider-google-gemini.png" width="32" /> | **Google Gemini**<br>Multimodal AI with strong reasoning capabilities |
+| <img src="./docs/assets/provider/provider-mistral-ai.png" width="32" /> | **Mistral AI**<br>Open-source focused AI models |
+| <img src="./docs/assets/provider/provider-huggingface.png" width="32" /> | **HuggingFace**<br>Supports both API and local modes |
 
-- <img src="./docs/assets/provider/provider-openai-gpt.png" width="24" height="24" align="left" /> **OpenAI GPT** — Popular and versatile language models
-
-- <img src="./docs/assets/provider/provider-google-gemini.png" width="24" height="24" align="left" /> **Google Gemini** — Multimodal AI with strong reasoning capabilities
-
-- <img src="./docs/assets/provider/provider-mistral-ai.png" width="24" height="24" align="left" /> **Mistral AI** — Open‑source focused AI models
-
-- <img src="./docs/assets/provider/provider-huggingface.png" width="24" height="24" align="left" /> **HuggingFace** — Access to a wide variety of open‑source models (supports both API and local modes)
+---
 
 ### Local AI (Private)
 
-- <img src="./docs/assets/provider/provider-ollama.png" width="24" height="24" align="left" /> **Ollama** — Run models locally with full privacy
+| Provider | Description |
+|---------|-------------|
+| <img src="./docs/assets/provider/provider-ollama.png" width="32" /> | **Ollama**<br>Run models locally with full privacy |
+| <img src="./docs/assets/provider/provider-vllm.png" width="32" /> | **vLLM**<br>High-performance inference engine *(coming soon)* |
 
-- <img src="./docs/assets/provider/provider-vllm.png" width="24" height="24" align="left" /> **vLLM** — High‑performance inference engine (coming soon)
 
 ## Core Commands
 
