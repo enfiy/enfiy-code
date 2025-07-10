@@ -72,28 +72,15 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       keyPreview: existingKey ? existingKey.substring(0, 10) + '...' : 'none'
     });
     
-    // If we have an existing key and not forcing auth selection
-    if (existingKey && !forceAuthSelection) {
-      // If not managing (i.e., called from provider selection), complete immediately
-      if (!isManaging) {
-        console.log('API key already exists, completing immediately');
-        // Call onComplete immediately in useEffect to avoid state update during render
-        setTimeout(() => {
-          onComplete({
-            type: provider,
-            apiKey: existingKey,
-          });
-        }, 0);
-        return 'complete';
-      }
-      // If managing, go to management screen
+    // If we have an existing key and not forcing auth selection and managing
+    if (existingKey && !forceAuthSelection && isManaging) {
       console.log('Going to management screen (existing key found)');
       return 'api-key-management';
     }
     
-    // Go directly to API key input for all cloud providers
-    console.log('Going directly to API key input');
-    return 'api-key-input';
+    // Show authentication method selection for all cloud providers
+    console.log('Going to authentication method selection');
+    return 'auth-method-selection';
   });
   
   const [apiKey, setApiKey] = useState('');
@@ -111,7 +98,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     switch (provider) {
       case ProviderType.GEMINI:
         return [
-          { id: 'oauth', name: 'Google Account', description: 'Sign in with your Google account (recommended)' },
+          { id: 'oauth', name: 'Google Account (OAuth)', description: 'Sign in with your Google account for seamless access' },
           { id: 'api-key', name: 'API Key', description: 'Use Gemini API key from Google AI Studio' }
         ];
       case ProviderType.ANTHROPIC:
@@ -705,26 +692,29 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             {isAuthenticating ? (
               <>
                 <Text color={Colors.AccentYellow}>
-                  🔗 Authenticating with {authMethodName}...
+                  🔐 Authenticating with {authMethodName}...
                 </Text>
                 <Text> </Text>
                 <Text color={Colors.Gray}>
                   {authMethod === 'oauth' 
-                    ? 'Opening browser for Google authentication...'
-                    : 'Checking Claude Max subscription status...'
+                    ? 'Opening browser for Google account authentication...'
+                    : 'Checking Claude subscription status...'
                   }
                 </Text>
                 {authMethod === 'oauth' && (
                   <>
                     <Text> </Text>
                     <Text color={Colors.AccentBlue}>
-                      🌐 Please check your browser and complete the authentication.
+                      🌐 Complete authentication in your browser
                     </Text>
                     <Text color={Colors.Gray}>
-                      If the browser didn't open, check your console for the authentication URL.
+                      • Browser should open automatically
                     </Text>
                     <Text color={Colors.Gray}>
-                      In WSL/Linux: You may need to manually copy the URL from the console.
+                      • If not, check console for authentication URL
+                    </Text>
+                    <Text color={Colors.Gray}>
+                      • WSL/Linux: Copy URL to Windows browser if needed
                     </Text>
                   </>
                 )}

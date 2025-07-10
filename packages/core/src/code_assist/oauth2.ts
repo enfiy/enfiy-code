@@ -74,41 +74,45 @@ export async function getOauthClient(): Promise<OAuth2Client> {
 
   const isWSL = process.env.WSL_DISTRO_NAME || process.env.WSL_INTEROP;
   const isLinux = process.platform === 'linux';
+  const isDocker = process.env.container || process.env.DOCKER_CONTAINER;
   
-  console.log(
-    `\n\nCode Assist login required.\n` +
-      `Attempting to open authentication page in your browser.\n` +
-      `Otherwise navigate to:\n\n${webLogin.authUrl}\n\n`,
-  );
+  console.log('\n🔐 Gemini authentication required');
+  console.log('Opening browser for Google account authentication...');
+  console.log('');
   
-  if (isWSL || isLinux) {
-    console.log('🌐 Running in WSL/Linux environment');
-    console.log('If browser doesn\'t open automatically, copy and paste this URL:');
-    console.log(webLogin.authUrl);
+  if (isWSL || isLinux || isDocker) {
+    console.log('🌐 Remote/containerized environment detected');
+    console.log('If browser doesn\'t open automatically, copy this URL to your browser:');
+    console.log('');
+    console.log(`🔗 ${webLogin.authUrl}`);
     console.log('');
   }
   
   try {
-    console.log('Opening browser with URL:', webLogin.authUrl);
     await open(webLogin.authUrl);
-    console.log('Browser opened successfully');
+    console.log('✅ Browser opened successfully');
   } catch (error) {
-    console.log('Failed to open browser automatically:', error);
-    console.log('Please manually open the URL in your browser:');
-    console.log(webLogin.authUrl);
+    console.log('⚠️ Failed to open browser automatically');
+    console.log('Please manually copy and paste this URL into your browser:');
+    console.log('');
+    console.log(`🔗 ${webLogin.authUrl}`);
+    console.log('');
     
     if (isWSL) {
+      console.log('💡 WSL/Linux Tips:');
+      console.log(`• wslview "${webLogin.authUrl}"`);
+      console.log(`• cmd.exe /c start "${webLogin.authUrl}"`);
+      console.log('• Or copy URL to Windows browser');
       console.log('');
-      console.log('💡 WSL Tip: You can also try:');
-      console.log(`wslview "${webLogin.authUrl}"`);
-      console.log('or');
-      console.log(`cmd.exe /c start "${webLogin.authUrl}"`);
     }
   }
   
-  console.log('Waiting for authentication...');
+  console.log('⏳ Waiting for authentication in browser...');
+  console.log('   Please complete the login process in your browser window');
 
   await webLogin.loginCompletePromise;
+  
+  console.log('✅ Authentication successful! Credentials cached for future use.');
 
   return client;
 }

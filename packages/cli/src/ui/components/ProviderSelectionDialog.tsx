@@ -139,7 +139,8 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
             configs[provider] = true; // Other local providers don't need checking
           }
         } else {
-          configs[provider] = hasStoredCredentials(provider);
+          // For cloud providers, always show as needing setup to allow authentication method selection
+          configs[provider] = false;
         }
       }
       
@@ -319,26 +320,10 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
         
         const selected = availableProviders[highlightedIndex];
         
-        // For cloud providers, check if API key is already configured
+        // For cloud providers, always show setup dialog to allow authentication method selection
         if (selectedCategory === 'cloud') {
-          console.log('Provider selected in cloud category:', selected);
-          setIsCheckingProvider(true);
-          checkProviderNeedsSetup(selected, false).then((needsSetup) => {
-            setIsCheckingProvider(false);
-            if (needsSetup) {
-              console.log('API key not found, calling onSetupRequired...');
-              onSetupRequired(selected);
-            } else {
-              console.log('API key already configured, proceeding to model selection...');
-              // Provider is ready, proceed to model selection
-              setSelectedProvider(selected);
-              setMode('model');
-            }
-          }).catch(() => {
-            setIsCheckingProvider(false);
-            // On error, assume setup is needed
-            onSetupRequired(selected);
-          });
+          console.log('Provider selected in cloud category, showing setup dialog:', selected);
+          onSetupRequired(selected);
           return;
         }
         
