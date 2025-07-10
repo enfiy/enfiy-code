@@ -469,5 +469,16 @@
         "sizeFormatted": "1.69MB"
       }
     }
+  },
+  {
+    "timestamp": "2025-07-10T15:46:34.126Z",
+    "totalSize": 1768755,
+    "totalSizeFormatted": "1.69MB",
+    "files": {
+      "enfiy.js": {
+        "size": 1768755,
+        "sizeFormatted": "1.69MB"
+      }
+    }
   }
 ]

@@ -63,6 +63,34 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 | <img src="./docs/assets/provider/provider-vllm.png" width="32" /> | **vLLM**<br>High-performance inference engine *(coming soon)* |
 
 
+## Authentication
+
+### OAuth Configuration (Optional)
+
+For production use, you may want to set up custom OAuth applications:
+
+#### Google Gemini OAuth
+```bash
+# Set custom Google OAuth credentials (optional)
+export ENFIY_GOOGLE_OAUTH_CLIENT_ID="your-client-id.apps.googleusercontent.com"
+export ENFIY_GOOGLE_OAUTH_CLIENT_SECRET="your-client-secret"
+```
+
+**To create your own Google OAuth client:**
+1. Visit [Google Cloud Console](https://console.developers.google.com/auth/clients)
+2. Create new OAuth 2.0 Client ID
+3. Select "Desktop application"
+4. Name it "Enfiy Code"
+5. Use the credentials in environment variables above
+
+#### HuggingFace OAuth
+```bash
+# Set custom HuggingFace OAuth client ID (optional)
+export HF_CLIENT_ID="your-huggingface-app-id"
+```
+
+> **Note**: By default, Enfiy Code uses temporary OAuth clients for compatibility. Custom OAuth setup ensures proper branding in consent screens.
+
 ## Core Commands
 
 Once Enfiy Code is running, use these commands to interact with the AI:

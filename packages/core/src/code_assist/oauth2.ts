@@ -21,17 +21,17 @@ import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import * as os from 'os';
 
-//  OAuth Client ID used to initiate OAuth2Client class.
-const OAUTH_CLIENT_ID =
+//  OAuth Client ID for Enfiy Code - Temporary using Google AI Studio compatible client
+// ⚠️  WARNING: Currently using Google Cloud Code's OAuth client for compatibility
+// 🔧 TODO: URGENT - Register proper Enfiy Code OAuth application with Google
+// 📝 User will see "Google Cloud Code" or "gemini" in OAuth consent screen
+// 🎯 Need to create dedicated OAuth client at: https://console.developers.google.com/auth/clients
+const OAUTH_CLIENT_ID = process.env.ENFIY_GOOGLE_OAUTH_CLIENT_ID || 
   '681255809395-oo8ft2oprdrnp9e3aqf6av3hmdib135j.apps.googleusercontent.com';
 
-// OAuth Secret value used to initiate OAuth2Client class.
-// Note: It's ok to save this in git because this is an installed application
-// as described here: https://developers.google.com/identity/protocols/oauth2#installed
-// "The process results in a client ID and, in some cases, a client secret,
-// which you embed in the source code of your application. (In this context,
-// the client secret is obviously not treated as a secret.)"
-const OAUTH_CLIENT_SECRET = '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';
+// OAuth Secret value - Temporary
+const OAUTH_CLIENT_SECRET = process.env.ENFIY_GOOGLE_OAUTH_CLIENT_SECRET || 
+  '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';
 
 // OAuth Scopes for Cloud Code authorization.
 const OAUTH_SCOPE = [
@@ -42,12 +42,12 @@ const OAUTH_SCOPE = [
 
 const HTTP_REDIRECT = 301;
 const SIGN_IN_SUCCESS_URL =
-  'https://developers.google.com/gemini-code-assist/auth_success_gemini';
+  'https://enfiy.com/auth/success';
 const SIGN_IN_FAILURE_URL =
-  'https://developers.google.com/gemini-code-assist/auth_failure_gemini';
+  'https://enfiy.com/auth/failure';
 
-const GEMINI_DIR = '.gemini';
-const CREDENTIAL_FILENAME = 'oauth_creds.json';
+const ENFIY_DIR = '.enfiy';
+const CREDENTIAL_FILENAME = 'gemini_oauth_creds.json';
 
 /**
  * An Authentication URL for updating the credentials of a Oauth2Client
@@ -76,8 +76,10 @@ export async function getOauthClient(): Promise<OAuth2Client> {
   const isLinux = process.platform === 'linux';
   const isDocker = process.env.container || process.env.DOCKER_CONTAINER;
   
-  console.log('\n🔐 Gemini authentication required');
+  console.log('\n🔐 Enfiy Code - Gemini authentication required');
   console.log('Opening browser for Google account authentication...');
+  console.log('⚠️  Note: OAuth consent screen may show "Google Cloud Code" or "gemini"');
+  console.log('    This is temporary - working on Enfiy Code specific OAuth registration');
   console.log('');
   
   if (isWSL || isLinux || isDocker) {
@@ -260,7 +262,7 @@ async function cacheCredentials(credentials: Credentials) {
 }
 
 function getCachedCredentialPath(): string {
-  return path.join(os.homedir(), GEMINI_DIR, CREDENTIAL_FILENAME);
+  return path.join(os.homedir(), ENFIY_DIR, CREDENTIAL_FILENAME);
 }
 
 export async function clearCachedCredentialFile() {

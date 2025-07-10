@@ -16,7 +16,9 @@ import * as os from 'os';
 // HuggingFace OAuth configuration
 const HF_OAUTH_BASE_URL = 'https://huggingface.co/oauth/authorize';
 const HF_TOKEN_URL = 'https://huggingface.co/oauth/token';
-const HF_CLIENT_ID = process.env.HF_CLIENT_ID || 'enfiy-code'; // This should be registered
+// ⚠️  WARNING: This client ID needs to be registered with HuggingFace
+// 🔧 TODO: Register proper Enfiy Code OAuth application with HuggingFace
+const HF_CLIENT_ID = process.env.HF_CLIENT_ID || 'enfiy-code';
 const HF_OAUTH_SCOPES = [
   'openid',
   'profile',

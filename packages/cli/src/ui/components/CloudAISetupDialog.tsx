@@ -105,7 +105,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         ];
       case ProviderType.ANTHROPIC:
         return [
-          { id: 'claude-subscription', name: 'Claude Subscription', description: 'Use Claude Pro/Max subscription account' },
           { id: 'api-key', name: 'API Key', description: 'Use Anthropic API key from console.anthropic.com' }
         ];
       case ProviderType.OPENAI:
