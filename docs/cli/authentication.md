@@ -1,76 +1,99 @@
-## Authentication Setup
+# Authentication Setup
 
-The Enfiy Code requires you to authenticate with Google's AI services. On initial startup you'll need to configure **one** of the following authentication methods:
+Enfiy Code supports multiple AI providers, each with their own authentication methods. You can configure one or more providers depending on your needs.
 
-1.  **Login with Google (Gemini Code Assist):**
-    - Use this option to log in with your google account.
-    - During initial startup, Enfiy Code will direct you to a webpage for authentication. Once authenticated, your credentials will be cached locally so the web login can be skipped on subsequent runs.
-    - Note that the web login must be done in a browser that can communicate with the machine Enfiy Code is being run from. (Specifically, the browser will be redirected to a localhost url that Enfiy Code will be listening on).
-    - <a id="workspace-gca">Users may have to specify a GOOGLE_CLOUD_PROJECT if:</a>
-      1. You have a Google Workspace account. Google Workspace is a paid service for businesses and organizations that provides a suite of productivity tools, including a custom email domain (e.g. your-name@your-company.com), enhanced security features, and administrative controls. These accounts are often managed by an employer or school.
-      1. You have recieved a free Code Assist license through the [Google Developer Program](https://developers.google.com/program/plans-and-pricing) (including qualified Google Developer Experts)
-      1. You have been assigned a license to a current Gemini Code Assist standard or enterprise subscription.
-      1. You are using the product outside the the [supported regions](https://developers.google.com/gemini-code-assist/resources/available-locations) for free individual usage.>
-      1. You are a Google account holder under the age of 18
-      - If you fall into one of these categories, you must first configure a Google Cloud Project Id to use, [enable the Gemini for Cloud API](https://cloud.google.com/gemini/docs/discover/set-up-gemini#enable-api) and [configure access permissions](https://cloud.google.com/gemini/docs/discover/set-up-gemini#grant-iam).
+## Supported Providers
 
-      You can temporarily set the environment variable in your current shell session using the following command:
+### OpenAI (ChatGPT)
+1. **API Key Authentication:**
+   - Obtain your API key from [OpenAI Platform](https://platform.openai.com/api-keys)
+   - Set up during initial configuration or use `/provider` command
+   - Supported models: GPT-4, GPT-3.5, GPT-4 Turbo, etc.
 
-      ```bash
-      export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"
-      ```
-      - For repeated use, you can add the environment variable to your `.env` file (located in the project directory or user home directory) or your shell's configuration file (like `~/.bashrc`, `~/.zshrc`, or `~/.profile`). For example, the following command adds the environment variable to a `~/.bashrc` file:
+### Anthropic Claude
+1. **API Key Authentication:**
+   - Obtain your API key from [Anthropic Console](https://console.anthropic.com/)
+   - Set up during initial configuration or use `/provider` command
+   - Supported models: Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Haiku
 
-      ```bash
-      echo 'export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"' >> ~/.bashrc
-      source ~/.bashrc
-      ```
+### Google Gemini
+1. **API Key Authentication:**
+   - Obtain your API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
+   - Set up during initial configuration or use `/provider` command
+   - Supported models: Gemini 2.5 Pro, Gemini 1.5 Pro, Gemini 1.5 Flash
 
-2.  **<a id="gemini-api-key"></a>Gemini API key:**
-    - Obtain your API key from Google AI Studio: [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
-    - Set the `GEMINI_API_KEY` environment variable. In the following methods, replace `YOUR_GEMINI_API_KEY` with the API key you obtained from Google AI Studio:
-      - You can temporarily set the environment variable in your current shell session using the following command:
-        ```bash
-        export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
-        ```
-      - For repeated use, you can add the environment variable to your `.env` file (located in the project directory or user home directory) or your shell's configuration file (like `~/.bashrc`, `~/.zshrc`, or `~/.profile`). For example, the following command adds the environment variable to a `~/.bashrc` file:
-        ```bash
-        echo 'export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"' >> ~/.bashrc
-        source ~/.bashrc
-        ```
+2. **OAuth Authentication (Gemini Code Assist):**
+   - Use this option to log in with your Google account
+   - During initial startup, Enfiy Code will direct you to a webpage for authentication
+   - Your credentials will be cached locally for subsequent runs
+   - Note: Browser must be able to communicate with the machine running Enfiy Code
 
-3.  **Vertex AI:**
-    - If not using express mode:
-      - Ensure you have a Google Cloud project and have enabled the Vertex AI API.
-      - Set up Application Default Credentials (ADC), using the following command:
-        ```bash
-        gcloud auth application-default login
-        ```
-        For more information, see [Set up Application Default Credentials for Google Cloud](https://cloud.google.com/docs/authentication/provide-credentials-adc).
-      - Set the `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION`, and `GOOGLE_GENAI_USE_VERTEXAI` environment variables. In the following methods, replace `YOUR_PROJECT_ID` and `YOUR_PROJECT_LOCATION` with the relevant values for your project:
-        - You can temporarily set these environment variables in your current shell session using the following commands:
-          ```bash
-          export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"
-          export GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION" # e.g., us-central1
-          export GOOGLE_GENAI_USE_VERTEXAI=true
-          ```
-        - For repeated use, you can add the environment variables to your `.env` file (located in the project directory or user home directory) or your shell's configuration file (like `~/.bashrc`, `~/.zshrc`, or `~/.profile`). For example, the following commands add the environment variables to a `~/.bashrc` file:
-          ```bash
-          echo 'export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"' >> ~/.bashrc
-          echo 'export GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION"' >> ~/.bashrc
-          echo 'export GOOGLE_GENAI_USE_VERTEXAI=true' >> ~/.bashrc
-          source ~/.bashrc
-          ```
-    - If using express mode:
-      - Set the `GOOGLE_API_KEY` environment variable. In the following methods, replace `YOUR_GOOGLE_API_KEY` with your Vertex AI API key provided by express mode:
-        - You can temporarily set these environment variables in your current shell session using the following commands:
-          ```bash
-          export GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"
-          export GOOGLE_GENAI_USE_VERTEXAI=true
-          ```
-        - For repeated use, you can add the environment variables to your `.env` file (located in the project directory or user home directory) or your shell's configuration file (like `~/.bashrc`, `~/.zshrc`, or `~/.profile`). For example, the following commands add the environment variables to a `~/.bashrc` file:
-          ```bash
-          echo 'export GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"' >> ~/.bashrc
-          echo 'export GOOGLE_GENAI_USE_VERTEXAI=true' >> ~/.bashrc
-          source ~/.bashrc
-          ```
+### Mistral AI
+1. **API Key Authentication:**
+   - Obtain your API key from [Mistral AI Platform](https://console.mistral.ai/)
+   - Set up during initial configuration or use `/provider` command
+   - Supported models: Mistral Large, Mistral Medium, Mistral Small
+
+### Local Models (Ollama)
+1. **Local Installation:**
+   - Install [Ollama](https://ollama.ai/) on your system
+   - No API key required - runs completely local
+   - Supported models: Llama 3.2, Code Llama, Mistral, and more
+   - Enfiy Code will guide you through model installation
+
+### HuggingFace (Experimental)
+1. **Local Deployment:**
+   - Set up local inference servers (TGI, vLLM, or Ollama)
+   - No API key required for local deployment
+   - Configure server endpoints during setup
+
+## Initial Setup
+
+When you first run Enfiy Code, you'll be prompted to configure a provider:
+
+1. Run `enfiy` or `enfiy-code`
+2. Select your preferred provider category (Cloud AI or Local AI)
+3. Choose specific provider and follow authentication steps
+4. Configure API keys or authentication as needed
+
+## Managing Providers
+
+You can switch between providers or add new ones using the `/provider` command:
+
+```bash
+/provider
+```
+
+This opens the provider selection interface where you can:
+- Switch to a different provider
+- Add new provider configurations
+- Manage existing API keys
+- Configure local model installations
+
+## Security Notes
+
+- API keys are stored securely in encrypted local storage
+- Keys are never transmitted except to their respective service providers
+- Local models (Ollama) don't require any external authentication
+- You can delete stored credentials at any time using the provider management interface
+
+## Environment Variables
+
+You can also set API keys via environment variables:
+
+```bash
+export OPENAI_API_KEY="your-openai-key"
+export ANTHROPIC_API_KEY="your-claude-key"
+export GEMINI_API_KEY="your-gemini-key"
+export MISTRAL_API_KEY="your-mistral-key"
+```
+
+## Troubleshooting
+
+If you encounter authentication issues:
+
+1. Verify your API key is correct and has necessary permissions
+2. Check your internet connection for cloud providers
+3. For local models, ensure Ollama is installed and running
+4. Use `/provider` to reconfigure authentication
+5. Check the [troubleshooting guide](../troubleshooting.md) for common issues

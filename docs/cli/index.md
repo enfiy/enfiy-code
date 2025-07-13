@@ -1,10 +1,10 @@
 # Enfiy Code
 
-Within Enfiy Code, `packages/cli` is the frontend for users to send and receive prompts with the Gemini AI model and its associated tools. For a general overview of Enfiy Code, see the [main documentation page](../index.md).
+Within Enfiy Code, `packages/cli` is the frontend for users to interact with multiple AI models including OpenAI, Anthropic Claude, Google Gemini, Mistral, and local models via Ollama. For a general overview of Enfiy Code, see the [main documentation page](../index.md).
 
 ## Navigating this section
 
-- **[Authentication](./authentication.md):** A guide to setting up authentication with Google's AI services.
+- **[Authentication](./authentication.md):** A guide to setting up authentication with various AI service providers.
 - **[Commands](./commands.md):** A reference for Enfiy Code commands (e.g., `/help`, `/tools`, `/theme`).
 - **[Configuration](./configuration.md):** A guide to tailoring Enfiy Code behavior using configuration files.
 - **[Token Caching](./token-caching.md):** Optimize API costs through token caching.
