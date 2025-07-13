@@ -1,3 +1,4 @@
+<div style="max-width: 720px; margin: 0 auto;">
 <div align="center">
 
 # Enfiy Code
@@ -10,7 +11,7 @@
 
 </div>
 
-![Enfiy Code Screenshot](./docs/assets/enfiy-cli-screenshot.png)
+![Enfiy Code Screenshot](./docs/assets/enfiy-code-screenshot.png)
 
 ## Quickstart
 
@@ -43,24 +44,59 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 
 ## AI Providers
 
-### Cloud AI (Powerful)
+<h3>Cloud AI (Powerful)</h3>
 
-| Provider | Description |
-|---------|-------------|
-| <img src="./docs/assets/provider/provider-anthropic-claude.png" width="32" /> | **Anthropic Claude**<br>Industry-leading AI for coding tasks |
-| <img src="./docs/assets/provider/provider-openai-gpt.png" width="32" /> | **OpenAI GPT**<br>Popular and versatile language models |
-| <img src="./docs/assets/provider/provider-google-gemini.png" width="32" /> | **Google Gemini**<br>Multimodal AI with strong reasoning capabilities |
-| <img src="./docs/assets/provider/provider-mistral-ai.png" width="32" /> | **Mistral AI**<br>Open-source focused AI models |
-| <img src="./docs/assets/provider/provider-huggingface.png" width="32" /> | **HuggingFace**<br>Supports both API and local modes |
+<table style="width: 100%;">
+  <thead>
+    <tr>
+      <th style="width: 64px;">Provider</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="./docs/assets/provider/provider-anthropic-claude.png" width="42" style="display: block; margin: auto;" /></td>
+      <td><strong>Anthropic Claude</strong><br>Industry-leading AI for coding tasks</td>
+    </tr>
+    <tr>
+      <td><img src="./docs/assets/provider/provider-openai-gpt.png" width="42" style="display: block; margin: auto;" /></td>
+      <td><strong>OpenAI GPT</strong><br>Popular and versatile language models</td>
+    </tr>
+    <tr>
+      <td><img src="./docs/assets/provider/provider-google-gemini.png" width="42" style="display: block; margin: auto;" /></td>
+      <td><strong>Google Gemini</strong><br>Multimodal AI with strong reasoning capabilities</td>
+    </tr>
+    <tr>
+      <td><img src="./docs/assets/provider/provider-mistral-ai.png" width="42" style="display: block; margin: auto;" /></td>
+      <td><strong>Mistral AI</strong><br>Open-source focused AI models</td>
+    </tr>
+    <tr>
+      <td><img src="./docs/assets/provider/provider-huggingface.png" width="42" style="display: block; margin: auto;" /></td>
+      <td><strong>HuggingFace</strong><br>Supports both API and local modes</td>
+    </tr>
+  </tbody>
+</table>
 
----
+<h3>Local AI (Private)</h3>
 
-### Local AI (Private)
-
-| Provider | Description |
-|---------|-------------|
-| <img src="./docs/assets/provider/provider-ollama.png" width="32" /> | **Ollama**<br>Run models locally with full privacy |
-| <img src="./docs/assets/provider/provider-vllm.png" width="32" /> | **vLLM**<br>High-performance inference engine *(coming soon)* |
+<table style="width: 100%;">
+  <thead>
+    <tr>
+      <th style="width: 64px;">Provider</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="./docs/assets/provider/provider-ollama.png" width="42" style="display: block; margin: auto;" /></td>
+      <td><strong>Ollama</strong><br>Run models locally with full privacy</td>
+    </tr>
+    <tr>
+      <td><img src="./docs/assets/provider/provider-vllm.png" width="42" style="display: block; margin: auto;" /></td>
+      <td><strong>vLLM</strong><br>High-performance inference engine <em>(coming soon)</em></td>
+    </tr>
+  </tbody>
+</table>
 
 
 ## Authentication
@@ -223,4 +259,6 @@ Enfiy Code is licensed under the [Apache 2.0 License](./LICENSE).
     Built with ❤️ by the Enfiy Community
   </p>
   <br>
+</div>
+
 </div>
