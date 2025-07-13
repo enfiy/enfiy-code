@@ -1,22 +1,22 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 export interface DebugLogEntry {
   timestamp: string;
   category: string;
   level: 'info' | 'warn' | 'error' | 'debug';
   message: string;
-  data?: any;
+  data?: unknown;
 }
 
 class DebugLogger {
   private logs: DebugLogEntry[] = [];
   private maxLogs = 1000; // Keep last 1000 entries
 
-  log(category: string, level: 'info' | 'warn' | 'error' | 'debug', message: string, data?: any) {
+  log(category: string, level: 'info' | 'warn' | 'error' | 'debug', message: string, data?: unknown) {
     const entry: DebugLogEntry = {
       timestamp: new Date().toISOString(),
       category,
@@ -49,19 +49,19 @@ class DebugLogger {
     }
   }
 
-  info(category: string, message: string, data?: any) {
+  info(category: string, message: string, data?: unknown) {
     this.log(category, 'info', message, data);
   }
 
-  warn(category: string, message: string, data?: any) {
+  warn(category: string, message: string, data?: unknown) {
     this.log(category, 'warn', message, data);
   }
 
-  error(category: string, message: string, data?: any) {
+  error(category: string, message: string, data?: unknown) {
     this.log(category, 'error', message, data);
   }
 
-  debug(category: string, message: string, data?: any) {
+  debug(category: string, message: string, data?: unknown) {
     this.log(category, 'debug', message, data);
   }
 

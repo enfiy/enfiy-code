@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { Config } from '@enfiy/core';
 
 export interface ModelUsage {
@@ -118,7 +118,7 @@ export class ModelManager {
     return usage;
   }
 
-  async shouldSwitchModel(modelName: string, error?: any): Promise<string | null> {
+  async shouldSwitchModel(modelName: string, error?: unknown): Promise<string | null> {
     if (!this.fallbackConfig) return null;
 
     const lastSwitch = this.lastSwitchTime.get(modelName) || 0;
@@ -137,9 +137,10 @@ export class ModelManager {
     let condition: 'rate_limit' | 'error' | 'unavailable' | 'usage_limit' | null = null;
 
     if (error) {
-      if (error.status === 429 || error.message?.includes('rate limit')) {
+      const errorObj = error as { status?: number; message?: string }; // Type assertion for error object
+      if (errorObj.status === 429 || errorObj.message?.includes('rate limit')) {
         condition = 'rate_limit';
-      } else if (error.status >= 500) {
+      } else if (errorObj.status && errorObj.status >= 500) {
         condition = 'unavailable';
       } else {
         condition = 'error';
@@ -209,13 +210,14 @@ export class ModelManager {
     return this.fallbackConfig;
   }
 
-  async handleModelError(modelName: string, error: any): Promise<string | null> {
+  async handleModelError(modelName: string, error: unknown): Promise<string | null> {
     const fallbackModel = await this.shouldSwitchModel(modelName, error);
     
     if (fallbackModel) {
       const switched = await this.switchToModel(fallbackModel);
       if (switched) {
-        console.log(`🔄 Auto-switched from ${modelName} to ${fallbackModel} due to: ${error.message || 'error'}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.log(`🔄 Auto-switched from ${modelName} to ${fallbackModel} due to: ${errorMessage}`);
         return fallbackModel;
       }
     }
