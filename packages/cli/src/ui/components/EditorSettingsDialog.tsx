@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React, { useState } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -16,7 +16,7 @@ import { RadioButtonSelect } from './shared/RadioButtonSelect.js';
 import { LoadedSettings, SettingScope } from '../../config/settings.js';
 import { EditorType, isEditorAvailable } from '@enfiy/core';
 
-interface EditorDialogProps {
+export interface EditorDialogProps {
   onSelect: (editorType: EditorType | undefined, scope: SettingScope) => void;
   settings: LoadedSettings;
   onExit: () => void;

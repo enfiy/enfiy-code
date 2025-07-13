@@ -1,15 +1,15 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
 import { GIT_COMMIT_INFO } from '../../generated/git-commit.js';
 
-interface AboutBoxProps {
+export interface AboutBoxProps {
   cliVersion: string;
   osVersion: string;
   sandboxEnv: string;

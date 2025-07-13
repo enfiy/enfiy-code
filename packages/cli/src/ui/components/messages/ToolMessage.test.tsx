@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React from 'react';
 import { render } from 'ink-testing-library';
 import { ToolMessage, ToolMessageProps } from './ToolMessage.js';

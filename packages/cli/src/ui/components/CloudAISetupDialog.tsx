@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React, { useState, useCallback, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -16,7 +16,7 @@ import {
 } from '../../utils/secureStorage.js';
 import { debugLogger } from '../../utils/debugLogger.js';
 
-interface CloudAISetupDialogProps {
+export interface CloudAISetupDialogProps {
   provider: ProviderType;
   onComplete: (config: CloudAIConfig) => void;
   onCancel: () => void;
@@ -40,7 +40,8 @@ type SetupStep =
   | 'oauth-setup'
   | 'subscription-login'
   | 'api-key-management'
-  | 'complete';
+  | 'complete'
+  | 'auto-complete';
 
 type ManagementAction = 'view' | 'update' | 'delete' | 'back';
 
@@ -79,6 +80,12 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       return 'api-key-management';
     }
     
+    // If we have an existing key and this is a new setup (not managing), skip API setup
+    if (existingKey && !isManaging) {
+      console.log('Existing key found, will complete setup automatically');
+      return 'auto-complete';
+    }
+    
     // Check if provider has only API key auth method, skip selection
     if (provider === ProviderType.GEMINI || provider === ProviderType.ANTHROPIC || 
         provider === ProviderType.OPENAI || provider === ProviderType.MISTRAL) {
@@ -102,7 +109,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
   const [authMethod, setAuthMethod] = useState<string>('');
 
   // Get available auth methods for provider
-  const getAuthMethods = (): Array<{id: string, name: string, description: string}> => {
+  const getAuthMethods = useCallback((): Array<{id: string, name: string, description: string}> => {
     switch (provider) {
       case ProviderType.GEMINI:
         return [
@@ -129,10 +136,10 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           { id: 'api-key', name: 'API Key', description: 'Use API key authentication' }
         ];
     }
-  };
+  }, [provider]);
 
   // Get provider display name
-  const getProviderDisplayName = (): string => {
+  const getProviderDisplayName = useCallback((): string => {
     switch (provider) {
       case ProviderType.ANTHROPIC:
         return 'Anthropic Claude';
@@ -147,7 +154,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       default:
         return provider.toUpperCase();
     }
-  };
+  }, [provider]);
 
   // Get API key instructions
   const getApiKeyInstructions = (): string[] => {
@@ -195,95 +202,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     }
   };
 
-  const handleInput = useCallback((input: string, key: Record<string, boolean>) => {
-    if (key.escape || (key.ctrl && input === 'c')) {
-      // If we're in oauth-setup and authenticating, cancel the auth process
-      if (step === 'oauth-setup' && isAuthenticating) {
-        console.log('Cancelling OAuth authentication...');
-        setIsAuthenticating(false);
-        setValidationError('Authentication cancelled by user');
-        setStep('auth-method-selection');
-        console.log('setHighlightedIndex(0) called from cancel auth');
-        setHighlightedIndex(0);
-        return;
-      }
-      onCancel();
-      return;
-    }
-
-    if (step === 'api-key-input' && isInputMode) {
-      if (key.return) {
-        debugLogger.info('ui-interaction', 'Return key pressed in API key input', {
-          apiKey,
-          trimmed: apiKey.trim(),
-          length: apiKey.length,
-          isEmpty: !apiKey.trim(),
-          provider
-        });
-        
-        if (apiKey.trim()) {
-          debugLogger.info('ui-interaction', 'Starting API key validation process', {
-            key: apiKey,
-            length: apiKey.length,
-            provider
-          });
-          setIsInputMode(false);
-          setStep('api-key-validation');
-          validateAndSaveApiKey();
-        } else {
-          console.log('Enter pressed but API key is empty');
-        }
-      } else if (key.backspace || key.delete) {
-        setApiKey(prev => prev.slice(0, -1));
-      } else if (input && !key.ctrl && !key.meta) {
-        setApiKey(prev => {
-          const newValue = prev + input;
-          // Clean the API key in real-time to remove any paste artifacts
-          return cleanApiKey(newValue);
-        });
-      }
-      return;
-    }
-
-    // Navigation for non-input modes
-    if (key.upArrow) {
-      setHighlightedIndex(prev => {
-        const newIndex = Math.max(0, prev - 1);
-        console.log('Up arrow: changing highlightedIndex from', prev, 'to', newIndex);
-        return newIndex;
-      });
-      return;
-    }
-
-    if (key.downArrow) {
-      const maxIndex = getMaxIndex();
-      setHighlightedIndex(prev => {
-        const newIndex = Math.min(maxIndex, prev + 1);
-        console.log('Down arrow: changing highlightedIndex from', prev, 'to', newIndex, 'maxIndex:', maxIndex);
-        return newIndex;
-      });
-      return;
-    }
-
-    if (key.return) {
-      handleEnterKey();
-    }
-  }, [step, isInputMode, apiKey, highlightedIndex]);
-
-  useInput(handleInput);
-
-  // Fix highlighted index when it's out of bounds
-  useEffect(() => {
-    if (step === 'auth-method-selection') {
-      const authMethods = getAuthMethods();
-      if (highlightedIndex > authMethods.length) {
-        console.log('Fixing out of bounds highlightedIndex:', highlightedIndex, 'max:', authMethods.length);
-        setHighlightedIndex(0);
-      }
-    }
-  }, [step, highlightedIndex]);
-
-  const getMaxIndex = (): number => {
+  const getMaxIndex = useCallback((): number => {
     switch (step) {
       case 'auth-method-selection':
         return getAuthMethods().length; // Auth methods + Back
@@ -291,14 +210,12 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         return 1; // Start input, Cancel
       case 'api-key-management':
         return 3; // View, Update, Delete, Back
-      case 'subscription-login':
-        return 2; // Pro Plan, Max Plan, Back
       default:
         return 0;
     }
-  };
+  }, [step, getAuthMethods]);
 
-  const handleClaudeSubscriptionAuth = async (planType: 'pro' | 'max') => {
+  const handleClaudeSubscriptionAuth = useCallback(async (planType: 'pro' | 'max') => {
     console.log(`Starting Claude ${planType} subscription authentication`);
     setIsAuthenticating(true);
     setValidationError(null);
@@ -326,15 +243,16 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         apiKey: subscriptionToken
       });
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Claude subscription authentication failed:', error);
-      setValidationError(`Failed to authenticate with Claude ${planType} subscription: ${error?.message || error}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setValidationError(`Failed to authenticate with Claude ${planType} subscription: ${errorMessage}`);
     } finally {
       setIsAuthenticating(false);
     }
-  };
+  }, [provider, onComplete]);
 
-  const handleOAuthAuthentication = async () => {
+  const handleOAuthAuthentication = useCallback(async () => {
     console.log(`Starting OAuth authentication for ${provider} with method ${authMethod}`);
     setIsAuthenticating(true);
     setValidationError(null);
@@ -371,7 +289,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     } finally {
       setIsAuthenticating(false);
     }
-  };
+  }, [provider, authMethod, onComplete]);
 
   const checkClaudeMaxSubscription = async (): Promise<boolean> => {
     // TODO: Implement actual Claude Max subscription check
@@ -393,15 +311,15 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     }
   };
 
-  const cleanApiKey = (key: string): string => 
+  const cleanApiKey = useCallback((key: string): string => 
     // Remove bracketed paste mode escape sequences and other unwanted characters
      key
       .replace(/\[200~/g, '')  // Remove bracketed paste start
       .replace(/\[201~/g, '')  // Remove bracketed paste end
       .trim()                 // Remove leading/trailing whitespace
-  ;
+  , []);
 
-  const validateAndSaveApiKey = async () => {
+  const validateAndSaveApiKey = useCallback(async () => {
     try {
       const cleanedApiKey = cleanApiKey(apiKey);
       
@@ -438,9 +356,9 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       setValidationError(`Failed to validate API key: ${error}`);
       setStep('api-key-input');
     }
-  };
+  }, [apiKey, cleanApiKey, provider, getProviderDisplayName, setValidationError, setStep, onComplete]);
 
-  const handleEnterKey = () => {
+  const handleEnterKey = useCallback(() => {
     switch (step) {
       case 'auth-method-selection': {
         const authMethods = getAuthMethods();
@@ -459,7 +377,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             setStep('oauth-setup');
             console.log('setHighlightedIndex(0) called from oauth selection');
             setHighlightedIndex(0);
-            // Don't auto-start authentication - wait for user confirmation
           } else if (selectedMethod.id === 'claude-subscription') {
             console.log(`Selected Claude subscription method: ${selectedMethod.id}`);
             setStep('subscription-login');
@@ -540,22 +457,113 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         // Unknown step
         break;
     }
-  };
+  }, [highlightedIndex, step, getAuthMethods, onCancel, setAuthMethod, handleClaudeSubscriptionAuth, validationError, isAuthenticating, handleOAuthAuthentication, provider, setApiKey, setIsInputMode]);
 
-  // Early return if we're auto-completing due to existing config
-  const [isAutoCompleting, setIsAutoCompleting] = useState(false);
-  
+  const handleInput = useCallback((input: string, key: Record<string, boolean>) => {
+    if (key.escape || (key.ctrl && input === 'c')) {
+      // If we're in oauth-setup and authenticating, cancel the auth process
+      if (step === 'oauth-setup' && isAuthenticating) {
+        console.log('Cancelling OAuth authentication...');
+        setIsAuthenticating(false);
+        setValidationError('Authentication cancelled by user');
+        setStep('auth-method-selection');
+        console.log('setHighlightedIndex(0) called from cancel auth');
+        setHighlightedIndex(0);
+        return;
+      }
+      onCancel();
+      return;
+    }
+
+    if (step === 'api-key-input' && isInputMode) {
+      if (key.return) {
+        debugLogger.info('ui-interaction', 'Return key pressed in API key input', {
+          apiKey,
+          trimmed: apiKey.trim(),
+          length: apiKey.length,
+          isEmpty: !apiKey.trim(),
+          provider
+        });
+        
+        if (apiKey.trim()) {
+          debugLogger.info('ui-interaction', 'Starting API key validation process', {
+            key: apiKey,
+            length: apiKey.length,
+            provider
+          });
+          setIsInputMode(false);
+          setStep('api-key-validation');
+          validateAndSaveApiKey();
+        } else {
+          console.log('Enter pressed but API key is empty');
+        }
+      } else if (key.backspace || key.delete) {
+        setApiKey(prev => prev.slice(0, -1));
+      } else if (input && !key.ctrl && !key.meta) {
+        setApiKey(prev => {
+          const newValue = prev + input;
+          // Clean the API key in real-time to remove any paste artifacts
+          return cleanApiKey(newValue);
+        });
+      }
+      return;
+    }
+
+    // Navigation for non-input modes
+    if (key.upArrow) {
+      setHighlightedIndex(prev => {
+        const newIndex = Math.max(0, prev - 1);
+        console.log('Up arrow: changing highlightedIndex from', prev, 'to', newIndex);
+        return newIndex;
+      });
+      return;
+    }
+
+    if (key.downArrow) {
+      const maxIndex = getMaxIndex();
+      setHighlightedIndex(prev => {
+        const newIndex = Math.min(maxIndex, prev + 1);
+        console.log('Down arrow: changing highlightedIndex from', prev, 'to', newIndex, 'maxIndex:', maxIndex);
+        return newIndex;
+      });
+      return;
+    }
+
+    if (key.return) {
+      handleEnterKey();
+    }
+  }, [step, isInputMode, apiKey, getMaxIndex, handleEnterKey, isAuthenticating, onCancel, provider, validateAndSaveApiKey, cleanApiKey]);
+
+  useInput(handleInput);
+
+  // Fix highlighted index when it's out of bounds
   useEffect(() => {
-    if (step === 'complete' && !isManaging && !forceAuthSelection) {
-      const existingKey = getApiKey(provider);
-      if (existingKey) {
-        setIsAutoCompleting(true);
+    if (step === 'auth-method-selection') {
+      const authMethods = getAuthMethods();
+      if (highlightedIndex > authMethods.length) {
+        console.log('Fixing out of bounds highlightedIndex:', highlightedIndex, 'max:', authMethods.length);
+        setHighlightedIndex(0);
       }
     }
-  }, [step, provider, isManaging, forceAuthSelection]);
-  
-  // Don't render anything if we're auto-completing
-  if (isAutoCompleting) {
+  }, [step, highlightedIndex, getAuthMethods]);
+
+  // Handle auto-complete for existing API keys
+  useEffect(() => {
+    if (step === 'auto-complete') {
+      const existingKey = getApiKey(provider);
+      if (existingKey) {
+        console.log('Auto-completing with existing API key');
+        onComplete({
+          type: provider,
+          authType: AuthType.API_KEY,
+          apiKey: existingKey
+        });
+      }
+    }
+  }, [step, provider, onComplete]);
+
+  // Don't render anything during auto-complete
+  if (step === 'auto-complete') {
     return null;
   }
   

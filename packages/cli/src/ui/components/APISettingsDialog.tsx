@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -13,7 +13,7 @@ import {
   getApiKey
 } from '../../utils/secureStorage.js';
 
-interface APISettingsDialogProps {
+export interface APISettingsDialogProps {
   onManageProvider: (provider: ProviderType) => void;
   onCancel: () => void;
   terminalWidth: number;

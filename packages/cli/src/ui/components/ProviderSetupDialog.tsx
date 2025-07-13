@@ -1,16 +1,16 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
 import { ProviderType } from '@enfiy/core';
 import { t } from '../utils/i18n.js';
 
-interface ProviderSetupDialogProps {
+export interface ProviderSetupDialogProps {
   provider: ProviderType;
   onComplete: (config: LocalProviderConfig) => void;
   onCancel: () => void;

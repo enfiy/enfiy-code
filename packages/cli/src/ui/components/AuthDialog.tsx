@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React, { useState } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -12,7 +12,7 @@ import { LoadedSettings, SettingScope } from '../../config/settings.js';
 import { AuthType } from '@enfiy/core';
 import { validateAuthMethod } from '../../config/auth.js';
 
-interface AuthDialogProps {
+export interface AuthDialogProps {
   onSelect: (authMethod: string | undefined, scope: SettingScope) => void;
   onHighlight: (authMethod: string | undefined) => void;
   settings: LoadedSettings;

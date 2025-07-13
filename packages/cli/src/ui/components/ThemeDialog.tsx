@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React, { useState } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -13,7 +13,7 @@ import { DiffRenderer } from './messages/DiffRenderer.js';
 import { colorizeCode } from '../utils/CodeColorizer.js';
 import { LoadedSettings, SettingScope } from '../../config/settings.js';
 
-interface ThemeDialogProps {
+export interface ThemeDialogProps {
   /** Callback function when a theme is selected */
   onSelect: (themeName: string | undefined, scope: SettingScope) => void;
 

@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -11,7 +11,7 @@ import { ProviderType, getLocalModels, getCloudModels, ModelInfo } from '@enfiy/
 import { t } from '../utils/i18n.js';
 import { hasStoredCredentials } from '../../utils/secureStorage.js';
 
-interface ProviderSelectionDialogProps {
+export interface ProviderSelectionDialogProps {
   onSelect: (provider: ProviderType, model: string) => void;
   onCancel: () => void;
   onSetupRequired: (provider: ProviderType) => void;

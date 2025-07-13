@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -112,38 +112,30 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
     }
   }, [hfStatus, step]);
 
-  const handleInput = useCallback((input: string, key: Record<string, boolean>) => {
-    if (key.escape || (key.ctrl && input === 'c')) {
-      onCancel();
-      return;
+  const getAvailableModels = useCallback(() => {
+    if (provider === ProviderType.OLLAMA && ollamaStatus) {
+      return ollamaStatus.installedModels.length > 0 
+        ? ollamaStatus.installedModels 
+        : ollamaStatus.recommendedModels.map(m => m.name);
     }
-
-    // 矢印キーナビゲーション
-    if (key.upArrow) {
-      setHighlightedIndex(prev => Math.max(0, prev - 1));
-      return;
+    if (provider === ProviderType.HUGGINGFACE) {
+      return getRecommendedHFModels().map(m => m.name);
     }
+    return [];
+  }, [provider, ollamaStatus]);
 
-    if (key.downArrow) {
-      let maxIndex = 0;
-      if (step === 'ollama-models') maxIndex = ollamaStatus?.recommendedModels.length || 0;
-      else if (step === 'hf-method-selection') maxIndex = 2; // TGI, vLLM, Ollama
-      else if (step === 'model-selection') maxIndex = getAvailableModels().length - 1;
-      
-      setHighlightedIndex(prev => Math.min(maxIndex, prev + 1));
-      return;
+  const getLocalEndpoint = useCallback(() => {
+    if (provider === ProviderType.OLLAMA) return 'http://localhost:11434';
+    if (provider === ProviderType.HUGGINGFACE) {
+      if (selectedHFMethod === 'tgi') return 'http://localhost:8080';
+      if (selectedHFMethod === 'vllm') return 'http://localhost:8000';
+      if (selectedHFMethod === 'ollama') return 'http://localhost:11434';
+      if (hfStatus?.localServerUrl) return hfStatus.localServerUrl;
     }
+    return 'http://localhost:8080';
+  }, [provider, selectedHFMethod, hfStatus?.localServerUrl]);
 
-
-    // Enterキー処理
-    if (key.return) {
-      handleEnterKey();
-    }
-  }, [step, _currentInput, ollamaStatus, onCancel]);
-
-  useInput(handleInput);
-
-  const handleEnterKey = async () => {
+  const handleEnterKey = useCallback(async () => {
     switch (step) {
 
       case 'ollama-install':
@@ -234,30 +226,39 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
         // No action needed for other steps
         break;
     }
-  };
+  }, [step, highlightedIndex, ollamaStatus, selectedModel, onCancel, onComplete, provider, setupMethod, getAvailableModels, getLocalEndpoint, _apiKey]);
 
-  const getAvailableModels = () => {
-    if (provider === ProviderType.OLLAMA && ollamaStatus) {
-      return ollamaStatus.installedModels.length > 0 
-        ? ollamaStatus.installedModels 
-        : ollamaStatus.recommendedModels.map(m => m.name);
+  const handleInput = useCallback((input: string, key: Record<string, boolean>) => {
+    if (key.escape || (key.ctrl && input === 'c')) {
+      onCancel();
+      return;
     }
-    if (provider === ProviderType.HUGGINGFACE) {
-      return getRecommendedHFModels().map(m => m.name);
-    }
-    return [];
-  };
 
-  const getLocalEndpoint = () => {
-    if (provider === ProviderType.OLLAMA) return 'http://localhost:11434';
-    if (provider === ProviderType.HUGGINGFACE) {
-      if (selectedHFMethod === 'tgi') return 'http://localhost:8080';
-      if (selectedHFMethod === 'vllm') return 'http://localhost:8000';
-      if (selectedHFMethod === 'ollama') return 'http://localhost:11434';
-      if (hfStatus?.localServerUrl) return hfStatus.localServerUrl;
+    // 矢印キーナビゲーション
+    if (key.upArrow) {
+      setHighlightedIndex(prev => Math.max(0, prev - 1));
+      return;
     }
-    return 'http://localhost:8080';
-  };
+
+    if (key.downArrow) {
+      let maxIndex = 0;
+      if (step === 'ollama-models') maxIndex = ollamaStatus?.recommendedModels.length || 0;
+      else if (step === 'hf-method-selection') maxIndex = 2; // TGI, vLLM, Ollama
+      else if (step === 'model-selection') maxIndex = getAvailableModels().length - 1;
+      
+      setHighlightedIndex(prev => Math.min(maxIndex, prev + 1));
+      return;
+    }
+
+
+    // Enterキー処理
+    if (key.return) {
+      handleEnterKey();
+    }
+  }, [step, ollamaStatus, onCancel, getAvailableModels, handleEnterKey]);
+
+  useInput(handleInput);
+
 
   const renderContent = () => {
     const width = Math.min(terminalWidth - 4, 80);

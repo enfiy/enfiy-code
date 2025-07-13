@@ -1,22 +1,31 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React, { Suspense, lazy } from 'react';
 import { Text } from 'ink';
+import { ProviderSelectionDialogProps } from './ProviderSelectionDialog.js';
+import { ProviderSetupDialogProps } from './ProviderSetupDialog.js';
+import { CloudAISetupDialogProps } from './CloudAISetupDialog.js';
+import { APISettingsDialogProps } from './APISettingsDialog.js';
+import { ThemeDialogProps } from './ThemeDialog.js';
+import { EditorDialogProps } from './EditorSettingsDialog.js';
+import { AuthDialogProps } from './AuthDialog.js';
+import { Help as HelpProps } from './Help.js';
+import { AboutBoxProps } from './AboutBox.js';
 
-// Lazy load heavy components with proper type casting
-const LazyProviderSelectionDialog = lazy(() => import('./ProviderSelectionDialog.js').then(m => ({ default: m.ProviderSelectionDialog as any })));
-const LazyProviderSetupDialog = lazy(() => import('./ProviderSetupDialog.js').then(m => ({ default: m.ProviderSetupDialog as any })));
-const LazyCloudAISetupDialog = lazy(() => import('./CloudAISetupDialog.js').then(m => ({ default: m.CloudAISetupDialog as any })));
-const LazyAPISettingsDialog = lazy(() => import('./APISettingsDialog.js').then(m => ({ default: m.APISettingsDialog as any })));
-const LazyThemeDialog = lazy(() => import('./ThemeDialog.js').then(m => ({ default: m.ThemeDialog as any })));
-const LazyEditorSettingsDialog = lazy(() => import('./EditorSettingsDialog.js').then(m => ({ default: m.EditorSettingsDialog as any })));
-const LazyAuthDialog = lazy(() => import('./AuthDialog.js').then(m => ({ default: m.AuthDialog as any })));
-const LazyHelp = lazy(() => import('./Help.js').then(m => ({ default: m.Help as any })));
-const LazyAboutBox = lazy(() => import('./AboutBox.js').then(m => ({ default: m.AboutBox as any })));
+// Lazy load heavy components
+const LazyProviderSelectionDialog = lazy(() => import('./ProviderSelectionDialog.js').then(m => ({ default: m.ProviderSelectionDialog })));
+const LazyProviderSetupDialog = lazy(() => import('./ProviderSetupDialog.js').then(m => ({ default: m.ProviderSetupDialog })));
+const LazyCloudAISetupDialog = lazy(() => import('./CloudAISetupDialog.js').then(m => ({ default: m.CloudAISetupDialog })));
+const LazyAPISettingsDialog = lazy(() => import('./APISettingsDialog.js').then(m => ({ default: m.APISettingsDialog })));
+const LazyThemeDialog = lazy(() => import('./ThemeDialog.js').then(m => ({ default: m.ThemeDialog })));
+const LazyEditorSettingsDialog = lazy(() => import('./EditorSettingsDialog.js').then(m => ({ default: m.EditorSettingsDialog })));
+const LazyAuthDialog = lazy(() => import('./AuthDialog.js').then(m => ({ default: m.AuthDialog })));
+const LazyHelp = lazy(() => import('./Help.js').then(m => ({ default: m.Help })));
+const LazyAboutBox = lazy(() => import('./AboutBox.js').then(m => ({ default: m.AboutBox })));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -38,13 +47,13 @@ export function withLazyLoading<P extends object>(
   };
 }
 
-// Pre-wrapped lazy components with explicit typing
-export const ProviderSelectionDialog: React.ComponentType<any> = withLazyLoading(LazyProviderSelectionDialog);
-export const ProviderSetupDialog: React.ComponentType<any> = withLazyLoading(LazyProviderSetupDialog);
-export const CloudAISetupDialog: React.ComponentType<any> = withLazyLoading(LazyCloudAISetupDialog);
-export const APISettingsDialog: React.ComponentType<any> = withLazyLoading(LazyAPISettingsDialog);
-export const ThemeDialog: React.ComponentType<any> = withLazyLoading(LazyThemeDialog);
-export const EditorSettingsDialog: React.ComponentType<any> = withLazyLoading(LazyEditorSettingsDialog);
-export const AuthDialog: React.ComponentType<any> = withLazyLoading(LazyAuthDialog);
-export const Help: React.ComponentType<any> = withLazyLoading(LazyHelp);
-export const AboutBox: React.ComponentType<any> = withLazyLoading(LazyAboutBox);
+// Pre-wrapped lazy components with type assertions to avoid naming conflicts
+export const ProviderSelectionDialog = withLazyLoading<ProviderSelectionDialogProps>(LazyProviderSelectionDialog);
+export const ProviderSetupDialog = withLazyLoading<ProviderSetupDialogProps>(LazyProviderSetupDialog);
+export const CloudAISetupDialog = withLazyLoading<CloudAISetupDialogProps>(LazyCloudAISetupDialog);
+export const APISettingsDialog = withLazyLoading<APISettingsDialogProps>(LazyAPISettingsDialog);
+export const ThemeDialog = withLazyLoading<ThemeDialogProps>(LazyThemeDialog);
+export const EditorSettingsDialog = withLazyLoading<EditorDialogProps>(LazyEditorSettingsDialog);
+export const AuthDialog = withLazyLoading<AuthDialogProps>(LazyAuthDialog);
+export const Help = withLazyLoading<HelpProps>(LazyHelp);
+export const AboutBox = withLazyLoading<AboutBoxProps>(LazyAboutBox);
