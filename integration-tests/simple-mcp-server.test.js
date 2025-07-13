@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 import { test, describe, before, after } from 'node:test';
@@ -48,6 +48,10 @@ describe('simple-mcp-server', () => {
     writeFileSync(serverScriptPath, serverScript);
     child = spawn('node', [serverScriptPath], {
       stdio: ['pipe', 'pipe', 'pipe'],
+      env: {
+        ...process.env,
+        NODE_PATH: `${process.env.NODE_PATH ? `${process.env.NODE_PATH}:` : ''}${process.cwd()}/node_modules`,
+      },
     });
     child.stderr.on('data', (data) => {
       console.error(`stderr: ${data}`);
