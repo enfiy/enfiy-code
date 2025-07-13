@@ -2,7 +2,7 @@
   "name": "@enfiy/enfiy-code",
   "version": "0.1.0",
   "description": "Enfiy Code",
-  "repository": "enfiy-ecosystem/enfiy-cli",
+  "repository": "enfiy-ecosystem/enfiy-code",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
