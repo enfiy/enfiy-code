@@ -213,17 +213,35 @@ enfiy
 
 ## Documentation
 
-### Getting Started
-- [Installation Guide](./docs/installation.md) – How to install Enfiy Code and get started quickly.
-- [API Key Configuration](./docs/api-configuration.md) – Set up and manage keys for OpenAI, Anthropic, etc.
+### 📚 Getting Started
+- **[Quick Start Guide](./docs/getting-started/index.md)** – Get up and running in minutes
+- **[Installation](./docs/getting-started/installation.md)** – Detailed installation instructions
+- **[First Steps](./docs/getting-started/first-steps.md)** – Essential commands and workflows
+- **[API Configuration](./docs/getting-started/api-configuration.md)** – Set up AI provider authentication
 
-### Using the CLI
-- [CLI Commands](./docs/cli/commands.md) – Full reference for available commands.
-- [MCP Integration](./docs/mcp-integration.md) – Extend Enfiy Code with Model Context Protocol.
+### 🎯 User Guides
+- **[All Guides](./docs/guides/index.md)** – Complete guide collection
+- **[MCP Integration](./docs/guides/mcp-integration.md)** – Connect external tools and services
+- **[Checkpointing](./docs/guides/checkpointing.md)** – Save and restore conversation sessions
 
-### Security & Support
-- [Privacy & Security](./docs/privacy-security.md) – Learn how your data is protected.
-- [Troubleshooting](./docs/troubleshooting.md) – Common issues and how to resolve them.
+### 🔧 API Reference
+- **[API Documentation](./docs/api/index.md)** – Technical reference
+- **[CLI Commands](./docs/api/cli/commands.md)** – Complete command reference
+- **[Tools Reference](./docs/api/tools/index.md)** – Built-in tools and capabilities
+
+### 🛠️ Development
+- **[Development Guide](./docs/development/index.md)** – Contributing and development setup
+- **[Architecture](./docs/development/architecture.md)** – System design and components
+- **[Extensions](./docs/development/extension.md)** – Creating custom extensions
+
+### 🔒 Security
+- **[Security Overview](./docs/security/index.md)** – Security policies and best practices
+- **[Privacy Policy](./docs/security/privacy-policy.md)** – Data handling and privacy rights
+- **[Telemetry](./docs/security/telemetry.md)** – Data collection and opt-out options
+
+### 🚨 Support
+- **[Troubleshooting](./docs/troubleshooting/index.md)** – Common issues and solutions
+- **[Japanese Input Issues](./docs/troubleshooting/japanese-input.md)** – Specific input method fixes
 
 ## Development
 
