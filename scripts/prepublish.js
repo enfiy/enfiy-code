@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import fs from 'fs';
 import path from 'path';
 
@@ -26,9 +19,9 @@ if (!fs.existsSync(packageJsonPath)) {
   errors.push(`Error: package.json not found in ${process.cwd()}`);
 } else {
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-  if (packageJson.repository !== 'google-gemini/enfiy-cli') {
+  if (packageJson.repository !== 'enfiy-ecosystem/enfiy-code') {
     errors.push(
-      `Error: The "repository" field in ${packageJsonPath} must be "google-gemini/enfiy-cli".`,
+      `Error: The "repository" field in ${packageJsonPath} must be "enfiy-ecosystem/enfiy-code".`,
     );
   }
 }

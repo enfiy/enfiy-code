@@ -6,13 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 // Example proxy server that listens on :::8877 and only allows HTTPS connections to example.com.
 // Set `GEMINI_SANDBOX_PROXY_COMMAND=scripts/example-proxy.js` to run proxy alongside sandbox
 // Test via `curl https://example.com` inside sandbox (in shell mode or via shell tool)
