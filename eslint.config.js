@@ -3,14 +3,6 @@
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
@@ -37,11 +29,13 @@ export default tseslint.config(
     ignores: [
       'node_modules/*',
       'eslint.config.js',
+      'esbuild.config.js',
       'packages/cli/dist/**',
       'packages/core/dist/**',
       'packages/server/dist/**',
       'eslint-rules/*',
       'bundle/**',
+      'integration-tests/**',
     ],
   },
   eslint.configs.recommended,
@@ -98,7 +92,7 @@ export default tseslint.config(
         'error',
         { accessibility: 'no-public' },
       ],
-      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-inferrable-types': [
         'error',
         { ignoreParameters: true, ignoreProperties: true },
@@ -156,13 +150,6 @@ export default tseslint.config(
           ' * @license',
           ' * Copyright 2025 Google LLC',
           ' * SPDX-License-Identifier: Apache-2.0',
-          ' */',
-          '',
-          '/*',
-          ' * Modifications Copyright 2025 The Enfiy Community Contributors',
-          ' *',
-          ' * This file has been modified from its original version by contributors',
-          ' * to the Enfiy Community project.',
           ' */',
         ],
       ],

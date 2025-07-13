@@ -1,5 +1,5 @@
 {
-  "name": "@enfiy/cli",
+  "name": "@enfiy/enfiy-code",
   "version": "0.1.0",
   "engines": {
     "node": ">=18.0.0"
@@ -8,9 +8,9 @@
   "workspaces": [
     "packages/*"
   ],
-  "repository": "enfiy-ecosystem/enfiy-cli",
+  "repository": "enfiy-ecosystem/enfiy-code",
   "config": {
-    "sandboxImageUri": "us-docker.pkg.dev/enfiy-ecosystem/enfiy-cli/sandbox:0.1.0"
+    "sandboxImageUri": "us-docker.pkg.dev/enfiy-ecosystem/enfiy-code/sandbox:0.1.0"
   },
   "scripts": {
     "generate": "node scripts/generate-git-commit-info.js",

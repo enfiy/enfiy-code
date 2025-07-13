@@ -80,3 +80,12 @@ pids
 *.pid
 *.seed
 *.pid.lock
+
+# Bundle analysis and history
+bundle-size-history.json
+
+# Test files and temporary scripts
+test-browser-open.js
+
+# Debug and development files
+packages/core/src/utils/debugLogger.ts
