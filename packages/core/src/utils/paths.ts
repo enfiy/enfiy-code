@@ -1,6 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 import path from 'node:path';
@@ -144,6 +145,9 @@ export function unescapePath(filePath: string): string {
  * @returns A SHA256 hash of the project root path.
  */
 export function getProjectHash(projectRoot: string): string {
+  if (!projectRoot || typeof projectRoot !== 'string') {
+    throw new Error('projectRoot must be a non-empty string');
+  }
   return crypto.createHash('sha256').update(projectRoot).digest('hex');
 }
 

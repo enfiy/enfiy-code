@@ -10,6 +10,7 @@
     "build": "node ../../scripts/build_package.js",
     "clean": "rm -rf dist",
     "lint": "eslint . --ext .ts,.tsx",
+    "lint:ci": "eslint . --ext .ts,.tsx --max-warnings 0",
     "format": "prettier --write .",
     "test": "vitest run",
     "test:ci": "vitest run --coverage",

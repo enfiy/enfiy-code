@@ -1,6 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -47,6 +48,18 @@ describe('oauth2', () => {
       access_token: 'test-access-token',
       refresh_token: 'test-refresh-token',
     };
+
+    // Mock environment to ensure we're in a standard (non-WSL) environment
+    const originalEnv = process.env;
+    process.env = { ...originalEnv };
+    delete process.env.WSL_DISTRO_NAME;
+    delete process.env.WSL_INTEROP;
+    delete process.env.container;
+    delete process.env.DOCKER_CONTAINER;
+    
+    // Set platform to non-linux to avoid WSL-specific code paths
+    const originalPlatform = process.platform;
+    Object.defineProperty(process, 'platform', { value: 'darwin' });
 
     const mockGenerateAuthUrl = vi.fn().mockReturnValue(mockAuthUrl);
     const mockGetToken = vi.fn().mockResolvedValue({ tokens: mockTokens });
@@ -122,8 +135,12 @@ describe('oauth2', () => {
     });
     expect(mockSetCredentials).toHaveBeenCalledWith(mockTokens);
 
-    const tokenPath = path.join(tempHomeDir, '.gemini', 'oauth_creds.json');
+    const tokenPath = path.join(tempHomeDir, '.enfiy', 'gemini_oauth_creds.json');
     const tokenData = JSON.parse(fs.readFileSync(tokenPath, 'utf-8'));
     expect(tokenData).toEqual(mockTokens);
+    
+    // Restore original environment and platform
+    process.env = originalEnv;
+    Object.defineProperty(process, 'platform', { value: originalPlatform });
   });
 });

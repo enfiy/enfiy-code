@@ -1,12 +1,15 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 import { BaseProvider } from './base-provider.js';
 import { ProviderConfig, ProviderType } from './types.js';
 import { Content, GenerateContentResponse, GenerateContentConfig, FinishReason } from '@google/genai';
 import { CodeBlockConverter } from '../utils/codeBlockConverter.js';
+import { ToolCall } from '../types/tool.js';
+
 
 interface HuggingFaceMessage {
   role: 'system' | 'user' | 'assistant';
@@ -139,8 +142,10 @@ export class HuggingFaceProvider extends BaseProvider {
     return { inputs, messages };
   }
 
-  private parseTextBasedToolCalls(text: string): any[] {
-    const toolCalls: any[] = [];
+  
+
+  private parseTextBasedToolCalls(text: string): ToolCall[] {
+    const toolCalls: ToolCall[] = [];
     
     // Convert raw code content to markdown code blocks for better detection
     const conversionResult = CodeBlockConverter.convertToMarkdown(text);
@@ -163,7 +168,7 @@ export class HuggingFaceProvider extends BaseProvider {
     return toolCalls;
   }
 
-  private autoDetectFileCreation(text: string, toolCalls: any[]): void {
+  private autoDetectFileCreation(text: string, toolCalls: ToolCall[]): void {
     console.log('HuggingFace: Checking text for file creation patterns...');
     
     // Multiple patterns for code block detection (same as Ollama)
@@ -238,7 +243,7 @@ export class HuggingFaceProvider extends BaseProvider {
     this.detectFileCreationIntent(text, toolCalls);
   }
 
-  private detectFileCreationIntent(text: string, toolCalls: any[]): void {
+  private detectFileCreationIntent(text: string, toolCalls: ToolCall[]): void {
     console.log('HuggingFace: Detecting file creation intent...');
     
     // Look for file creation keywords and patterns (same as Ollama)
@@ -413,14 +418,14 @@ print("${baseName}")`;
       new RegExp(`([a-zA-Z0-9_-]+\\.${extension})`, 'i'),
       
       // Any file with any extension
-      /([a-zA-Z0-9_\/-]+\.[a-zA-Z0-9]+)/i,
+      /([a-zA-Z0-9_/-]+\.[a-zA-Z0-9]+)/i,
       
       // File creation context
-      /(?:file|create|make|write|作成|ファイル).*?([a-zA-Z0-9_\/-]+)/i,
+      /(?:file|create|make|write|作成|ファイル).*?([a-zA-Z0-9_/-]+)/i,
       
       // Quoted filenames
-      /"([a-zA-Z0-9_\/-]+(?:\.[a-zA-Z0-9]+)?)"/i,
-      /'([a-zA-Z0-9_\/-]+(?:\.[a-zA-Z0-9]+)?)'/i,
+      /"([a-zA-Z0-9_/-]+(?:\.[a-zA-Z0-9]+)?)"/i,
+      /'([a-zA-Z0-9_/-]+(?:\.[a-zA-Z0-9]+)?)'/i,
       
       // Just the name mentioned
       /([a-zA-Z0-9_-]+)/

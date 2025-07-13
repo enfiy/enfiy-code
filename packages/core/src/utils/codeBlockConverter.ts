@@ -1,6 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 /**
@@ -34,7 +35,7 @@ export class CodeBlockConverter {
       /<\/html>/i
     ],
     css: [
-      /\s*[\w\-\.#]+\s*\{[^}]*\}/,
+      /\s*[\w\-.#]+\s*\{[^}]*\}/,
       /@media\s+/i,
       /@import\s+/i,
       /:\s*[\w\-#]+\s*;/
@@ -68,7 +69,7 @@ export class CodeBlockConverter {
       /public\s+static\s+void\s+main/,
       /System\.out\.print/,
       /@Override/,
-      /package\s+[\w\.]+/
+      /package\s+[\w.]+/
     ],
     cpp: [
       /#include\s*<.*>/,

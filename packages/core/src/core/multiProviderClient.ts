@@ -1,6 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 import { 
@@ -67,97 +68,14 @@ export class MultiProviderClient {
       return ProviderType.HUGGINGFACE;
     }
     
-    // Try to find in model registry first
-    const foundModel = this.findModelInRegistry(model);
-    if (foundModel) {
-      return foundModel.provider;
-    }
-    
-    // Suggest similar models if not found
-    const suggestions = this.getSimilarModels(model);
-    if (suggestions.length > 0) {
-      console.log(`⚠️  Model '${model}' not found. Did you mean one of these? ${suggestions.join(', ')}`);
-    } else {
-      console.log(`⚠️  Unknown model type: ${model}, defaulting to Ollama (local AI)`);
-    }
+    // For unknown models, default to Ollama with a helpful message
+    console.log(`⚠️  Unknown model type: ${model}, defaulting to Ollama (local AI)`);
     
     // Default to Ollama for local-first approach
     return ProviderType.OLLAMA;
   }
 
-  private findModelInRegistry(modelId: string): any {
-    // Import model registry function
-    try {
-      const { findModel } = require('../providers/model-registry.js');
-      return findModel(modelId);
-    } catch (error) {
-      return null;
-    }
-  }
 
-  private getSimilarModels(targetModel: string): string[] {
-    try {
-      const { getAllModels } = require('../providers/model-registry.js');
-      const allModels = getAllModels();
-      const suggestions: string[] = [];
-      
-      // Find models with similar names
-      const targetLower = targetModel.toLowerCase();
-      
-      for (const model of allModels) {
-        const modelLower = model.id.toLowerCase();
-        
-        // Check for partial matches or similar names
-        if (modelLower.includes(targetLower.split(':')[0]) || 
-            modelLower.includes(targetLower.split('-')[0]) ||
-            this.calculateSimilarity(targetLower, modelLower) > 0.6) {
-          suggestions.push(model.id);
-        }
-      }
-      
-      return suggestions.slice(0, 3); // Return top 3 suggestions
-    } catch (error) {
-      return [];
-    }
-  }
-
-  private calculateSimilarity(str1: string, str2: string): number {
-    const longer = str1.length > str2.length ? str1 : str2;
-    const shorter = str1.length > str2.length ? str2 : str1;
-    
-    if (longer.length === 0) return 1.0;
-    
-    const editDistance = this.levenshteinDistance(longer, shorter);
-    return (longer.length - editDistance) / longer.length;
-  }
-
-  private levenshteinDistance(str1: string, str2: string): number {
-    const matrix = [];
-    
-    for (let i = 0; i <= str2.length; i++) {
-      matrix[i] = [i];
-    }
-    
-    for (let j = 0; j <= str1.length; j++) {
-      matrix[0][j] = j;
-    }
-    
-    for (let i = 1; i <= str2.length; i++) {
-      for (let j = 1; j <= str1.length; j++) {
-        if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
-          matrix[i][j] = matrix[i - 1][j - 1];
-        } else {
-          matrix[i][j] = Math.min(
-            matrix[i - 1][j - 1] + 1,
-            matrix[i][j - 1] + 1,
-            matrix[i - 1][j] + 1
-          );
-        }
-      }
-    }
-    
-    return matrix[str2.length][str1.length];
-  }
 
   /**
    * Get API key for the provider

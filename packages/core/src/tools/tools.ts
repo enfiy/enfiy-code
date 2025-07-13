@@ -1,6 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 import { FunctionDeclaration, PartListUnion, Schema } from '@google/genai';
@@ -186,6 +187,7 @@ export interface ToolResult {
    * For now, we keep it as the core logic in ReadFileTool currently produces it.
    */
   returnDisplay: ToolResultDisplay;
+  error?: { message: string };
 }
 
 export type ToolResultDisplay = string | FileDiff;

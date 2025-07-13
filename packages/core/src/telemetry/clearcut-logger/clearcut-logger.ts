@@ -1,6 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Buffer } from 'buffer';
@@ -35,8 +36,8 @@ export interface LogResponse {
 export class ClearcutLogger {
   private static instance: ClearcutLogger;
   private config?: Config;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Clearcut expects this format.
-  private readonly events: any = [];
+   
+  private readonly events: Array<Array<{ event_time_ms: number; source_extension_json: string; }>> = [];
   private last_flush_time: number = Date.now();
   private flush_interval_ms: number = 1000 * 60; // Wait at least a minute before flushing events.
 
@@ -53,8 +54,7 @@ export class ClearcutLogger {
     return ClearcutLogger.instance;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Clearcut expects this format.
-  enqueueLogEvent(event: any): void {
+  enqueueLogEvent(event: object): void {
     this.events.push([
       {
         event_time_ms: Date.now(),

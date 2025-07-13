@@ -1,6 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 export interface FileDetectionResult {
@@ -100,8 +101,8 @@ export class FileDetectionService {
         if (extension) {
           return {
             fileName: this.extractFileName(text, extension),
-            content: content,
-            language: language,
+            content,
+            language,
             confidence: 0.85
           };
         }
@@ -123,7 +124,7 @@ export class FileDetectionService {
         if (extension) {
           return {
             fileName: this.extractFileName(text, extension),
-            content: content,
+            content,
             language: detectedLang,
             confidence: 0.7
           };

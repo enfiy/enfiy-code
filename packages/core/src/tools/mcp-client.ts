@@ -1,6 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
@@ -12,7 +13,6 @@ import { MCPServerConfig } from '../config/config.js';
 import { DiscoveredMCPTool } from './mcp-tool.js';
 import {
   CallableTool,
-  FunctionDeclaration,
   mcpToTool,
   Schema,
 } from '@google/genai';
@@ -303,13 +303,13 @@ async function connectAndDiscover(
           toolNameForModel.slice(0, 28) + '___' + toolNameForModel.slice(-32);
       }
 
-      sanitizeParameters(funcDecl.parameters);
-
       // Ensure parameters is a valid JSON schema object, default to empty if not.
       const parameterSchema: Record<string, unknown> =
         funcDecl.parameters && typeof funcDecl.parameters === 'object'
-          ? { ...(funcDecl.parameters as FunctionDeclaration) }
+          ? (funcDecl.parameters as Record<string, unknown>)
           : { type: 'object', properties: {} };
+
+      sanitizeParameters(parameterSchema);
 
       toolRegistry.registerTool(
         new DiscoveredMCPTool(
@@ -361,23 +361,34 @@ async function connectAndDiscover(
   }
 }
 
-export function sanitizeParameters(schema?: Schema) {
+export function sanitizeParameters(schema?: Schema | Record<string, unknown>) {
   if (!schema) {
     return;
   }
-  if (schema.anyOf) {
+  
+  const schemaObj = schema as Record<string, unknown>;
+  
+  // Remove $schema and additionalProperties as they can cause issues with AI APIs
+  if (schemaObj.$schema !== undefined) {
+    delete schemaObj.$schema;
+  }
+  if (schemaObj.additionalProperties !== undefined) {
+    delete schemaObj.additionalProperties;
+  }
+  
+  if (Array.isArray(schemaObj.anyOf)) {
     // Vertex AI gets confused if both anyOf and default are set.
-    schema.default = undefined;
-    for (const item of schema.anyOf) {
+    schemaObj.default = undefined;
+    for (const item of schemaObj.anyOf) {
       sanitizeParameters(item);
     }
   }
-  if (schema.items) {
-    sanitizeParameters(schema.items);
+  if (schemaObj.items) {
+    sanitizeParameters(schemaObj.items);
   }
-  if (schema.properties) {
-    for (const item of Object.values(schema.properties)) {
-      sanitizeParameters(item);
+  if (schemaObj.properties) {
+    for (const item of Object.values(schemaObj.properties)) {
+      sanitizeParameters(item as Schema | Record<string, unknown>);
     }
   }
 }

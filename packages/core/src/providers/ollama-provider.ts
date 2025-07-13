@@ -1,6 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Content, GenerateContentResponse, GenerateContentConfig, Part, FinishReason } from '@google/genai';
@@ -36,6 +37,15 @@ interface OllamaModel {
     families: string[];
     parameter_size: string;
     quantization_level: string;
+  };
+}
+
+interface ToolCall {
+  id: string;
+  name: 'write_file';
+  args: {
+    file_path: string;
+    content: string;
   };
 }
 
@@ -114,7 +124,7 @@ export class OllamaProvider extends BaseProvider {
       .join('\n\n');
   }
 
-  private parseTextBasedToolCalls(text: string): any[] {
+  private parseTextBasedToolCalls(text: string): ToolCall[] {
     if (!this.fileDetectionService) {
       return [];
     }
@@ -144,7 +154,7 @@ export class OllamaProvider extends BaseProvider {
   private convertOllamaToGeminiResponse(
     ollamaResponse: OllamaResponse,
     isDone: boolean = true,
-    functionCalls: any[] = []
+    functionCalls: ToolCall[] = []
   ): GenerateContentResponse {
     const responseText = ollamaResponse.response;
     const parts: Part[] = [{ text: responseText }];
