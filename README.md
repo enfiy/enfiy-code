@@ -44,6 +44,8 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 
 ## AI Providers
 
+## AI Providers
+
 <h3>Cloud AI (Powerful)</h3>
 
 <table style="width: 100%;">
@@ -55,23 +57,43 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
   </thead>
   <tbody>
     <tr>
-      <td><img src="./docs/assets/provider/provider-anthropic-claude.png" width="42" style="display: block; margin: auto;" /></td>
+      <td>
+        <div style="text-align: center;">
+          <img src="./docs/assets/provider/provider-anthropic-claude.png" width="42" />
+        </div>
+      </td>
       <td><strong>Anthropic Claude</strong><br>Industry-leading AI for coding tasks</td>
     </tr>
     <tr>
-      <td><img src="./docs/assets/provider/provider-openai-gpt.png" width="42" style="display: block; margin: auto;" /></td>
+      <td>
+        <div style="text-align: center;">
+          <img src="./docs/assets/provider/provider-openai-gpt.png" width="42" />
+        </div>
+      </td>
       <td><strong>OpenAI GPT</strong><br>Popular and versatile language models</td>
     </tr>
     <tr>
-      <td><img src="./docs/assets/provider/provider-google-gemini.png" width="42" style="display: block; margin: auto;" /></td>
+      <td>
+        <div style="text-align: center;">
+          <img src="./docs/assets/provider/provider-google-gemini.png" width="42" />
+        </div>
+      </td>
       <td><strong>Google Gemini</strong><br>Multimodal AI with strong reasoning capabilities</td>
     </tr>
     <tr>
-      <td><img src="./docs/assets/provider/provider-mistral-ai.png" width="42" style="display: block; margin: auto;" /></td>
+      <td>
+        <div style="text-align: center;">
+          <img src="./docs/assets/provider/provider-mistral-ai.png" width="42" />
+        </div>
+      </td>
       <td><strong>Mistral AI</strong><br>Open-source focused AI models</td>
     </tr>
     <tr>
-      <td><img src="./docs/assets/provider/provider-huggingface.png" width="42" style="display: block; margin: auto;" /></td>
+      <td>
+        <div style="text-align: center;">
+          <img src="./docs/assets/provider/provider-huggingface.png" width="42" />
+        </div>
+      </td>
       <td><strong>HuggingFace</strong><br>Supports both API and local modes</td>
     </tr>
   </tbody>
@@ -88,16 +110,23 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
   </thead>
   <tbody>
     <tr>
-      <td><img src="./docs/assets/provider/provider-ollama.png" width="42" style="display: block; margin: auto;" /></td>
+      <td>
+        <div style="text-align: center;">
+          <img src="./docs/assets/provider/provider-ollama.png" width="42" />
+        </div>
+      </td>
       <td><strong>Ollama</strong><br>Run models locally with full privacy</td>
     </tr>
     <tr>
-      <td><img src="./docs/assets/provider/provider-vllm.png" width="42" style="display: block; margin: auto;" /></td>
+      <td>
+        <div style="text-align: center;">
+          <img src="./docs/assets/provider/provider-vllm.png" width="42" />
+        </div>
+      </td>
       <td><strong>vLLM</strong><br>High-performance inference engine <em>(coming soon)</em></td>
     </tr>
   </tbody>
 </table>
-
 
 ## Authentication
 
