@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { useCallback, useRef } from 'react';
 import { Config } from '@enfiy/core';
 import { ModelManager } from '../../services/modelManager.js';
@@ -39,7 +39,7 @@ export function useModelAutoSwitching({
 
   // Handle model errors and attempt auto-switching
   const handleModelError = useCallback(async (
-    error: any,
+    error: unknown,
     currentModel?: string
   ): Promise<string | null> => {
     if (!isEnabled || !config) return null;
@@ -169,28 +169,30 @@ export function useModelAutoSwitching({
 }
 
 // Helper function to extract human-readable error reasons
-function getErrorReason(error: any): string {
-  if (error?.status === 429) {
+function getErrorReason(error: unknown): string {
+  const errorObj = error as { status?: number; message?: string }; // Type assertion for error object
+  
+  if (errorObj?.status !== undefined && errorObj.status === 429) {
     return 'Rate limit exceeded';
   }
   
-  if (error?.status >= 500) {
+  if (errorObj?.status !== undefined && errorObj.status >= 500) {
     return 'Server error';
   }
   
-  if (error?.message?.includes('rate limit')) {
+  if (errorObj?.message?.includes('rate limit')) {
     return 'Rate limit exceeded';
   }
   
-  if (error?.message?.includes('quota')) {
+  if (errorObj?.message?.includes('quota')) {
     return 'Quota exceeded';
   }
   
-  if (error?.message?.includes('limit')) {
+  if (errorObj?.message?.includes('limit')) {
     return 'Usage limit reached';
   }
   
-  return error?.message || 'Model error';
+  return errorObj?.message || 'Model error';
 }
 
 // Example of how to integrate this hook into a component

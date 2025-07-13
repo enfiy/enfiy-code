@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { useState, useEffect, useCallback } from 'react';
 import * as fs from 'fs/promises';
 import * as path from 'path';
@@ -49,10 +49,17 @@ export function useShellHistory(projectRoot: string) {
 
   useEffect(() => {
     async function loadHistory() {
-      const filePath = await getHistoryFilePath(projectRoot);
-      setHistoryFilePath(filePath);
-      const loadedHistory = await readHistoryFile(filePath);
-      setHistory(loadedHistory.reverse()); // Newest first
+      if (!projectRoot) {
+        return; // Skip loading history if no project root
+      }
+      try {
+        const filePath = await getHistoryFilePath(projectRoot);
+        setHistoryFilePath(filePath);
+        const loadedHistory = await readHistoryFile(filePath);
+        setHistory(loadedHistory.reverse()); // Newest first
+      } catch (error) {
+        console.error('Failed to load shell history:', error);
+      }
     }
     loadHistory();
   }, [projectRoot]);

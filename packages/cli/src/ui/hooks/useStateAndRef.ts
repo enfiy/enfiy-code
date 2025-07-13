@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import React from 'react';
 
 // Hook to return state, state setter, and ref to most up-to-date value of state.

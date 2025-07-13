@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { useState, useCallback } from 'react';
 import { LoadedSettings, SettingScope } from '../../config/settings.js';
 import { type HistoryItem, MessageType } from '../types.js';

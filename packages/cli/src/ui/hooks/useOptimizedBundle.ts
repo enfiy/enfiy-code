@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { useEffect, useCallback } from 'react';
 import { getTheme, preloadTheme } from '../themes/lazyThemes.js';
 import { getLanguagePack, preloadLanguagePack } from '../utils/lazyI18n.js';

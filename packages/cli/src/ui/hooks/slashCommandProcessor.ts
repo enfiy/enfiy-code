@@ -1,13 +1,15 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { useCallback, useMemo } from 'react';
 import { type PartListUnion } from '@google/genai';
 import open from 'open';
 import process from 'node:process';
+import { promisify } from 'node:util';
+import { exec } from 'node:child_process';
 import { UseHistoryManagerReturn } from './useHistoryManager.js';
 import { useStateAndRef } from './useStateAndRef.js';
 import {
@@ -35,6 +37,8 @@ import { getCliVersion } from '../../utils/version.js';
 import { LoadedSettings } from '../../config/settings.js';
 import { ModelManager } from '../../services/modelManager.js';
 import { debugLogger } from '../../utils/debugLogger.js';
+
+const execAsync = promisify(exec);
 
 export interface SlashCommandActionReturn {
   shouldScheduleTool?: boolean;
@@ -199,7 +203,7 @@ export const useSlashCommandProcessor = (
       {
         name: 'help',
         altName: '?',
-        description: 'for help on enfiy-cli',
+        description: 'Show this help message',
         action: (_mainCommand, _subCommand, _args) => {
           onDebugMessage('Opening help.');
           setShowHelp(true);
@@ -623,6 +627,7 @@ export const useSlashCommandProcessor = (
       },
       {
         name: 'corgi',
+        description: 'Toggle corgi mode',
         action: (_mainCommand, _subCommand, _args) => {
           toggleCorgiMode();
         },
@@ -1390,14 +1395,46 @@ export const useSlashCommandProcessor = (
             content: 'Getting git status...',
             timestamp: new Date(),
           });
-          
-          return {
-            shouldScheduleTool: true,
-            toolName: 'bash',
-            toolArgs: { 
-              command: 'git status --porcelain=v1 && echo "---" && git branch --show-current && echo "---" && git log --oneline -5'
-            },
-          };
+
+          let statusMessage = '';
+          try {
+            const { stdout } = await execAsync(
+              'git status --porcelain=v1 && echo "---" && git branch --show-current && echo "---" && git log --oneline -5',
+            );
+            const parts = stdout.split('---');
+            const porcelainStatus = parts[0].trim();
+            const currentBranch = parts[1].trim();
+            const lastFiveCommits = parts[2].trim();
+
+            statusMessage += 'Git Status:\n';
+            if (porcelainStatus) {
+              statusMessage += '\nChanges:\n';
+              statusMessage += porcelainStatus
+                .split('\n')
+                .map((line) => `  ${line}`)
+                .join('\n');
+            } else {
+              statusMessage += '\nNo pending changes.\n';
+            }
+
+            statusMessage += `\n\nCurrent Branch: \u001b[1m${currentBranch}\u001b[0m\n`;
+            statusMessage += '\nLast 5 Commits:\n';
+            statusMessage += lastFiveCommits
+              .split('\n')
+              .map((line) => `  ${line}`)
+              .join('\n');
+          } catch (error: unknown) {
+            const errorMessage =
+              error instanceof Error ? error.message : String(error);
+            statusMessage = `Error getting git status: ${errorMessage}`;
+          }
+
+          addMessage({
+            type: MessageType.INFO,
+            content: statusMessage,
+            timestamp: new Date(),
+          });
+          return;
         },
       },
       {
@@ -1662,7 +1699,43 @@ export const useSlashCommandProcessor = (
             analysis += `📄 Top-level files: ${files.length - directories.length}\n\n`;
             
             // Git status
-            analysis += 'Git Information:\n';
+            analysis += `Git Information:
+`;
+            
+            // Execute git commands and format output
+            try {
+              const { stdout: gitBranchOutput } = await execAsync('git branch --show-current 2>/dev/null');
+              const { stdout: gitLogOutput } = await execAsync('git log --oneline -3 2>/dev/null');
+
+              const branchName = gitBranchOutput.trim() || 'N/A';
+              interface GitCommit {
+                hash: string;
+                message: string;
+              }
+
+              const commits = gitLogOutput.trim().split('\n').filter((line: string) => line.trim() !== '').map((line: string) => {
+                const match = line.match(/^([0-9a-f]+) (.+)$/);
+                return match ? { hash: match[1], message: match[2] } : null;
+              }).filter((commit): commit is GitCommit => commit !== null);
+
+              let gitInfo = '\n';
+              gitInfo += '| Key           | Value                                   |\n';
+              gitInfo += '|:--------------|:----------------------------------------|\n';
+              gitInfo += `| Branch        | ${branchName.padEnd(39)} |\n`;
+              gitInfo += '| Recent Commits|                                         |\n';
+              if (commits.length > 0) {
+                commits.forEach((commit: GitCommit) => {
+                  gitInfo += `| ${commit.hash.substring(0, 7)}     | ${commit.message.padEnd(39)} |\n`;
+                });
+              } else {
+                gitInfo += '|               | No recent commits found.                |\n';
+              }
+              analysis += gitInfo;
+
+            } catch (gitError: unknown) {
+              const errorMessage = gitError instanceof Error ? gitError.message : String(gitError);
+              analysis += `Error getting Git info: ${errorMessage}\n`;
+            }
             
             addMessage({
               type: MessageType.INFO,
@@ -1670,14 +1743,7 @@ export const useSlashCommandProcessor = (
               timestamp: new Date(),
             });
             
-            // Get git info
-            return {
-              shouldScheduleTool: true,
-              toolName: 'bash',
-              toolArgs: { 
-                command: 'git branch --show-current 2>/dev/null && git log --oneline -3 2>/dev/null'
-              },
-            };
+            return; // No tool to schedule, as we handled it directly
             
           } catch (_error) {
             addMessage({
@@ -1890,7 +1956,7 @@ export const useSlashCommandProcessor = (
         },
       });
     }
-    return commands;
+    return commands.sort((a, b) => a.name.localeCompare(b.name));
   }, [
     onDebugMessage,
     setShowHelp,
