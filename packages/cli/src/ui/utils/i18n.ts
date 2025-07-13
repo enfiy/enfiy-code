@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 export type SupportedLanguage = 'en' | 'ja' | 'ko' | 'es' | 'fr' | 'de' | 'ru';
 
 export interface TranslationKeys {
@@ -348,6 +348,9 @@ const translations: Record<SupportedLanguage, TranslationKeys> = {
     checkApiKey: 'Пожалуйста, проверьте ваш API ключ.'
   }
 };
+
+// Export translations for lazy loading
+export { translations };
 
 // Current language state
 let currentLanguage: SupportedLanguage | null = null;

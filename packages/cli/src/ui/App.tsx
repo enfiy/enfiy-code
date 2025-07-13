@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import {
   Box,
@@ -258,7 +258,7 @@ ${t('helpMessage')}`,
     setShowProviderSelection(false);
     setPreselectedProvider(null); // Clear preselection
     setIsFirstRun(false);
-  }, [addItem, config, setCurrentModel]);
+  }, [addItem, config, setCurrentModel, settings]);
 
   const handleProviderSelectionCancel = useCallback(() => {
     setShowProviderSelection(false);
@@ -321,7 +321,7 @@ ${t('helpMessage')}`,
         Date.now(),
       );
     }
-  }, [isManagingProvider, addItem, config, setCurrentModel, settings]);
+  }, [addItem, isManagingProvider]);
 
   const handleCloudAISetupCancel = useCallback(() => {
     setShowCloudAISetup(false);
@@ -1194,14 +1194,14 @@ ${t('helpMessage')}`,
               onSelect={handleProviderSelect}
               onCancel={handleProviderSelectionCancel}
               onSetupRequired={handleProviderSetupRequired}
-              onManageProvider={handleProviderManagement}
+              _onManageProvider={handleProviderManagement}
               onOpenAPISettings={handleOpenAPISettings}
               _availableTerminalHeight={
                 constrainHeight ? availableTerminalHeight : undefined
               }
               terminalWidth={mainAreaWidth}
               inputWidth={inputWidth}
-              preselectedProvider={preselectedProvider}
+              preselectedProvider={preselectedProvider ?? undefined}
             />
           ) : showAPISettings ? (
             <APISettingsDialog

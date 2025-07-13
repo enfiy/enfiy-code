@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { lightTheme, Theme, type ColorsTheme } from './theme.js';
 
 const googleCodeColors: ColorsTheme = {
@@ -141,3 +141,5 @@ export const GoogleCode: Theme = new Theme(
   },
   googleCodeColors,
 );
+
+

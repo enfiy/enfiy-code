@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { darkTheme, Theme } from './theme.js';
 
 export const DefaultDark: Theme = new Theme(
@@ -147,3 +147,5 @@ export const DefaultDark: Theme = new Theme(
   },
   darkTheme,
 );
+
+

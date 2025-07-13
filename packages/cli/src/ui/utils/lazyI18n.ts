@@ -1,22 +1,22 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import type { SupportedLanguage, TranslationKeys } from './i18n.js';
 
 // Lazy load language packs
 const languageLoaders = new Map<SupportedLanguage, () => Promise<TranslationKeys>>();
 
 // Language loader registry
-languageLoaders.set('en', () => import('./i18n.js').then(m => (m as any).translations.en));
-languageLoaders.set('ja', () => import('./i18n.js').then(m => (m as any).translations.ja));
-languageLoaders.set('ko', () => import('./i18n.js').then(m => (m as any).translations.ko));
-languageLoaders.set('es', () => import('./i18n.js').then(m => (m as any).translations.es));
-languageLoaders.set('fr', () => import('./i18n.js').then(m => (m as any).translations.fr));
-languageLoaders.set('de', () => import('./i18n.js').then(m => (m as any).translations.de));
-languageLoaders.set('ru', () => import('./i18n.js').then(m => (m as any).translations.ru));
+languageLoaders.set('en', () => import('./i18n.js').then(m => m.translations.en));
+languageLoaders.set('ja', () => import('./i18n.js').then(m => m.translations.ja));
+languageLoaders.set('ko', () => import('./i18n.js').then(m => m.translations.ko));
+languageLoaders.set('es', () => import('./i18n.js').then(m => m.translations.es));
+languageLoaders.set('fr', () => import('./i18n.js').then(m => m.translations.fr));
+languageLoaders.set('de', () => import('./i18n.js').then(m => m.translations.de));
+languageLoaders.set('ru', () => import('./i18n.js').then(m => m.translations.ru));
 
 // Language cache
 const languageCache = new Map<SupportedLanguage, TranslationKeys>();

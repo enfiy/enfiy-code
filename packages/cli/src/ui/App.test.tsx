@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 import { render } from 'ink-testing-library';
 import { AppWrapper as App } from './App.js';
@@ -208,6 +208,9 @@ describe('App UI', () => {
       cwd: '/tmp',
       model: 'model',
     }) as unknown as MockServerConfig;
+    
+    // Set up getProjectRoot mock separately
+    mockConfig.getProjectRoot.mockReturnValue('/test/project/root');
 
     // Ensure the getShowMemoryUsage mock function is specifically set up if not covered by constructor mock
     if (!mockConfig.getShowMemoryUsage) {

@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 /**
  * Calculates the maximum width of a multi-line ASCII art string.
  * @param asciiArt The ASCII art string.

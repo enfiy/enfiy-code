@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { type ColorsTheme, Theme } from './theme.js';
 
 const ansiColors: ColorsTheme = {
@@ -154,3 +154,5 @@ export const ANSI: Theme = new Theme(
   },
   ansiColors,
 );
+
+

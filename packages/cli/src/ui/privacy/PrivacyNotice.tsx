@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { Box } from 'ink';
 import { type Config, AuthType } from '@enfiy/core';
 import { EnfiyPrivacyNotice } from './EnfiyPrivacyNotice.js';
