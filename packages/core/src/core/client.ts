@@ -3,14 +3,6 @@
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import {
   EmbedContentParameters,
   GenerateContentConfig,
@@ -342,7 +334,17 @@ export class EnfiyClient {
         throw error;
       }
       try {
-        return JSON.parse(text);
+        // Check if response starts with HTML (common Ollama error)
+        if (text.trim().startsWith('<')) {
+          console.warn('🔥 [generateJson] Received HTML response instead of JSON:', text.substring(0, 200));
+          throw new Error('API returned HTML instead of JSON - possible Ollama server error');
+        }
+        
+        // Try to extract JSON from markdown code blocks if present
+        const jsonMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+        const jsonText = jsonMatch ? jsonMatch[1].trim() : text.trim();
+        
+        return JSON.parse(jsonText);
       } catch (parseError) {
         await reportError(
           parseError,

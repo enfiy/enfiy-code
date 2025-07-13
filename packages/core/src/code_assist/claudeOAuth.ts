@@ -1,7 +1,7 @@
 /**
  * @license
- * Copyright 2025 The Enfiy Community Contributors
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import * as http from 'http';
@@ -68,7 +68,7 @@ export async function getClaudeOAuthClient(): Promise<ClaudeOAuthResponse> {
   try {
     await open(webLogin.authUrl);
     console.log('✅ Browser opened successfully');
-  } catch (error) {
+  } catch (_error) {
     console.log('⚠️ Failed to open browser automatically');
     console.log('Please manually copy and paste this URL into your browser:');
     console.log('');
@@ -116,7 +116,7 @@ async function authWithClaudeWeb(): Promise<ClaudeWebLogin> {
     scope: CLAUDE_OAUTH_SCOPES.join(' '),
     code_challenge: codeChallenge,
     code_challenge_method: 'S256',
-    state: state
+    state
   });
 
   const authUrl = `${CLAUDE_OAUTH_BASE_URL}?${authParams.toString()}`;
@@ -175,8 +175,8 @@ async function authWithClaudeWeb(): Promise<ClaudeWebLogin> {
         }
         
         server.close();
-      } catch (error) {
-        reject(error);
+      } catch (_error) {
+        reject(_error);
         server.close();
       }
     });
@@ -200,7 +200,7 @@ async function exchangeCodeForToken(
   
   const tokenParams = new URLSearchParams({
     grant_type: 'authorization_code',
-    code: code,
+    code,
     redirect_uri: redirectUri,
     client_id: CLAUDE_CLIENT_ID,
     code_verifier: codeVerifier

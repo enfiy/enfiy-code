@@ -1,13 +1,13 @@
 /**
  * @license
- * Copyright 2025 arterect and h.esaki
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
-
 import { Content, GenerateContentResponse, GenerateContentConfig, Part, FinishReason } from '@google/genai';
 import { ProviderType, ProviderConfig } from './types.js';
 import { BaseProvider } from './base-provider.js';
 import { CodeBlockConverter } from '../utils/codeBlockConverter.js';
+import { FileDetectionService, FileDetectionConfig } from '../utils/file-detection.js';
 
 interface OllamaResponse {
   model: string;
@@ -46,17 +46,34 @@ export class OllamaProvider extends BaseProvider {
   private baseUrl: string = 'http://localhost:11434';
   private model: string = 'llama3.2:3b';
   private timeout: number = 120000; // Increased timeout to 2 minutes
+  private fileDetectionService: FileDetectionService | null = null;
 
   protected async performInitialization(config: ProviderConfig): Promise<void> {
     this.baseUrl = config.baseUrl || 'http://localhost:11434';
     this.model = config.model || 'llama3.2:3b';
     this.timeout = config.timeout || 120000; // Default to 2 minutes
     
+    // Initialize file detection service
+    this.initializeFileDetectionService();
+    
     // Check if Ollama is available
     const available = await this.isAvailable();
     if (!available) {
       throw new Error('Ollama server is not available. Please make sure Ollama is running.');
     }
+  }
+
+  private initializeFileDetectionService(): void {
+    // Use current working directory as default
+    // In production, this will be injected through proper dependency injection
+    const workingDirectory = process.cwd();
+    
+    const fileDetectionConfig: FileDetectionConfig = {
+      workingDirectory,
+      defaultSubdirectory: 'generated',
+    };
+    
+    this.fileDetectionService = new FileDetectionService(fileDetectionConfig);
   }
 
   async isAvailable(): Promise<boolean> {
@@ -98,443 +115,39 @@ export class OllamaProvider extends BaseProvider {
   }
 
   private parseTextBasedToolCalls(text: string): any[] {
-    const toolCalls: any[] = [];
-    
-    // Convert raw code content to markdown code blocks for better detection
-    const conversionResult = CodeBlockConverter.convertToMarkdown(text);
-    const processedText = conversionResult.convertedText;
-    
-    console.log('=== CODE BLOCK CONVERSION ===');
-    console.log('Conversions made:', conversionResult.conversions.length);
-    if (conversionResult.conversions.length > 0) {
-      console.log('Converted text preview:', processedText.substring(0, 200) + '...');
+    if (!this.fileDetectionService) {
+      return [];
     }
     
-    // Use processed text for file creation detection
-    this.autoDetectFileCreation(processedText, toolCalls);
+    // Try direct detection first
+    let detectionResults = this.fileDetectionService.detectFiles(text);
     
-    // If no code blocks were found in processed text, try original detection
-    if (toolCalls.length === 0) {
-      this.autoDetectFileCreation(text, toolCalls);
+    // If no results, try with processed text
+    if (detectionResults.length === 0) {
+      const conversionResult = CodeBlockConverter.convertToMarkdown(text);
+      const processedText = conversionResult.convertedText;
+      detectionResults = this.fileDetectionService.detectFiles(processedText);
     }
     
-    return toolCalls;
-  }
-
-
-  private autoDetectFileCreation(text: string, toolCalls: any[]): void {
-    // console.log('Checking text for file creation patterns...');
-    
-    // Multiple patterns for code block detection
-    const codeBlockPatterns = [
-      // Standard code blocks with language
-      /```(\w+)\n([\s\S]*?)\n```/gi,
-      // Code blocks without language
-      /```\n([\s\S]*?)\n```/gi,
-      // Inline code with file extensions
-      /`([^`]*\.(html|css|js|py|java|cpp|c|php|rb|go|rs|swift|kt|json|xml|yaml|yml|md|txt|sh|sql))`/gi
-    ];
-    
-    // Try each pattern
-    for (const pattern of codeBlockPatterns) {
-      let match;
-      pattern.lastIndex = 0; // Reset regex
-      
-      while ((match = pattern.exec(text)) !== null) {
-        let language = '';
-        let content = '';
-        
-        if (match.length === 3) {
-          // Standard code block with language
-          language = match[1]?.toLowerCase() || '';
-          content = match[2];
-        } else if (match.length === 2) {
-          // Code block without language or inline code
-          content = match[1];
-          if (content.includes('.')) {
-            // This might be an inline filename, try to extract extension
-            const parts = content.split('.');
-            language = parts[parts.length - 1];
-          }
-        }
-        
-        if (!content.trim()) continue;
-        
-        // console.log('Found code block:', { language, contentLength: content.length });
-        
-        // Get file extension from language
-        const extension = this.getFileExtension(language, content);
-        if (!extension) {
-          // console.log('No extension found for language:', language);
-          continue;
-        }
-        
-        // Extract filename from text
-        const fileName = this.extractFileName(text, extension);
-        // console.log('Extracted filename:', fileName);
-        
-        // Create absolute file path
-        const absolutePath = this.createAbsolutePath(fileName);
-        // console.log('Absolute path:', absolutePath);
-        
-        // Create the tool call
-        toolCalls.push({
-          id: `call_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          name: 'write_file',
-          args: {
-            file_path: absolutePath,
-            content: content
-          }
-        });
-        
-        // console.log('Created tool call for file creation');
-        // Only create one file per response to avoid multiple files
-        return;
+    // Convert detection results to tool calls
+    return detectionResults.map(result => ({
+      id: `call_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      name: 'write_file',
+      args: {
+        file_path: this.fileDetectionService!.createAbsolutePath(result.fileName),
+        content: result.content
       }
-    }
-    
-    // If no code blocks found, try to detect file creation intent
-    this.detectFileCreationIntent(text, toolCalls);
+    }));
   }
 
-  private detectFileCreationIntent(text: string, toolCalls: any[]): void {
-    console.log('Detecting file creation intent...');
-    
-    // Check if response contains content that looks like file content without code blocks
-    
-    // HTML content detection
-    if (text.includes('<!DOCTYPE html') || text.includes('<html')) {
-      console.log('HTML content detected without code blocks');
-      
-      // Extract HTML content
-      const htmlMatch = text.match(/(<!DOCTYPE html[\s\S]*?<\/html>)/i);
-      if (htmlMatch) {
-        const htmlContent = htmlMatch[1];
-        const fileName = this.extractFileName(text, 'html');
-        const absolutePath = this.createAbsolutePath(fileName);
-        
-        toolCalls.push({
-          id: `call_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          name: 'write_file',
-          args: {
-            file_path: absolutePath,
-            content: htmlContent
-          }
-        });
-        
-        console.log('Created tool call for HTML content detection');
-        return;
-      }
-    }
-    
-    // CSS content detection
-    if (text.includes('body {') || text.includes('.') && text.includes('{') && text.includes('}')) {
-      console.log('CSS content detected without code blocks');
-      const fileName = this.extractFileName(text, 'css');
-      const absolutePath = this.createAbsolutePath(fileName);
-      
-      // Extract CSS-like content
-      const cssMatch = text.match(/([^`\n]*\{[^}]*\}[^`\n]*)/);
-      if (cssMatch) {
-        toolCalls.push({
-          id: `call_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          name: 'write_file',
-          args: {
-            file_path: absolutePath,
-            content: cssMatch[1]
-          }
-        });
-        
-        console.log('Created tool call for CSS content detection');
-        return;
-      }
-    }
-    
-    // JavaScript content detection
-    if (text.includes('function ') || text.includes('console.log') || text.includes('const ') || text.includes('let ')) {
-      console.log('JavaScript content detected without code blocks');
-      const fileName = this.extractFileName(text, 'js');
-      const absolutePath = this.createAbsolutePath(fileName);
-      
-      // Use the whole response as JS content if it looks like JS
-      const content = this.generateBasicContent('js', fileName);
-      
-      toolCalls.push({
-        id: `call_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        name: 'write_file',
-        args: {
-          file_path: absolutePath,
-          content: content
-        }
-      });
-      
-      console.log('Created tool call for JavaScript content detection');
-      return;
-    }
-    
-    // Look for file creation keywords and patterns
-    const fileCreationPatterns = [
-      /(?:作成|create|make|write|generate).*?(\w+\.(html|css|js|py|java|cpp|c|php|rb|go|rs|swift|kt|json|xml|yaml|yml|md|txt|sh|sql))/gi,
-      /(\w+\.(html|css|js|py|java|cpp|c|php|rb|go|rs|swift|kt|json|xml|yaml|yml|md|txt|sh|sql)).*?(?:作成|create|make|write|generate)/gi,
-      /(test-debug|src|components|utils|lib)\/(\w+\.(html|css|js|py|java|cpp|c|php|rb|go|rs|swift|kt|json|xml|yaml|yml|md|txt|sh|sql))/gi
-    ];
-    
-    for (const pattern of fileCreationPatterns) {
-      let match;
-      pattern.lastIndex = 0;
-      
-      while ((match = pattern.exec(text)) !== null) {
-        let fileName = '';
-        let extension = '';
-        
-        if (match[1] && match[2]) {
-          fileName = match[1];
-          extension = match[2];
-        } else if (match[2] && match[3]) {
-          fileName = `${match[1]}/${match[2]}`;
-          extension = match[3];
-        }
-        
-        if (!fileName || !extension) continue;
-        
-        console.log('Found file creation intent:', { fileName, extension });
-        
-        // Create absolute file path
-        const absolutePath = this.createAbsolutePath(fileName);
-        
-        // Generate basic content based on file type
-        const content = this.generateBasicContent(extension, fileName);
-        
-        toolCalls.push({
-          id: `call_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          name: 'write_file',
-          args: {
-            file_path: absolutePath,
-            content: content
-          }
-        });
-        
-        console.log('Created tool call from intent detection');
-        return;
-      }
-    }
-    
-    console.log('No file creation intent detected');
-  }
-
-  private generateBasicContent(extension: string, fileName: string): string {
-    const baseName = fileName.split('/').pop()?.split('.')[0] || 'untitled';
-    
-    switch (extension) {
-      case 'html':
-        return `<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${baseName}</title>
-</head>
-<body>
-    <h1>${baseName}</h1>
-    <p>このファイルは自動生成されました。</p>
-</body>
-</html>`;
-      case 'css':
-        return `/* ${baseName} styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-}`;
-      case 'js':
-        return `// ${baseName}
-console.log('${baseName} loaded');`;
-      case 'py':
-        return `# ${baseName}
-print("${baseName}")`;
-      case 'json':
-        return `{
-  "name": "${baseName}",
-  "version": "1.0.0"
-}`;
-      case 'md':
-        return `# ${baseName}
-
-このファイルは自動生成されました。`;
-      default:
-        return `// ${baseName}
-// このファイルは自動生成されました。`;
-    }
-  }
-
-  private getFileExtension(language: string, content: string): string | null {
-    // Language to extension mapping
-    const languageMap: Record<string, string> = {
-      'html': 'html',
-      'css': 'css',
-      'javascript': 'js',
-      'js': 'js',
-      'typescript': 'ts',
-      'ts': 'ts',
-      'python': 'py',
-      'py': 'py',
-      'java': 'java',
-      'cpp': 'cpp',
-      'c': 'c',
-      'csharp': 'cs',
-      'php': 'php',
-      'ruby': 'rb',
-      'go': 'go',
-      'rust': 'rs',
-      'swift': 'swift',
-      'kotlin': 'kt',
-      'json': 'json',
-      'xml': 'xml',
-      'yaml': 'yaml',
-      'yml': 'yml',
-      'markdown': 'md',
-      'md': 'md',
-      'txt': 'txt',
-      'sh': 'sh',
-      'bash': 'sh',
-      'sql': 'sql',
-      'dockerfile': 'dockerfile',
-      'makefile': 'makefile'
-    };
-
-    // First try language mapping
-    if (language && languageMap[language]) {
-      return languageMap[language];
-    }
-
-    // Try to detect from content patterns
-    if (content.includes('<!DOCTYPE html') || content.includes('<html')) {
-      return 'html';
-    }
-    if (content.includes('def ') || content.includes('import ') || content.includes('from ')) {
-      return 'py';
-    }
-    if (content.includes('function ') || content.includes('const ') || content.includes('let ')) {
-      return 'js';
-    }
-    if (content.includes('{') && content.includes('}') && (content.includes('"') || content.includes("'"))) {
-      return 'json';
-    }
-
-    // Default to txt for any unrecognized code block
-    return 'txt';
-  }
-
-  private extractFileName(text: string, extension: string): string {
-    console.log('Extracting filename for extension:', extension);
-    
-    // Look for various filename patterns including directory paths
-    const patterns = [
-      // Japanese context patterns
-      new RegExp(`([a-zA-Z0-9_/-]+\\.${extension})(?:を|ファイル|作成|という)`, 'i'),
-      new RegExp(`(?:作成|つく|make|create).*?([a-zA-Z0-9_/-]+\\.${extension})`, 'i'),
-      
-      // Directory-specific patterns
-      new RegExp(`(test-debug|src|components|utils|lib|public|assets)/([a-zA-Z0-9_-]+\\.${extension})`, 'i'),
-      new RegExp(`(test-debug|src|components|utils|lib|public|assets)/([a-zA-Z0-9_-]+)(?!\\.)`, 'i'),
-      
-      // General file patterns
-      new RegExp(`([a-zA-Z0-9_/-]+\\.${extension})`, 'i'),
-      new RegExp(`([a-zA-Z0-9_/-]+)/([a-zA-Z0-9_-]+)`, 'i'),
-      new RegExp(`([a-zA-Z0-9_-]+\\.${extension})`, 'i'),
-      
-      // Any file with any extension
-      /([a-zA-Z0-9_\/-]+\.[a-zA-Z0-9]+)/i,
-      
-      // File creation context
-      /(?:file|create|make|write|作成|ファイル).*?([a-zA-Z0-9_\/-]+)/i,
-      
-      // Quoted filenames
-      /"([a-zA-Z0-9_\/-]+(?:\.[a-zA-Z0-9]+)?)"/i,
-      /'([a-zA-Z0-9_\/-]+(?:\.[a-zA-Z0-9]+)?)'/i,
-      
-      // Just the name mentioned
-      /([a-zA-Z0-9_-]+)/
-    ];
-
-    for (let i = 0; i < patterns.length; i++) {
-      const pattern = patterns[i];
-      const match = text.match(pattern);
-      
-      console.log(`Pattern ${i + 1} result:`, match);
-      
-      if (match && match[1]) {
-        const extractedName = match[1];
-        
-        // Handle directory/filename pattern
-        if (match[2]) {
-          const dir = match[1];
-          const filename = match[2];
-          const fullPath = `${dir}/${filename}`;
-          const result = fullPath.includes('.') ? fullPath : `${fullPath}.${extension}`;
-          console.log('Extracted filename (with directory):', result);
-          return result;
-        }
-        
-        // If it already has an extension, use it as is
-        if (extractedName.includes('.')) {
-          console.log('Extracted filename (with extension):', extractedName);
-          return extractedName;
-        }
-        
-        // Otherwise add the detected extension
-        const result = `${extractedName}.${extension}`;
-        console.log('Extracted filename (added extension):', result);
-        return result;
-      }
-    }
-
-    // Special handling for common Japanese patterns
-    const japaneseMatch = text.match(/(?:test-debug|テストデバッグ).*?(?:ディレクトリ|directory)/i);
-    if (japaneseMatch) {
-      const result = `test-debug/test.${extension}`;
-      console.log('Japanese pattern match:', result);
-      return result;
-    }
-
-    // Fallback with timestamp to avoid conflicts
-    const timestamp = Date.now().toString().slice(-6);
-    const fallback = `generated_${timestamp}.${extension}`;
-    console.log('Using fallback filename:', fallback);
-    return fallback;
-  }
-
-  private createAbsolutePath(fileName: string): string {
-    const workingDir = '/home/h.esaki/work/enfiy-ecosystem/enfiy-code';
-    
-    // If fileName already starts with a known directory structure, use it directly
-    if (fileName.startsWith('/') || fileName.startsWith('./') || fileName.startsWith('../')) {
-      return fileName.startsWith('/') ? fileName : `${workingDir}/${fileName}`;
-    }
-    
-    // If fileName contains directory structure, place it in the working directory
-    if (fileName.includes('/')) {
-      return `${workingDir}/${fileName}`;
-    }
-    
-    // For simple filenames, place them in the codetest directory
-    return `${workingDir}/codetest/${fileName}`;
-  }
 
   private convertOllamaToGeminiResponse(
     ollamaResponse: OllamaResponse,
-    isDone: boolean = true
+    isDone: boolean = true,
+    functionCalls: any[] = []
   ): GenerateContentResponse {
     const responseText = ollamaResponse.response;
     const parts: Part[] = [{ text: responseText }];
-    
-    console.log('=== OLLAMA RESPONSE START ===');
-    console.log(responseText);
-    console.log('=== OLLAMA RESPONSE END ===');
-    
-    // Parse text-based tool calls
-    const functionCalls = this.parseTextBasedToolCalls(responseText);
-    console.log('Function calls found:', functionCalls.length);
     
     const content = {
       parts,
@@ -555,7 +168,7 @@ print("${baseName}")`;
       // Add required properties with sensible defaults
       text: responseText,
       data: undefined,
-      functionCalls, // Now populated with parsed tool calls
+      functionCalls,
       executableCode: undefined,
       codeExecutionResult: undefined,
     };
@@ -598,6 +211,7 @@ print("${baseName}")`;
         temperature: params.config?.temperature || 0.7,
         top_p: params.config?.topP || 0.9,
         top_k: params.config?.topK || 40,
+        num_predict: params.config?.maxOutputTokens || 800, // Reasonable limit to ensure completion
       },
     };
 
@@ -613,7 +227,15 @@ print("${baseName}")`;
     }
 
     const data = await response.json() as OllamaResponse;
-    return this.convertOllamaToGeminiResponse(data);
+    
+    // For non-streaming responses, parse tool calls from the complete response
+    const toolCalls = this.parseTextBasedToolCalls(data.response);
+    if (toolCalls.length > 0) {
+      console.log('🎯 [Ollama] Non-streaming tool calls processed:', toolCalls.length);
+    }
+    
+    const geminiResponse = this.convertOllamaToGeminiResponse(data, true, toolCalls);
+    return geminiResponse;
   }
 
   async generateContentStream(params: {
@@ -651,6 +273,7 @@ print("${baseName}")`;
         temperature: params.config?.temperature || 0.7,
         top_p: params.config?.topP || 0.9,
         top_k: params.config?.topK || 40,
+        num_predict: params.config?.maxOutputTokens || 800, // Reasonable limit to ensure completion
       },
     };
 
@@ -678,6 +301,7 @@ print("${baseName}")`;
 
     const decoder = new TextDecoder();
     let buffer = '';
+    let accumulatedResponseText = ''; // Accumulate the full response text for tool calls only
 
     try {
       while (true) {
@@ -693,10 +317,27 @@ print("${baseName}")`;
           if (line.trim()) {
             try {
               const data = JSON.parse(line) as OllamaResponse;
-              yield this.convertOllamaToGeminiResponse(data, data.done);
+              
+              // Accumulate the response text for tool parsing
+              accumulatedResponseText += data.response;
               
               if (data.done) {
+                // For final response, only process tool calls without repeating content
+                // Use empty response text to avoid duplication, but provide accumulated text for tool parsing
+                const finalData = { ...data, response: '' };
+                
+                // Add tool calls from accumulated text if any
+                const toolCalls = this.parseTextBasedToolCalls(accumulatedResponseText);
+                if (toolCalls.length > 0) {
+                  console.log('🎯 [Ollama] Final tool calls processed:', toolCalls.length);
+                }
+                
+                const finalResponse = this.convertOllamaToGeminiResponse(finalData, true, toolCalls);
+                yield finalResponse;
                 return;
+              } else {
+                // For streaming chunks, yield individual chunks as-is
+                yield this.convertOllamaToGeminiResponse(data, false);
               }
             } catch (_e) {
               console.warn('Failed to parse Ollama response line:', line);
@@ -711,14 +352,38 @@ print("${baseName}")`;
 
   getRecommendedModels(): string[] {
     return [
-      'llama3.2:3b',
-      'llama3.2:8b',
-      'llama3.1:70b',
-      'mixtral:8x7b',
-      'qwen2.5:32b',
-      'gemma2:9b',
-      'phi3',
-      'codellama',
+      // 2025 Latest Recommendations
+      'deepseek-r1:7b',        // Latest reasoning model
+      'qwen3:8b',              // Latest Qwen model
+      'llama3.3:70b',          // Latest Meta model
+      'phi4:14b',              // Latest Microsoft reasoning
+      'gemma3:12b',            // Latest Google model
+      
+      // Coding Specialists
+      'qwen2.5-coder:32b',     // Specialized coding
+      'qwen2.5-coder:7b',      // Balanced coding
+      'starcoder2:7b',         // Latest code generation
+      'codellama:13b',         // Proven coding model
+      'deepseek-coder-v2:16b', // Advanced coding
+      
+      // General Purpose (by size)
+      'qwen2.5:0.5b',          // Ultra-fast
+      'llama3.2:1b',           // Lightweight
+      'qwen2.5:3b',            // Small but capable
+      'llama3.2:8b',           // Balanced
+      'qwen2.5:14b',           // Mid-range
+      'qwen2.5:32b',           // Large
+      'llama3.1:70b',          // Very large
+      'mixtral:8x7b',          // Mixture of experts
+      
+      // Vision Models
+      'llava:7b',              // Vision+language
+      'llava:13b',             // Larger vision
+      
+      // Efficiency
+      'smollm2:1.7b',          // Microsoft efficient
+      'gemma3:4b',             // Google efficient
+      'mistral:7b',            // Mistral AI
     ];
   }
 
@@ -757,10 +422,16 @@ print("${baseName}")`;
   private create404ErrorMessage(originalError: string): string {
     // Check if it's a model-related 404
     if (originalError.toLowerCase().includes('model') || originalError.toLowerCase().includes('not found')) {
+      const suggestions = this.getSuggestedModels(originalError);
       return `❌ Model not found. Please ensure the model is installed and available.\n\n` +
              `To check available models: ollama list\n` +
              `To install a model: ollama pull <model-name>\n` +
-             `Common models: llama3.2:8b, llama3.2:1b, codellama\n\n` +
+             `\n💡 Recommended models for coding:\n` +
+             `  • qwen2.5-coder:32b (Specialized coding model)\n` +
+             `  • llama3.2:8b (General purpose)\n` +
+             `  • deepseek-coder-v2:16b (Code generation)\n` +
+             `  • qwen2.5:7b (Fast and efficient)\n\n` +
+             (suggestions.length > 0 ? `Did you mean: ${suggestions.join(', ')}?\n\n` : '') +
              `Original error: ${originalError}`;
     }
     
@@ -768,5 +439,80 @@ print("${baseName}")`;
            `To start Ollama: ollama serve\n` +
            `Default endpoint: http://localhost:11434\n\n` +
            `Original error: ${originalError}`;
+  }
+
+  private getSuggestedModels(errorMessage: string): string[] {
+    const modelName = this.extractModelNameFromError(errorMessage);
+    if (!modelName) return [];
+    
+    const suggestions: string[] = [];
+    const recommended = this.getRecommendedModels();
+    
+    // Find similar model names
+    for (const model of recommended) {
+      if (model.includes(modelName.split(':')[0]) || 
+          model.includes(modelName.split('-')[0]) ||
+          this.calculateSimilarity(modelName.toLowerCase(), model.toLowerCase()) > 0.5) {
+        suggestions.push(model);
+      }
+    }
+    
+    return suggestions.slice(0, 3);
+  }
+
+  private extractModelNameFromError(errorMessage: string): string | null {
+    // Try to extract model name from error message
+    const patterns = [
+      /model[\s'"]([^\s'"]+)/i,
+      /([a-zA-Z0-9._-]+:[a-zA-Z0-9._-]+)/,
+      /not found[\s:]([^\s]+)/i
+    ];
+    
+    for (const pattern of patterns) {
+      const match = errorMessage.match(pattern);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    return null;
+  }
+
+  private calculateSimilarity(str1: string, str2: string): number {
+    const longer = str1.length > str2.length ? str1 : str2;
+    const shorter = str1.length > str2.length ? str2 : str1;
+    
+    if (longer.length === 0) return 1.0;
+    
+    const editDistance = this.levenshteinDistance(longer, shorter);
+    return (longer.length - editDistance) / longer.length;
+  }
+
+  private levenshteinDistance(str1: string, str2: string): number {
+    const matrix = [];
+    
+    for (let i = 0; i <= str2.length; i++) {
+      matrix[i] = [i];
+    }
+    
+    for (let j = 0; j <= str1.length; j++) {
+      matrix[0][j] = j;
+    }
+    
+    for (let i = 1; i <= str2.length; i++) {
+      for (let j = 1; j <= str1.length; j++) {
+        if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+          matrix[i][j] = matrix[i - 1][j - 1];
+        } else {
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j - 1] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j] + 1
+          );
+        }
+      }
+    }
+    
+    return matrix[str2.length][str1.length];
   }
 }

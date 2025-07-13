@@ -3,14 +3,6 @@
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import {
   CountTokensResponse,
   GenerateContentResponse,
@@ -181,21 +173,43 @@ export async function createContentGenerator(
  * Determine provider type from model name
  */
 function getProviderTypeFromModel(model: string): string {
-  if (model.includes('gpt') || model.includes('openai')) {
+  const modelLower = model.toLowerCase();
+  
+  // OpenAI models
+  if (modelLower.includes('gpt') || modelLower.includes('openai') || modelLower.startsWith('o3') || modelLower.startsWith('o4')) {
     return 'openai';
-  } else if (model.includes('claude') || model.includes('anthropic')) {
-    return 'anthropic';
-  } else if (model.includes('gemini')) {
-    return 'gemini';
-  } else if (model.includes('mistral')) {
-    return 'mistral';
-  } else if (model.includes('llama') || model.includes('codellama') || model.includes('ollama')) {
-    return 'ollama';
-  } else if (model.includes('huggingface') || model.includes('hf')) {
-    return 'huggingface';
-  } else {
-    return 'gemini'; // Default fallback
   }
+  
+  // Anthropic models
+  if (modelLower.includes('claude') || modelLower.includes('anthropic')) {
+    return 'anthropic';
+  }
+  
+  // Gemini models
+  if (modelLower.includes('gemini')) {
+    return 'gemini';
+  }
+  
+  // Mistral models
+  if (modelLower.includes('mistral') || modelLower.includes('codestral') || modelLower.includes('devstral')) {
+    return 'mistral';
+  }
+  
+  // Ollama models (expanded to include qwen, deepseek)
+  if (modelLower.includes('llama') || modelLower.includes('codellama') || modelLower.includes('ollama') ||
+      modelLower.includes('qwen') || modelLower.includes('deepseek') || modelLower.includes(':')) {
+    return 'ollama';
+  }
+  
+  // HuggingFace models (models with / or specific prefixes)
+  if (modelLower.includes('huggingface') || modelLower.includes('hf') || model.includes('/') ||
+      modelLower.startsWith('meta-') || modelLower.startsWith('microsoft/')) {
+    return 'huggingface';
+  }
+  
+  // Default to ollama for local-first approach
+  console.log(`⚠️  Unknown model type: ${model}, defaulting to Ollama (local AI)`);
+  return 'ollama';
 }
 
 /**

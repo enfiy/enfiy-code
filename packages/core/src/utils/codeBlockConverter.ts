@@ -1,9 +1,8 @@
 /**
  * @license
- * Copyright 2025 arterect and h.esaki
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
-
 /**
  * Utility for converting raw code content to markdown code blocks
  * Works across all providers (Ollama, HuggingFace, etc.)

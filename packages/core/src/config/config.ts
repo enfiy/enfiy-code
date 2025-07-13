@@ -3,14 +3,6 @@
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import * as path from 'node:path';
 import process from 'node:process';
 import {
@@ -171,7 +163,7 @@ export class Config {
   private readonly proxy: string | undefined;
   private readonly cwd: string;
   private readonly bugCommand: BugCommandSettings | undefined;
-  private readonly model: string;
+  private model: string;
   private readonly extensionContextFilePaths: string[];
   private modelSwitchedDuringSession: boolean = false;
   flashFallbackHandler?: FlashFallbackHandler;
@@ -275,6 +267,8 @@ export class Config {
   }
 
   setModel(newModel: string): void {
+    // Update both the content generator config and the main model property
+    this.model = newModel;
     if (this.contentGeneratorConfig) {
       this.contentGeneratorConfig.model = newModel;
       this.modelSwitchedDuringSession = true;

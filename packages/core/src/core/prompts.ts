@@ -3,14 +3,6 @@
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import path from 'node:path';
 import fs from 'node:fs';
 import { LSTool } from '../tools/ls.js';
@@ -125,7 +117,7 @@ When requested to perform tasks like fixing bugs, adding features, refactoring, 
 - **Security First:** Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
 
 ## Tool Usage
-- **File Paths:** Always use absolute paths when referring to files with tools like '${ReadFileTool.Name}' or '${WriteFileTool.Name}'. Relative paths are not supported. You must provide an absolute path.
+- **File Paths:** Use absolute paths when referring to files with tools like '${ReadFileTool.Name}' or '${WriteFileTool.Name}'. You can also use relative paths, which will be resolved relative to the current working directory provided in the context.
 - **Parallelism:** Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
 - **Command Execution:** Use the '${ShellTool.Name}' tool for running shell commands, remembering the safety rule to explain modifying commands first.
 - **Background Processes:** Use background processes (via \`&\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &\`. If unsure, ask the user.

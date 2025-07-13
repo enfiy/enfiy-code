@@ -1,16 +1,8 @@
 /**
  * @license
- * Copyright 2025 arterect and h.esaki
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
-
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import { ProviderType } from './types.js';
 
 export interface ModelInfo {
@@ -67,6 +59,42 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       capabilities: ['code', 'reasoning', 'debugging']
     },
     {
+      id: 'qwen2.5:7b',
+      name: 'Qwen 2.5 7B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Efficient 7B parameter model with strong capabilities',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning', 'fast']
+    },
+    {
+      id: 'qwen2.5:14b',
+      name: 'Qwen 2.5 14B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Balanced 14B parameter model',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning']
+    },
+    {
+      id: 'qwen2.5:32b',
+      name: 'Qwen 2.5 32B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Large Qwen model with advanced capabilities',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning', 'complex']
+    },
+    {
+      id: 'qwen3:latest',
+      name: 'Qwen 3 Latest',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Latest Qwen 3 model (experimental)',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning', 'experimental']
+    },
+    {
       id: 'deepseek-coder-v2:16b',
       name: 'DeepSeek Coder V2 16B',
       provider: ProviderType.OLLAMA,
@@ -82,6 +110,417 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Efficient 7B parameter model',
       contextLength: 32768,
+      capabilities: ['chat', 'code', 'fast']
+    },
+    // === 2025 Latest Models ===
+    // DeepSeek-R1 Series (Reasoning Models)
+    {
+      id: 'deepseek-r1:1.5b',
+      name: 'DeepSeek-R1 1.5B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Latest reasoning model, excellent for complex problem solving',
+      contextLength: 128000,
+      capabilities: ['reasoning', 'math', 'analysis', 'fast']
+    },
+    {
+      id: 'deepseek-r1:7b',
+      name: 'DeepSeek-R1 7B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Advanced reasoning model with strong analytical capabilities',
+      contextLength: 128000,
+      capabilities: ['reasoning', 'math', 'analysis', 'code']
+    },
+    {
+      id: 'deepseek-r1:8b',
+      name: 'DeepSeek-R1 8B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Balanced reasoning model for complex tasks',
+      contextLength: 128000,
+      capabilities: ['reasoning', 'math', 'analysis', 'code']
+    },
+    {
+      id: 'deepseek-r1:14b',
+      name: 'DeepSeek-R1 14B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Large reasoning model with enhanced problem-solving',
+      contextLength: 128000,
+      capabilities: ['reasoning', 'math', 'analysis', 'code', 'complex']
+    },
+    {
+      id: 'deepseek-r1:32b',
+      name: 'DeepSeek-R1 32B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Very large reasoning model for the most complex tasks',
+      contextLength: 128000,
+      capabilities: ['reasoning', 'math', 'analysis', 'code', 'complex']
+    },
+    {
+      id: 'deepseek-r1:70b',
+      name: 'DeepSeek-R1 70B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Flagship reasoning model with exceptional capabilities',
+      contextLength: 128000,
+      capabilities: ['reasoning', 'math', 'analysis', 'code', 'complex', 'research']
+    },
+    // Llama 3.3 Series (Latest Meta)
+    {
+      id: 'llama3.3:70b',
+      name: 'Llama 3.3 70B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Latest Meta model with improved performance and capabilities',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning', 'complex']
+    },
+    // Qwen3 Series (Latest Alibaba)
+    {
+      id: 'qwen3:0.6b',
+      name: 'Qwen3 0.6B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Ultra-fast small model for basic tasks',
+      contextLength: 128000,
+      capabilities: ['chat', 'fast', 'lightweight']
+    },
+    {
+      id: 'qwen3:1.7b',
+      name: 'Qwen3 1.7B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Compact model with good performance',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'fast']
+    },
+    {
+      id: 'qwen3:4b',
+      name: 'Qwen3 4B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Balanced small model for general use',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning']
+    },
+    {
+      id: 'qwen3:8b',
+      name: 'Qwen3 8B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'High-performance 8B model with strong capabilities',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning']
+    },
+    {
+      id: 'qwen3:14b',
+      name: 'Qwen3 14B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Large Qwen3 model for complex tasks',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning', 'complex']
+    },
+    {
+      id: 'qwen3:32b',
+      name: 'Qwen3 32B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Very large Qwen3 model with advanced capabilities',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning', 'complex']
+    },
+    // Gemma 3 Series (Latest Google)
+    {
+      id: 'gemma3:1b',
+      name: 'Gemma 3 1B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Ultra-efficient small model from Google',
+      contextLength: 8192,
+      capabilities: ['chat', 'fast', 'lightweight']
+    },
+    {
+      id: 'gemma3:4b',
+      name: 'Gemma 3 4B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Compact Google model with good performance',
+      contextLength: 8192,
+      capabilities: ['chat', 'code', 'fast']
+    },
+    {
+      id: 'gemma3:12b',
+      name: 'Gemma 3 12B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Large Gemma model with enhanced capabilities',
+      contextLength: 8192,
+      capabilities: ['chat', 'code', 'reasoning']
+    },
+    {
+      id: 'gemma3:27b',
+      name: 'Gemma 3 27B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Flagship Gemma model for complex tasks',
+      contextLength: 8192,
+      capabilities: ['chat', 'code', 'reasoning', 'complex']
+    },
+    // Phi-4 (Microsoft Reasoning)
+    {
+      id: 'phi4:14b',
+      name: 'Phi-4 14B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Microsoft\'s latest reasoning model with strong math capabilities',
+      contextLength: 16384,
+      capabilities: ['reasoning', 'math', 'analysis', 'code']
+    },
+    // Additional Qwen2.5 variants
+    {
+      id: 'qwen2.5:0.5b',
+      name: 'Qwen 2.5 0.5B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Ultra-lightweight model for basic tasks',
+      contextLength: 128000,
+      capabilities: ['chat', 'fast', 'lightweight']
+    },
+    {
+      id: 'qwen2.5:1.5b',
+      name: 'Qwen 2.5 1.5B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Small but capable model for general use',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'fast']
+    },
+    {
+      id: 'qwen2.5:3b',
+      name: 'Qwen 2.5 3B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Compact model with good balance of speed and capability',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'fast']
+    },
+    {
+      id: 'qwen2.5:72b',
+      name: 'Qwen 2.5 72B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Largest Qwen 2.5 model for complex tasks',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning', 'complex']
+    },
+    // Additional Qwen2.5-Coder variants
+    {
+      id: 'qwen2.5-coder:0.5b',
+      name: 'Qwen 2.5 Coder 0.5B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Ultra-fast coding model for basic tasks',
+      contextLength: 128000,
+      capabilities: ['code', 'fast', 'lightweight']
+    },
+    {
+      id: 'qwen2.5-coder:1.5b',
+      name: 'Qwen 2.5 Coder 1.5B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Small coding model with good performance',
+      contextLength: 128000,
+      capabilities: ['code', 'debugging', 'fast']
+    },
+    {
+      id: 'qwen2.5-coder:3b',
+      name: 'Qwen 2.5 Coder 3B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Compact coding model for general development',
+      contextLength: 128000,
+      capabilities: ['code', 'debugging', 'fast']
+    },
+    {
+      id: 'qwen2.5-coder:7b',
+      name: 'Qwen 2.5 Coder 7B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Balanced coding model for most development tasks',
+      contextLength: 128000,
+      capabilities: ['code', 'debugging', 'reasoning']
+    },
+    {
+      id: 'qwen2.5-coder:14b',
+      name: 'Qwen 2.5 Coder 14B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Large coding model for complex development',
+      contextLength: 128000,
+      capabilities: ['code', 'debugging', 'reasoning', 'complex']
+    },
+    // Llama 3.1 additional variants
+    {
+      id: 'llama3.1:8b',
+      name: 'Llama 3.1 8B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Efficient Llama 3.1 model for general use',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning']
+    },
+    {
+      id: 'llama3.1:405b',
+      name: 'Llama 3.1 405B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Massive Llama model for the most demanding tasks',
+      contextLength: 128000,
+      capabilities: ['chat', 'code', 'reasoning', 'complex', 'research']
+    },
+    // Llama 3.2 additional variants
+    {
+      id: 'llama3.2:1b',
+      name: 'Llama 3.2 1B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Ultra-efficient Llama model for edge computing',
+      contextLength: 128000,
+      capabilities: ['chat', 'fast', 'lightweight']
+    },
+    // Code Llama variants
+    {
+      id: 'codellama:7b',
+      name: 'Code Llama 7B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Specialized coding model based on Llama',
+      contextLength: 16384,
+      capabilities: ['code', 'debugging', 'generation']
+    },
+    {
+      id: 'codellama:13b',
+      name: 'Code Llama 13B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Larger coding model with enhanced capabilities',
+      contextLength: 16384,
+      capabilities: ['code', 'debugging', 'generation', 'reasoning']
+    },
+    {
+      id: 'codellama:34b',
+      name: 'Code Llama 34B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Large coding model for complex development tasks',
+      contextLength: 16384,
+      capabilities: ['code', 'debugging', 'generation', 'reasoning', 'complex']
+    },
+    // StarCoder2 variants
+    {
+      id: 'starcoder2:3b',
+      name: 'StarCoder2 3B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Latest code generation model from BigCode',
+      contextLength: 16384,
+      capabilities: ['code', 'generation', 'fast']
+    },
+    {
+      id: 'starcoder2:7b',
+      name: 'StarCoder2 7B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Balanced StarCoder model for code generation',
+      contextLength: 16384,
+      capabilities: ['code', 'generation', 'debugging']
+    },
+    {
+      id: 'starcoder2:15b',
+      name: 'StarCoder2 15B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Large StarCoder model for advanced code tasks',
+      contextLength: 16384,
+      capabilities: ['code', 'generation', 'debugging', 'complex']
+    },
+    // Mixtral variants
+    {
+      id: 'mixtral:8x7b',
+      name: 'Mixtral 8x7B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Mixture of experts model with 47B total parameters',
+      contextLength: 32768,
+      capabilities: ['chat', 'code', 'reasoning', 'complex']
+    },
+    {
+      id: 'mixtral:8x22b',
+      name: 'Mixtral 8x22B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Large mixture of experts model with exceptional capabilities',
+      contextLength: 64000,
+      capabilities: ['chat', 'code', 'reasoning', 'complex', 'research']
+    },
+    // Vision Models
+    {
+      id: 'llava:7b',
+      name: 'LLaVA 7B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Large Language and Vision Assistant for multimodal tasks',
+      contextLength: 4096,
+      capabilities: ['chat', 'vision', 'multimodal', 'analysis']
+    },
+    {
+      id: 'llava:13b',
+      name: 'LLaVA 13B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Larger vision-language model with enhanced capabilities',
+      contextLength: 4096,
+      capabilities: ['chat', 'vision', 'multimodal', 'analysis', 'reasoning']
+    },
+    {
+      id: 'llava:34b',
+      name: 'LLaVA 34B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Large vision-language model for complex visual tasks',
+      contextLength: 4096,
+      capabilities: ['chat', 'vision', 'multimodal', 'analysis', 'reasoning', 'complex']
+    },
+    // SmolLM2 (Microsoft)
+    {
+      id: 'smollm2:135m',
+      name: 'SmolLM2 135M',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Ultra-lightweight model for constrained environments',
+      contextLength: 8192,
+      capabilities: ['chat', 'fast', 'lightweight', 'edge']
+    },
+    {
+      id: 'smollm2:360m',
+      name: 'SmolLM2 360M',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Small efficient model for basic tasks',
+      contextLength: 8192,
+      capabilities: ['chat', 'fast', 'lightweight']
+    },
+    {
+      id: 'smollm2:1.7b',
+      name: 'SmolLM2 1.7B',
+      provider: ProviderType.OLLAMA,
+      category: 'local',
+      description: 'Larger SmolLM model with better capabilities',
+      contextLength: 8192,
       capabilities: ['chat', 'code', 'fast']
     }
   ],
@@ -298,6 +737,59 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       pricing: { input: 0.15, output: 0.45, unit: '$/1M tokens' },
       capabilities: ['code', 'debugging', 'development', 'fast']
     }
+  ],
+
+  [ProviderType.HUGGINGFACE]: [
+    {
+      id: 'meta-llama/Meta-Llama-3.3-70B-Instruct',
+      name: 'Llama 3.3 70B Instruct',
+      provider: ProviderType.HUGGINGFACE,
+      category: 'cloud',
+      description: 'Meta\'s latest large language model with improved instruction following',
+      contextLength: 128000,
+      pricing: { input: 0.7, output: 0.8, unit: '$/1M tokens' },
+      capabilities: ['chat', 'code', 'reasoning', 'instruction-following']
+    },
+    {
+      id: 'meta-llama/Meta-Llama-3.1-70B-Instruct',
+      name: 'Llama 3.1 70B Instruct',
+      provider: ProviderType.HUGGINGFACE,
+      category: 'cloud',
+      description: 'Powerful 70B parameter model with strong reasoning capabilities',
+      contextLength: 128000,
+      pricing: { input: 0.7, output: 0.8, unit: '$/1M tokens' },
+      capabilities: ['chat', 'code', 'reasoning', 'analysis']
+    },
+    {
+      id: 'meta-llama/Meta-Llama-3.1-8B-Instruct',
+      name: 'Llama 3.1 8B Instruct',
+      provider: ProviderType.HUGGINGFACE,
+      category: 'cloud',
+      description: 'Efficient 8B parameter model, good balance of performance and cost',
+      contextLength: 128000,
+      pricing: { input: 0.2, output: 0.2, unit: '$/1M tokens' },
+      capabilities: ['chat', 'code', 'fast', 'cost-effective']
+    },
+    {
+      id: 'Qwen/Qwen2.5-Coder-32B-Instruct',
+      name: 'Qwen 2.5 Coder 32B',
+      provider: ProviderType.HUGGINGFACE,
+      category: 'cloud',
+      description: 'Specialized coding model with excellent programming capabilities',
+      contextLength: 128000,
+      pricing: { input: 0.3, output: 0.3, unit: '$/1M tokens' },
+      capabilities: ['code', 'debugging', 'generation', 'refactoring']
+    },
+    {
+      id: 'microsoft/DialoGPT-large',
+      name: 'DialoGPT Large',
+      provider: ProviderType.HUGGINGFACE,
+      category: 'cloud',
+      description: 'Conversational AI model optimized for dialogue',
+      contextLength: 32000,
+      pricing: { input: 0.1, output: 0.1, unit: '$/1M tokens' },
+      capabilities: ['chat', 'conversation', 'fast']
+    }
   ]
 };
 
@@ -323,4 +815,131 @@ export function getModelsByCapability(capability: string): ModelInfo[] {
 
 export function findModel(modelId: string): ModelInfo | undefined {
   return getAllModels().find(model => model.id === modelId);
+}
+
+export function findModelByPartialMatch(partialId: string): ModelInfo[] {
+  const searchTerm = partialId.toLowerCase();
+  return getAllModels().filter(model => 
+    model.id.toLowerCase().includes(searchTerm) ||
+    model.name.toLowerCase().includes(searchTerm)
+  );
+}
+
+export function getRecommendedModelsForTask(task: 'code' | 'chat' | 'reasoning' | 'fast'): ModelInfo[] {
+  return getAllModels()
+    .filter(model => model.capabilities.includes(task))
+    .sort((a, b) => {
+      // Prioritize by category (local first), then by context length
+      if (a.category !== b.category) {
+        return a.category === 'local' ? -1 : 1;
+      }
+      return b.contextLength - a.contextLength;
+    })
+    .slice(0, 5);
+}
+
+export function validateModelCompatibility(modelId: string, providerType: ProviderType): boolean {
+  const model = findModel(modelId);
+  if (model) {
+    return model.provider === providerType;
+  }
+  
+  // For Ollama, allow any model that follows naming patterns
+  if (providerType === ProviderType.OLLAMA) {
+    return isValidOllamaModelPattern(modelId);
+  }
+  
+  return false;
+}
+
+export function isValidOllamaModelPattern(modelId: string): boolean {
+  // Common Ollama model patterns
+  const patterns = [
+    /^[a-zA-Z0-9_-]+:[a-zA-Z0-9._-]+$/, // family:version (e.g., llama3.2:8b)
+    /^[a-zA-Z0-9_-]+:[a-zA-Z0-9._-]+-[a-zA-Z0-9._-]+$/, // family:version-variant (e.g., llama3.2:8b-instruct)
+    /^[a-zA-Z0-9_-]+-[a-zA-Z0-9_-]+:[a-zA-Z0-9._-]+$/, // family-variant:version (e.g., qwen2.5-coder:32b)
+    /^[a-zA-Z0-9_-]+$/, // simple name (e.g., codellama)
+  ];
+  
+  return patterns.some(pattern => pattern.test(modelId));
+}
+
+export function getProviderModels(providerType: ProviderType, includeExperimental: boolean = false): ModelInfo[] {
+  const models = getModelsForProvider(providerType);
+  if (!includeExperimental) {
+    return models.filter(model => !model.capabilities.includes('experimental'));
+  }
+  return models;
+}
+
+export function inferModelCapabilities(modelId: string): string[] {
+  const capabilities: string[] = ['chat']; // Base capability
+  const modelLower = modelId.toLowerCase();
+  
+  // Reasoning models
+  if (modelLower.includes('r1') || modelLower.includes('phi4') || modelLower.includes('o3')) {
+    capabilities.push('reasoning', 'math', 'analysis');
+  }
+  
+  // Coding models
+  if (modelLower.includes('coder') || modelLower.includes('code') || modelLower.includes('star')) {
+    capabilities.push('code', 'debugging', 'generation');
+  }
+  
+  // Vision models
+  if (modelLower.includes('llava') || modelLower.includes('vl') || modelLower.includes('vision')) {
+    capabilities.push('vision', 'multimodal', 'analysis');
+  }
+  
+  // Size-based capabilities
+  const sizeMatch = modelId.match(/(\d+\.?\d*)([bm])/i);
+  if (sizeMatch) {
+    const size = parseFloat(sizeMatch[1]);
+    const unit = sizeMatch[2].toLowerCase();
+    
+    if (unit === 'm' || (unit === 'b' && size < 1)) {
+      capabilities.push('fast', 'lightweight', 'edge');
+    } else if (unit === 'b') {
+      if (size < 3) {
+        capabilities.push('fast', 'lightweight');
+      } else if (size < 10) {
+        capabilities.push('fast');
+      } else if (size > 30) {
+        capabilities.push('complex');
+        if (size > 70) {
+          capabilities.push('research');
+        }
+      }
+    }
+  }
+  
+  return capabilities;
+}
+
+export function createDynamicModelInfo(modelId: string, providerType: ProviderType): ModelInfo {
+  const capabilities = inferModelCapabilities(modelId);
+  
+  // Infer context length based on model family
+  let contextLength = 4096; // Default
+  const modelLower = modelId.toLowerCase();
+  
+  if (modelLower.includes('qwen') || modelLower.includes('llama3')) {
+    contextLength = 128000;
+  } else if (modelLower.includes('mixtral')) {
+    contextLength = modelId.includes('8x22b') ? 64000 : 32768;
+  } else if (modelLower.includes('gemma')) {
+    contextLength = 8192;
+  } else if (modelLower.includes('phi')) {
+    contextLength = 16384;
+  }
+  
+  return {
+    id: modelId,
+    name: modelId.charAt(0).toUpperCase() + modelId.slice(1).replace(/[:-]/g, ' '),
+    provider: providerType,
+    category: providerType === ProviderType.OLLAMA ? 'local' : 'cloud',
+    description: `Dynamically detected ${modelId} model`,
+    contextLength,
+    capabilities
+  };
 }

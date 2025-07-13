@@ -3,14 +3,6 @@
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import * as fs from 'fs';
 import * as path from 'path';
 import * as Diff from 'diff';
@@ -99,7 +91,7 @@ Expectation for required parameters:
         properties: {
           file_path: {
             description:
-              "The absolute path to the file to modify. Must start with '/'.",
+              "The path to the file to modify. Can be absolute (e.g., '/home/user/project/file.txt') or relative to the current working directory (e.g., 'test/file.txt').",
             type: 'string',
           },
           old_string: {
@@ -161,12 +153,16 @@ Expectation for required parameters:
       return 'Parameters failed schema validation.';
     }
 
-    if (!path.isAbsolute(params.file_path)) {
-      return `File path must be absolute: ${params.file_path}`;
+    let filePath = params.file_path;
+    // Resolve relative paths to absolute paths using the root directory
+    if (!path.isAbsolute(filePath)) {
+      filePath = path.resolve(this.rootDirectory, filePath);
+      // Update the params with the resolved path
+      params.file_path = filePath;
     }
 
-    if (!this.isWithinRoot(params.file_path)) {
-      return `File path must be within the root directory (${this.rootDirectory}): ${params.file_path}`;
+    if (!this.isWithinRoot(filePath)) {
+      return `File path must be within the root directory (${this.rootDirectory}): ${filePath}`;
     }
 
     return null;

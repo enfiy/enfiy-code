@@ -3,14 +3,6 @@
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import path from 'path';
 import { SchemaValidator } from '../utils/schemaValidator.js';
 import { makeRelative, shortenPath } from '../utils/paths.js';
@@ -61,9 +53,8 @@ export class ReadFileTool extends BaseTool<ReadFileToolParams, ToolResult> {
         properties: {
           absolute_path: {
             description:
-              "The absolute path to the file to read (e.g., '/home/user/project/file.txt'). Relative paths are not supported. You must provide an absolute path.",
+              "The path to the file to read. Can be absolute (e.g., '/home/user/project/file.txt') or relative to the current working directory (e.g., 'test/file.txt').",
             type: 'string',
-            pattern: '^/',
           },
           offset: {
             description:
@@ -93,9 +84,12 @@ export class ReadFileTool extends BaseTool<ReadFileToolParams, ToolResult> {
     ) {
       return 'Parameters failed schema validation.';
     }
-    const filePath = params.absolute_path;
+    let filePath = params.absolute_path;
+    // Resolve relative paths to absolute paths using the root directory
     if (!path.isAbsolute(filePath)) {
-      return `File path must be absolute, but was relative: ${filePath}. You must provide an absolute path.`;
+      filePath = path.resolve(this.rootDirectory, filePath);
+      // Update the params with the resolved path
+      params.absolute_path = filePath;
     }
     if (!isWithinRoot(filePath, this.rootDirectory)) {
       return `File path must be within the root directory (${this.rootDirectory}): ${filePath}`;

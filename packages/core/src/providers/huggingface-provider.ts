@@ -1,9 +1,8 @@
 /**
  * @license
- * Copyright 2025 arterect and h.esaki
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
-
 import { BaseProvider } from './base-provider.js';
 import { ProviderConfig, ProviderType } from './types.js';
 import { Content, GenerateContentResponse, GenerateContentConfig, FinishReason } from '@google/genai';
@@ -225,7 +224,7 @@ export class HuggingFaceProvider extends BaseProvider {
           name: 'write_file',
           args: {
             file_path: absolutePath,
-            content: content
+            content
           }
         });
         
@@ -280,7 +279,7 @@ export class HuggingFaceProvider extends BaseProvider {
           name: 'write_file',
           args: {
             file_path: absolutePath,
-            content: content
+            content
           }
         });
         

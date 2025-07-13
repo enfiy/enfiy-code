@@ -3,14 +3,6 @@
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import { 
   Content, 
   GenerateContentResponse, 
@@ -41,23 +33,130 @@ export class MultiProviderClient {
    * Determine provider type from model name
    */
   private getProviderTypeFromModel(model: string): ProviderType {
-    if (model.includes('gpt') || model.includes('openai')) {
+    const modelLower = model.toLowerCase();
+    
+    // OpenAI models
+    if (modelLower.includes('gpt') || modelLower.includes('openai') || modelLower.startsWith('o3') || modelLower.startsWith('o4')) {
       return ProviderType.OPENAI;
-    } else if (model.includes('claude') || model.includes('anthropic')) {
+    }
+    
+    // Anthropic models
+    if (modelLower.includes('claude') || modelLower.includes('anthropic')) {
       return ProviderType.ANTHROPIC;
-    } else if (model.includes('gemini')) {
-      return ProviderType.GEMINI;
-    } else if (model.includes('mistral')) {
-      return ProviderType.MISTRAL;
-    } else if (model.includes('llama') || model.includes('codellama') || model.includes('ollama')) {
-      return ProviderType.OLLAMA;
-    } else if (model.includes('huggingface') || model.includes('hf')) {
-      return ProviderType.HUGGINGFACE;
-    } else {
-      // Default to Gemini for unknown models
-      console.log(`⚠️  Unknown model type: ${model}, defaulting to Gemini`);
+    }
+    
+    // Gemini models
+    if (modelLower.includes('gemini')) {
       return ProviderType.GEMINI;
     }
+    
+    // Mistral models
+    if (modelLower.includes('mistral') || modelLower.includes('codestral') || modelLower.includes('devstral')) {
+      return ProviderType.MISTRAL;
+    }
+    
+    // Ollama models (expanded to include qwen, deepseek)
+    if (modelLower.includes('llama') || modelLower.includes('codellama') || modelLower.includes('ollama') ||
+        modelLower.includes('qwen') || modelLower.includes('deepseek') || modelLower.includes(':')) {
+      return ProviderType.OLLAMA;
+    }
+    
+    // HuggingFace models (models with / or specific prefixes)
+    if (modelLower.includes('huggingface') || modelLower.includes('hf') || model.includes('/') ||
+        modelLower.startsWith('meta-') || modelLower.startsWith('microsoft/')) {
+      return ProviderType.HUGGINGFACE;
+    }
+    
+    // Try to find in model registry first
+    const foundModel = this.findModelInRegistry(model);
+    if (foundModel) {
+      return foundModel.provider;
+    }
+    
+    // Suggest similar models if not found
+    const suggestions = this.getSimilarModels(model);
+    if (suggestions.length > 0) {
+      console.log(`⚠️  Model '${model}' not found. Did you mean one of these? ${suggestions.join(', ')}`);
+    } else {
+      console.log(`⚠️  Unknown model type: ${model}, defaulting to Ollama (local AI)`);
+    }
+    
+    // Default to Ollama for local-first approach
+    return ProviderType.OLLAMA;
+  }
+
+  private findModelInRegistry(modelId: string): any {
+    // Import model registry function
+    try {
+      const { findModel } = require('../providers/model-registry.js');
+      return findModel(modelId);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  private getSimilarModels(targetModel: string): string[] {
+    try {
+      const { getAllModels } = require('../providers/model-registry.js');
+      const allModels = getAllModels();
+      const suggestions: string[] = [];
+      
+      // Find models with similar names
+      const targetLower = targetModel.toLowerCase();
+      
+      for (const model of allModels) {
+        const modelLower = model.id.toLowerCase();
+        
+        // Check for partial matches or similar names
+        if (modelLower.includes(targetLower.split(':')[0]) || 
+            modelLower.includes(targetLower.split('-')[0]) ||
+            this.calculateSimilarity(targetLower, modelLower) > 0.6) {
+          suggestions.push(model.id);
+        }
+      }
+      
+      return suggestions.slice(0, 3); // Return top 3 suggestions
+    } catch (error) {
+      return [];
+    }
+  }
+
+  private calculateSimilarity(str1: string, str2: string): number {
+    const longer = str1.length > str2.length ? str1 : str2;
+    const shorter = str1.length > str2.length ? str2 : str1;
+    
+    if (longer.length === 0) return 1.0;
+    
+    const editDistance = this.levenshteinDistance(longer, shorter);
+    return (longer.length - editDistance) / longer.length;
+  }
+
+  private levenshteinDistance(str1: string, str2: string): number {
+    const matrix = [];
+    
+    for (let i = 0; i <= str2.length; i++) {
+      matrix[i] = [i];
+    }
+    
+    for (let j = 0; j <= str1.length; j++) {
+      matrix[0][j] = j;
+    }
+    
+    for (let i = 1; i <= str2.length; i++) {
+      for (let j = 1; j <= str1.length; j++) {
+        if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+          matrix[i][j] = matrix[i - 1][j - 1];
+        } else {
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j - 1] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j] + 1
+          );
+        }
+      }
+    }
+    
+    return matrix[str2.length][str1.length];
   }
 
   /**
@@ -105,7 +204,7 @@ export class MultiProviderClient {
 
     try {
       // Create provider config
-      let apiKey = this.getApiKeyForProvider(providerType);
+      const apiKey = this.getApiKeyForProvider(providerType);
       
       if (providerType !== ProviderType.OLLAMA && !apiKey) {
         throw new Error(`API key not found for ${providerType}. Please set the corresponding environment variable.`);

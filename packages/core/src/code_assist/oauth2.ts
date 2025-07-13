@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import { OAuth2Client, Credentials } from 'google-auth-library';
 import * as http from 'http';
 import url from 'url';
@@ -104,7 +97,7 @@ export async function getOauthClient(): Promise<OAuth2Client> {
           throw err;
         });
         console.log('✅ Browser opened successfully via PowerShell');
-      } catch (wslError) {
+      } catch (_wslError) {
         console.log('WSL PowerShell browser failed, trying wslview...');
         try {
           const { spawn } = await import('child_process');
@@ -114,7 +107,7 @@ export async function getOauthClient(): Promise<OAuth2Client> {
             throw err;
           });
           console.log('✅ Browser opened successfully via wslview');
-        } catch (wslviewError) {
+        } catch (_wslviewError) {
           console.log('wslview failed, falling back to open package...');
           await open(webLogin.authUrl);
         }

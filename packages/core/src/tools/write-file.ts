@@ -3,14 +3,6 @@
  * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
-
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import fs from 'fs';
 import path from 'path';
 import * as Diff from 'diff';
@@ -80,7 +72,7 @@ export class WriteFileTool
         properties: {
           file_path: {
             description:
-              "The absolute path to the file to write to (e.g., '/home/user/project/file.txt'). Relative paths are not supported.",
+              "The path to the file to write to. Can be absolute (e.g., '/home/user/project/file.txt') or relative to the current working directory (e.g., 'test/file.txt').",
             type: 'string',
           },
           content: {
@@ -118,9 +110,12 @@ export class WriteFileTool
     ) {
       return 'Parameters failed schema validation.';
     }
-    const filePath = params.file_path;
+    let filePath = params.file_path;
+    // Resolve relative paths to absolute paths using the target directory
     if (!path.isAbsolute(filePath)) {
-      return `File path must be absolute: ${filePath}`;
+      filePath = path.resolve(this.config.getTargetDir(), filePath);
+      // Update the params with the resolved path
+      params.file_path = filePath;
     }
     if (!this.isWithinRoot(filePath)) {
       return `File path must be within the root directory (${this.config.getTargetDir()}): ${filePath}`;

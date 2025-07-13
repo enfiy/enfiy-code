@@ -1,9 +1,8 @@
 /**
  * @license
- * Copyright 2025 arterect and h.esaki
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
-
 import { Provider, ProviderConfig, ProviderType } from './types.js';
 import { Content, GenerateContentResponse, GenerateContentConfig } from '@google/genai';
 import { CodeBlockConverter } from '../utils/codeBlockConverter.js';

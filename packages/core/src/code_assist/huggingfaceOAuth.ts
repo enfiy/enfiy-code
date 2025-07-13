@@ -1,7 +1,7 @@
 /**
  * @license
- * Copyright 2025 The Enfiy Community Contributors
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import * as http from 'http';
@@ -83,7 +83,7 @@ export async function getHuggingFaceOAuthClient(): Promise<HFOAuthResponse> {
           throw err;
         });
         console.log('✅ Browser opened successfully via PowerShell');
-      } catch (wslError) {
+      } catch (_wslError) {
         console.log('WSL PowerShell browser failed, trying wslview...');
         try {
           const { spawn } = await import('child_process');
@@ -93,7 +93,7 @@ export async function getHuggingFaceOAuthClient(): Promise<HFOAuthResponse> {
             throw err;
           });
           console.log('✅ Browser opened successfully via wslview');
-        } catch (wslviewError) {
+        } catch (_wslviewError) {
           console.log('wslview failed, falling back to open package...');
           await open(webLogin.authUrl);
         }
@@ -102,7 +102,7 @@ export async function getHuggingFaceOAuthClient(): Promise<HFOAuthResponse> {
       await open(webLogin.authUrl);
     }
     console.log('✅ Browser opened successfully');
-  } catch (error) {
+  } catch (_error) {
     console.log('⚠️ Failed to open browser automatically');
     console.log('Please manually copy and paste this URL into your browser:');
     console.log('');
@@ -149,7 +149,7 @@ async function authWithHFWeb(): Promise<HFWebLogin> {
     scope: HF_OAUTH_SCOPES.join(' '),
     code_challenge: codeChallenge,
     code_challenge_method: 'S256',
-    state: state
+    state
   });
 
   const authUrl = `${HF_OAUTH_BASE_URL}?${authParams.toString()}`;
@@ -208,8 +208,8 @@ async function authWithHFWeb(): Promise<HFWebLogin> {
         }
         
         server.close();
-      } catch (error) {
-        reject(error);
+      } catch (_error) {
+        reject(_error);
         server.close();
       }
     });
@@ -230,7 +230,7 @@ async function exchangeCodeForToken(
 ): Promise<HFOAuthResponse> {
   const tokenParams = new URLSearchParams({
     grant_type: 'authorization_code',
-    code: code,
+    code,
     redirect_uri: redirectUri,
     client_id: HF_CLIENT_ID,
     code_verifier: codeVerifier
