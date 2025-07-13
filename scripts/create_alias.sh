@@ -1,5 +1,10 @@
 #!/bin/bash
-
+/**
+ * @license
+ * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
+ * SPDX-License-Identifier: Apache-2.0
+ */
 # This script creates an alias for the Enfiy Code
 
 # Determine the project directory

@@ -1,11 +1,10 @@
 #!/usr/bin/env node
-
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 // Example proxy server that listens on :::8877 and only allows HTTPS connections to example.com.
 // Set `GEMINI_SANDBOX_PROXY_COMMAND=scripts/example-proxy.js` to run proxy alongside sandbox
 // Test via `curl https://example.com` inside sandbox (in shell mode or via shell tool)

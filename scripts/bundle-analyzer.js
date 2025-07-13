@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 /**
  * @license
- * Copyright 2025 h.esaki
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -58,7 +57,7 @@ function analyzeBundleSize() {
   if (fs.existsSync(BUNDLE_SIZE_HISTORY)) {
     try {
       history = JSON.parse(fs.readFileSync(BUNDLE_SIZE_HISTORY, 'utf8'));
-    } catch (e) {
+    } catch {
       console.warn('Failed to load bundle size history');
     }
   }
