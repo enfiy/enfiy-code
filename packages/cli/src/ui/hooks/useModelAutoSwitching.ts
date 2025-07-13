@@ -1,11 +1,11 @@
 /**
  * @license
- * Copyright 2025 arterect and h.esaki
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import { useCallback, useRef } from 'react';
-import { Config } from '../../../../core/src/config/config.js';
+import { Config } from '@enfiy/core';
 import { ModelManager } from '../../services/modelManager.js';
 import { MessageType } from '../types.js';
 

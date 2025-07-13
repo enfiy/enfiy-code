@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import { useEffect, useRef } from 'react';
 import { useStdin } from 'ink';
 import readline from 'readline';
@@ -75,8 +68,8 @@ export function useKeypress(
         });
       }
       
-      // Handle Japanese IME composition
-      if (key.sequence && key.sequence.length > 0) {
+      // Handle Japanese IME composition (but not during paste operations)
+      if (!isPaste && key.sequence && key.sequence.length > 0) {
         const firstCharCode = key.sequence.charCodeAt(0);
         const currentTime = Date.now();
         
@@ -173,18 +166,19 @@ export function useKeypress(
         isPaste = true;
       } else if (key.name === 'paste-end') {
         isPaste = false;
+        const pastedText = pasteBuffer.toString('utf8');
         onKeypressRef.current({
           name: '',
           ctrl: false,
           meta: false,
           shift: false,
           paste: true,
-          sequence: pasteBuffer.toString(),
+          sequence: pastedText,
         });
         pasteBuffer = Buffer.alloc(0);
       } else {
         if (isPaste) {
-          pasteBuffer = Buffer.concat([pasteBuffer, Buffer.from(key.sequence)]);
+          pasteBuffer = Buffer.concat([pasteBuffer, Buffer.from(key.sequence, 'utf8')]);
         } else {
           // Handle special keys
           if (key.name === 'return' && key.sequence === '\x1B\r') {
@@ -238,7 +232,7 @@ export function useKeypress(
           meta: false,
           shift: false,
           paste: true,
-          sequence: pasteBuffer.toString(),
+          sequence: pasteBuffer.toString('utf8'),
         });
         pasteBuffer = Buffer.alloc(0);
       }

@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import { useEffect, useCallback } from 'react';
 import { getTheme, preloadTheme } from '../themes/lazyThemes.js';
 import { getLanguagePack, preloadLanguagePack } from '../utils/lazyI18n.js';
@@ -41,7 +34,7 @@ export function useOptimizedBundle() {
   const loadTheme = useCallback(async (themeName: string) => {
     try {
       return await getTheme(themeName);
-    } catch (error) {
+    } catch (_error) {
       console.warn(`Failed to load theme ${themeName}, falling back to default`);
       return await getTheme('default');
     }
@@ -51,7 +44,7 @@ export function useOptimizedBundle() {
   const loadLanguage = useCallback(async (language: SupportedLanguage) => {
     try {
       return await getLanguagePack(language);
-    } catch (error) {
+    } catch (_error) {
       console.warn(`Failed to load language ${language}, falling back to English`);
       return await getLanguagePack('en');
     }

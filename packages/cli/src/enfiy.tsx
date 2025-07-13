@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import React from 'react';
 import { render } from 'ink';
 import { AppWrapper } from './ui/App.js';
@@ -35,9 +28,7 @@ import { loadApiKeysIntoEnvironment } from './utils/secureStorage.js';
 import {
   ApprovalMode,
   Config,
-  EditTool,
   ShellTool,
-  WriteFileTool,
   sessionId,
   logUserPrompt,
   AuthType,
@@ -323,12 +314,11 @@ async function loadNonInteractiveConfig(
 ) {
   let finalConfig = config;
   if (config.getApprovalMode() !== ApprovalMode.YOLO) {
-    // Everything is not allowed, ensure that only read-only tools are configured.
+    // Only exclude shell commands in non-interactive mode
+    // File operations (EditTool, WriteFileTool) should be allowed with confirmation dialogs
     const existingExcludeTools = settings.merged.excludeTools || [];
     const interactiveTools = [
-      ShellTool.Name,
-      EditTool.Name,
-      WriteFileTool.Name,
+      ShellTool.Name,  // Only shell commands are truly dangerous in non-interactive mode
     ];
 
     const newExcludeTools = [

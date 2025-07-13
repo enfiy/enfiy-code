@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import stripAnsi from 'strip-ansi';
 import { spawnSync } from 'child_process';
 import fs from 'fs';
@@ -53,17 +46,20 @@ function isWordChar(ch: string | undefined): boolean {
  * Control characters such as delete break terminal UI rendering.
  */
 function stripUnsafeCharacters(str: string): string {
-  const stripped = stripAnsi(str);
-  return toCodePoints(stripped)
+  // First strip ANSI escape codes, then remove control characters
+  const withoutAnsi = stripAnsi(str);
+  
+  // Only remove control characters that could break terminal rendering
+  return Array.from(withoutAnsi)
     .filter((char) => {
       const code = char.codePointAt(0);
       if (code === undefined) {
         return false;
       }
-      // Only filter out actual control characters
-      // Allow all other characters including multi-byte Unicode
-      const isUnsafe = code === 127 || (code < 32 && code !== 13 && code !== 10 && code !== 9);
-      return !isUnsafe;
+      // Only filter out DEL (127) and control characters < 32
+      // BUT preserve tab (9), newline (10), and carriage return (13)
+      const isControlChar = code === 127 || (code < 32 && code !== 9 && code !== 10 && code !== 13);
+      return !isControlChar;
     })
     .join('');
 }
@@ -634,9 +630,29 @@ export function useTextBuffer({
 
       for (const op of expandedOps) {
         if (op.type === 'insert') {
-          const str = stripUnsafeCharacters(
-            op.payload.replace(/\r\n/g, '\n').replace(/\r/g, '\n'),
-          );
+          const originalPayload = op.payload;
+          const normalizedPayload = op.payload.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+          const str = stripUnsafeCharacters(normalizedPayload);
+          
+          // Debug for mixed character operations
+          const hasMixedChars = originalPayload.length > 1 && 
+            originalPayload.split('').some(c => c.charCodeAt(0) > 127) && 
+            originalPayload.split('').some(c => c.charCodeAt(0) <= 127);
+          
+          if (hasMixedChars || (originalPayload.length > 0 && originalPayload.charCodeAt(0) > 127)) {
+            console.log('[APPLY_OPS] Processing insert operation:', {
+              originalPayload,
+              normalizedPayload,
+              strippedPayload: str,
+              hasMixedChars,
+              payloadDetails: Array.from(originalPayload).map(c => ({
+                char: c,
+                code: c.charCodeAt(0),
+                isAscii: c.charCodeAt(0) <= 127
+              })),
+              beforeText: newLines.join('\n'),
+            });
+          }
           
           const parts = str.split('\n');
           const lineContent = currentLine(newCursorRow);
@@ -754,17 +770,7 @@ export function useTextBuffer({
       }
       dbg('insert', { ch, beforeCursor: [cursorRow, cursorCol] });
       
-      // Debug logging for Japanese input
-      if (ch.length > 0 && ch.charCodeAt(0) > 127) {
-        console.log('[INSERT] Inserting non-ASCII character:', {
-          char: ch,
-          length: ch.length,
-          charCodes: Array.from(ch).map(c => c.charCodeAt(0)),
-          beforeText: text,
-        });
-      }
-      
-      // Optimized for multilingual input
+      // Clean the input while preserving all printable characters
       ch = stripUnsafeCharacters(ch);
 
       // Check for drag and drop of file paths
@@ -1441,7 +1447,17 @@ export function useTextBuffer({
         if (key.paste) {
           // For paste events, insert the entire sequence directly.
           // stripUnsafeCharacters will handle cleaning.
+          console.log('[HANDLE_INPUT] Paste event detected:', {
+            input,
+            inputLength: input.length,
+            containsJapanese: input.split('').some(c => c.charCodeAt(0) > 127),
+            beforeText: text,
+          });
           insert(input);
+          console.log('[HANDLE_INPUT] After paste insertion:', {
+            afterText: text,
+            cursor: [cursorRow, cursorCol],
+          });
         } else {
           // For regular key presses, filter out control characters.
           const isControlChar = input.length === 1 && (

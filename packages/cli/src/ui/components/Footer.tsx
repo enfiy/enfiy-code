@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
@@ -85,7 +78,7 @@ export const Footer: React.FC<FooterProps> = ({
   const authType = getAuthType(model);
   const modelDisplay = !model ? (
     <Text color={Colors.Gray}>AI not selected</Text>
-  ) : model.includes('llama') || model.includes('mistral') || model.includes('phi') || model.includes('qwen') ? (
+  ) : model.includes('llama') || model.includes('mistral') || model.includes('phi') || model.includes('qwen') || model.includes('deepseek') ? (
     <Text color={Colors.AccentBlue}>[Local] {model}</Text>
   ) : model.includes('gemini') || model.includes('gpt') || model.includes('claude') || model.includes('anthropic') ? (
     <Text color={Colors.AccentBlue}>[Cloud] {model}{authType}</Text>
@@ -166,7 +159,7 @@ export const Footer: React.FC<FooterProps> = ({
               </Text>
             ) : (
               <Text color={Colors.AccentYellow}>
-                isolated environment <Text color={Colors.Gray}>(recommended)</Text>
+                Private work room <Text color={Colors.Gray}>(recommended)</Text>
               </Text>
             )}
           </Box>

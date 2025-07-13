@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import { Box, Newline, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
 
@@ -28,35 +21,34 @@ export const EnfiyPrivacyNotice = ({ onExit }: EnfiyPrivacyNoticeProps) => {
   return (
     <Box flexDirection="column" marginBottom={1}>
       <Text bold color={Colors.AccentBlue}>
-        Gemini API Key Notice
+        Private Work Room - API Key Authentication
       </Text>
       <Newline />
       <Text>
-        By using the Gemini API<Text color={Colors.AccentBlue}>[1]</Text>,
-        Google AI Studio
-        <Text color={Colors.AccentRed}>[2]</Text>, and the other Google
-        developer services that reference these terms (collectively, the
-        &quot;APIs&quot; or &quot;Services&quot;), you are agreeing to Google
-        APIs Terms of Service (the &quot;API Terms&quot;)
-        <Text color={Colors.AccentGreen}>[3]</Text>, and the Gemini API
-        Additional Terms of Service (the &quot;Additional Terms&quot;)
-        <Text color={Colors.AccentBlue}>[4]</Text>.
+        🔒 <Text color={Colors.AccentGreen}>Your data stays private</Text> when using API key authentication.
+        All processing happens in your private work room environment.
       </Text>
       <Newline />
       <Text>
-        <Text color={Colors.AccentBlue}>[1]</Text>{' '}
-        https://ai.google.dev/docs/gemini_api_overview
+        ✓ <Text color={Colors.AccentBlue}>Local processing</Text> - Your code and conversations are processed locally
       </Text>
       <Text>
-        <Text color={Colors.AccentRed}>[2]</Text> https://aistudio.google.com/
+        ✓ <Text color={Colors.AccentGreen}>No data sharing</Text> - We don&apos;t store or share your data
       </Text>
       <Text>
-        <Text color={Colors.AccentGreen}>[3]</Text>{' '}
-        https://developers.google.com/terms
+        ✓ <Text color={Colors.AccentYellow}>Full control</Text> - You control where your API requests go
       </Text>
+      <Newline />
       <Text>
-        <Text color={Colors.AccentBlue}>[4]</Text>{' '}
-        https://ai.google.dev/gemini-api/terms
+        When using cloud AI providers with API keys, your data is sent directly to the provider
+        according to their terms of service. Enfiy Code acts as a secure client.
+      </Text>
+      <Newline />
+      <Text color={Colors.Gray}>
+        For more information about privacy and security, visit:
+      </Text>
+      <Text color={Colors.AccentBlue}>
+        https://github.com/enfiy-ecosystem/enfiy-code/blob/main/docs/privacy-security.md
       </Text>
       <Newline />
       <Text color={Colors.Gray}>Press Esc to exit.</Text>

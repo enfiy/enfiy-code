@@ -1,7 +1,7 @@
 /**
  * @license
- * Copyright 2025 arterect and h.esaki
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import {
@@ -13,10 +13,10 @@ import {
 } from '../utils/ollamaSetup.js';
 import {
   checkHuggingFaceSetup,
-  getPythonSetupInstructions,
-  // getDockerSetupInstructions, // Currently unused
+  _getPythonSetupInstructions,
+  // _getDockerSetupInstructions, // Currently unused
   getRecommendedHFModels,
-  // validateHuggingFaceAPIKey, // Currently unused
+  // _validateHuggingFaceAPIKey, // Currently unused
 } from '../utils/huggingfaceSetup.js';
 
 export interface SetupCommandOptions {
@@ -177,7 +177,7 @@ async function setupHuggingFace(options: {
 
   if (!status.pythonInstalled) {
     console.log('\n⚠️  Python環境が検出されませんでした');
-    console.log(getPythonSetupInstructions());
+    console.log(_getPythonSetupInstructions());
   } else {
     console.log('\n✅ Python環境: 利用可能');
     

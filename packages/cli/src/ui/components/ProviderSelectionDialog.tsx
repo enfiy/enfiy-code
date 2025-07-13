@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -22,11 +15,12 @@ interface ProviderSelectionDialogProps {
   onSelect: (provider: ProviderType, model: string) => void;
   onCancel: () => void;
   onSetupRequired: (provider: ProviderType) => void;
-  onManageProvider?: (provider: ProviderType) => void;
+  _onManageProvider?: (provider: ProviderType) => void;
   onOpenAPISettings?: () => void;
   _availableTerminalHeight?: number;
   terminalWidth: number;
   inputWidth?: number;
+  preselectedProvider?: ProviderType; // New prop to preselect a provider
 }
 
 type SelectionMode = 'category' | 'provider' | 'model' | 'api-settings';
@@ -35,15 +29,26 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
   onSelect,
   onCancel,
   onSetupRequired,
-  onManageProvider,
+  _onManageProvider,
   onOpenAPISettings,
   _availableTerminalHeight,
   terminalWidth,
   inputWidth,
+  preselectedProvider,
 }) => {
-  const [mode, setMode] = useState<SelectionMode>('category');
-  const [selectedCategory, setSelectedCategory] = useState<'local' | 'cloud' | 'none' | null>(null);
-  const [selectedProvider, setSelectedProvider] = useState<ProviderType | null>(null);
+  const [mode, setMode] = useState<SelectionMode>(() => 
+    // If we have a preselected provider, go directly to model selection
+     preselectedProvider ? 'model' : 'category'
+  );
+  const [selectedCategory, setSelectedCategory] = useState<'local' | 'cloud' | 'none' | null>(() => {
+    // If we have a preselected provider, determine its category
+    if (preselectedProvider) {
+      const localProviders = [ProviderType.OLLAMA, ProviderType.VLLM, ProviderType.HUGGINGFACE];
+      return localProviders.includes(preselectedProvider) ? 'local' : 'cloud';
+    }
+    return null;
+  });
+  const [selectedProvider, setSelectedProvider] = useState<ProviderType | null>(preselectedProvider || null);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [availableProviders, setAvailableProviders] = useState<ProviderType[]>([]);
   const [availableModels, setAvailableModels] = useState<ModelInfo[]>([]);
@@ -141,8 +146,8 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
             configs[provider] = true; // Other local providers don't need checking
           }
         } else {
-          // For cloud providers, always show as needing setup to allow authentication method selection
-          configs[provider] = false;
+          // For cloud providers, check if they have stored credentials
+          configs[provider] = hasStoredCredentials(provider);
         }
       }
       
@@ -177,18 +182,18 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
   };
 
   // Get status indicator
-  const getStatusIndicator = (isConfigured: boolean): string => {
-    return isConfigured ? '•' : '◦'; // Small bullet vs small hollow circle
-  };
+  const getStatusIndicator = (isConfigured: boolean): string => 
+     isConfigured ? '•' : '◦' // Small bullet vs small hollow circle
+  ;
 
   // Get status indicator color
-  const getStatusColor = (isConfigured: boolean): string => {
-    return isConfigured ? Colors.AccentGreen : Colors.Gray; // Green for configured, gray for unconfigured
-  };
+  const getStatusColor = (isConfigured: boolean): string => 
+     isConfigured ? Colors.AccentGreen : Colors.Gray // Green for configured, gray for unconfigured
+  ;
 
   // Get status legend with proper colors
-  const getStatusLegend = (): { text: string; color: string }[] => {
-    const isLocal = selectedCategory === 'local';
+  const getStatusLegend = (): Array<{ text: string; color: string }> => {
+    const _isLocal = selectedCategory === 'local';
     return [
       { text: '•', color: Colors.AccentGreen },
       { text: ' Configured', color: Colors.Gray },

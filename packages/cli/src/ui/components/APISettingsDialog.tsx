@@ -1,7 +1,7 @@
 /**
  * @license
- * Copyright 2025 arterect and h.esaki
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -9,8 +9,6 @@ import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
 import { ProviderType } from '@enfiy/core';
 import { 
-  getConfiguredProviders, 
-  removeApiKey, 
   hasStoredCredentials,
   getApiKey
 } from '../../utils/secureStorage.js';

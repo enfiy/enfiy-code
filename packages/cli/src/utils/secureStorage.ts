@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import { debugLogger } from './debugLogger.js';
 
 import * as fs from 'node:fs';
@@ -23,7 +16,7 @@ const SECURE_CONFIG_FILE = path.join(ENFIY_CONFIG_DIR, 'secure.json');
 const KEY_FILE = path.join(ENFIY_CONFIG_DIR, '.key');
 
 // Security constants
-const KEY_DERIVATION_ITERATIONS = 100000; // PBKDF2 iterations
+const _KEY_DERIVATION_ITERATIONS = 100000; // PBKDF2 iterations
 const SALT_LENGTH = 32;
 const KEY_LENGTH = 32;
 const IV_LENGTH = 16;
@@ -169,7 +162,7 @@ function decrypt(encryptedData: { encrypted: string; iv: string; tag: string; sa
     let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
-  } catch (error) {
+  } catch (_error) {
     throw new Error('Decryption failed - data may be corrupted or tampered with');
   }
 }
@@ -385,8 +378,8 @@ export function validateApiKey(provider: string, apiKey: string): boolean {
     anthropic: /^sk-ant-api03-[A-Za-z0-9_-]{95}$/,
     
     // Google (Gemini) - Very flexible pattern to accept any reasonable key format
-    gemini: /^AIza.{30,}$/,
-    google: /^AIza.{30,}$/,
+    gemini: /^AIza.{20,}$/,
+    google: /^AIza.{20,}$/,
     
     // Mistral
     mistral: /^[A-Za-z0-9]{32,}$/,

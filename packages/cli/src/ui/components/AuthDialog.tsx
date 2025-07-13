@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import React, { useState } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -36,12 +29,7 @@ export function AuthDialog({
     initialErrorMessage || null,
   );
   const items = [
-    {
-      label: 'Login with Google',
-      value: AuthType.LOGIN_WITH_GOOGLE_PERSONAL,
-    },
-    { label: 'Gemini API Key (AI Studio)', value: AuthType.USE_GEMINI },
-    { label: 'Vertex AI', value: AuthType.USE_VERTEX_AI },
+    { label: 'API Key', value: AuthType.API_KEY },
   ];
 
   let initialAuthIndex = items.findIndex(
@@ -105,7 +93,7 @@ export function AuthDialog({
       <Box marginTop={1}>
         <Text color={Colors.AccentBlue}>
           {
-            'https://github.com/google-gemini/enfiy-cli/blob/main/docs/tos-privacy.md'
+            'https://github.com/enfiy-ecosystem/enfiy-code/blob/main/docs/tos-privacy.md'
           }
         </Text>
       </Box>

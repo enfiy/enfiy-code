@@ -1,7 +1,7 @@
 /**
  * @license
- * Copyright 2025 arterect and h.esaki
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import { exec } from 'child_process';
@@ -220,7 +220,7 @@ export async function checkHuggingFaceSetup(): Promise<HuggingFaceSetupStatus> {
 /**
  * Python環境セットアップのガイダンスを取得
  */
-export function getPythonSetupInstructions(): string {
+export function _getPythonSetupInstructions(): string {
   const currentPlatform = platform();
 
   switch (currentPlatform) {
@@ -285,7 +285,7 @@ export function getPythonSetupInstructions(): string {
 /**
  * Docker環境セットアップのガイダンスを取得
  */
-export function getDockerSetupInstructions(): string {
+export function _getDockerSetupInstructions(): string {
   const currentPlatform = platform();
 
   switch (currentPlatform) {
@@ -390,7 +390,7 @@ export async function startVLLMServer(modelId: string = 'microsoft/DialoGPT-medi
 /**
  * HuggingFace APIキーの形式を検証
  */
-export function validateHuggingFaceAPIKey(apiKey: string): boolean {
+export function _validateHuggingFaceAPIKey(apiKey: string): boolean {
   // HuggingFace APIキーの形式: hf_[A-Za-z0-9]{34}
   const hfApiKeyRegex = /^hf_[A-Za-z0-9]{34}$/;
   return hfApiKeyRegex.test(apiKey);

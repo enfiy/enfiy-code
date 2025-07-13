@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 const { mockProcessExit } = vi.hoisted(() => ({
   mockProcessExit: vi.fn((_code?: number): never => undefined as never),
 }));
@@ -91,7 +84,7 @@ vi.mock('./useShowMemoryCommand.js', () => ({
 }));
 
 vi.mock('open', () => ({
-  default: vi.fn(),
+  default: vi.fn(() => Promise.resolve()),
 }));
 
 describe('useSlashCommandProcessor', () => {
@@ -405,7 +398,7 @@ describe('useSlashCommandProcessor', () => {
           type: 'about',
           cliVersion: 'test-version',
           osVersion: 'test-platform',
-          sandboxEnv: 'isolated (gemini-sandbox)',
+          sandboxEnv: 'Private room (gemini-sandbox)',
           modelVersion: 'test-model-from-config',
           selectedAuthType: 'test-auth-type',
           gcpProject: 'test-gcp-project',
@@ -503,7 +496,7 @@ describe('useSlashCommandProcessor', () => {
       const osVersion = 'test-platform test-node-version';
       let sandboxEnvStr = 'no sandbox';
       if (sandboxEnvVar && sandboxEnvVar !== 'sandbox-exec') {
-        sandboxEnvStr = `isolated (${sandboxEnvVar.replace(/^gemini-(?:code-)?/, '')})`;
+        sandboxEnvStr = `Private room (${sandboxEnvVar.replace(/^gemini-(?:code-)?/, '')})`;
       } else if (sandboxEnvVar === 'sandbox-exec') {
         sandboxEnvStr = `MacOS Seatbelt (${seatbeltProfileVar || 'unknown'})`;
       }
@@ -515,12 +508,12 @@ describe('useSlashCommandProcessor', () => {
 *   **CLI Version:** ${cliVersion}
 *   **Git Commit:** ${GIT_COMMIT_INFO}
 *   **Operating System:** ${osVersion}
-*   **Sandbox Environment:** ${sandboxEnvStr}
+*   **Work Environment:** ${sandboxEnvStr}
 *   **Model Version:** ${modelVersion}
 *   **Memory Usage:** ${memoryUsage}
 `;
       let url =
-        'https://github.com/google-gemini/enfiy-cli/issues/new?template=bug_report.yml';
+        'https://github.com/enfiy/enfiy-code/issues/new?template=bug_report.yml';
       if (description) {
         url += `&title=${encodeURIComponent(description)}`;
       }
@@ -570,7 +563,7 @@ describe('useSlashCommandProcessor', () => {
 *   **CLI Version:** 0.1.0
 *   **Git Commit:** ${GIT_COMMIT_INFO}
 *   **Operating System:** test-platform test-node-version
-*   **Sandbox Environment:** MacOS Seatbelt (permissive-open)
+*   **Work Environment:** MacOS Seatbelt (permissive-open)
 *   **Model Version:** test-model
 *   **Memory Usage:** 11.8 MB
 `;

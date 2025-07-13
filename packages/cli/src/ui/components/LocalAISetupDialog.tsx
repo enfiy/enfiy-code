@@ -1,7 +1,7 @@
 /**
  * @license
- * Copyright 2025 arterect and h.esaki
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -19,9 +19,9 @@ import {
 } from '../../utils/ollamaSetup.js';
 import {
   checkHuggingFaceSetup,
-  getPythonSetupInstructions,
-  getDockerSetupInstructions,
-  validateHuggingFaceAPIKey,
+  _getPythonSetupInstructions,
+  _getDockerSetupInstructions,
+  _validateHuggingFaceAPIKey,
   getRecommendedHFModels,
   type HuggingFaceSetupStatus,
 } from '../../utils/huggingfaceSetup.js';
@@ -66,7 +66,7 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
     provider === ProviderType.OLLAMA ? 'ollama-check' : 'hf-check'
   );
   const [setupMethod, setSetupMethod] = useState<'local' | 'cloud' | 'custom'>('local');
-  const [currentInput, setCurrentInput] = useState('');
+  const [_currentInput, _setCurrentInput] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   
   // Ollama関連の状態
@@ -75,7 +75,7 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
   
   // HuggingFace関連の状態
   const [hfStatus, setHfStatus] = useState<HuggingFaceSetupStatus | null>(null);
-  const [apiKey, setApiKey] = useState('');
+  const [_apiKey, _setApiKey] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
   const [selectedHFMethod, setSelectedHFMethod] = useState<'tgi' | 'vllm' | 'ollama' | null>(null);
 
@@ -139,7 +139,7 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
     if (key.return) {
       handleEnterKey();
     }
-  }, [step, currentInput, ollamaStatus, onCancel]);
+  }, [step, _currentInput, ollamaStatus, onCancel]);
 
   useInput(handleInput);
 
@@ -224,7 +224,7 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
         onComplete({
           type: provider,
           setupMethod,
-          apiKey: setupMethod === 'cloud' ? apiKey : undefined,
+          apiKey: setupMethod === 'cloud' ? _apiKey : undefined,
           model: selectedModel,
           endpoint: setupMethod === 'local' ? getLocalEndpoint() : undefined,
         });

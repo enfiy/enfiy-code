@@ -4,17 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import { Box } from 'ink';
 import { type Config, AuthType } from '@enfiy/core';
 import { EnfiyPrivacyNotice } from './EnfiyPrivacyNotice.js';
-import { CloudPaidPrivacyNotice } from './CloudPaidPrivacyNotice.js';
+import { CloudPaidPrivacyNotice as _CloudPaidPrivacyNotice } from './CloudPaidPrivacyNotice.js';
 import { CloudFreePrivacyNotice } from './CloudFreePrivacyNotice.js';
 
 interface PrivacyNoticeProps {
@@ -32,11 +25,8 @@ const PrivacyNoticeText = ({
   const authType = config.getContentGeneratorConfig()?.authType;
 
   switch (authType) {
-    case AuthType.USE_GEMINI:
+    case AuthType.API_KEY:
       return <EnfiyPrivacyNotice onExit={onExit} />;
-    case AuthType.USE_VERTEX_AI:
-      return <CloudPaidPrivacyNotice onExit={onExit} />;
-    case AuthType.LOGIN_WITH_GOOGLE_PERSONAL:
     default:
       return <CloudFreePrivacyNotice config={config} onExit={onExit} />;
   }

@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import { OverflowProvider } from '../../contexts/OverflowContext.js';
 import { render } from 'ink-testing-library';
 import { DiffRenderer } from './DiffRenderer.js';
@@ -153,7 +146,9 @@ index 1234567..1234567 100644
         />
       </OverflowProvider>,
     );
-    expect(lastFrame()).toContain('No changes detected');
+    const output = lastFrame();
+    expect(output).toBeDefined();
+    expect(output).toContain('No changes detected');
     expect(mockColorizeCode).not.toHaveBeenCalled();
   });
 
@@ -163,7 +158,9 @@ index 1234567..1234567 100644
         <DiffRenderer diffContent="" terminalWidth={80} />
       </OverflowProvider>,
     );
-    expect(lastFrame()).toContain('No diff content');
+    const output = lastFrame();
+    expect(output).toBeDefined();
+    expect(output).toContain('No diff content');
     expect(mockColorizeCode).not.toHaveBeenCalled();
   });
 
@@ -191,6 +188,7 @@ index 123..456 100644
       </OverflowProvider>,
     );
     const output = lastFrame();
+    expect(output).toBeDefined();
     expect(output).toContain('═'); // Check for the border character used in the gap
 
     // Verify that lines before and after the gap are rendered
@@ -228,6 +226,7 @@ index abc..def 100644
       </OverflowProvider>,
     );
     const output = lastFrame();
+    expect(output).toBeDefined();
     expect(output).not.toContain('═'); // Ensure no separator is rendered
 
     // Verify that lines before and after the gap are rendered

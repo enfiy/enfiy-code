@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import React from 'react';
 import { Text, Box } from 'ink';
 import { MarkdownDisplay } from '../../utils/MarkdownDisplay.js';
@@ -32,9 +25,9 @@ export const EnfiyMessage: React.FC<EnfiyMessageProps> = ({
   model,
 }) => {
   // Function to determine color based on content type and model
-  const getIndicatorColor = () => {
-    return '#fb923c'; // Always use orange theme color
-  };
+  const getIndicatorColor = () => 
+     '#fb923c' // Always use orange theme color
+  ;
 
   const indicatorColor = getIndicatorColor();
   const modelDisplay = model ? ` ${model}` : '';

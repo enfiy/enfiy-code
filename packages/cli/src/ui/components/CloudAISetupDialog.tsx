@@ -1,13 +1,13 @@
 /**
  * @license
- * Copyright 2025 arterect and h.esaki
- * SPDX-License-Identifier: MIT
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
-import { ProviderType, AuthType } from '@enfiy/core';
+import { ProviderType, AuthType , getClaudeOAuthClient } from '@enfiy/core';
 import { 
   storeApiKey, 
   removeApiKey, 
@@ -15,7 +15,6 @@ import {
   validateApiKey 
 } from '../../utils/secureStorage.js';
 import { debugLogger } from '../../utils/debugLogger.js';
-import { getOauthClient, getClaudeOAuthClient, getHuggingFaceOAuthClient } from '@enfiy/core';
 
 interface CloudAISetupDialogProps {
   provider: ProviderType;
@@ -80,7 +79,14 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       return 'api-key-management';
     }
     
-    // Show authentication method selection for all cloud providers
+    // Check if provider has only API key auth method, skip selection
+    if (provider === ProviderType.GEMINI || provider === ProviderType.ANTHROPIC || 
+        provider === ProviderType.OPENAI || provider === ProviderType.MISTRAL) {
+      console.log('Single auth method (API key) detected, going directly to api-key-input');
+      return 'api-key-input';
+    }
+    
+    // Show authentication method selection for providers with multiple options
     console.log('Going to authentication method selection');
     return 'auth-method-selection';
   });
@@ -100,7 +106,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     switch (provider) {
       case ProviderType.GEMINI:
         return [
-          { id: 'oauth', name: 'Google Account (OAuth)', description: 'Sign in with your Google account for seamless access' },
           { id: 'api-key', name: 'API Key', description: 'Use Gemini API key from Google AI Studio' }
         ];
       case ProviderType.ANTHROPIC:
@@ -117,7 +122,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         ];
       case ProviderType.HUGGINGFACE:
         return [
-          { id: 'oauth', name: 'HuggingFace Account', description: 'Sign in with your HuggingFace account' },
           { id: 'api-key', name: 'API Key', description: 'Use HuggingFace token from huggingface.co' }
         ];
       default:
@@ -210,18 +214,18 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     if (step === 'api-key-input' && isInputMode) {
       if (key.return) {
         debugLogger.info('ui-interaction', 'Return key pressed in API key input', {
-          apiKey: apiKey,
+          apiKey,
           trimmed: apiKey.trim(),
           length: apiKey.length,
           isEmpty: !apiKey.trim(),
-          provider: provider
+          provider
         });
         
         if (apiKey.trim()) {
           debugLogger.info('ui-interaction', 'Starting API key validation process', {
             key: apiKey,
             length: apiKey.length,
-            provider: provider
+            provider
           });
           setIsInputMode(false);
           setStep('api-key-validation');
@@ -318,7 +322,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       
       onComplete({
         type: provider,
-        authType: AuthType.LOGIN_WITH_GOOGLE_PERSONAL,
+        authType: AuthType.API_KEY,
         apiKey: subscriptionToken
       });
       
@@ -336,70 +340,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     setValidationError(null);
     
     try {
-      if (provider === ProviderType.GEMINI && authMethod === 'oauth') {
-        console.log('Initializing Google OAuth...');
-        
-        try {
-          console.log('About to call getOauthClient()...');
-          console.log('Browser should open for authentication...');
-          console.log('Current platform:', process.platform);
-          console.log('WSL environment:', process.env.WSL_DISTRO_NAME, process.env.WSL_INTEROP);
-          
-          // Create a promise that resolves when we have the auth URL
-          const oauthClient = await getOauthClient();
-          console.log('OAuth client obtained successfully:', !!oauthClient);
-          console.log('Authentication flow completed');
-          
-          if (!oauthClient) {
-            throw new Error('OAuth client is null or undefined');
-          }
-          
-          // Store OAuth credentials as a special marker
-          storeApiKey(provider, 'OAUTH_AUTHENTICATED', undefined, 'oauth');
-          console.log('OAuth credentials stored');
-          
-          setStep('complete');
-          onComplete({
-            type: provider,
-            apiKey: 'OAUTH_AUTHENTICATED',
-          });
-        } catch (oauthError: any) {
-          console.error('OAuth client initialization failed:', oauthError);
-          console.error('OAuth error details:', {
-            name: oauthError?.name,
-            message: oauthError?.message,
-            stack: oauthError?.stack
-          });
-          throw new Error(`OAuth initialization failed: ${oauthError?.message || oauthError}`);
-        }
-      } else if (provider === ProviderType.HUGGINGFACE && authMethod === 'oauth') {
-        console.log('Initializing HuggingFace OAuth...');
-        
-        try {
-          console.log('About to call getHuggingFaceOAuthClient()...');
-          console.log('Browser should open for HuggingFace authentication...');
-          
-          const oauthResponse = await getHuggingFaceOAuthClient();
-          console.log('HuggingFace OAuth authentication successful:', !!oauthResponse);
-          
-          if (!oauthResponse || !oauthResponse.access_token) {
-            throw new Error('Failed to obtain HuggingFace OAuth token');
-          }
-          
-          // Store OAuth credentials
-          storeApiKey(provider, `HF_OAUTH:${oauthResponse.access_token}`, undefined, 'oauth');
-          console.log('HuggingFace OAuth credentials stored');
-          
-          setStep('complete');
-          onComplete({
-            type: provider,
-            apiKey: `HF_OAUTH:${oauthResponse.access_token}`,
-          });
-        } catch (oauthError: any) {
-          console.error('HuggingFace OAuth authentication failed:', oauthError);
-          throw new Error(`HuggingFace OAuth initialization failed: ${oauthError?.message || oauthError}`);
-        }
-      } else if (provider === ProviderType.ANTHROPIC && authMethod === 'claude-max') {
+      if (provider === ProviderType.ANTHROPIC && authMethod === 'claude-max') {
         console.log('Checking Claude Max subscription...');
         const hasClaudeMax = await checkClaudeMaxSubscription();
         console.log('Claude Max check result:', hasClaudeMax);
@@ -452,13 +393,13 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     }
   };
 
-  const cleanApiKey = (key: string): string => {
+  const cleanApiKey = (key: string): string => 
     // Remove bracketed paste mode escape sequences and other unwanted characters
-    return key
+     key
       .replace(/\[200~/g, '')  // Remove bracketed paste start
       .replace(/\[201~/g, '')  // Remove bracketed paste end
-      .trim();                 // Remove leading/trailing whitespace
-  };
+      .trim()                 // Remove leading/trailing whitespace
+  ;
 
   const validateAndSaveApiKey = async () => {
     try {
@@ -501,7 +442,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
 
   const handleEnterKey = () => {
     switch (step) {
-      case 'auth-method-selection':
+      case 'auth-method-selection': {
         const authMethods = getAuthMethods();
         if (highlightedIndex === authMethods.length) {
           // Back option selected
@@ -526,6 +467,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           }
         }
         break;
+      }
 
       case 'subscription-login':
         if (highlightedIndex === 2) {
@@ -562,7 +504,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         }
         break;
 
-      case 'api-key-management':
+      case 'api-key-management': {
         const actions: ManagementAction[] = ['view', 'update', 'delete', 'back'];
         const action = actions[highlightedIndex];
         
@@ -583,12 +525,19 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           case 'back':
             onCancel();
             break;
+          default:
+            break;
         }
         break;
+      }
 
       case 'complete':
         // Complete step - this should not trigger onComplete again
         // onComplete is already called when we reach this step
+        break;
+      
+      default:
+        // Unknown step
         break;
     }
   };
@@ -614,7 +563,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     const width = inputWidth ? Math.min(inputWidth, 80) : Math.min(terminalWidth - 4, 80);
 
     switch (step) {
-      case 'auth-method-selection':
+      case 'auth-method-selection': {
         const authMethods = getAuthMethods();
         // console.log('Rendering auth method selection:', {
         //   provider,
@@ -657,6 +606,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             </Box>
           </Box>
         );
+      }
 
       case 'subscription-login':
         return (
@@ -684,7 +634,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             
             <Text> </Text>
             <Text color={Colors.Comment}>
-              We'll open Claude.ai in your browser for secure authentication.
+              We&apos;ll open Claude.ai in your browser for secure authentication.
             </Text>
             <Text color={Colors.Comment}>
               Your login session will be used for this application.
@@ -707,7 +657,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           </Box>
         );
 
-      case 'oauth-setup':
+      case 'oauth-setup': {
         const authMethodName = authMethod === 'oauth' ? 'Google Account' : 'Claude Max Plan';
         return (
           <Box flexDirection="column" width={width}>
@@ -784,6 +734,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             )}
           </Box>
         );
+      }
 
       case 'api-key-input':
         return (
@@ -866,12 +817,12 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           </Box>
         );
 
-      case 'api-key-management':
+      case 'api-key-management': {
         const existingKey = getApiKey(provider);
         const maskedKey = existingKey ? (() => {
           // Handle special authentication types
           if (existingKey === 'OAUTH_AUTHENTICATED') {
-            return 'Google Account (OAuth)';
+            return 'OAuth Authentication';
           }
           if (existingKey.includes('CLAUDE_PRO_SUBSCRIPTION')) {
             return 'Claude Pro Subscription';
@@ -935,6 +886,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             ))}
           </Box>
         );
+      }
 
       case 'complete':
         return (

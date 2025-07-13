@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import { useCallback, useMemo } from 'react';
 import { type PartListUnion } from '@google/genai';
 import open from 'open';
@@ -639,9 +632,9 @@ export const useSlashCommandProcessor = (
         description: 'show version info',
         action: async (_mainCommand, _subCommand, _args) => {
           const osVersion = process.platform;
-          let sandboxEnv = 'isolated environment (recommended)';
+          let sandboxEnv = 'Private work room (recommended)';
           if (process.env.SANDBOX && process.env.SANDBOX !== 'sandbox-exec') {
-            sandboxEnv = `isolated (${process.env.SANDBOX})`;
+            sandboxEnv = `Private room (${process.env.SANDBOX})`;
           } else if (process.env.SANDBOX === 'sandbox-exec') {
             sandboxEnv = `MacOS Seatbelt (${
               process.env.SEATBELT_PROFILE || 'unknown'
@@ -674,9 +667,9 @@ export const useSlashCommandProcessor = (
           bugDescription = bugDescription.trim();
 
           const osVersion = `${process.platform} ${process.version}`;
-          let sandboxEnv = 'isolated environment (recommended)';
+          let sandboxEnv = 'Private work room (recommended)';
           if (process.env.SANDBOX && process.env.SANDBOX !== 'sandbox-exec') {
-            sandboxEnv = `isolated (${process.env.SANDBOX.replace(/^gemini-(?:code-)?/, '')})`;
+            sandboxEnv = `Private room (${process.env.SANDBOX.replace(/^gemini-(?:code-)?/, '')})`;
           } else if (process.env.SANDBOX === 'sandbox-exec') {
             sandboxEnv = `MacOS Seatbelt (${
               process.env.SEATBELT_PROFILE || 'unknown'
@@ -690,13 +683,13 @@ export const useSlashCommandProcessor = (
 *   **CLI Version:** ${cliVersion}
 *   **Git Commit:** ${GIT_COMMIT_INFO}
 *   **Operating System:** ${osVersion}
-*   **Sandbox Environment:** ${sandboxEnv}
+*   **Work Environment:** ${sandboxEnv}
 *   **Model Version:** ${modelVersion}
 *   **Memory Usage:** ${memoryUsage}
 `;
 
           let bugReportUrl =
-            'https://github.com/google-gemini/enfiy-cli/issues/new?template=bug_report.yml&title={title}&info={info}';
+            'https://github.com/enfiy/enfiy-code/issues/new?template=bug_report.yml&title={title}&info={info}';
           const bugCommand = config?.getBugCommand();
           if (bugCommand?.urlTemplate) {
             bugReportUrl = bugCommand.urlTemplate;
@@ -713,9 +706,9 @@ export const useSlashCommandProcessor = (
           (async () => {
             try {
               await open(bugReportUrl);
-            } catch (error) {
+            } catch (_error) {
               const errorMessage =
-                error instanceof Error ? error.message : String(error);
+                _error instanceof Error ? _error.message : String(_error);
               addMessage({
                 type: MessageType.ERROR,
                 content: `Could not open URL in browser: ${errorMessage}`,
@@ -951,7 +944,7 @@ export const useSlashCommandProcessor = (
           const currentModel = config.getModel() || 'Unknown';
           
           switch (subCommand) {
-            case 'list':
+            case 'list': {
               // Display available models with usage limits and status
               const availableModels = await modelManager.getAvailableModels();
               let message = 'Available Models:\n\n';
@@ -989,8 +982,9 @@ export const useSlashCommandProcessor = (
                 timestamp: new Date(),
               });
               return;
+            }
               
-            case 'switch':
+            case 'switch': {
               if (!args?.trim()) {
                 addMessage({
                   type: MessageType.ERROR,
@@ -1017,8 +1011,9 @@ export const useSlashCommandProcessor = (
                 });
               }
               return;
+            }
               
-            case 'status':
+            case 'status': {
               const usage = await modelManager.getModelUsage(currentModel);
               const usagePercent = usage.limit > 0 ? Math.round((usage.used / usage.limit) * 100) : 0;
               
@@ -1054,8 +1049,9 @@ export const useSlashCommandProcessor = (
                 timestamp: new Date(),
               });
               return;
+            }
               
-            case 'order':
+            case 'order': {
               const fallbackConfig = modelManager.getFallbackOrder();
               if (!fallbackConfig) {
                 addMessage({
@@ -1087,8 +1083,9 @@ export const useSlashCommandProcessor = (
                 timestamp: new Date(),
               });
               return;
+            }
 
-            case 'auto':
+            case 'auto': {
               const autoArgs = args?.trim();
               if (autoArgs === 'on' || autoArgs === 'enable') {
                 // Enable auto-switching (this would be saved to settings)
@@ -1111,8 +1108,9 @@ export const useSlashCommandProcessor = (
                 });
               }
               return;
+            }
               
-            case undefined:
+            case undefined: {
               // Show current model and quick status
               const quickUsage = await modelManager.getModelUsage(currentModel);
               const quickPercent = quickUsage.limit > 0 ? Math.round((quickUsage.used / quickUsage.limit) * 100) : 0;
@@ -1138,6 +1136,7 @@ export const useSlashCommandProcessor = (
                 timestamp: new Date(),
               });
               return;
+            }
               
             default:
               addMessage({
@@ -1212,7 +1211,7 @@ export const useSlashCommandProcessor = (
               toolArgs: { command: `npm run ${script}` },
             };
             
-          } catch (error) {
+          } catch (_error) {
             addMessage({
               type: MessageType.ERROR,
               content: 'Could not read package.json. Make sure you are in a Node.js project.',
@@ -1274,7 +1273,7 @@ export const useSlashCommandProcessor = (
               toolArgs: { command: testCommand },
             };
             
-          } catch (error) {
+          } catch (_error) {
             addMessage({
               type: MessageType.ERROR,
               content: 'Could not read package.json.',
@@ -1322,7 +1321,7 @@ export const useSlashCommandProcessor = (
               toolArgs: { command: buildCommand },
             };
             
-          } catch (error) {
+          } catch (_error) {
             addMessage({
               type: MessageType.ERROR,
               content: 'Could not read package.json.',
@@ -1373,7 +1372,7 @@ export const useSlashCommandProcessor = (
               toolArgs: { command: lintCommand },
             };
             
-          } catch (error) {
+          } catch (_error) {
             addMessage({
               type: MessageType.ERROR,
               content: 'Could not read package.json.',
@@ -1450,6 +1449,73 @@ export const useSlashCommandProcessor = (
             shouldScheduleTool: true,
             toolName: 'bash',
             toolArgs: { command: `git add -A && git commit -m "${message}"` },
+          };
+        },
+      },
+      {
+        name: 'push',
+        description: 'push to GitHub with optional co-author. Usage: /push [branch] [--co-author]',
+        action: async (_mainCommand, _subCommand, args) => {
+          const argParts = args?.trim().split(' ') || [];
+          const branch = argParts[0] || '';
+          const coAuthor = argParts.includes('--co-author') || argParts.includes('--enfiy');
+          
+          let command = 'git push';
+          
+          if (branch) {
+            command += ` origin ${branch}`;
+          }
+          
+          if (coAuthor) {
+            addMessage({
+              type: MessageType.INFO,
+              content: '🤖 Adding Enfiy AI as co-author to the last commit...',
+              timestamp: new Date(),
+            });
+            
+            const coAuthorCommand = `git commit --amend --no-edit --trailer "Co-authored-by: Enfiy AI <enfiy@github.com>"`;
+            command = `${coAuthorCommand} && ${command}`;
+          }
+          
+          addMessage({
+            type: MessageType.INFO,
+            content: `🚀 Pushing to GitHub${branch ? ` (branch: ${branch})` : ''}${coAuthor ? ' with Enfiy AI co-authorship' : ''}...`,
+            timestamp: new Date(),
+          });
+          
+          return {
+            shouldScheduleTool: true,
+            toolName: 'bash',
+            toolArgs: { command },
+          };
+        },
+      },
+      {
+        name: 'pr',
+        description: 'create GitHub pull request. Usage: /pr [title] [--draft]',
+        action: async (_mainCommand, _subCommand, args) => {
+          const argParts = args?.trim().split(' ') || [];
+          const isDraft = argParts.includes('--draft');
+          const title = argParts.filter(part => !part.startsWith('--')).join(' ') || 'Pull Request';
+          
+          let command = 'gh pr create --title "' + title + '"';
+          
+          if (isDraft) {
+            command += ' --draft';
+          }
+          
+          command += ' --body "🤖 Created with Enfiy AI\\n\\nCo-authored-by: Enfiy AI <enfiy@github.com>"';
+          
+          addMessage({
+            type: MessageType.INFO,
+            content: `📝 Creating GitHub pull request: "${title}"${isDraft ? ' (draft)' : ''}...`,
+            timestamp: new Date(),
+          });
+          
+          return {
+            shouldScheduleTool: true,
+            toolName: 'bash',
+            toolArgs: { command },
           };
         },
       },
@@ -1613,7 +1679,7 @@ export const useSlashCommandProcessor = (
               },
             };
             
-          } catch (error) {
+          } catch (_error) {
             addMessage({
               type: MessageType.ERROR,
               content: 'Could not analyze project structure.',
@@ -1648,7 +1714,7 @@ export const useSlashCommandProcessor = (
         name: 'structure',
         description: 'visualize project structure',
         action: async (_mainCommand, _subCommand, args) => {
-          const depth = args?.trim() ? parseInt(args.trim()) : 3;
+          const depth = args?.trim() ? parseInt(args.trim(), 10) : 3;
           
           addMessage({
             type: MessageType.INFO,
@@ -1668,7 +1734,7 @@ export const useSlashCommandProcessor = (
       {
         name: 'isolation',
         altName: 'sandbox',
-        description: 'toggle isolated environment (security)',
+        description: 'toggle private work room (security)',
         action: (_mainCommand, subCommand, _args) => {
           const currentSandbox = process.env.SANDBOX || 'none';
           
@@ -1814,10 +1880,10 @@ export const useSlashCommandProcessor = (
               toolName: toolCallData.toolCall.name,
               toolArgs: toolCallData.toolCall.args,
             };
-          } catch (error) {
+          } catch (_error) {
             addMessage({
               type: MessageType.ERROR,
-              content: `Could not read restorable tool calls. This is the error: ${error}`,
+              content: `Could not read restorable tool calls. This is the error: ${_error}`,
               timestamp: new Date(),
             });
           }

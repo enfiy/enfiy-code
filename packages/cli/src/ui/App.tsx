@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * Modifications Copyright 2025 The Enfiy Community Contributors
- *
- * This file has been modified from its original version by contributors
- * to the Enfiy Community project.
- */
-
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import {
   Box,
@@ -142,9 +135,18 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
   const [editorError, setEditorError] = useState<string | null>(null);
   const [footerHeight, setFooterHeight] = useState<number>(0);
   const [corgiMode, setCorgiMode] = useState(false);
-  const showMemoryUsage = config.getDebugMode() || config.getShowMemoryUsage();
+  const _showMemoryUsage = config.getDebugMode() || config.getShowMemoryUsage();
   const [currentModel, setCurrentModel] = useState(() => {
     const settingsModel = settings.merged.selectedModel;
+    
+    // If we have a valid settings model that differs from config, sync it immediately
+    if (settingsModel && 
+        settingsModel !== 'gemini-2.5-pro' && 
+        settingsModel !== 'llama3.2:8b' &&
+        settingsModel !== '' &&
+        settingsModel !== config.getModel()) {
+      config.setModel(settingsModel);
+    }
     
     // Start with empty if no proper model is configured
     if (!settingsModel || 
@@ -176,6 +178,7 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
   const [setupProvider, setSetupProvider] = useState<ProviderType | null>(null);
   const [isManagingProvider, setIsManagingProvider] = useState<boolean>(false);
   const [isFirstRun, setIsFirstRun] = useState<boolean>(true);
+  const [preselectedProvider, setPreselectedProvider] = useState<ProviderType | null>(null);
 
   const openPrivacyNotice = useCallback(() => {
     setShowPrivacyNotice(true);
@@ -253,11 +256,13 @@ ${t('helpMessage')}`,
     );
     
     setShowProviderSelection(false);
+    setPreselectedProvider(null); // Clear preselection
     setIsFirstRun(false);
   }, [addItem, config, setCurrentModel]);
 
   const handleProviderSelectionCancel = useCallback(() => {
     setShowProviderSelection(false);
+    setPreselectedProvider(null); // Clear preselection
     // If it's first run and they cancel, just set first run to false
     if (isFirstRun) {
       setIsFirstRun(false);
@@ -292,7 +297,7 @@ ${t('helpMessage')}`,
     setShowCloudAISetup(true);
   }, []);
 
-  const handleCloudAISetupComplete = useCallback((config: { type: ProviderType; apiKey: string; endpoint?: string }) => {
+  const handleCloudAISetupComplete = useCallback((setupConfig: { type: ProviderType; apiKey: string; endpoint?: string }) => {
     setShowCloudAISetup(false);
     setSetupProvider(null);
     
@@ -303,18 +308,20 @@ ${t('helpMessage')}`,
     if (wasManaging) {
       setShowAPISettings(true);
     } else {
-      // 通常の場合はプロバイダー選択に戻り、モデル選択を促す
+      // After API key configuration, show provider selection for model choice
+      console.log('API key configured, showing provider selection for model choice');
+      setPreselectedProvider(setupConfig.type);
       setShowProviderSelection(true);
+      
+      addItem(
+        {
+          type: MessageType.INFO,
+          text: `${setupConfig.type.toUpperCase()} API key configured successfully. Please select a model.`,
+        },
+        Date.now(),
+      );
     }
-    
-    addItem(
-      {
-        type: MessageType.INFO,
-        text: `${config.type.toUpperCase()} API key ${wasManaging ? 'updated' : 'configured'} successfully`,
-      },
-      Date.now(),
-    );
-  }, [isManagingProvider, addItem]);
+  }, [isManagingProvider, addItem, config, setCurrentModel, settings]);
 
   const handleCloudAISetupCancel = useCallback(() => {
     setShowCloudAISetup(false);
@@ -589,8 +596,10 @@ ${t('helpMessage')}`,
         // Restore the last used model to the current state
         if (settings.merged.selectedModel && settings.merged.selectedModel !== currentModel) {
           console.log('Restoring last used model:', settings.merged.selectedModel);
+          console.log('Config model before:', config.getModel());
           setCurrentModel(settings.merged.selectedModel);
           config.setModel(settings.merged.selectedModel);
+          console.log('Config model after:', config.getModel());
         }
         
         if (isFirstRun) {
@@ -1192,6 +1201,7 @@ ${t('helpMessage')}`,
               }
               terminalWidth={mainAreaWidth}
               inputWidth={inputWidth}
+              preselectedProvider={preselectedProvider}
             />
           ) : showAPISettings ? (
             <APISettingsDialog
