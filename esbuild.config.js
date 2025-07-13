@@ -1,6 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 import esbuild from 'esbuild';
@@ -28,36 +29,18 @@ esbuild
     // More aggressive tree shaking in development too
     ignoreAnnotations: false,
     // Reduce bundle size even in development
-    drop: isProduction ? ['console', 'debugger'] : ['debugger'],
+    drop: ['console', 'debugger'],
     // Enable more aggressive optimization
     ...(isProduction ? { mangleProps: /^_/ } : {}),
-    external: [
-      '@enfiy/core', 
-      'chalk', 
-      '@opentelemetry/semantic-conventions',
-      // Large dependencies that should remain external in all builds
-      'react-devtools-core',
-      'highlight.js',
-      'lowlight',
-      'update-notifier',
-      // Heavy mapping tables and Unicode data
-      'tr46',
-      'whatwg-url',
-      // Heavy React dependencies - keep external for better performance
-      'react-reconciler',
-      'yoga-layout',
-      'web-streams-polyfill',
-      // Keep heavy parsing libraries external to reduce bundle size
-      'glob',
-      'minimatch',
-      'path-scurry',
-      'lru-cache',
-      'emoji-regex',
-      'strip-ansi',
-      'string-width',
-      // Node.js built-ins
-      'fs', 'path', 'url', 'util', 'os', 'crypto', 'events', 'stream',
-      'child_process', 'readline', 'tty', 'net', 'http', 'https'
+    plugins: [
+      {
+        name: 'enfiy-core-resolver',
+        setup(build) {
+          build.onResolve({ filter: /^@enfiy\/core$/ }, (args) => {
+            return { path: path.resolve(__dirname, 'packages/core/index.ts') };
+          });
+        },
+      },
     ],
     define: {
       'process.env.CLI_VERSION': JSON.stringify(pkg.version),

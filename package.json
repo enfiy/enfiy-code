@@ -30,9 +30,9 @@
     "test:integration:sandbox:podman": "ENFIY_SANDBOX=podman node integration-tests/run-tests.js",
     "start": "node scripts/start.js",
     "debug": "cross-env DEBUG=1 node --inspect-brk scripts/start.js",
-    "lint:fix": "eslint . --fix && eslint integration-tests --fix",
-    "lint": "eslint . --ext .ts,.tsx && eslint integration-tests",
-    "lint:ci": "eslint . --ext .ts,.tsx --max-warnings 0 && eslint integration-tests --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:ci": "npm run lint:ci --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "format": "prettier --write .",
     "preflight": "npm run clean && npm ci && npm run format && npm run lint:ci && npm run build && npm run typecheck && npm run test:ci",
@@ -87,7 +87,9 @@
     "prettier": "^3.6.2",
     "strip-json-comments": "^5.0.2",
     "typescript-eslint": "^8.36.0",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "@modelcontextprotocol/sdk": "^1.15.1",
+    "zod": "^4.0.5"
   },
   "dependencies": {
     "@google/genai": "^1.9.0",

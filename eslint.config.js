@@ -1,6 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 import eslint from '@eslint/js';
@@ -33,6 +34,8 @@ export default tseslint.config(
       'packages/cli/dist/**',
       'packages/core/dist/**',
       'packages/server/dist/**',
+      'packages/*/coverage/**',
+      'coverage/**',
       'eslint-rules/*',
       'bundle/**',
       'integration-tests/**',
@@ -70,12 +73,19 @@ export default tseslint.config(
     },
   },
   {
-    // General overrides and rules for the project (TS/TSX files)
-    files: ['packages/*/src/**/*.{ts,tsx}'], // Target only TS/TSX in the cli package
+    // General overrides and rules for the project (TS/TSX/JS files)
+    files: ['packages/*/src/**/*.{ts,tsx,js}'], // Target TS/TSX/JS files in packages
     languageOptions: {
       globals: {
         ...globals.node,
         ...globals.es2021,
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        fetch: 'readonly',
+        AbortController: 'readonly',
       },
     },
     rules: {
@@ -157,7 +167,7 @@ export default tseslint.config(
   },
   // extra settings for scripts that we run directly with node
   {
-    files: ['./scripts/**/*.js', 'esbuild.config.js'],
+    files: ['./scripts/**/*.js', 'esbuild.config.js', './test-browser-open.js'],
     languageOptions: {
       globals: {
         ...globals.node,
