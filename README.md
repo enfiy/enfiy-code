@@ -44,8 +44,6 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 
 ## AI Providers
 
-## AI Providers
-
 <h3>Cloud AI (Powerful)</h3>
 
 <table style="width: 100%;">
@@ -300,7 +298,7 @@ Enfiy Code is licensed under the [Apache 2.0 License](./LICENSE).
 <div align="center">
   <br>
   <p style="color: #fb923c; font-size: 1.1em; font-weight: 600;">
-    Thank you for using Enfiy Code! 🧡
+    Thank you for using Enfiy Code!
   </p>
   <p style="color: #6b7280; font-size: 0.9em;">
     Built with ❤️ by the Enfiy Community

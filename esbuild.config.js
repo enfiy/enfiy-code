@@ -29,7 +29,11 @@ esbuild
     // More aggressive tree shaking in development too
     ignoreAnnotations: false,
     // Reduce bundle size even in development
-    drop: ['console', 'debugger'],
+    drop: isProduction ? ['console', 'debugger'] : [],
+    // More aggressive optimization settings
+    minifyWhitespace: true,
+    minifyIdentifiers: isProduction,
+    minifySyntax: true,
     // Enable more aggressive optimization
     ...(isProduction ? { mangleProps: /^_/ } : {}),
     plugins: [
@@ -55,6 +59,59 @@ esbuild
     target: 'node18',
     keepNames: !isProduction,
     legalComments: isProduction ? 'none' : 'inline',
+    external: [
+      'react-devtools-core',
+      // OpenTelemetry packages (heavy and currently disabled)
+      '@opentelemetry/api',
+      '@opentelemetry/exporter-logs-otlp-grpc',
+      '@opentelemetry/exporter-metrics-otlp-grpc',
+      '@opentelemetry/exporter-trace-otlp-grpc',
+      '@opentelemetry/instrumentation-http',
+      '@opentelemetry/sdk-node',
+      '@opentelemetry/api-logs',
+      '@opentelemetry/otlp-exporter-base',
+      '@opentelemetry/resources',
+      '@opentelemetry/sdk-logs',
+      '@opentelemetry/sdk-metrics',
+      '@opentelemetry/sdk-trace-node',
+      '@opentelemetry/semantic-conventions',
+      // Large AI SDKs - can be dynamically imported
+      '@google/genai',
+      'openai',
+      // Heavy utilities
+      'lowlight',
+      'highlight.js',
+      // HTTP clients
+      'gaxios',
+      'undici',
+      // Google auth
+      'google-auth-library',
+      // Git operations
+      'simple-git',
+      // HTML processing
+      'html-to-text',
+      // MCP SDK
+      '@modelcontextprotocol/sdk',
+      // Additional heavy dependencies
+      'yargs',
+      'chalk',
+      'update-notifier',
+      'glob',
+      'diff',
+      'mime-types',
+      'micromatch',
+      'minimatch',
+      'shell-quote',
+      'command-exists',
+      'dotenv',
+      'strip-ansi',
+      'wrap-ansi',
+      'string-width',
+      'ansi-regex',
+      'node-fetch',
+      'ws',
+      'zod'
+    ],
   })
   .then((result) => {
     if (result.metafile) {
