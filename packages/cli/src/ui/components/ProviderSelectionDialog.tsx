@@ -3,6 +3,9 @@
  * Copyright 2025 Google LLC
  * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Text, useInput } from 'ink';
@@ -282,6 +285,12 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
     return 0;
   };
 
+  // Get the index of the Back option (right after HuggingFace)
+  const getBackOptionIndex = () => {
+    const huggingFaceIndex = availableProviders.findIndex(p => p === ProviderType.HUGGINGFACE);
+    return huggingFaceIndex !== -1 ? huggingFaceIndex + 1 : availableProviders.length;
+  };
+
   useInput((input, key) => {
     if (key.escape || (key.ctrl && input === 'c')) {
       onCancel();
@@ -319,13 +328,15 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
         setMode('provider');
       } else if (mode === 'provider') {
         // Check if back option is selected
-        if (highlightedIndex === availableProviders.length) {
+        if (highlightedIndex === getBackOptionIndex()) {
           setMode('category');
           setSelectedCategory(null);
           return;
         }
         
-        const selected = availableProviders[highlightedIndex];
+        // Adjust index if we're past the back option
+        const providerIndex = highlightedIndex > getBackOptionIndex() ? highlightedIndex - 1 : highlightedIndex;
+        const selected = availableProviders[providerIndex];
         
         // For cloud providers, always show setup dialog to allow authentication method selection
         if (selectedCategory === 'cloud') {
@@ -435,22 +446,39 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
           {availableProviders.map((provider, index) => {
             const isConfigured = providerConfigurations[provider] || false;
             const statusColor = getStatusColor(isConfigured);
+            const backOptionIndex = getBackOptionIndex();
+            
+            // Adjust display index if we're past the back option
+            const displayIndex = index >= backOptionIndex ? index + 1 : index;
             
             return (
-              <Box key={provider} paddingLeft={1}>
-                <Text
-                  color={index === highlightedIndex ? Colors.AccentBlue : Colors.Foreground}
-                  bold={index === highlightedIndex}
-                >
-                  {index === highlightedIndex ? '> ' : '  '}
-                  <Text color={statusColor}>{getStatusIndicator(isConfigured)}</Text>
-                  {' '}{getProviderDisplayName(provider).padEnd(18)}
-                  <Text color={index === highlightedIndex ? Colors.Comment : Colors.Gray}>
-                    {getProviderDescription(provider)}
-                    {isConfigured && ' (Configured)'}
+              <React.Fragment key={provider}>
+                <Box paddingLeft={1}>
+                  <Text
+                    color={displayIndex === highlightedIndex ? Colors.AccentBlue : Colors.Foreground}
+                    bold={displayIndex === highlightedIndex}
+                  >
+                    {displayIndex === highlightedIndex ? '> ' : '  '}
+                    <Text color={statusColor}>{getStatusIndicator(isConfigured)}</Text>
+                    {' '}{getProviderDisplayName(provider).padEnd(18)}
+                    <Text color={displayIndex === highlightedIndex ? Colors.Comment : Colors.Gray}>
+                      {getProviderDescription(provider)}
+                      {isConfigured && ' (Configured)'}
+                    </Text>
                   </Text>
-                </Text>
-              </Box>
+                </Box>
+                {/* Insert Back option after HuggingFace */}
+                {provider === ProviderType.HUGGINGFACE && (
+                  <Box paddingLeft={1}>
+                    <Text
+                      color={backOptionIndex === highlightedIndex ? Colors.AccentBlue : Colors.Gray}
+                      bold={backOptionIndex === highlightedIndex}
+                    >
+                      {backOptionIndex === highlightedIndex ? '> ' : '  '}← {t('navBack').replace('← ', '')}
+                    </Text>
+                  </Box>
+                )}
+              </React.Fragment>
             );
           })}
           
@@ -468,16 +496,6 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
                 Enter: Use provider | ← Back
               </Text>
             </Box>
-          </Box>
-          
-          {/* Back option */}
-          <Box paddingLeft={1}>
-            <Text
-              color={availableProviders.length === highlightedIndex ? Colors.AccentBlue : Colors.Gray}
-              bold={availableProviders.length === highlightedIndex}
-            >
-              {availableProviders.length === highlightedIndex ? '> ' : '  '}← {t('navBack').replace('← ', '')}
-            </Text>
           </Box>
         </Box>
       )}

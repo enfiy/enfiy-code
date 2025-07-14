@@ -3,6 +3,9 @@
  * Copyright 2025 Google LLC
  * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
 import React, { useState, useCallback, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
@@ -461,6 +464,12 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
 
   const handleInput = useCallback((input: string, key: Record<string, boolean>) => {
     if (key.escape || (key.ctrl && input === 'c')) {
+      // If we're in api-key-input mode and actively typing, exit input mode
+      if (step === 'api-key-input' && isInputMode) {
+        setIsInputMode(false);
+        setHighlightedIndex(0); // Reset to "Enter API Key" option
+        return;
+      }
       // If we're in oauth-setup and authenticating, cancel the auth process
       if (step === 'oauth-setup' && isAuthenticating) {
         console.log('Cancelling OAuth authentication...');
@@ -475,38 +484,42 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       return;
     }
 
-    if (step === 'api-key-input' && isInputMode) {
-      if (key.return) {
-        debugLogger.info('ui-interaction', 'Return key pressed in API key input', {
-          apiKey,
-          trimmed: apiKey.trim(),
-          length: apiKey.length,
-          isEmpty: !apiKey.trim(),
-          provider
-        });
-        
-        if (apiKey.trim()) {
-          debugLogger.info('ui-interaction', 'Starting API key validation process', {
-            key: apiKey,
+    // Special handling for api-key-input step
+    if (step === 'api-key-input') {
+      if (isInputMode) {
+        // In input mode - handle text input
+        if (key.return) {
+          debugLogger.info('ui-interaction', 'Return key pressed in API key input', {
+            apiKey,
+            trimmed: apiKey.trim(),
             length: apiKey.length,
+            isEmpty: !apiKey.trim(),
             provider
           });
-          setIsInputMode(false);
-          setStep('api-key-validation');
-          validateAndSaveApiKey();
-        } else {
-          console.log('Enter pressed but API key is empty');
+          
+          if (apiKey.trim()) {
+            debugLogger.info('ui-interaction', 'Starting API key validation process', {
+              key: apiKey,
+              length: apiKey.length,
+              provider
+            });
+            setIsInputMode(false);
+            setStep('api-key-validation');
+            validateAndSaveApiKey();
+          } else {
+            console.log('Enter pressed but API key is empty');
+          }
+        } else if (key.backspace || key.delete) {
+          setApiKey(prev => prev.slice(0, -1));
+        } else if (input && !key.ctrl && !key.meta) {
+          setApiKey(prev => {
+            const newValue = prev + input;
+            // Clean the API key in real-time to remove any paste artifacts
+            return cleanApiKey(newValue);
+          });
         }
-      } else if (key.backspace || key.delete) {
-        setApiKey(prev => prev.slice(0, -1));
-      } else if (input && !key.ctrl && !key.meta) {
-        setApiKey(prev => {
-          const newValue = prev + input;
-          // Clean the API key in real-time to remove any paste artifacts
-          return cleanApiKey(newValue);
-        });
+        return;
       }
-      return;
     }
 
     // Navigation for non-input modes
@@ -767,52 +780,54 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             ))}
             <Text> </Text>
             
-            {isInputMode ? (
-              <>
-                <Box paddingLeft={1}>
-                  <Text color={Colors.AccentBlue} bold>
-                    {'> '}Enter API Key:
-                  </Text>
-                </Box>
-                <Box paddingLeft={1} paddingRight={1}>
-                  <Box borderStyle="single" borderColor={Colors.AccentBlue} paddingX={1} paddingY={0} width={width - 4}>
-                    <Text>
-                      {apiKey.length > 0 ? (
-                        <>
-                          <Text color={Colors.AccentYellow}>{apiKey.replace(/./g, '*')}</Text>
-                          <Text color={Colors.AccentBlue}>█</Text>
-                        </>
-                      ) : (
-                        <>
-                          <Text color={Colors.AccentBlue}>█</Text>
-                          <Text color={Colors.Gray}>Paste your API key here...</Text>
-                        </>
-                      )}
-                    </Text>
-                  </Box>
-                </Box>
-                <Text> </Text>
-              </>
-            ) : (
-              <Box paddingLeft={1}>
-                <Text
-                  color={highlightedIndex === 0 ? Colors.AccentBlue : Colors.Foreground}
-                  bold={highlightedIndex === 0}
-                >
-                  {highlightedIndex === 0 ? '> ' : '  '}Start API Key Input
+            {/* Enter API Key option */}
+            <Box paddingLeft={1}>
+              <Text
+                color={highlightedIndex === 0 ? Colors.AccentBlue : Colors.Foreground}
+                bold={highlightedIndex === 0}
+              >
+                {highlightedIndex === 0 ? '> ' : '  '}Enter API Key:
+              </Text>
+            </Box>
+            
+            {/* Input box - always visible, active when selected and in input mode */}
+            <Box paddingLeft={1} paddingRight={1}>
+              <Box 
+                borderStyle="single" 
+                borderColor={highlightedIndex === 0 && !isInputMode ? Colors.AccentBlue : (isInputMode ? Colors.AccentBlue : Colors.Gray)} 
+                paddingX={1} 
+                paddingY={0} 
+                width={width - 4}
+              >
+                <Text>
+                  {isInputMode ? (
+                    apiKey.length > 0 ? (
+                      <>
+                        <Text color={Colors.AccentYellow}>{apiKey.replace(/./g, '*')}</Text>
+                        <Text color={Colors.AccentBlue}>█</Text>
+                      </>
+                    ) : (
+                      <>
+                        <Text color={Colors.AccentBlue}>█</Text>
+                        <Text color={Colors.Gray}>Paste your API key here...</Text>
+                      </>
+                    )
+                  ) : (
+                    <Text color={Colors.Gray}>Paste your API key here...</Text>
+                  )}
                 </Text>
               </Box>
-            )}
-            {!isInputMode && (
-              <Box paddingLeft={1}>
-                <Text
-                  color={highlightedIndex === 1 ? Colors.AccentBlue : Colors.Foreground}
-                  bold={highlightedIndex === 1}
-                >
-                  {highlightedIndex === 1 ? '> ' : '  '}← Back
-                </Text>
-              </Box>
-            )}
+            </Box>
+            
+            {/* Back option - directly after input box */}
+            <Box paddingLeft={1}>
+              <Text
+                color={highlightedIndex === 1 ? Colors.AccentBlue : Colors.Foreground}
+                bold={highlightedIndex === 1}
+              >
+                {highlightedIndex === 1 ? '> ' : '  '}← Back
+              </Text>
+            </Box>
           </Box>
         );
 
@@ -949,7 +964,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       <Text> </Text>
       <Text color={Colors.Gray}>
         {step === 'api-key-input' && isInputMode 
-          ? 'Type your API key | Enter: Validate & Save | Esc: Cancel'
+          ? 'Type your API key | Enter: Validate & Save | Esc: ← Back'
           : 'Arrow keys: Navigate | Enter: Select | Esc: Cancel'
         }
       </Text>

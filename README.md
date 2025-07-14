@@ -5,13 +5,11 @@
 
 ### *Your Universal AI Coding Agent*
 
-<img src="https://skillicons.dev/icons?i=npm,nodejs,windows,linux,apple,ubuntu" />
+<img src="https://skillicons.dev/icons?i=npm,nodejs,typescript,windows,linux,apple" />
 
 <p align="center"><code>npm install -g @enfiy/enfiy-code</code></p>
 
 </div>
-
-![Enfiy Code Screenshot](./docs/assets/enfiy-code-screenshot.png)
 
 ## Quickstart
 
