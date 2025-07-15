@@ -419,7 +419,8 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       case 'api-key-input':
         if (highlightedIndex === 0) {
           setIsInputMode(true);
-        } else {
+        } else if (highlightedIndex === 1) {
+          // Back option selected
           onCancel();
         }
         break;
@@ -485,48 +486,57 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     }
 
     // Special handling for api-key-input step
-    if (step === 'api-key-input') {
-      if (isInputMode) {
-        // In input mode - handle text input
-        if (key.return) {
-          debugLogger.info('ui-interaction', 'Return key pressed in API key input', {
-            apiKey,
-            trimmed: apiKey.trim(),
+    if (step === 'api-key-input' && isInputMode) {
+      // In input mode - handle text input but allow arrow navigation
+      if (key.upArrow || key.downArrow) {
+        // Allow arrow navigation even in input mode
+        // Fall through to navigation handling below
+      } else if (key.return) {
+        debugLogger.info('ui-interaction', 'Return key pressed in API key input', {
+          apiKey,
+          trimmed: apiKey.trim(),
+          length: apiKey.length,
+          isEmpty: !apiKey.trim(),
+          provider
+        });
+        
+        if (apiKey.trim()) {
+          debugLogger.info('ui-interaction', 'Starting API key validation process', {
+            key: apiKey,
             length: apiKey.length,
-            isEmpty: !apiKey.trim(),
             provider
           });
-          
-          if (apiKey.trim()) {
-            debugLogger.info('ui-interaction', 'Starting API key validation process', {
-              key: apiKey,
-              length: apiKey.length,
-              provider
-            });
-            setIsInputMode(false);
-            setStep('api-key-validation');
-            validateAndSaveApiKey();
-          } else {
-            console.log('Enter pressed but API key is empty');
-          }
-        } else if (key.backspace || key.delete) {
-          setApiKey(prev => prev.slice(0, -1));
-        } else if (input && !key.ctrl && !key.meta) {
-          setApiKey(prev => {
-            const newValue = prev + input;
-            // Clean the API key in real-time to remove any paste artifacts
-            return cleanApiKey(newValue);
-          });
+          setIsInputMode(false);
+          setStep('api-key-validation');
+          validateAndSaveApiKey();
+        } else {
+          console.log('Enter pressed but API key is empty');
         }
+        return;
+      } else if (key.backspace || key.delete) {
+        setApiKey(prev => prev.slice(0, -1));
+        return;
+      } else if (input && !key.ctrl && !key.meta) {
+        setApiKey(prev => {
+          const newValue = prev + input;
+          // Clean the API key in real-time to remove any paste artifacts
+          return cleanApiKey(newValue);
+        });
         return;
       }
     }
 
-    // Navigation for non-input modes
+    // Navigation for all modes (including input mode for api-key-input)
     if (key.upArrow) {
       setHighlightedIndex(prev => {
         const newIndex = Math.max(0, prev - 1);
         console.log('Up arrow: changing highlightedIndex from', prev, 'to', newIndex);
+        // If moving to index 0 and we're in api-key-input step, enable input mode
+        if (newIndex === 0 && step === 'api-key-input') {
+          setIsInputMode(true);
+        } else {
+          setIsInputMode(false);
+        }
         return newIndex;
       });
       return;
@@ -537,6 +547,10 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       setHighlightedIndex(prev => {
         const newIndex = Math.min(maxIndex, prev + 1);
         console.log('Down arrow: changing highlightedIndex from', prev, 'to', newIndex, 'maxIndex:', maxIndex);
+        // If moving away from index 0 in api-key-input step, disable input mode
+        if (step === 'api-key-input' && newIndex !== 0) {
+          setIsInputMode(false);
+        }
         return newIndex;
       });
       return;
@@ -574,6 +588,13 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       }
     }
   }, [step, provider, onComplete]);
+
+  // Auto-focus input when entering api-key-input step
+  useEffect(() => {
+    if (step === 'api-key-input' && highlightedIndex === 0) {
+      setIsInputMode(true);
+    }
+  }, [step]);
 
   // Don't render anything during auto-complete
   if (step === 'auto-complete') {
@@ -822,7 +843,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             {/* Back option - directly after input box */}
             <Box paddingLeft={1}>
               <Text
-                color={highlightedIndex === 1 ? Colors.AccentBlue : Colors.Foreground}
+                color={highlightedIndex === 1 ? Colors.AccentBlue : Colors.Gray}
                 bold={highlightedIndex === 1}
               >
                 {highlightedIndex === 1 ? '> ' : '  '}← Back
