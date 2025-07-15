@@ -100,6 +100,24 @@ export class ModelManager {
         costTier: 'high',
         contextLength: 128000,
         isAvailable: true
+      },
+      {
+        name: 'mistral-large-24.02',
+        description: 'Mistral Large - Powerful and efficient',
+        provider: 'mistral',
+        capabilities: ['code', 'reasoning', 'multilingual'],
+        costTier: 'high',
+        contextLength: 32000,
+        isAvailable: true
+      },
+      {
+        name: 'mistral-small-24.02',
+        description: 'Mistral Small - Fast and cost-effective',
+        provider: 'mistral',
+        capabilities: ['code', 'reasoning'],
+        costTier: 'low',
+        contextLength: 32000,
+        isAvailable: true
       }
     ];
   }

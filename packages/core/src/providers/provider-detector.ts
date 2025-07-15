@@ -150,26 +150,26 @@ export async function generateProviderReport(): Promise<string> {
   const localProviders = await detectLocalProviders();
   const cloudProviders = detectCloudProviders();
   
-  let report = '🔍 AI プロバイダー検出結果:\n\n';
+  let report = '🔍 AI Provider Detection Results:\n\n';
   
-  report += '🏠 ローカルAI:\n';
+  report += '🏠 Local AI:\n';
   for (const provider of localProviders) {
     const status = provider.available ? '✅' : '❌';
     report += `  ${status} ${provider.type.toUpperCase()}: ${provider.reason}\n`;
   }
   
-  report += '\n☁️ クラウドAI:\n';
+  report += '\n☁️ Cloud AI:\n';
   for (const provider of cloudProviders) {
     const status = provider.available ? '✅' : '❌';
     report += `  ${status} ${provider.type.toUpperCase()}: ${provider.reason}\n`;
   }
   
   const recommended = await getRecommendedProvider();
-  report += `\n🎯 推奨: ${recommended.type.toUpperCase()}`;
+  report += `\n🎯 Recommended: ${recommended.type.toUpperCase()}`;
   if (recommended.defaultModel) {
     report += ` (${recommended.defaultModel})`;
   }
-  report += `\n   理由: ${recommended.reason}`;
+  report += `\n   Reason: ${recommended.reason}`;
   
   return report;
 }

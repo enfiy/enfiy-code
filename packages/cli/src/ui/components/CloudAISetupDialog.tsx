@@ -599,7 +599,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     if (step === 'api-key-input' && highlightedIndex === 0) {
       setIsInputMode(true);
     }
-  }, [step]);
+  }, [step, highlightedIndex]);
 
   // Don't render anything during auto-complete
   if (step === 'auto-complete') {

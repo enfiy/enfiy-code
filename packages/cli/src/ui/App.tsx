@@ -232,7 +232,7 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
       addItem(
         {
           type: MessageType.INFO,
-          text: '📝 日本語入力: 一部制限があります。Ctrl+Xで外部エディタを使用するかコピー&ペーストをお勧めします。',
+          text: '📝 Input Note: For complex text input, use Ctrl+X for external editor or copy & paste.',
         },
         Date.now(),
       );
@@ -300,6 +300,9 @@ ${t('helpMessage')}`,
     setShowCloudAISetup(true);
   }, []);
 
+  const lastMessageRef = useRef<string>('');
+  const lastMessageTimestamp = useRef<number>(0);
+  
   const handleCloudAISetupComplete = useCallback((setupConfig: { type: ProviderType; apiKey: string; endpoint?: string }) => {
     setShowCloudAISetup(false);
     setSetupProvider(null);
@@ -315,13 +318,22 @@ ${t('helpMessage')}`,
       setPreselectedProvider(setupConfig.type);
       setShowProviderSelection(true);
       
-      addItem(
-        {
-          type: MessageType.INFO,
-          text: `${setupConfig.type.toUpperCase()} API key configured successfully. Please select a model.`,
-        },
-        Date.now(),
-      );
+      // Add success message only once with timestamp-based deduplication
+      const message = `${setupConfig.type.toUpperCase()} API key configured successfully. Please select a model.`;
+      const now = Date.now();
+      
+      // Only add message if it's different from the last one OR if enough time has passed (prevent rapid duplicates)
+      if (lastMessageRef.current !== message || (now - lastMessageTimestamp.current > 1000)) {
+        lastMessageRef.current = message;
+        lastMessageTimestamp.current = now;
+        addItem(
+          {
+            type: MessageType.INFO,
+            text: message,
+          },
+          now,
+        );
+      }
     }
   }, [addItem, isManagingProvider]);
 

@@ -375,7 +375,7 @@ export function validateApiKey(provider: string, apiKey: string): boolean {
   // Enhanced validation patterns for security
   const patterns = {
     // OpenAI
-    openai: /^sk-[A-Za-z0-9]{48,}$/,
+    openai: /^sk-.*$/, // Modified to be more permissive
     
     // Anthropic
     anthropic: /^sk-ant-api03-[A-Za-z0-9_-]{95}$/,

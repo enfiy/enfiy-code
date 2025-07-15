@@ -14,12 +14,6 @@ const languageLoaders = new Map<SupportedLanguage, () => Promise<TranslationKeys
 
 // Language loader registry
 languageLoaders.set('en', () => import('./i18n.js').then(m => m.translations.en));
-languageLoaders.set('ja', () => import('./i18n.js').then(m => m.translations.ja));
-languageLoaders.set('ko', () => import('./i18n.js').then(m => m.translations.ko));
-languageLoaders.set('es', () => import('./i18n.js').then(m => m.translations.es));
-languageLoaders.set('fr', () => import('./i18n.js').then(m => m.translations.fr));
-languageLoaders.set('de', () => import('./i18n.js').then(m => m.translations.de));
-languageLoaders.set('ru', () => import('./i18n.js').then(m => m.translations.ru));
 
 // Language cache
 const languageCache = new Map<SupportedLanguage, TranslationKeys>();

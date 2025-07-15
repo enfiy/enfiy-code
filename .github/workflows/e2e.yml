@@ -4,7 +4,7 @@ name: E2E Tests
 
 on:
   push:
-    branches: [main]
+    branches: [master, main]
   merge_group:
 
 jobs:
@@ -44,5 +44,5 @@ jobs:
 
       - name: Run E2E tests
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ENFIY_API_KEY: ${{ secrets.ENFIY_API_KEY }}
         run: npm run test:integration:${{ matrix.sandbox }} -- --verbose --keep-output

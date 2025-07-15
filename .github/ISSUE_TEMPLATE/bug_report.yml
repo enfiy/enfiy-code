@@ -1,11 +1,11 @@
 name: Bug Report
-description: Report a bug to help us improve Gemini CLI
+description: Report a bug to help us improve Enfiy Code
 labels: ['kind/bug', 'status/need-triage']
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report! Please search [existing issues](https://github.com/google-gemini/gemini-cli/issues) to see if an issue already exists for the bug you encountered.
+        Thanks for taking the time to fill out this bug report! Please search [existing issues](https://github.com/enfiy-ecosystem/enfiy-code/issues) to see if an issue already exists for the bug you encountered.
 
   - type: textarea
     id: problem
@@ -26,12 +26,12 @@ body:
     id: info
     attributes:
       label: Client information
-      description: Please paste the full text from the `/about` command run from Gemini CLI. Also include which platform (MacOS, Windows, Linux).
+      description: Please paste the full text from the `/about` command run from Enfiy Code. Also include which platform (MacOS, Windows, Linux).
       value: |
         <details>
 
         ```console
-        $ gemini /about
+        $ enfiy /about
         # paste output here
         ```
 

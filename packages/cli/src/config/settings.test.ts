@@ -15,7 +15,7 @@ vi.mock('os', async (importOriginal) => {
   const actualOs = await importOriginal<typeof osActual>();
   return {
     ...actualOs,
-    homedir: vi.fn(() => '/mock/home/user'),
+    homedir: vi.fn(() => '/mock/user/home'),
   };
 });
 
@@ -78,7 +78,7 @@ describe('Settings Loading and Merging', () => {
     mockFsMkdirSync = vi.mocked(fs.mkdirSync);
     mockStripJsonComments = vi.mocked(stripJsonComments);
 
-    vi.mocked(osActual.homedir).mockReturnValue('/mock/home/user');
+    vi.mocked(osActual.homedir).mockReturnValue('/mock/user/home');
     (mockStripJsonComments as unknown as Mock).mockImplementation(
       (jsonString: string) => jsonString,
     );

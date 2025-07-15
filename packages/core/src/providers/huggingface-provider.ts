@@ -313,7 +313,7 @@ export class HuggingFaceProvider extends BaseProvider {
 </head>
 <body>
     <h1>${baseName}</h1>
-    <p>このファイルは自動生成されました。</p>
+    <p>This file was auto-generated.</p>
 </body>
 </html>`;
       case 'css':
@@ -337,10 +337,10 @@ print("${baseName}")`;
       case 'md':
         return `# ${baseName}
 
-このファイルは自動生成されました。`;
+This file was auto-generated.`;
       default:
         return `// ${baseName}
-// このファイルは自動生成されました。`;
+// This file was auto-generated.`;
     }
   }
 
@@ -466,11 +466,11 @@ print("${baseName}")`;
       }
     }
 
-    // Special handling for common Japanese patterns
-    const japaneseMatch = text.match(/(?:test-debug|テストデバッグ).*?(?:ディレクトリ|directory)/i);
-    if (japaneseMatch) {
+    // Special handling for common debug patterns
+    const debugMatch = text.match(/(?:test-debug|debug).*?(?:directory)/i);
+    if (debugMatch) {
       const result = `test-debug/test.${extension}`;
-      console.log('HuggingFace: Japanese pattern match:', result);
+      console.log('HuggingFace: Debug pattern match:', result);
       return result;
     }
 
@@ -482,7 +482,7 @@ print("${baseName}")`;
   }
 
   private createAbsolutePath(fileName: string): string {
-    const workingDir = '/home/h.esaki/work/enfiy-ecosystem/enfiy-code';
+    const workingDir = process.cwd();
     
     // If fileName already starts with a known directory structure, use it directly
     if (fileName.startsWith('/') || fileName.startsWith('./') || fileName.startsWith('../')) {

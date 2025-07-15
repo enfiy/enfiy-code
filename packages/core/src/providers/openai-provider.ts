@@ -23,6 +23,8 @@ export class OpenAIProvider extends BaseProvider {
       throw new Error('OpenAI API key is required');
     }
 
+    // Log a masked version of the API key for debugging
+    console.log(`[OpenAI Provider] Initializing with API key: ${config.apiKey.substring(0, 5)}...${config.apiKey.substring(config.apiKey.length - 5)}`);
 
     this.client = new OpenAI({
       apiKey: config.apiKey,

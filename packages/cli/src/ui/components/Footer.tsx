@@ -81,9 +81,9 @@ export const Footer: React.FC<FooterProps> = ({
   const authType = getAuthType(model);
   const modelDisplay = !model ? (
     <Text color={Colors.Gray}>AI not selected</Text>
-  ) : model.includes('llama') || model.includes('mistral') || model.includes('phi') || model.includes('qwen') || model.includes('deepseek') ? (
+  ) : model.includes('llama') || model.includes('phi') || model.includes('qwen') || model.includes('deepseek') ? (
     <Text color={Colors.AccentBlue}>[Local] {model}</Text>
-  ) : model.includes('gemini') || model.includes('gpt') || model.includes('claude') || model.includes('anthropic') ? (
+  ) : model.includes('gemini') || model.includes('gpt') || model.includes('claude') || model.includes('anthropic') || model.includes('mistral') ? (
     <Text color={Colors.AccentBlue}>[Cloud] {model}{authType}</Text>
   ) : (
     <Text color={Colors.AccentBlue}>{model}{authType}</Text>

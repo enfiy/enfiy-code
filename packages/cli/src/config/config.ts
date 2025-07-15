@@ -50,7 +50,7 @@ interface CliArgs {
   prompt: string | undefined;
   all_files: boolean | undefined;
   show_memory_usage: boolean | undefined;
-  yolo: boolean | undefined;
+  auto: boolean | undefined;
   telemetry: boolean | undefined;
   checkpointing: boolean | undefined;
   telemetryTarget: string | undefined;
@@ -60,81 +60,87 @@ interface CliArgs {
 
 async function parseArguments(): Promise<CliArgs> {
   const argv = await yargs(hideBin(process.argv))
+    .usage('$0 [options]')
+    .group(['model', 'prompt'], 'Basic Options:')
     .option('model', {
       alias: 'm',
       type: 'string',
-      description: `Model`,
+      description: 'AI model to use',
       default: process.env.ENFIY_MODEL || process.env.GEMINI_MODEL || DEFAULT_ENFIY_MODEL,
     })
     .option('prompt', {
       alias: 'p',
       type: 'string',
-      description: 'Prompt. Appended to input on stdin (if any).',
+      description: 'Initial prompt (appended to stdin input)',
     })
+    .group(['sandbox', 'sandbox-image'], 'Sandbox Options:')
     .option('sandbox', {
       alias: 's',
       type: 'boolean',
-      description: 'Run in sandbox?',
+      description: 'Run in isolated sandbox environment',
     })
     .option('sandbox-image', {
       type: 'string',
-      description: 'Sandbox image URI.',
+      description: 'Custom sandbox container image',
     })
+    .group(['debug', 'show_memory_usage'], 'Development Options:')
     .option('debug', {
       alias: 'd',
       type: 'boolean',
-      description: 'Run in debug mode?',
-      default: false,
-    })
-    .option('all_files', {
-      alias: 'a',
-      type: 'boolean',
-      description: 'Include ALL files in context?',
+      description: 'Enable debug mode with verbose logging',
       default: false,
     })
     .option('show_memory_usage', {
       type: 'boolean',
-      description: 'Show memory usage in status bar',
+      description: 'Display memory usage in status bar',
       default: false,
     })
-    .option('yolo', {
-      alias: 'y',
+    .group(['all_files', 'checkpointing', 'auto'], 'Workflow Options:')
+    .option('all_files', {
+      alias: 'a',
       type: 'boolean',
-      description:
-        'Automatically accept all actions (aka YOLO mode, see https://www.youtube.com/watch?v=xvFZjo5PgG0 for more details)?',
+      description: 'Include all files in project context',
       default: false,
-    })
-    .option('telemetry', {
-      type: 'boolean',
-      description:
-        'Enable telemetry? This flag specifically controls if telemetry is sent. Other --telemetry-* flags set specific values but do not enable telemetry on their own.',
-    })
-    .option('telemetry-target', {
-      type: 'string',
-      choices: ['local', 'gcp'],
-      description:
-        'Set the telemetry target (local or gcp). Overrides settings files.',
-    })
-    .option('telemetry-otlp-endpoint', {
-      type: 'string',
-      description:
-        'Set the OTLP endpoint for telemetry. Overrides environment variables and settings files.',
-    })
-    .option('telemetry-log-prompts', {
-      type: 'boolean',
-      description:
-        'Enable or disable logging of user prompts for telemetry. Overrides settings files.',
     })
     .option('checkpointing', {
       alias: 'c',
       type: 'boolean',
-      description: 'Enables checkpointing of file edits',
+      description: 'Enable file edit checkpointing',
       default: false,
     })
-    .version(await getCliVersion()) // This will enable the --version flag based on package.json
+    .option('auto', {
+      alias: 'y',
+      type: 'boolean',
+      description: 'Automatically approve all AI actions without confirmation',
+      default: false,
+    })
+    .group(['telemetry', 'telemetry-target', 'telemetry-otlp-endpoint', 'telemetry-log-prompts'], 'Telemetry Options:')
+    .option('telemetry', {
+      type: 'boolean',
+      description: 'Enable usage telemetry collection',
+    })
+    .option('telemetry-target', {
+      type: 'string',
+      choices: ['local', 'gcp'],
+      description: 'Telemetry destination (local or gcp)',
+    })
+    .option('telemetry-otlp-endpoint', {
+      type: 'string',
+      description: 'Custom OTLP endpoint for telemetry',
+    })
+    .option('telemetry-log-prompts', {
+      type: 'boolean',
+      description: 'Include user prompts in telemetry data',
+    })
+    .version(await getCliVersion())
     .alias('v', 'version')
     .help()
     .alias('h', 'help')
+    .example('$0', 'Start interactive mode')
+    .example('$0 -m "gpt-4"', 'Use specific model')
+    .example('$0 -p "Review my code"', 'Start with a prompt')
+    .example('$0 --auto', 'Auto-approve all actions')
+    .epilog('For more information, visit: https://github.com/enfiy-ecosystem/enfiy-code')
     .strict().argv;
 
   return argv;
@@ -224,7 +230,7 @@ export async function loadCliConfig(
     mcpServers,
     userMemory: memoryContent,
     enfiyMdFileCount: fileCount,
-    approvalMode: argv.yolo || false ? ApprovalMode.YOLO : ApprovalMode.DEFAULT,
+    approvalMode: argv.auto || false ? ApprovalMode.YOLO : ApprovalMode.DEFAULT,
     showMemoryUsage:
       argv.show_memory_usage || settings.showMemoryUsage || false,
     accessibility: settings.accessibility,

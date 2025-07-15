@@ -18,7 +18,7 @@ vi.mock('os', async (importOriginal) => {
   const actualOs = await importOriginal<typeof os>();
   return {
     ...actualOs,
-    homedir: vi.fn(() => '/mock/home/user'),
+    homedir: vi.fn(() => '/mock/user/home'),
   };
 });
 
@@ -55,7 +55,7 @@ describe('loadCliConfig', () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
+    vi.mocked(os.homedir).mockReturnValue('/mock/user/home');
     process.env.GEMINI_API_KEY = 'test-api-key'; // Ensure API key is set for tests
   });
 
@@ -100,7 +100,7 @@ describe('loadCliConfig telemetry', () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
+    vi.mocked(os.homedir).mockReturnValue('/mock/user/home');
     process.env.GEMINI_API_KEY = 'test-api-key';
   });
 
@@ -252,7 +252,7 @@ describe('loadCliConfig telemetry', () => {
 describe('Hierarchical Memory Loading (config.ts) - Placeholder Suite', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
+    vi.mocked(os.homedir).mockReturnValue('/mock/user/home');
     // Other common mocks would be reset here.
   });
 
@@ -312,7 +312,7 @@ describe('Hierarchical Memory Loading (config.ts) - Placeholder Suite', () => {
   // Example of a previously failing test structure:
   /*
   it('should correctly use mocked homedir for global path', async () => {
-    const MOCK_GEMINI_DIR_LOCAL = path.join('/mock/home/user', '.gemini');
+    const MOCK_GEMINI_DIR_LOCAL = path.join('/mock/user/home', '.gemini');
     const MOCK_GLOBAL_PATH_LOCAL = path.join(MOCK_GEMINI_DIR_LOCAL, 'GEMINI.md');
     mockFs({
       [MOCK_GLOBAL_PATH_LOCAL]: { type: 'file', content: 'GlobalContentOnly' }

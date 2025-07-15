@@ -95,7 +95,7 @@ Expectation for required parameters:
         properties: {
           file_path: {
             description:
-              "The path to the file to modify. Can be absolute (e.g., '/home/user/project/file.txt') or relative to the current working directory (e.g., 'test/file.txt').",
+              "The path to the file to modify. Can be absolute (e.g., '/path/to/project/file.txt') or relative to the current working directory (e.g., 'test/file.txt').",
             type: 'string',
           },
           old_string: {

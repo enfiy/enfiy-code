@@ -48,6 +48,9 @@ export class AnthropicProvider extends BaseProvider {
       throw new Error('Anthropic API key is required');
     }
 
+    // Log a masked version of the API key for debugging
+    console.log(`[Anthropic Provider] Initializing with API key: ${config.apiKey.substring(0, 5)}...${config.apiKey.substring(config.apiKey.length - 5)}`);
+
     this.apiKey = config.apiKey;
   }
 

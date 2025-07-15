@@ -1215,7 +1215,7 @@ export const useSlashCommandProcessor = (
             // Return tool schedule for shell execution
             return {
               shouldScheduleTool: true,
-              toolName: 'bash',
+              toolName: 'run_shell_command',
               toolArgs: { command: `npm run ${script}` },
             };
             
@@ -1277,7 +1277,7 @@ export const useSlashCommandProcessor = (
             
             return {
               shouldScheduleTool: true,
-              toolName: 'bash',
+              toolName: 'run_shell_command',
               toolArgs: { command: testCommand },
             };
             
@@ -1325,7 +1325,7 @@ export const useSlashCommandProcessor = (
             
             return {
               shouldScheduleTool: true,
-              toolName: 'bash',
+              toolName: 'run_shell_command',
               toolArgs: { command: buildCommand },
             };
             
@@ -1376,7 +1376,7 @@ export const useSlashCommandProcessor = (
             
             return {
               shouldScheduleTool: true,
-              toolName: 'bash',
+              toolName: 'run_shell_command',
               toolArgs: { command: lintCommand },
             };
             
@@ -1459,7 +1459,7 @@ export const useSlashCommandProcessor = (
           
           return {
             shouldScheduleTool: true,
-            toolName: 'bash',
+            toolName: 'run_shell_command',
             toolArgs: { command },
           };
         },
@@ -1487,7 +1487,7 @@ export const useSlashCommandProcessor = (
           
           return {
             shouldScheduleTool: true,
-            toolName: 'bash',
+            toolName: 'run_shell_command',
             toolArgs: { command: `git add -A && git commit -m "${message}"` },
           };
         },
@@ -1525,7 +1525,7 @@ export const useSlashCommandProcessor = (
           
           return {
             shouldScheduleTool: true,
-            toolName: 'bash',
+            toolName: 'run_shell_command',
             toolArgs: { command },
           };
         },
@@ -1554,7 +1554,7 @@ export const useSlashCommandProcessor = (
           
           return {
             shouldScheduleTool: true,
-            toolName: 'bash',
+            toolName: 'run_shell_command',
             toolArgs: { command },
           };
         },
@@ -1584,7 +1584,7 @@ export const useSlashCommandProcessor = (
           return {
             shouldScheduleTool: true,
             toolName: 'read_file',
-            toolArgs: { path: filePath },
+            toolArgs: { absolute_path: filePath },
           };
         },
       },
@@ -1612,7 +1612,7 @@ export const useSlashCommandProcessor = (
           return {
             shouldScheduleTool: true,
             toolName: 'read_file',
-            toolArgs: { path: filePath },
+            toolArgs: { absolute_path: filePath },
           };
         },
       },
@@ -1631,7 +1631,7 @@ export const useSlashCommandProcessor = (
           // Get recent changes for review
           return {
             shouldScheduleTool: true,
-            toolName: 'bash',
+            toolName: 'run_shell_command',
             toolArgs: { 
               command: 'git diff --name-only HEAD~1 HEAD | head -10'
             },
@@ -1772,7 +1772,7 @@ export const useSlashCommandProcessor = (
           // Check for outdated packages
           return {
             shouldScheduleTool: true,
-            toolName: 'bash',
+            toolName: 'run_shell_command',
             toolArgs: { 
               command: shouldUpdate ? 'npm update && npm outdated' : 'npm outdated'
             },
@@ -1793,7 +1793,7 @@ export const useSlashCommandProcessor = (
           
           return {
             shouldScheduleTool: true,
-            toolName: 'bash',
+            toolName: 'run_shell_command',
             toolArgs: { 
               command: `find . -type d -name node_modules -prune -o -type d -name .git -prune -o -type f -print | head -50 | sort`
             },
