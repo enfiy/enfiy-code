@@ -185,8 +185,8 @@ Connect external tools and services:
 ## Next Steps
 
 - **[MCP Integration Guide](../guides/mcp-integration.md)** – Connect external tools
-- **[API Reference](../api/index.md)** – Explore all available tools
-- **[Troubleshooting](../troubleshooting/index.md)** – Solve common issues
+- **[API Reference](../api/README.md)** – Explore all available tools
+- **[Troubleshooting](../troubleshooting/README.md)** – Solve common issues
 
 ## Getting Help
 

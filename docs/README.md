@@ -1,6 +1,6 @@
 # Enfiy Code Documentation
 
-Welcome to the comprehensive documentation for Enfiy Code, your universal AI coding agent. This documentation provides everything you need to install, use, and develop with Enfiy Code.
+Welcome to the comprehensive documentation for Enfiy Code, Universal AI Coding Agent for you. This documentation provides everything you need to install, use, and develop with Enfiy Code.
 
 ## What is Enfiy Code?
 
@@ -17,49 +17,49 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 
 New to Enfiy Code? Start here:
 
-### 📚 [Getting Started](./getting-started/index.md)
+### 📚 [Getting Started](./getting-started/README.md)
 Essential information to get up and running quickly.
 
-- **[Quick Start](./getting-started/index.md#quick-start)** – Install and run in minutes
+- **[Quick Start](./getting-started/README.md#quick-start)** – Install and run in minutes
 - **[Installation Guide](./getting-started/installation.md)** – Detailed setup instructions
 - **[First Steps](./getting-started/first-steps.md)** – Learn the basics
 - **[API Configuration](./getting-started/api-configuration.md)** – Set up AI providers
 
 ## Documentation Sections
 
-### 🎯 [User Guides](./guides/index.md)
+### 🎯 [User Guides](./guides/README.md)
 Step-by-step guides for common workflows and advanced features.
 
 - **[MCP Integration](./guides/mcp-integration.md)** – Connect external tools
 - **[Checkpointing](./guides/checkpointing.md)** – Save conversation sessions
 - Project workflows, debugging guides, and more
 
-### 🔧 [API Reference](./api/index.md)
+### 🔧 [API Reference](./api/README.md)
 Technical documentation for developers and power users.
 
-- **[CLI Reference](./api/cli/index.md)** – Command-line interface documentation
-- **[Core System](./api/core/index.md)** – Architecture and internal APIs
-- **[Tools Reference](./api/tools/index.md)** – Built-in tools and capabilities
+- **[CLI Reference](./api/cli/README.md)** – Command-line interface documentation
+- **[Core System](./api/core/README.md)** – Architecture and internal APIs
+- **[Tools Reference](./api/tools/README.md)** – Built-in tools and capabilities
 
-### 🛠️ [Development](./development/index.md)
+### 🛠️ [Development](./development/README.md)
 Information for contributors and extension developers.
 
 - **[Architecture Overview](./development/architecture.md)** – System design
-- **[Development Setup](./development/index.md#development-setup)** – Contributing guide
+- **[Development Setup](./development/README.md#development-setup)** – Contributing guide
 - **[Extension Development](./development/extension.md)** – Create custom extensions
 - **[Deployment Guide](./development/deployment.md)** – Production deployment
 
-### 🔒 [Security](./security/index.md)
+### 🔒 [Security](./security/README.md)
 Security policies, privacy information, and best practices.
 
 - **[Privacy Policy](./security/privacy-policy.md)** – Data handling and user rights
-- **[Security Best Practices](./security/index.md#security-best-practices)** – Usage recommendations
+- **[Security Best Practices](./security/README.md#security-best-practices)** – Usage recommendations
 - **[Telemetry](./security/telemetry.md)** – Data collection and opt-out
 
-### 🚨 [Troubleshooting](./troubleshooting/index.md)
+### 🚨 [Troubleshooting](./troubleshooting/README.md)
 Solutions for common issues and problems.
 
-- **[General Troubleshooting](./troubleshooting/index.md)** – Common issues
+- **[General Troubleshooting](./troubleshooting/README.md)** – Common issues
 - **[Japanese Input Issues](./troubleshooting/japanese-input.md)** – IME-specific problems
 - Error codes, debugging tips, and workarounds
 
@@ -72,18 +72,18 @@ Looking for something specific?
 - **Setting up API keys**: [API Configuration](./getting-started/api-configuration.md)
 - **Learning basic commands**: [First Steps](./getting-started/first-steps.md)
 - **Connecting external tools**: [MCP Integration](./guides/mcp-integration.md)
-- **Troubleshooting issues**: [Troubleshooting](./troubleshooting/index.md)
+- **Troubleshooting issues**: [Troubleshooting](./troubleshooting/README.md)
 
 ### Technical Information
 - **Command reference**: [CLI Commands](./api/cli/commands.md)
-- **Tool capabilities**: [Tools Reference](./api/tools/index.md)
+- **Tool capabilities**: [Tools Reference](./api/tools/README.md)
 - **System architecture**: [Architecture](./development/architecture.md)
-- **Security details**: [Security Overview](./security/index.md)
+- **Security details**: [Security Overview](./security/README.md)
 
 ### Development
-- **Contributing**: [Development Guide](./development/index.md)
+- **Contributing**: [Development Guide](./development/README.md)
 - **Creating extensions**: [Extension Development](./development/extension.md)
-- **API documentation**: [Core APIs](./api/core/index.md)
+- **API documentation**: [Core APIs](./api/core/README.md)
 
 ## Community and Support
 
@@ -115,4 +115,4 @@ This documentation has been reorganized for better navigation:
 
 ---
 
-**Need immediate help?** Check the [Troubleshooting](./troubleshooting/index.md) section or use `/help` within Enfiy Code for interactive assistance.
+**Need immediate help?** Check the [Troubleshooting](./troubleshooting/README.md) section or use `/help` within Enfiy Code for interactive assistance.

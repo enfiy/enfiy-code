@@ -1,6 +1,6 @@
 # Enfiy Code
 
-Within Enfiy Code, `packages/cli` is the frontend for users to interact with multiple AI models including OpenAI, Anthropic Claude, Google Gemini, Mistral, and local models via Ollama. For a general overview of Enfiy Code, see the [main documentation page](../index.md).
+Within Enfiy Code, `packages/cli` is the frontend for users to interact with multiple AI models including OpenAI, Anthropic Claude, Google Gemini, Mistral, and local models via Ollama. For a general overview of Enfiy Code, see the [main documentation page](../README.md).
 
 ## Navigating this section
 

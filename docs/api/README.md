@@ -4,9 +4,9 @@ Technical documentation for Enfiy Code's architecture, tools, and interfaces.
 
 ## Architecture Overview
 
-- **[CLI Interface](./cli/index.md)** – Command-line interface documentation
-- **[Core System](./core/index.md)** – Core system architecture and APIs
-- **[Tools System](./tools/index.md)** – Built-in tools and capabilities
+- **[CLI Interface](./cli/README.md)** – Command-line interface documentation
+- **[Core System](./core/README.md)** – Core system architecture and APIs
+- **[Tools System](./tools/README.md)** – Built-in tools and capabilities
 
 ## CLI Reference
 

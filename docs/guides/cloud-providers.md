@@ -368,7 +368,7 @@ export HF_CLIENT_ID="your-huggingface-app-id"
 /bug
 
 # Check troubleshooting guide
-# See: docs/troubleshooting/index.md
+# See: docs/troubleshooting/README.md
 ```
 
 ## Future Considerations

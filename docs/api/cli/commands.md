@@ -73,7 +73,7 @@ Slash commands provide meta-level control over the CLI itself.
 - **`/about`**
   - **Description:** Show version info. Please share this information when filing issues.
 
-- [**`/tools`**](../tools/index.md)
+- [**`/tools`**](../tools/README.md)
   - **Description:** Display a list of tools that are currently available within Enfiy Code.
   - **Sub-commands:**
     - **`desc`** or **`descriptions`**:

@@ -1,6 +1,6 @@
 # Enfiy Code Core
 
-Enfiy Code's core package (`packages/core`) is the backend portion of Enfiy Code, handling communication with the Gemini API, managing tools, and processing requests sent from `packages/cli`. For a general overview of Enfiy Code, see the [main documentation page](../index.md).
+Enfiy Code's core package (`packages/core`) is the backend portion of Enfiy Code, handling communication with the Gemini API, managing tools, and processing requests sent from `packages/cli`. For a general overview of Enfiy Code, see the [main documentation page](../README.md).
 
 ## Navigating this section
 

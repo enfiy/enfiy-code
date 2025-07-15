@@ -45,8 +45,8 @@ Enfiy Code supports both cloud and local AI providers:
 
 ## Need Help?
 
-- **[Troubleshooting](../troubleshooting/index.md)** – Common issues and solutions
-- **[Guides](../guides/index.md)** – Step-by-step tutorials
-- **[API Reference](../api/index.md)** – Technical documentation
+- **[Troubleshooting](../troubleshooting/README.md)** – Common issues and solutions
+- **[Guides](../guides/README.md)** – Step-by-step tutorials
+- **[API Reference](../api/README.md)** – Technical documentation
 
 Use `/help` within Enfiy Code for interactive assistance.

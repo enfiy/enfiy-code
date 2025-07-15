@@ -3,7 +3,7 @@
 
 # Enfiy Code
 
-### *Your Universal AI Coding Agent*
+### *Universal AI Coding Agent for you*
 
 <img src="https://skillicons.dev/icons?i=npm,nodejs,typescript,windows,linux,apple" />
 
@@ -13,7 +13,7 @@
 
 ## Quickstart
 
-Ensure you have [Node.js v18 or higher](https://nodejs.org/en/download) installed.
+Ensure you have [Node.js v20 or higher](https://nodejs.org/en/download) installed.
 
 **Option 1: Run without installing (Recommended for first-time users)**
 ```bash
@@ -84,14 +84,6 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
       </td>
       <td><strong>Mistral AI</strong><br>Open-source focused AI models</td>
     </tr>
-    <tr>
-      <td>
-        <div style="text-align: center;">
-          <img src="./docs/assets/provider/provider-huggingface.png" width="42" />
-        </div>
-      </td>
-      <td><strong>HuggingFace</strong><br>Supports both API and local modes</td>
-    </tr>
   </tbody>
 </table>
 
@@ -112,14 +104,6 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
         </div>
       </td>
       <td><strong>Ollama</strong><br>Run models locally with full privacy</td>
-    </tr>
-    <tr>
-      <td>
-        <div style="text-align: center;">
-          <img src="./docs/assets/provider/provider-vllm.png" width="42" />
-        </div>
-      </td>
-      <td><strong>vLLM</strong><br>High-performance inference engine <em>(coming soon)</em></td>
     </tr>
   </tbody>
 </table>
@@ -152,7 +136,46 @@ export HF_CLIENT_ID="your-huggingface-app-id"
 
 > **Note**: By default, Enfiy Code uses temporary OAuth clients for compatibility. Custom OAuth setup ensures proper branding in consent screens.
 
-## Core Commands
+## Command Line Options
+
+Enfiy Code supports various command-line options to customize your experience:
+
+### Basic Options
+- `-m, --model <model>` - Specify AI model to use
+- `-p, --prompt <text>` - Start with an initial prompt
+
+### Workflow Options
+- `-y, --auto` - Automatically approve all AI actions
+- `-a, --all-files` - Include all project files in context
+- `-c, --checkpointing` - Enable file edit checkpointing
+
+### Development Options
+- `-d, --debug` - Enable debug mode with verbose logging
+- `--show-memory-usage` - Display memory usage in status bar
+
+### Sandbox Options
+- `-s, --sandbox` - Run in isolated sandbox environment
+- `--sandbox-image <image>` - Use custom sandbox container image
+
+### Examples
+```bash
+# Start interactive mode
+enfiy
+
+# Use specific model
+enfiy -m "gpt-4"
+
+# Start with a prompt
+enfiy -p "Review my code for security issues"
+
+# Auto-approve all actions
+enfiy --auto
+
+# Enable debug mode
+enfiy --debug
+```
+
+## Interactive Commands
 
 Once Enfiy Code is running, use these commands to interact with the AI:
 
@@ -161,7 +184,7 @@ Once Enfiy Code is running, use these commands to interact with the AI:
 - `/tool` - Access specialized tools and integrations
 - `/help` - Show available commands and usage information
 - `/bug` - Report bugs or issues to the development team
-- Ask questions, edit files, run commands
+- Code with confidence, create without limits, command with ease
 
 ## Usage Examples
 
@@ -209,40 +232,36 @@ enfiy
 
 ## Documentation
 
-### 📚 Getting Started
-- **[Quick Start Guide](./docs/getting-started/index.md)** – Get up and running in minutes
+### Getting Started
+- **[Quick Start Guide](./docs/getting-started/README.md)** – Get up and running in minutes
 - **[Installation](./docs/getting-started/installation.md)** – Detailed installation instructions
 - **[First Steps](./docs/getting-started/first-steps.md)** – Essential commands and workflows
 - **[API Configuration](./docs/getting-started/api-configuration.md)** – Set up AI provider authentication
 
-### 🎯 User Guides
-- **[All Guides](./docs/guides/index.md)** – Complete guide collection
+### User Guides
+- **[All Guides](./docs/guides/README.md)** – Complete guide collection
 - **[MCP Integration](./docs/guides/mcp-integration.md)** – Connect external tools and services
 - **[Checkpointing](./docs/guides/checkpointing.md)** – Save and restore conversation sessions
 
-### 🔧 API Reference
-- **[API Documentation](./docs/api/index.md)** – Technical reference
+### API Reference
+- **[API Documentation](./docs/api/README.md)** – Technical reference
 - **[CLI Commands](./docs/api/cli/commands.md)** – Complete command reference
-- **[Tools Reference](./docs/api/tools/index.md)** – Built-in tools and capabilities
+- **[Tools Reference](./docs/api/tools/README.md)** – Built-in tools and capabilities
 
-### 🛠️ Development
-- **[Development Guide](./docs/development/index.md)** – Contributing and development setup
+### Development
+- **[Development Guide](./docs/development/README.md)** – Contributing and development setup
 - **[Architecture](./docs/development/architecture.md)** – System design and components
 - **[Extensions](./docs/development/extension.md)** – Creating custom extensions
 
-### 🔒 Security
-- **[Security Overview](./docs/security/index.md)** – Security policies and best practices
+### Security
+- **[Security Overview](./docs/security/README.md)** – Security policies and best practices
 - **[Privacy Policy](./docs/security/privacy-policy.md)** – Data handling and privacy rights
 - **[Telemetry](./docs/security/telemetry.md)** – Data collection and opt-out options
-
-### 🚨 Support
-- **[Troubleshooting](./docs/troubleshooting/index.md)** – Common issues and solutions
-- **[Japanese Input Issues](./docs/troubleshooting/japanese-input.md)** – Specific input method fixes
 
 ## Development
 
 ### Prerequisites for Development
-- Node.js v18 or higher
+- Node.js v20 or higher
 - npm or yarn package manager
 - Git
 
