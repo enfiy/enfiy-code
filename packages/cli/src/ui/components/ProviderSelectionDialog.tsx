@@ -103,13 +103,13 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
       id: 'local' as const, 
       name: t('localAI'), 
       description: t('localAIDescription'),
-      providers: [ProviderType.OLLAMA, ProviderType.HUGGINGFACE, ProviderType.VLLM]
+      providers: [ProviderType.OLLAMA]
     },
     { 
       id: 'cloud' as const, 
       name: t('cloudAI'), 
       description: t('cloudAIDescription'),
-      providers: [ProviderType.ANTHROPIC, ProviderType.OPENAI, ProviderType.GEMINI, ProviderType.MISTRAL, ProviderType.HUGGINGFACE]
+      providers: [ProviderType.ANTHROPIC, ProviderType.OPENAI, ProviderType.GEMINI, ProviderType.MISTRAL]
     },
     { 
       id: 'settings' as const,
@@ -208,17 +208,9 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
 
   // Provider descriptions - context dependent
   const getProviderDescription = (provider: ProviderType): string => {
-    const isLocal = selectedCategory === 'local';
-    
     switch (provider) {
       case ProviderType.OLLAMA:
         return 'Popular local AI runtime - Easy setup, excellent models';
-      case ProviderType.HUGGINGFACE:
-        return isLocal 
-          ? 'Open source AI ecosystem for local execution'
-          : 'Open source AI ecosystem with cloud access';
-      case ProviderType.VLLM:
-        return 'High-performance inference engine for local models';
       case ProviderType.ANTHROPIC:
         return 'Claude API - Superior reasoning and safety';
       case ProviderType.OPENAI:
@@ -285,10 +277,9 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
     return 0;
   };
 
-  // Get the index of the Back option (right after HuggingFace)
+  // Get the index of the Back option (at the end of available providers)
   const getBackOptionIndex = () => {
-    const huggingFaceIndex = availableProviders.findIndex(p => p === ProviderType.HUGGINGFACE);
-    return huggingFaceIndex !== -1 ? huggingFaceIndex + 1 : availableProviders.length;
+    return availableProviders.length;
   };
 
   useInput((input, key) => {
@@ -334,9 +325,8 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
           return;
         }
         
-        // Adjust index if we're past the back option
-        const providerIndex = highlightedIndex > getBackOptionIndex() ? highlightedIndex - 1 : highlightedIndex;
-        const selected = availableProviders[providerIndex];
+        // Select the provider directly by index
+        const selected = availableProviders[highlightedIndex];
         
         // For cloud providers, always show setup dialog to allow authentication method selection
         if (selectedCategory === 'cloud') {
@@ -345,7 +335,7 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
           return;
         }
         
-        // For local providers, check if setup is needed
+        // For local providers (now only Ollama), check if setup is needed
         setIsCheckingProvider(true);
         checkProviderNeedsSetup(selected, selectedCategory === 'local').then((needsSetup) => {
           setIsCheckingProvider(false);
@@ -388,9 +378,6 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
   });
 
 
-  // Use inputWidth if provided, otherwise fallback to a smaller width
-  const dialogWidth = inputWidth ? Math.min(inputWidth + 8, terminalWidth - 4) : Math.min(80, terminalWidth - 4);
-  
   return (
     <Box
       flexDirection="column"
@@ -398,7 +385,6 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
       borderColor={Colors.BorderGray}
       paddingX={2}
       paddingY={1}
-      width={dialogWidth}
     >
       <Box marginBottom={1} justifyContent="center">
         <Text bold color={Colors.AccentBlue}>
@@ -430,8 +416,14 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
       {mode === 'provider' && selectedCategory && (
         <Box flexDirection="column">
           <Box marginBottom={1}>
-            <Text color={Colors.Gray}>
+            <Text bold color={Colors.Foreground}>
               {t('selectProviderPrompt')}
+              {selectedCategory === 'cloud' && (
+                <Text bold color={Colors.AccentYellow}>
+                  {' '}
+                  Note: API keys may be subject to charges by the provider.
+                </Text>
+              )}
             </Text>
           </Box>
           
@@ -445,42 +437,40 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
           
           {availableProviders.map((provider, index) => {
             const isConfigured = providerConfigurations[provider] || false;
-            const statusColor = getStatusColor(isConfigured);
-            const backOptionIndex = getBackOptionIndex();
-            
-            // Adjust display index if we're past the back option
-            const displayIndex = index >= backOptionIndex ? index + 1 : index;
+            const isHighlighted = index === highlightedIndex;
+            const prefix = isHighlighted ? '> ' : '  ';
+            const statusIndicator = getStatusIndicator(isConfigured);
+            const providerName = getProviderDisplayName(provider).padEnd(18);
+            const description = getProviderDescription(provider);
+            const configuredText = isConfigured ? ' (Configured)' : '';
             
             return (
-              <React.Fragment key={provider}>
-                <Box paddingLeft={1}>
-                  <Text
-                    color={displayIndex === highlightedIndex ? Colors.AccentBlue : Colors.Foreground}
-                    bold={displayIndex === highlightedIndex}
-                  >
-                    {displayIndex === highlightedIndex ? '> ' : '  '}
-                    <Text color={statusColor}>{getStatusIndicator(isConfigured)}</Text>
-                    {' '}{getProviderDisplayName(provider).padEnd(18)}
-                    <Text color={displayIndex === highlightedIndex ? Colors.Comment : Colors.Gray}>
-                      {getProviderDescription(provider)}
-                      {isConfigured && ' (Configured)'}
-                    </Text>
-                  </Text>
-                </Box>
-                {/* Insert Back option after HuggingFace */}
-                {provider === ProviderType.HUGGINGFACE && (
-                  <Box paddingLeft={1}>
-                    <Text
-                      color={backOptionIndex === highlightedIndex ? Colors.AccentBlue : Colors.Gray}
-                      bold={backOptionIndex === highlightedIndex}
-                    >
-                      {backOptionIndex === highlightedIndex ? '> ' : '  '}← {t('navBack').replace('← ', '')}
-                    </Text>
-                  </Box>
-                )}
-              </React.Fragment>
+              <Box key={provider} paddingLeft={1} flexDirection="row">
+                <Text color={isHighlighted ? Colors.AccentBlue : Colors.Foreground}>
+                  {prefix}
+                </Text>
+                <Text color={isConfigured ? Colors.AccentGreen : Colors.Gray}>
+                  {statusIndicator}
+                </Text>
+                <Text color={isHighlighted ? Colors.AccentBlue : Colors.Foreground}>
+                  {' '}{providerName}
+                </Text>
+                <Text color={isHighlighted ? Colors.Comment : Colors.Gray}>
+                  {description}{configuredText}
+                </Text>
+              </Box>
             );
           })}
+          
+          {/* Back option */}
+          <Box paddingLeft={1}>
+            <Text
+              color={getBackOptionIndex() === highlightedIndex ? Colors.AccentBlue : Colors.Gray}
+              bold={getBackOptionIndex() === highlightedIndex}
+            >
+              {getBackOptionIndex() === highlightedIndex ? '> ' : '  '}← {t('navBack').replace('← ', '')}
+            </Text>
+          </Box>
           
           {/* Status legend and management hint */}
           <Box paddingLeft={1} marginTop={1}>
@@ -524,17 +514,39 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
               </Text>
             </Box>
           ) : (
-            availableModels.map((model, index) => (
-              <Box key={model.id} paddingLeft={1}>
-                <Text color={index === highlightedIndex ? Colors.AccentBlue : Colors.Foreground}>
-                  {index === highlightedIndex ? '> ' : '  '}
-                  <Text bold={true}>{model.name}</Text>
-                  <Text color={index === highlightedIndex ? Colors.Comment : Colors.Gray}>
-                    {' '}{model.description} ({model.contextLength.toLocaleString()}t | {model.capabilities.join(', ')})
+            availableModels.map((model, index) => {
+              // Find the longest model name for alignment
+              const maxModelNameLength = Math.max(...availableModels.map(m => m.name.length));
+              const paddingNeeded = maxModelNameLength - model.name.length + 2; // +2 for extra spacing
+              const padding = ' '.repeat(paddingNeeded);
+              
+              const isHighlighted = index === highlightedIndex;
+              const prefix = isHighlighted ? '> ' : '  ';
+              const modelDescription = `${model.description} (${model.contextLength.toLocaleString()}t | ${model.capabilities.join(', ')})`;
+              
+              // Calculate available width for description (assuming reasonable terminal width)
+              const prefixLength = prefix.length;
+              const nameLength = model.name.length;
+              const paddingLength = padding.length;
+              const usedWidth = prefixLength + nameLength + paddingLength;
+              const maxReasonableWidth = Math.min(terminalWidth - 10, 120); // -10 for margins and borders
+              const availableWidth = maxReasonableWidth - usedWidth;
+              
+              // Truncate description if it's too long
+              const truncatedDescription = modelDescription.length > availableWidth 
+                ? modelDescription.substring(0, availableWidth - 3) + '...'
+                : modelDescription;
+              
+              return (
+                <Box key={model.id} paddingLeft={1}>
+                  <Text color={isHighlighted ? Colors.AccentBlue : Colors.Foreground}>
+                    {prefix}
+                    <Text bold color={isHighlighted ? Colors.AccentBlue : Colors.Foreground}>{model.name}</Text>
+                    <Text color={isHighlighted ? Colors.Comment : Colors.Gray}>{padding}{truncatedDescription}</Text>
                   </Text>
-                </Text>
-              </Box>
-            ))
+                </Box>
+              );
+            })
           )}
           
           {/* Back option for models */}

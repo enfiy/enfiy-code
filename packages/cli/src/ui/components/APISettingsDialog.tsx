@@ -171,7 +171,6 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
         ))}
 
         {/* Back option */}
-        <Text> </Text>
         <Box paddingLeft={1}>
           <Text
             color={configuredProviders.length === highlightedIndex ? Colors.AccentBlue : Colors.Gray}
