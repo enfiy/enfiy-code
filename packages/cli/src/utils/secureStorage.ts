@@ -398,6 +398,9 @@ function getEnvVarForProvider(provider: string): string | undefined {
     huggingface: 'HUGGINGFACE_API_KEY',
     hf: 'HUGGINGFACE_API_KEY',
 
+    // OpenRouter
+    openrouter: 'OPENROUTER_API_KEY',
+
     // Azure
     azure: 'AZURE_OPENAI_API_KEY',
     'azure-openai': 'AZURE_OPENAI_API_KEY',
@@ -436,6 +439,9 @@ export function validateApiKey(provider: string, apiKey: string): boolean {
     // HuggingFace
     huggingface: /^hf_[A-Za-z0-9]{34}$/,
     hf: /^hf_[A-Za-z0-9]{34}$/,
+
+    // OpenRouter
+    openrouter: /^sk-or-[A-Za-z0-9_-]{48,}$/,
 
     // Cohere
     cohere: /^[A-Za-z0-9]{40,}$/,

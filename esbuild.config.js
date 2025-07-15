@@ -80,6 +80,14 @@ esbuild
       '@opentelemetry/sdk-metrics',
       '@opentelemetry/sdk-trace-node',
       '@opentelemetry/semantic-conventions',
+      // UI related dependencies
+      'ink',
+      'react',
+      'react/jsx-runtime',
+      'ink-select-input',
+      'read-package-up',
+      'open',
+      'ink-spinner',
       // Large AI SDKs - can be dynamically imported
       '@google/genai',
       'openai',

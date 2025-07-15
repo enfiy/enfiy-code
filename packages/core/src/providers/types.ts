@@ -24,6 +24,7 @@ export enum ProviderType {
   ANTHROPIC = 'anthropic',
   GEMINI = 'gemini',
   MISTRAL = 'mistral',
+  OPENROUTER = 'openrouter',
 }
 
 export interface ProviderConfig {

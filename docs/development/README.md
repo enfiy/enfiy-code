@@ -14,7 +14,7 @@ Technical documentation for contributors and developers working on Enfiy Code.
 2. **Environment Setup**
 
    ```bash
-   git clone https://github.com/enfiy-ecosystem/enfiy-code.git
+   git clone https://github.com/enfiy/enfiy-code.git
    cd enfiy-code
    npm install
    npm run build

@@ -22,9 +22,9 @@ if (!fs.existsSync(packageJsonPath)) {
   errors.push(`Error: package.json not found in ${process.cwd()}`);
 } else {
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-  if (packageJson.repository !== 'enfiy-ecosystem/enfiy-code') {
+  if (packageJson.repository !== 'enfiy/enfiy-code') {
     errors.push(
-      `Error: The "repository" field in ${packageJsonPath} must be "enfiy-ecosystem/enfiy-code".`,
+      `Error: The "repository" field in ${packageJsonPath} must be "enfiy/enfiy-code".`,
     );
   }
 }

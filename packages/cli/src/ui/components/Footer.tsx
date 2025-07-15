@@ -20,6 +20,7 @@ import { ConsoleSummaryDisplay } from './ConsoleSummaryDisplay.js';
 import process from 'node:process';
 import { MemoryUsageDisplay } from './MemoryUsageDisplay.js';
 import { getApiKey } from '../../utils/secureStorage.js';
+import { getProviderFromModel, isLocalModel, getProviderDisplayNameFromModel } from '../../utils/modelUtils.js';
 
 interface FooterProps {
   model: string;
@@ -53,23 +54,31 @@ export const Footer: React.FC<FooterProps> = ({
   const limit = tokenLimit(model);
   const percentage = totalTokenCount / limit;
 
+  // Check if current model's provider has valid credentials
+  const isModelAvailable = (modelName: string): boolean => {
+    if (!modelName) return false;
+
+    // Local models are always available
+    if (isLocalModel(modelName)) {
+      return true;
+    }
+
+    const provider = getProviderFromModel(modelName);
+    if (!provider) return true; // Unknown models are assumed available
+
+    const apiKey = getApiKey(provider);
+    return !!apiKey; // Return true if API key exists
+  };
+
   // Get authentication type for current model
   const getAuthType = (modelName: string): string => {
     if (!modelName) return '';
 
-    let provider: ProviderType | null = null;
-    if (modelName.includes('claude') || modelName.includes('anthropic')) {
-      provider = ProviderType.ANTHROPIC;
-    } else if (modelName.includes('gemini')) {
-      provider = ProviderType.GEMINI;
-    } else if (modelName.includes('gpt')) {
-      provider = ProviderType.OPENAI;
-    }
-
+    const provider = getProviderFromModel(modelName);
     if (!provider) return '';
 
     const apiKey = getApiKey(provider);
-    if (!apiKey) return '';
+    if (!apiKey) return ' (No API Key)';
 
     // Check for subscription authentication
     if (apiKey.includes('CLAUDE_PRO_OAUTH')) return ' (Pro)';
@@ -84,28 +93,25 @@ export const Footer: React.FC<FooterProps> = ({
 
   // Model display logic with authentication type
   const authType = getAuthType(model);
+  const modelAvailable = isModelAvailable(model);
+  
   const modelDisplay = !model ? (
-    <Text color={Colors.Gray}>AI not selected</Text>
-  ) : model.includes('llama') ||
-    model.includes('phi') ||
-    model.includes('qwen') ||
-    model.includes('deepseek') ? (
-    <Text color={Colors.AccentBlue}>[Local] {model}</Text>
-  ) : model.includes('gemini') ||
-    model.includes('gpt') ||
-    model.includes('claude') ||
-    model.includes('anthropic') ||
-    model.includes('mistral') ? (
-    <Text color={Colors.AccentBlue}>
-      [Cloud] {model}
-      {authType}
-    </Text>
-  ) : (
-    <Text color={Colors.AccentBlue}>
-      {model}
-      {authType}
-    </Text>
-  );
+    <Text color={Colors.Gray}>Select AI provider and model</Text>
+  ) : !modelAvailable ? (
+    <Text color={Colors.Gray}>Select AI provider and model</Text>
+  ) : (() => {
+    const providerName = getProviderDisplayNameFromModel(model);
+    const isLocal = isLocalModel(model);
+    const category = isLocal ? 'Local' : 'Cloud';
+    const displayName = providerName ? `${providerName} ` : '';
+    
+    return (
+      <Text color={Colors.AccentBlue}>
+        [{category}] {displayName}{model}
+        {authType}
+      </Text>
+    );
+  })();
 
   return (
     <Box flexDirection="column" width="100%">

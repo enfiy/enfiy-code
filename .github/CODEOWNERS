@@ -1,5 +1,5 @@
 # By default, require reviews from the release approvers for all files.
-* @enfiy-ecosystem/enfiy-code-maintainers
+* @enfiy/enfiy-code-maintainers
 
 # The following files don't need reviews from the release approvers.
 # These patterns override the rule above.

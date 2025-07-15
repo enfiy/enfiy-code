@@ -94,7 +94,9 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       provider === ProviderType.GEMINI ||
       provider === ProviderType.ANTHROPIC ||
       provider === ProviderType.OPENAI ||
-      provider === ProviderType.MISTRAL
+      provider === ProviderType.MISTRAL ||
+      provider === ProviderType.OPENROUTER ||
+      provider === ProviderType.HUGGINGFACE
     ) {
       console.log(
         'Single auth method (API key) detected, going directly to api-key-input',
@@ -164,6 +166,14 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             description: 'Use HuggingFace token from huggingface.co',
           },
         ];
+      case ProviderType.OPENROUTER:
+        return [
+          {
+            id: 'api-key',
+            name: 'API Key',
+            description: 'Use OpenRouter API key from openrouter.ai',
+          },
+        ];
       default:
         return [
           {
@@ -188,6 +198,8 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         return 'Mistral AI';
       case ProviderType.HUGGINGFACE:
         return 'HuggingFace';
+      case ProviderType.OPENROUTER:
+        return 'OpenRouter';
       default:
         return provider.toUpperCase();
     }
@@ -233,6 +245,14 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           '3. Click "New token"',
           '4. Select "Read" or "Write" permissions',
           '5. Copy the token (starts with "hf_")',
+        ];
+      case ProviderType.OPENROUTER:
+        return [
+          '1. Visit https://openrouter.ai/keys',
+          '2. Sign in or create an account',
+          '3. Click "Create Key"',
+          '4. Set optional name and credit limit',
+          '5. Copy the API key (starts with "sk-or-")',
         ];
       default:
         return [

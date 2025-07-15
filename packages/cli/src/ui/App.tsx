@@ -45,6 +45,7 @@ import { loadHierarchicalEnfiyMemory } from '../config/config.js';
 import { LoadedSettings, SettingScope } from '../config/settings.js';
 import { Tips } from './components/Tips.js';
 import { useConsolePatcher } from './components/ConsolePatcher.js';
+import { getProviderFromModel } from '../utils/modelUtils.js';
 import { DetailedMessagesDisplay } from './components/DetailedMessagesDisplay.js';
 import { HistoryItemDisplay } from './components/HistoryItemDisplay.js';
 import { ContextSummaryDisplay } from './components/ContextSummaryDisplay.js';
@@ -198,12 +199,13 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
       // Save the selected provider and model to config
       const providerCategories: Record<ProviderType, string> = {
         [ProviderType.OLLAMA]: t('localAI'),
-        [ProviderType.HUGGINGFACE]: t('localAI'),
         [ProviderType.VLLM]: t('localAI'),
         [ProviderType.ANTHROPIC]: t('cloudAI'),
         [ProviderType.OPENAI]: t('cloudAI'),
         [ProviderType.GEMINI]: t('cloudAI'),
         [ProviderType.MISTRAL]: t('cloudAI'),
+        [ProviderType.HUGGINGFACE]: t('cloudAI'),
+        [ProviderType.OPENROUTER]: t('cloudAI'),
       };
 
       const providerName = `${provider.toUpperCase()} (${providerCategories[provider] || t('cloudAI')})`;
@@ -291,7 +293,6 @@ ${t('helpMessage')}`,
       ProviderType.OPENAI,
       ProviderType.GEMINI,
       ProviderType.MISTRAL,
-      ProviderType.HUGGINGFACE,
     ];
 
     setSetupProvider(provider);
@@ -366,6 +367,33 @@ ${t('helpMessage')}`,
   );
 
   const handleCloudAISetupCancel = useCallback(() => {
+    // Check if current model uses the provider that was being configured
+    if (setupProvider && currentModel) {
+      const currentModelProvider = getProviderFromModel(currentModel);
+      if (currentModelProvider === setupProvider) {
+        // API key might have been deleted, check if it's still available
+        import('../utils/secureStorage.js').then(({ hasStoredCredentials }) => {
+          if (!hasStoredCredentials(setupProvider)) {
+            // API key was deleted and current model uses this provider - reset model
+            console.log(`API key for ${setupProvider} was deleted. Resetting current model: ${currentModel}`);
+            setCurrentModel('');
+            config.setModel('');
+            settings.setValue(SettingScope.User, 'selectedModel', '');
+            settings.setValue(SettingScope.User, 'selectedProvider', '');
+            
+            // Add info message about model being disabled
+            addItem(
+              {
+                type: MessageType.INFO,
+                text: `Current model "${currentModel}" disabled due to missing API key for ${setupProvider}. Please select a new model.`,
+              },
+              Date.now(),
+            );
+          }
+        });
+      }
+    }
+
     setShowCloudAISetup(false);
     setSetupProvider(null);
 
@@ -377,7 +405,7 @@ ${t('helpMessage')}`,
       // 通常の場合はプロバイダー選択に戻る
       setShowProviderSelection(true);
     }
-  }, [isManagingProvider]);
+  }, [isManagingProvider, setupProvider, currentModel, config, settings, addItem]);
 
   const handleOpenAPISettings = useCallback(() => {
     setShowProviderSelection(false);

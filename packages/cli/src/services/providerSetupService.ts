@@ -72,6 +72,20 @@ export class ProviderSetupService {
           temperature: 0.7,
           maxTokens: 8192,
         };
+      case ProviderType.HUGGINGFACE:
+        return {
+          type: ProviderType.HUGGINGFACE,
+          model: 'anthropic/claude-3-5-sonnet-20241022',
+          temperature: 0.7,
+          maxTokens: 4096,
+        };
+      case ProviderType.OPENROUTER:
+        return {
+          type: ProviderType.OPENROUTER,
+          model: 'anthropic/claude-3.5-sonnet',
+          temperature: 0.7,
+          maxTokens: 4096,
+        };
       default:
         return ProviderFactory.getDefaultProviderConfig();
     }

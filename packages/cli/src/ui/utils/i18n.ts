@@ -80,7 +80,7 @@ export const translations: Record<SupportedLanguage, TranslationKeys> = {
       'Use cloud-based AI services (most powerful, API fees apply)',
 
     tipsTitle: 'Enfiy Code - Your Universal AI Coding Agent',
-    tipProvider: '/provider - Select AI provider and model',
+    tipProvider: 'Select AI provider and model',
     tipGeneral:
       'Code with confidence, create without limits, command with ease',
     tipSpecific: 'Be specific for better results',

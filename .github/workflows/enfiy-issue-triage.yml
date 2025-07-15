@@ -28,7 +28,7 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
 
       - name: Run Enfiy Issue Triage
-        uses: enfiy-ecosystem/enfiy-code-action@main
+        uses: enfiy/enfiy-code-action@main
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         with:

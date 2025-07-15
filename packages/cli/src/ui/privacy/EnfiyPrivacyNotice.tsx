@@ -52,7 +52,7 @@ export const EnfiyPrivacyNotice = ({ onExit }: EnfiyPrivacyNoticeProps) => {
         For more information about privacy and security, visit:
       </Text>
       <Text color={Colors.AccentBlue}>
-        https://github.com/enfiy-ecosystem/enfiy-code/blob/main/docs/privacy-security.md
+        https://github.com/enfiy/enfiy-code/blob/main/docs/privacy-security.md
       </Text>
       <Newline />
       <Text color={Colors.Gray}>Press Esc to exit.</Text>

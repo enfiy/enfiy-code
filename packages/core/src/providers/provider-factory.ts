@@ -14,6 +14,7 @@ import { OpenAIProvider } from './openai-provider.js';
 import { AnthropicProvider } from './anthropic-provider.js';
 import { MistralProvider } from './mistral-provider.js';
 import { HuggingFaceProvider } from './huggingface-provider.js';
+import { OpenRouterProvider } from './openrouter-provider.js';
 
 export class ProviderFactory {
   static createProvider(type: ProviderType): Provider {
@@ -33,6 +34,8 @@ export class ProviderFactory {
         return new AnthropicProvider();
       case ProviderType.MISTRAL:
         return new MistralProvider();
+      case ProviderType.OPENROUTER:
+        return new OpenRouterProvider();
 
       default:
         throw new Error(`Unknown provider type: ${type}`);
@@ -52,6 +55,7 @@ export class ProviderFactory {
       { type: ProviderType.OPENAI, name: 'OpenAI' },
       { type: ProviderType.ANTHROPIC, name: 'Anthropic Claude' },
       { type: ProviderType.MISTRAL, name: 'Mistral AI' },
+      { type: ProviderType.OPENROUTER, name: 'OpenRouter' },
     ];
 
     const results = await Promise.all(
@@ -127,6 +131,7 @@ export class ProviderFactory {
       ProviderType.OPENAI,
       ProviderType.ANTHROPIC,
       ProviderType.MISTRAL,
+      ProviderType.OPENROUTER,
     ];
   }
 
@@ -146,6 +151,7 @@ export class ProviderFactory {
       ProviderType.ANTHROPIC,
       ProviderType.GEMINI,
       ProviderType.MISTRAL,
+      ProviderType.OPENROUTER,
     ];
   }
 

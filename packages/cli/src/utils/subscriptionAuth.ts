@@ -191,6 +191,7 @@ export function getProviderDisplayName(
     [ProviderType.OLLAMA]: 'Ollama',
     [ProviderType.HUGGINGFACE]: 'HuggingFace',
     [ProviderType.VLLM]: 'vLLM',
+    [ProviderType.OPENROUTER]: 'OpenRouter',
   };
 
   const baseName = baseNames[provider] || provider.toString();

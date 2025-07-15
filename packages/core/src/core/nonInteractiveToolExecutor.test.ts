@@ -184,9 +184,11 @@ describe('executeToolCall', () => {
         return Promise.reject(cancellationError);
       }
       return new Promise((_resolve, reject) => {
-        signal?.addEventListener('abort', () => {
+        const abortHandler = () => {
           reject(cancellationError);
-        });
+        };
+        signal?.addEventListener('abort', abortHandler);
+        
         // Simulate work that might happen if not aborted immediately
         const timeoutId = setTimeout(
           () =>
@@ -195,7 +197,12 @@ describe('executeToolCall', () => {
             ),
           100,
         );
-        signal?.addEventListener('abort', () => clearTimeout(timeoutId));
+        
+        const timeoutHandler = () => {
+          clearTimeout(timeoutId);
+          signal?.removeEventListener('abort', abortHandler);
+        };
+        signal?.addEventListener('abort', timeoutHandler);
       });
     });
 

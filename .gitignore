@@ -91,4 +91,4 @@ bundle-size-history.json
 # Debug and Development Specific Files
 # -----------------------------------------------------------------------------
 test-browser-open.js
-packages/core/src/utils/debugLogger.ts
+packages/core/src/utils/debugLogger.ts.npmrc

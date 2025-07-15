@@ -58,7 +58,6 @@ export const ProviderSelectionDialog: React.FC<
       const localProviders = [
         ProviderType.OLLAMA,
         ProviderType.VLLM,
-        ProviderType.HUGGINGFACE,
       ];
       return localProviders.includes(preselectedProvider) ? 'local' : 'cloud';
     }
@@ -108,7 +107,7 @@ export const ProviderSelectionDialog: React.FC<
         }
       }
       if (provider === ProviderType.HUGGINGFACE) {
-        // Always show setup for HuggingFace as it requires manual server configuration
+        // For local HuggingFace, check if local server is configured
         return true; // Needs setup - show configuration guide
       }
       return false; // Other local providers don't need setup check for now

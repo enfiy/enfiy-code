@@ -2,7 +2,7 @@
   "name": "@enfiy/core",
   "version": "0.1.0",
   "description": "Enfiy Code Server",
-  "repository": "enfiy-ecosystem/enfiy-code",
+  "repository": "enfiy/enfiy-code",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {

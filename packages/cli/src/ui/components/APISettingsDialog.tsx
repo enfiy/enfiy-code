@@ -49,6 +49,8 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
         return 'Mistral AI';
       case ProviderType.HUGGINGFACE:
         return 'HuggingFace';
+      case ProviderType.OPENROUTER:
+        return 'OpenRouter';
       default:
         return provider.toUpperCase();
     }
@@ -95,6 +97,7 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
       ProviderType.GEMINI,
       ProviderType.MISTRAL,
       ProviderType.HUGGINGFACE,
+      ProviderType.OPENROUTER,
     ];
 
     const providers: ConfiguredProvider[] = cloudProviders.map((provider) => ({

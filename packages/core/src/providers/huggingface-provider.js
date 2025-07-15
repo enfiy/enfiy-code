@@ -446,7 +446,7 @@ print("${baseName}")`;
     return fallback;
   }
   createAbsolutePath(fileName) {
-    const workingDir = '/home/h.esaki/work/enfiy-ecosystem/enfiy-code';
+    const workingDir = process.cwd();
     // If fileName already starts with a known directory structure, use it directly
     if (
       fileName.startsWith('/') ||
