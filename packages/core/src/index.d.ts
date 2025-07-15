@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 export * from './config/config.js';
 export * from './config/models.js';
 export * from './core/client.js';

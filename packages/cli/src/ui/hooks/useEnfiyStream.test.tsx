@@ -1,12 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
- *
- * Based on original work by Google LLC (2025)
- * Modified and extended by Hayate Esaki (2025)
  */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
@@ -70,9 +67,9 @@ vi.mock('ink', async (importOriginal) => {
 });
 
 vi.mock('./shellCommandProcessor.js', () => ({
-  useShellCommandProcessor: vi.fn().mockReturnValue({
+  useShellCommandProcessor: vi.fn(() => ({
     handleShellCommand: vi.fn(),
-  }),
+  })),
 }));
 
 vi.mock('./atCommandProcessor.js', () => ({

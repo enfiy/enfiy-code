@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { logs } from '@opentelemetry/api-logs';
 import { SemanticAttributes } from '@opentelemetry/semantic-conventions';
 import {

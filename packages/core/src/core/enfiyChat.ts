@@ -1,12 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
- *
- * Based on original work by Google LLC (2025)
- * Modified and extended by Hayate Esaki (2025)
  */
+
 // DISCLAIMER: This is a copied version of https://github.com/googleapis/js-genai/blob/main/src/chats.ts with the intention of working around a key bug
 // where function responses are not treated as "valid" responses: https://b.corp.google.com/issues/420354090
 

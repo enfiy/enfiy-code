@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { Type } from '@google/genai';
 import { isFunctionResponse } from './messageInspectors.js';
 const CHECK_PROMPT = `Analyze *only* the content and structure of your immediately preceding response (your last turn in the conversation history). Based *strictly* on that response, determine who should logically speak next: the 'user' or the 'model' (you).

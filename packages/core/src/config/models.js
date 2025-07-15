@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 // Default local AI model (Ollama)
 export const DEFAULT_LOCAL_MODEL = 'llama3.2:8b';
 export const DEFAULT_LOCAL_PROVIDER = 'ollama';

@@ -1,8 +1,9 @@
 /**
  * @license
- * Copyright 2025 Hayate Esaki
+ * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import stripAnsi from 'strip-ansi';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { main } from './enfiy.js';
@@ -69,7 +70,7 @@ describe('gemini.tsx main function', () => {
     .spyOn(process, 'exit')
     .mockImplementation((code) => {
       throw new MockProcessExitError(code);
-    });
+    }) as any;
 
   beforeEach(() => {
     loadSettingsMock = vi.mocked(loadSettings);

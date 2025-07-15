@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { AuthType, ContentGeneratorConfig } from '../core/contentGenerator.js';
 import { ToolRegistry } from '../tools/tool-registry.js';
 import { EnfiyClient } from '../core/client.js';

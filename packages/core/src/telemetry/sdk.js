@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';
 import { ClearcutLogger } from './clearcut-logger/clearcut-logger.js';
 // For troubleshooting, set the log level to DiagLogLevel.DEBUG

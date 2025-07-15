@@ -1,9 +1,11 @@
 #!/usr/bin/env node
+
 /**
  * @license
- * Copyright 2025 Hayate Esaki
+ * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import path from 'path';
 import fs from 'fs';
 import { spawn, execSync } from 'child_process';

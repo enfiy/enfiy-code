@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { Provider, ProviderType, ProviderConfig } from './types.js';
 export declare class ProviderFactory {
   static createProvider(type: ProviderType): Provider;

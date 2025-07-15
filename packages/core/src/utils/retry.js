@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { AuthType } from '../core/contentGenerator.js';
 const DEFAULT_RETRY_OPTIONS = {
   maxAttempts: 5,

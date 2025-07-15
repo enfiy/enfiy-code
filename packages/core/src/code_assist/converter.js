@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { GenerateContentResponse } from '@google/genai';
 export function toCountTokenRequest(req) {
   // Ensure model name is in correct format for the API

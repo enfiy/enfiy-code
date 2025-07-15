@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 export declare const SERVICE_NAME = 'enfiy-cli';
 export declare const EVENT_USER_PROMPT = 'gemini_cli.user_prompt';
 export declare const EVENT_TOOL_CALL = 'gemini_cli.tool_call';

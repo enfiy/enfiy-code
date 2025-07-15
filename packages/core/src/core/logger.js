@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import { getProjectTempDir } from '../utils/paths.js';

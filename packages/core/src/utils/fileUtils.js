@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import fs, { promises as fsAsync } from 'fs';
 import path from 'path';
 // File reading cache to avoid repeated file system access

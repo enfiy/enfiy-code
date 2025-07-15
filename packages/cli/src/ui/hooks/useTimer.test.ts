@@ -1,12 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
- *
- * Based on original work by Google LLC (2025)
- * Modified and extended by Hayate Esaki (2025)
  */
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useTimer } from './useTimer.js';
@@ -71,7 +68,9 @@ describe('useTimer', () => {
     });
     expect(result.current).toBe(3);
 
-    rerender({ isActive: true, resetKey: 1 }); // Change resetKey
+    act(() => {
+      rerender({ isActive: true, resetKey: 1 }); // Change resetKey
+    });
     expect(result.current).toBe(0); // Should reset to 0
 
     act(() => {
@@ -109,11 +108,15 @@ describe('useTimer', () => {
     });
     expect(result.current).toBe(3);
 
-    rerender({ isActive: false, resetKey: 0 });
+    act(() => {
+      rerender({ isActive: false, resetKey: 0 });
+    });
     expect(result.current).toBe(3); // Time should be preserved when timer becomes inactive
 
     // Now make it active again, it should reset to 0
-    rerender({ isActive: true, resetKey: 0 });
+    act(() => {
+      rerender({ isActive: true, resetKey: 0 });
+    });
     expect(result.current).toBe(0);
     act(() => {
       vi.advanceTimersByTime(1000);

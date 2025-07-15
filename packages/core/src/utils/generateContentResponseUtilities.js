@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 export function getResponseText(response) {
   const parts = response.candidates?.[0]?.content?.parts;
   if (!parts) {

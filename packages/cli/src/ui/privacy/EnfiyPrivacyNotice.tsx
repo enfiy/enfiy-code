@@ -1,8 +1,9 @@
 /**
  * @license
- * Copyright 2025 Hayate Esaki
+ * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { Box, Newline, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
 

@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { SchemaValidator } from '../utils/schemaValidator.js';
 import { BaseTool, ToolConfirmationOutcome } from './tools.js';
 import { getErrorMessage } from '../utils/errors.js';

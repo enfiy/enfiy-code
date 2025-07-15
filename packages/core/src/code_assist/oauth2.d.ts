@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { OAuth2Client } from 'google-auth-library';
 /**
  * An Authentication URL for updating the credentials of a Oauth2Client

@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { Config } from '../config/config.js';
 import { BaseTool, ToolResult, ToolCallConfirmationDetails } from './tools.js';
 import { ModifiableTool, ModifyContext } from './modifiable-tool.js';

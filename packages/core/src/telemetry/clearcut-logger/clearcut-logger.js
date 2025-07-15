@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { Buffer } from 'buffer';
 import * as https from 'https';
 import { EndSessionEvent } from '../types.js';

@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { BaseTool, ToolResult, ToolCallConfirmationDetails } from './tools.js';
 import { CallableTool } from '@google/genai';
 type ToolParams = Record<string, unknown>;

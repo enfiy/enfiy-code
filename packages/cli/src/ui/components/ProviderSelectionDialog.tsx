@@ -1,12 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
- *
- * Based on original work by Google LLC (2025)
- * Modified and extended by Hayate Esaki (2025)
  */
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -27,7 +24,7 @@ export interface ProviderSelectionDialogProps {
   onOpenAPISettings?: () => void;
   _availableTerminalHeight?: number;
   terminalWidth: number;
-  inputWidth?: number;
+  _inputWidth?: number;
   preselectedProvider?: ProviderType; // New prop to preselect a provider
 }
 
@@ -43,7 +40,7 @@ export const ProviderSelectionDialog: React.FC<
   onOpenAPISettings,
   _availableTerminalHeight,
   terminalWidth,
-  inputWidth,
+  _inputWidth,
   preselectedProvider,
 }) => {
   const [mode, setMode] = useState<SelectionMode>(() =>
@@ -216,9 +213,6 @@ export const ProviderSelectionDialog: React.FC<
   // Get status indicator
   const getStatusIndicator = (isConfigured: boolean): string =>
     isConfigured ? '•' : '◦'; // Small bullet vs small hollow circle
-  // Get status indicator color
-  const getStatusColor = (isConfigured: boolean): string =>
-    isConfigured ? Colors.AccentGreen : Colors.Gray; // Green for configured, gray for unconfigured
   // Get status legend with proper colors
   const getStatusLegend = (): Array<{ text: string; color: string }> => {
     const _isLocal = selectedCategory === 'local';
@@ -309,9 +303,7 @@ export const ProviderSelectionDialog: React.FC<
   };
 
   // Get the index of the Back option (at the end of available providers)
-  const getBackOptionIndex = () => {
-    return availableProviders.length;
-  };
+  const getBackOptionIndex = () => availableProviders.length;
 
   useInput((input, key) => {
     if (key.escape || (key.ctrl && input === 'c')) {

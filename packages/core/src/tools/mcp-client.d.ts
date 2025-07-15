@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { MCPServerConfig } from '../config/config.js';
 import { Schema } from '@google/genai';
 import { ToolRegistry } from './tool-registry.js';

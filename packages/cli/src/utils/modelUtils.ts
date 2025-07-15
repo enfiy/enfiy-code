@@ -1,8 +1,9 @@
 /**
  * @license
- * Copyright 2025 Hayate Esaki
+ * Copyright 2025 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { ProviderType } from '@enfiy/core';
 
 /**
@@ -139,10 +140,11 @@ export function getProviderDisplayName(provider: ProviderType): string {
       return 'Ollama';
     case ProviderType.VLLM:
       return 'vLLM';
-    default:
+    default: {
       // This should never happen if all enum cases are handled
       const _exhaustiveCheck: never = provider;
       return 'Unknown';
+    }
   }
 }
 

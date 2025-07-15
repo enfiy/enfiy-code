@@ -1,12 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
- *
- * Based on original work by Google LLC (2025)
- * Modified and extended by Hayate Esaki (2025)
  */
+
 import { vi } from 'vitest';
 import { setSimulate429 } from './src/utils/testUtils.js';
 import { beforeEach, afterEach } from 'vitest';
@@ -44,7 +41,7 @@ beforeEach(() => {
       const cleanup = () => {
         try {
           this.removeEventListener(type, listener, options);
-        } catch (e) {
+        } catch {
           // Ignore cleanup errors
         }
       };
@@ -78,7 +75,7 @@ beforeEach(() => {
           if (this.removeEventListener) {
             this.removeEventListener(type, listener, options);
           }
-        } catch (e) {
+        } catch {
           // Ignore cleanup errors
         }
       };
@@ -105,25 +102,8 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  // Clean up all tracked event listeners
-  eventTargetCleanup.forEach(cleanup => {
-    try {
-      cleanup();
-    } catch (e) {
-      // Ignore cleanup errors
-    }
-  });
-  
-  // Clean up all abort signal listeners
-  abortSignalCleanup.forEach(cleanup => {
-    try {
-      cleanup();
-    } catch (e) {
-      // Ignore cleanup errors
-    }
-  });
-  
-  // Clear arrays
+  // Clear arrays without trying to run cleanup functions
+  // that might reference invalid objects
   eventTargetCleanup = [];
   abortSignalCleanup = [];
   

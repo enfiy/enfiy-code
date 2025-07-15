@@ -1,11 +1,7 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
- *
- * Based on original work by Google LLC (2025)
- * Modified and extended by Hayate Esaki (2025)
  */
 
 // Additional test environment setup for EventTarget stability
@@ -61,7 +57,7 @@ if (typeof global !== 'undefined' && typeof EventTarget !== 'undefined') {
       for (const { type, listener, options } of listeners) {
         try {
           target.removeEventListener(type, listener, options);
-        } catch (e) {
+        } catch (_e) {
           // Ignore cleanup errors
         }
       }

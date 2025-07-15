@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { getErrorMessage, isNodeError } from './errors.js';
 import { URL } from 'url';
 const PRIVATE_IP_RANGES = [

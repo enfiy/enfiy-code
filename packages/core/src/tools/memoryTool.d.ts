@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { BaseTool, ToolResult } from './tools.js';
 export declare const ENFIY_CONFIG_DIR = '.enfiy';
 export declare const DEFAULT_CONTEXT_FILENAME = 'ENFIY.md';

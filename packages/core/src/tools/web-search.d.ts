@@ -1,9 +1,9 @@
 /**
  * @license
  * Copyright 2025 Google LLC
- * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
+
 import { GroundingMetadata } from '@google/genai';
 import { BaseTool, ToolResult } from './tools.js';
 import { Config } from '../config/config.js';
