@@ -107,7 +107,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     console.log('CloudAISetupDialog: initializing highlightedIndex to 0');
     return 0;
   });
-  const [isInputMode, setIsInputMode] = useState(true);
+  const [isInputMode, setIsInputMode] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [authMethod, setAuthMethod] = useState<string>('');
 
