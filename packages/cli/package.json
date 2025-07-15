@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "node ../../scripts/build_package.js",
-    "clean": "rm -rf dist",
+    "clean": "node -e \"require('fs').rmSync('dist', {recursive: true, force: true})\"",
     "start": "node dist/index.js",
     "debug": "node --inspect-brk dist/index.js",
     "lint": "eslint . --ext .ts,.tsx",
@@ -32,7 +32,8 @@
     "sandboxImageUri": "enfiy-code-sandbox"
   },
   "dependencies": {
-    "@enfiy/core": "workspace:*",
+    "@enfiy/cli": "file:../cli",
+    "@enfiy/core": "file:../core",
     "@types/update-notifier": "^6.0.8",
     "command-exists": "^1.2.9",
     "diff": "^8.0.2",
@@ -66,6 +67,7 @@
     "@types/yargs": "^17.0.33",
     "ink-testing-library": "^4.0.0",
     "jsdom": "^26.1.0",
+    "jsdom-global": "^3.0.2",
     "memfs": "^4.17.2",
     "react-dom": "^19.1.0",
     "typescript": "^5.8.3",

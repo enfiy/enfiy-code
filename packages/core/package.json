@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node dist/src/index.js",
     "build": "node ../../scripts/build_package.js",
-    "clean": "rm -rf dist",
+    "clean": "node -e \"require('fs').rmSync('dist', {recursive: true, force: true})\"",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:ci": "eslint . --ext .ts,.tsx --max-warnings 0",
     "format": "prettier --write .",
