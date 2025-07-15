@@ -323,6 +323,11 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
   , []);
 
   const validateAndSaveApiKey = useCallback(async () => {
+    // Prevent duplicate calls
+    if (step === 'api-key-validation' || step === 'complete') {
+      return;
+    }
+    
     try {
       const cleanedApiKey = cleanApiKey(apiKey);
       
@@ -359,7 +364,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       setValidationError(`Failed to validate API key: ${error}`);
       setStep('api-key-input');
     }
-  }, [apiKey, cleanApiKey, provider, getProviderDisplayName, setValidationError, setStep, onComplete]);
+  }, [apiKey, cleanApiKey, provider, getProviderDisplayName, setValidationError, setStep, onComplete, step]);
 
   const handleEnterKey = useCallback(() => {
     switch (step) {

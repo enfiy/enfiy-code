@@ -31,8 +31,8 @@ esbuild
     treeShaking: true,
     // More aggressive tree shaking in development too
     ignoreAnnotations: false,
-    // Reduce bundle size even in development
-    drop: isProduction ? ['console', 'debugger'] : [],
+    // Always drop console statements for cleaner output
+    drop: ['console', 'debugger'],
     // More aggressive optimization settings
     minifyWhitespace: true,
     minifyIdentifiers: isProduction,
