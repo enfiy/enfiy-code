@@ -312,7 +312,6 @@ ${t('helpMessage')}`,
       setShowAPISettings(true);
     } else {
       // After API key configuration, show provider selection for model choice
-      console.log('API key configured, showing provider selection for model choice');
       setPreselectedProvider(setupConfig.type);
       setShowProviderSelection(true);
       
