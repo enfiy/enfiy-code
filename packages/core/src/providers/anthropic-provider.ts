@@ -9,7 +9,12 @@
  */
 import { BaseProvider } from './base-provider.js';
 import { ProviderConfig, ProviderType } from './types.js';
-import { Content, GenerateContentResponse, GenerateContentConfig, FinishReason } from '@google/genai';
+import {
+  Content,
+  GenerateContentResponse,
+  GenerateContentConfig,
+  FinishReason,
+} from '@google/genai';
 
 // Note: Using fetch for Anthropic API as they don't have an official Node.js SDK yet
 // This can be replaced with @anthropic-ai/sdk when it becomes stable
@@ -49,7 +54,9 @@ export class AnthropicProvider extends BaseProvider {
     }
 
     // Log a masked version of the API key for debugging
-    console.log(`[Anthropic Provider] Initializing with API key: ${config.apiKey.substring(0, 5)}...${config.apiKey.substring(config.apiKey.length - 5)}`);
+    console.log(
+      `[Anthropic Provider] Initializing with API key: ${config.apiKey.substring(0, 5)}...${config.apiKey.substring(config.apiKey.length - 5)}`,
+    );
 
     this.apiKey = config.apiKey;
   }
@@ -59,7 +66,7 @@ export class AnthropicProvider extends BaseProvider {
       if (!this.apiKey) {
         return false;
       }
-      
+
       // Test with a simple API call
       const response = await this.makeApiRequest('/messages', {
         method: 'POST',
@@ -69,7 +76,7 @@ export class AnthropicProvider extends BaseProvider {
           messages: [{ role: 'user', content: 'test' }],
         }),
       });
-      
+
       return response.ok;
     } catch {
       return false;
@@ -84,28 +91,32 @@ export class AnthropicProvider extends BaseProvider {
   getRecommendedModels(): string[] {
     return [
       'claude-3-5-sonnet-20241022',
-      'claude-3-5-haiku-20241022', 
+      'claude-3-5-haiku-20241022',
       'claude-3-opus-20240229',
       'claude-3-sonnet-20240229',
       'claude-3-haiku-20240307',
     ];
   }
 
-  private convertToAnthropicMessages(contents: Content[]): { 
-    messages: AnthropicMessage[]; 
-    system?: string; 
+  private convertToAnthropicMessages(contents: Content[]): {
+    messages: AnthropicMessage[];
+    system?: string;
   } {
     const messages: AnthropicMessage[] = [];
     let system: string | undefined;
 
     for (const content of contents) {
       if (content.role === 'system') {
-        const textParts = content.parts?.filter(part => 'text' in part) || [];
-        system = textParts.map(part => (part as { text: string }).text).join('\n');
+        const textParts = content.parts?.filter((part) => 'text' in part) || [];
+        system = textParts
+          .map((part) => (part as { text: string }).text)
+          .join('\n');
       } else {
-        const textParts = content.parts?.filter(part => 'text' in part) || [];
-        const text = textParts.map(part => (part as { text: string }).text).join('\n');
-        
+        const textParts = content.parts?.filter((part) => 'text' in part) || [];
+        const text = textParts
+          .map((part) => (part as { text: string }).text)
+          .join('\n');
+
         messages.push({
           role: content.role === 'model' ? 'assistant' : 'user',
           content: text,
@@ -116,24 +127,32 @@ export class AnthropicProvider extends BaseProvider {
     return { messages, system };
   }
 
-  protected convertToStandardResponse(response: AnthropicResponse): GenerateContentResponse {
+  protected convertToStandardResponse(
+    response: AnthropicResponse,
+  ): GenerateContentResponse {
     const content = response.content[0]?.text || '';
-    
+
     // Create a mutable response object first
     const standardResponse = {
-      candidates: [{
-        content: {
-          role: 'model',
-          parts: [{ text: content }],
+      candidates: [
+        {
+          content: {
+            role: 'model',
+            parts: [{ text: content }],
+          },
+          finishReason:
+            response.stop_reason === 'end_turn'
+              ? FinishReason.STOP
+              : FinishReason.OTHER,
+          index: 0,
+          safetyRatings: [],
         },
-        finishReason: response.stop_reason === 'end_turn' ? FinishReason.STOP : FinishReason.OTHER,
-        index: 0,
-        safetyRatings: [],
-      }],
+      ],
       usageMetadata: {
         promptTokenCount: response.usage.input_tokens,
         candidatesTokenCount: response.usage.output_tokens,
-        totalTokenCount: response.usage.input_tokens + response.usage.output_tokens,
+        totalTokenCount:
+          response.usage.input_tokens + response.usage.output_tokens,
       },
       // Add required properties for compatibility
       text: content,
@@ -146,7 +165,10 @@ export class AnthropicProvider extends BaseProvider {
     return standardResponse as unknown as GenerateContentResponse;
   }
 
-  private async makeApiRequest(endpoint: string, options: RequestInit): Promise<Response> {
+  private async makeApiRequest(
+    endpoint: string,
+    options: RequestInit,
+  ): Promise<Response> {
     if (!this.apiKey) {
       throw new Error('Anthropic API key not available');
     }
@@ -169,21 +191,32 @@ export class AnthropicProvider extends BaseProvider {
     contents: Content[];
     config?: GenerateContentConfig;
   }): Promise<GenerateContentResponse> {
-    const { messages, system } = this.convertToAnthropicMessages(params.contents);
-    
+    const { messages, system } = this.convertToAnthropicMessages(
+      params.contents,
+    );
+
     // Handle system instruction
     let finalSystem = system;
     if (params.config?.systemInstruction) {
-      const systemText = typeof params.config.systemInstruction === 'string' 
-        ? params.config.systemInstruction 
-        : (params.config.systemInstruction as { parts?: Array<{ text: string }> }).parts?.map((p) => p.text).join('\n') || '';
-      
-      finalSystem = finalSystem ? `${finalSystem}\n\n${systemText}` : systemText;
+      const systemText =
+        typeof params.config.systemInstruction === 'string'
+          ? params.config.systemInstruction
+          : (
+              params.config.systemInstruction as {
+                parts?: Array<{ text: string }>;
+              }
+            ).parts
+              ?.map((p) => p.text)
+              .join('\n') || '';
+
+      finalSystem = finalSystem
+        ? `${finalSystem}\n\n${systemText}`
+        : systemText;
     }
 
     const modelName = params.model.replace(/^models\//, '');
-    const finalModel = this.getRecommendedModels().includes(modelName) 
-      ? modelName 
+    const finalModel = this.getRecommendedModels().includes(modelName)
+      ? modelName
       : 'claude-3-5-sonnet-20241022';
 
     const requestBody = {
@@ -203,7 +236,9 @@ export class AnthropicProvider extends BaseProvider {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`Anthropic API Error: ${errorData.error?.message || response.statusText}`);
+        throw new Error(
+          `Anthropic API Error: ${errorData.error?.message || response.statusText}`,
+        );
       }
 
       const data: AnthropicResponse = await response.json();
@@ -218,21 +253,32 @@ export class AnthropicProvider extends BaseProvider {
     contents: Content[];
     config?: GenerateContentConfig;
   }): Promise<AsyncGenerator<GenerateContentResponse>> {
-    const { messages, system } = this.convertToAnthropicMessages(params.contents);
-    
+    const { messages, system } = this.convertToAnthropicMessages(
+      params.contents,
+    );
+
     // Handle system instruction
     let finalSystem = system;
     if (params.config?.systemInstruction) {
-      const systemText = typeof params.config.systemInstruction === 'string' 
-        ? params.config.systemInstruction 
-        : (params.config.systemInstruction as { parts?: Array<{ text: string }> }).parts?.map((p) => p.text).join('\n') || '';
-      
-      finalSystem = finalSystem ? `${finalSystem}\n\n${systemText}` : systemText;
+      const systemText =
+        typeof params.config.systemInstruction === 'string'
+          ? params.config.systemInstruction
+          : (
+              params.config.systemInstruction as {
+                parts?: Array<{ text: string }>;
+              }
+            ).parts
+              ?.map((p) => p.text)
+              .join('\n') || '';
+
+      finalSystem = finalSystem
+        ? `${finalSystem}\n\n${systemText}`
+        : systemText;
     }
 
     const modelName = params.model.replace(/^models\//, '');
-    const finalModel = this.getRecommendedModels().includes(modelName) 
-      ? modelName 
+    const finalModel = this.getRecommendedModels().includes(modelName)
+      ? modelName
       : 'claude-3-5-sonnet-20241022';
 
     const requestBody = {
@@ -252,13 +298,17 @@ export class AnthropicProvider extends BaseProvider {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(`Anthropic API Error: ${errorData.error?.message || response.statusText}`);
+      throw new Error(
+        `Anthropic API Error: ${errorData.error?.message || response.statusText}`,
+      );
     }
 
     return this.createStreamGenerator(response);
   }
 
-  private async *createStreamGenerator(response: Response): AsyncGenerator<GenerateContentResponse> {
+  private async *createStreamGenerator(
+    response: Response,
+  ): AsyncGenerator<GenerateContentResponse> {
     if (!response.body) {
       throw new Error('No response body for streaming');
     }
@@ -290,15 +340,17 @@ export class AnthropicProvider extends BaseProvider {
                   accumulatedContent += delta;
 
                   const streamResponse = {
-                    candidates: [{
-                      content: {
-                        role: 'model',
-                        parts: [{ text: accumulatedContent }],
+                    candidates: [
+                      {
+                        content: {
+                          role: 'model',
+                          parts: [{ text: accumulatedContent }],
+                        },
+                        finishReason: FinishReason.OTHER,
+                        index: 0,
+                        safetyRatings: [],
                       },
-                      finishReason: FinishReason.OTHER,
-                      index: 0,
-                      safetyRatings: [],
-                    }],
+                    ],
                     usageMetadata: {
                       promptTokenCount: 0,
                       candidatesTokenCount: 0,

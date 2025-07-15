@@ -7,6 +7,7 @@ Welcome to the comprehensive documentation for Enfiy Code, Universal AI Coding A
 Enfiy Code is a command-line AI workflow tool that integrates with your development environment. It understands your code and helps you work more efficiently with support for multiple AI providers, extensive tool integration, and powerful automation capabilities.
 
 ### Key Features
+
 - 🤖 **Multi-Provider AI Support** – OpenAI, Anthropic, Google, Mistral, Ollama, and more
 - 🛠️ **Rich Tool Ecosystem** – File operations, shell integration, web browsing, MCP servers
 - 🎨 **Customizable Interface** – Multiple themes and configuration options
@@ -18,6 +19,7 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 New to Enfiy Code? Start here:
 
 ### 📚 [Getting Started](./getting-started/README.md)
+
 Essential information to get up and running quickly.
 
 - **[Quick Start](./getting-started/README.md#quick-start)** – Install and run in minutes
@@ -28,6 +30,7 @@ Essential information to get up and running quickly.
 ## Documentation Sections
 
 ### 🎯 [User Guides](./guides/README.md)
+
 Step-by-step guides for common workflows and advanced features.
 
 - **[MCP Integration](./guides/mcp-integration.md)** – Connect external tools
@@ -35,6 +38,7 @@ Step-by-step guides for common workflows and advanced features.
 - Project workflows, debugging guides, and more
 
 ### 🔧 [API Reference](./api/README.md)
+
 Technical documentation for developers and power users.
 
 - **[CLI Reference](./api/cli/README.md)** – Command-line interface documentation
@@ -42,6 +46,7 @@ Technical documentation for developers and power users.
 - **[Tools Reference](./api/tools/README.md)** – Built-in tools and capabilities
 
 ### 🛠️ [Development](./development/README.md)
+
 Information for contributors and extension developers.
 
 - **[Architecture Overview](./development/architecture.md)** – System design
@@ -50,6 +55,7 @@ Information for contributors and extension developers.
 - **[Deployment Guide](./development/deployment.md)** – Production deployment
 
 ### 🔒 [Security](./security/README.md)
+
 Security policies, privacy information, and best practices.
 
 - **[Privacy Policy](./security/privacy-policy.md)** – Data handling and user rights
@@ -57,6 +63,7 @@ Security policies, privacy information, and best practices.
 - **[Telemetry](./security/telemetry.md)** – Data collection and opt-out
 
 ### 🚨 [Troubleshooting](./troubleshooting/README.md)
+
 Solutions for common issues and problems.
 
 - **[General Troubleshooting](./troubleshooting/README.md)** – Common issues
@@ -68,6 +75,7 @@ Solutions for common issues and problems.
 Looking for something specific?
 
 ### Common Tasks
+
 - **Installing Enfiy Code**: [Installation Guide](./getting-started/installation.md)
 - **Setting up API keys**: [API Configuration](./getting-started/api-configuration.md)
 - **Learning basic commands**: [First Steps](./getting-started/first-steps.md)
@@ -75,12 +83,14 @@ Looking for something specific?
 - **Troubleshooting issues**: [Troubleshooting](./troubleshooting/README.md)
 
 ### Technical Information
+
 - **Command reference**: [CLI Commands](./api/cli/commands.md)
 - **Tool capabilities**: [Tools Reference](./api/tools/README.md)
 - **System architecture**: [Architecture](./development/architecture.md)
 - **Security details**: [Security Overview](./security/README.md)
 
 ### Development
+
 - **Contributing**: [Development Guide](./development/README.md)
 - **Creating extensions**: [Extension Development](./development/extension.md)
 - **API documentation**: [Core APIs](./api/core/README.md)
@@ -88,11 +98,13 @@ Looking for something specific?
 ## Community and Support
 
 ### Getting Help
+
 - **Documentation**: You're here! Use the search and navigation
 - **Issues**: Report bugs and request features on GitHub
 - **Discussions**: Join community discussions and ask questions
 
 ### Contributing
+
 - **Documentation**: Help improve these docs
 - **Code**: Contribute features and fixes
 - **Testing**: Report issues and test new features
@@ -101,13 +113,16 @@ Looking for something specific?
 ## Recent Updates
 
 ### Documentation Organization
+
 This documentation has been reorganized for better navigation:
+
 - Logical grouping by user type and task
 - Comprehensive cross-references
 - Improved search and discovery
 - Consistent formatting and structure
 
 ### What's New
+
 - Enhanced getting started experience
 - Expanded API reference
 - Security and privacy documentation

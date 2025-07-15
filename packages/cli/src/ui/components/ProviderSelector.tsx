@@ -37,12 +37,14 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
     async function detectProviders() {
       try {
         const detected = await ProviderFactory.detectAvailableProviders();
-        const providerOptions: ProviderOption[] = detected.map((p: { type: ProviderType; name: string; available: boolean }) => ({
-          type: p.type,
-          name: p.name,
-          available: p.available,
-          isLocal: p.type === ProviderType.OLLAMA,
-        }));
+        const providerOptions: ProviderOption[] = detected.map(
+          (p: { type: ProviderType; name: string; available: boolean }) => ({
+            type: p.type,
+            name: p.name,
+            available: p.available,
+            isLocal: p.type === ProviderType.OLLAMA,
+          }),
+        );
 
         // Sort: available local providers first, then available cloud providers, then unavailable
         providerOptions.sort((a, b) => {
@@ -56,14 +58,18 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
         });
 
         setProviders(providerOptions);
-        
+
         // Select first available local provider by default
-        const defaultIndex = providerOptions.findIndex(p => p.available && p.isLocal);
+        const defaultIndex = providerOptions.findIndex(
+          (p) => p.available && p.isLocal,
+        );
         if (defaultIndex >= 0) {
           setSelectedIndex(defaultIndex);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to detect providers');
+        setError(
+          err instanceof Error ? err.message : 'Failed to detect providers',
+        );
       } finally {
         setLoading(false);
       }
@@ -76,32 +82,38 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
     if (loading) return;
 
     if (key.upArrow) {
-      setSelectedIndex(prev => prev > 0 ? prev - 1 : providers.length - 1);
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : providers.length - 1));
     } else if (key.downArrow) {
-      setSelectedIndex(prev => prev < providers.length - 1 ? prev + 1 : 0);
+      setSelectedIndex((prev) => (prev < providers.length - 1 ? prev + 1 : 0));
     } else if (key.return) {
       const selected = providers[selectedIndex];
       if (selected?.available) {
-        createProviderConfig(selected.type).then(config => {
-          onProviderSelected(config);
-        }).catch(error => {
-          console.error('Failed to create provider config:', error);
-          // Fallback to basic config
-          onProviderSelected(ProviderFactory.getDefaultProviderConfig());
-        });
+        createProviderConfig(selected.type)
+          .then((config) => {
+            onProviderSelected(config);
+          })
+          .catch((error) => {
+            console.error('Failed to create provider config:', error);
+            // Fallback to basic config
+            onProviderSelected(ProviderFactory.getDefaultProviderConfig());
+          });
       }
     } else if (key.escape || input === 'q') {
       onCancel();
     }
   });
 
-  const createProviderConfig = async (type: ProviderType): Promise<ProviderConfig> => {
+  const createProviderConfig = async (
+    type: ProviderType,
+  ): Promise<ProviderConfig> => {
     switch (type) {
       case ProviderType.OLLAMA: {
         // Get the first available installed model for Ollama
         let model = 'llama3.2:3b'; // Default fallback
         try {
-          const { checkOllamaInstallation } = await import('../../utils/ollamaSetup.js');
+          const { checkOllamaInstallation } = await import(
+            '../../utils/ollamaSetup.js'
+          );
           const status = await checkOllamaInstallation();
           if (status.installedModels.length > 0) {
             model = status.installedModels[0];
@@ -109,7 +121,7 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
         } catch (error) {
           console.debug('Could not check Ollama models, using default:', error);
         }
-        
+
         return {
           type: ProviderType.OLLAMA,
           baseUrl: 'http://localhost:11434',
@@ -131,7 +143,9 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
   if (loading) {
     return (
       <Box flexDirection="column" padding={1}>
-        <Text color={Colors.AccentBlue}>🔍 Detecting available AI providers...</Text>
+        <Text color={Colors.AccentBlue}>
+          🔍 Detecting available AI providers...
+        </Text>
       </Box>
     );
   }
@@ -140,7 +154,9 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
     return (
       <Box flexDirection="column" padding={1}>
         <Text color={Colors.AccentRed}>❌ Error: {error}</Text>
-        <Text color={Colors.Comment}>Press any key to continue with default settings</Text>
+        <Text color={Colors.Comment}>
+          Press any key to continue with default settings
+        </Text>
       </Box>
     );
   }
@@ -154,11 +170,11 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
         Use ↑/↓ to navigate, Enter to select, Esc to cancel
       </Text>
       <Box marginY={1} />
-      
+
       {providers.map((provider, index) => {
         const isSelected = index === selectedIndex;
         const isAvailable = provider.available;
-        
+
         return (
           <Box key={provider.type} marginBottom={0}>
             <Text color={isSelected ? Colors.AccentBlue : Colors.Foreground}>
@@ -170,9 +186,9 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
           </Box>
         );
       })}
-      
+
       <Box marginY={1} />
-      
+
       {providers[selectedIndex]?.available ? (
         <Box flexDirection="column">
           <Text color={Colors.AccentGreen}>
@@ -187,7 +203,7 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
       ) : (
         <Box flexDirection="column">
           <Text color={Colors.AccentYellow}>
-            ⚠️  {providers[selectedIndex]?.name} is not available
+            ⚠️ {providers[selectedIndex]?.name} is not available
           </Text>
           {providers[selectedIndex]?.type === ProviderType.OLLAMA && (
             <Text color={Colors.Comment}>

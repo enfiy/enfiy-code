@@ -33,7 +33,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Fast and efficient 3B parameter model',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'fast']
+      capabilities: ['chat', 'code', 'fast'],
     },
     {
       id: 'llama3.2:8b',
@@ -42,7 +42,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Balanced 8B parameter model',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning']
+      capabilities: ['chat', 'code', 'reasoning'],
     },
     {
       id: 'llama3.1:70b',
@@ -51,7 +51,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Large, powerful 70B parameter model',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning', 'complex']
+      capabilities: ['chat', 'code', 'reasoning', 'complex'],
     },
     {
       id: 'qwen2.5-coder:32b',
@@ -60,7 +60,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Specialized coding model',
       contextLength: 128000,
-      capabilities: ['code', 'reasoning', 'debugging']
+      capabilities: ['code', 'reasoning', 'debugging'],
     },
     {
       id: 'qwen2.5:7b',
@@ -69,7 +69,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Efficient 7B parameter model with strong capabilities',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning', 'fast']
+      capabilities: ['chat', 'code', 'reasoning', 'fast'],
     },
     {
       id: 'qwen2.5:14b',
@@ -78,7 +78,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Balanced 14B parameter model',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning']
+      capabilities: ['chat', 'code', 'reasoning'],
     },
     {
       id: 'qwen2.5:32b',
@@ -87,7 +87,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Large Qwen model with advanced capabilities',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning', 'complex']
+      capabilities: ['chat', 'code', 'reasoning', 'complex'],
     },
     {
       id: 'qwen3:latest',
@@ -96,7 +96,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Latest Qwen 3 model (experimental)',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning', 'experimental']
+      capabilities: ['chat', 'code', 'reasoning', 'experimental'],
     },
     {
       id: 'deepseek-coder-v2:16b',
@@ -105,7 +105,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Advanced code generation model',
       contextLength: 128000,
-      capabilities: ['code', 'debugging', 'refactoring']
+      capabilities: ['code', 'debugging', 'refactoring'],
     },
     {
       id: 'mistral:7b',
@@ -114,7 +114,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Efficient 7B parameter model',
       contextLength: 32768,
-      capabilities: ['chat', 'code', 'fast']
+      capabilities: ['chat', 'code', 'fast'],
     },
     // === 2025 Latest Models ===
     // DeepSeek-R1 Series (Reasoning Models)
@@ -123,18 +123,20 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       name: 'DeepSeek-R1 1.5B',
       provider: ProviderType.OLLAMA,
       category: 'local',
-      description: 'Latest reasoning model, excellent for complex problem solving',
+      description:
+        'Latest reasoning model, excellent for complex problem solving',
       contextLength: 128000,
-      capabilities: ['reasoning', 'math', 'analysis', 'fast']
+      capabilities: ['reasoning', 'math', 'analysis', 'fast'],
     },
     {
       id: 'deepseek-r1:7b',
       name: 'DeepSeek-R1 7B',
       provider: ProviderType.OLLAMA,
       category: 'local',
-      description: 'Advanced reasoning model with strong analytical capabilities',
+      description:
+        'Advanced reasoning model with strong analytical capabilities',
       contextLength: 128000,
-      capabilities: ['reasoning', 'math', 'analysis', 'code']
+      capabilities: ['reasoning', 'math', 'analysis', 'code'],
     },
     {
       id: 'deepseek-r1:8b',
@@ -143,7 +145,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Balanced reasoning model for complex tasks',
       contextLength: 128000,
-      capabilities: ['reasoning', 'math', 'analysis', 'code']
+      capabilities: ['reasoning', 'math', 'analysis', 'code'],
     },
     {
       id: 'deepseek-r1:14b',
@@ -152,7 +154,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Large reasoning model with enhanced problem-solving',
       contextLength: 128000,
-      capabilities: ['reasoning', 'math', 'analysis', 'code', 'complex']
+      capabilities: ['reasoning', 'math', 'analysis', 'code', 'complex'],
     },
     {
       id: 'deepseek-r1:32b',
@@ -161,7 +163,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Very large reasoning model for the most complex tasks',
       contextLength: 128000,
-      capabilities: ['reasoning', 'math', 'analysis', 'code', 'complex']
+      capabilities: ['reasoning', 'math', 'analysis', 'code', 'complex'],
     },
     {
       id: 'deepseek-r1:70b',
@@ -170,7 +172,14 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Flagship reasoning model with exceptional capabilities',
       contextLength: 128000,
-      capabilities: ['reasoning', 'math', 'analysis', 'code', 'complex', 'research']
+      capabilities: [
+        'reasoning',
+        'math',
+        'analysis',
+        'code',
+        'complex',
+        'research',
+      ],
     },
     // Llama 3.3 Series (Latest Meta)
     {
@@ -178,9 +187,10 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       name: 'Llama 3.3 70B',
       provider: ProviderType.OLLAMA,
       category: 'local',
-      description: 'Latest Meta model with improved performance and capabilities',
+      description:
+        'Latest Meta model with improved performance and capabilities',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning', 'complex']
+      capabilities: ['chat', 'code', 'reasoning', 'complex'],
     },
     // Qwen3 Series (Latest Alibaba)
     {
@@ -190,7 +200,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Ultra-fast small model for basic tasks',
       contextLength: 128000,
-      capabilities: ['chat', 'fast', 'lightweight']
+      capabilities: ['chat', 'fast', 'lightweight'],
     },
     {
       id: 'qwen3:1.7b',
@@ -199,7 +209,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Compact model with good performance',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'fast']
+      capabilities: ['chat', 'code', 'fast'],
     },
     {
       id: 'qwen3:4b',
@@ -208,7 +218,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Balanced small model for general use',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning']
+      capabilities: ['chat', 'code', 'reasoning'],
     },
     {
       id: 'qwen3:8b',
@@ -217,7 +227,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'High-performance 8B model with strong capabilities',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning']
+      capabilities: ['chat', 'code', 'reasoning'],
     },
     {
       id: 'qwen3:14b',
@@ -226,7 +236,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Large Qwen3 model for complex tasks',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning', 'complex']
+      capabilities: ['chat', 'code', 'reasoning', 'complex'],
     },
     {
       id: 'qwen3:32b',
@@ -235,7 +245,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Very large Qwen3 model with advanced capabilities',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning', 'complex']
+      capabilities: ['chat', 'code', 'reasoning', 'complex'],
     },
     // Gemma 3 Series (Latest Google)
     {
@@ -245,7 +255,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Ultra-efficient small model from Google',
       contextLength: 8192,
-      capabilities: ['chat', 'fast', 'lightweight']
+      capabilities: ['chat', 'fast', 'lightweight'],
     },
     {
       id: 'gemma3:4b',
@@ -254,7 +264,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Compact Google model with good performance',
       contextLength: 8192,
-      capabilities: ['chat', 'code', 'fast']
+      capabilities: ['chat', 'code', 'fast'],
     },
     {
       id: 'gemma3:12b',
@@ -263,7 +273,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Large Gemma model with enhanced capabilities',
       contextLength: 8192,
-      capabilities: ['chat', 'code', 'reasoning']
+      capabilities: ['chat', 'code', 'reasoning'],
     },
     {
       id: 'gemma3:27b',
@@ -272,7 +282,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Flagship Gemma model for complex tasks',
       contextLength: 8192,
-      capabilities: ['chat', 'code', 'reasoning', 'complex']
+      capabilities: ['chat', 'code', 'reasoning', 'complex'],
     },
     // Phi-4 (Microsoft Reasoning)
     {
@@ -280,9 +290,10 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       name: 'Phi-4 14B',
       provider: ProviderType.OLLAMA,
       category: 'local',
-      description: 'Microsoft\'s latest reasoning model with strong math capabilities',
+      description:
+        "Microsoft's latest reasoning model with strong math capabilities",
       contextLength: 16384,
-      capabilities: ['reasoning', 'math', 'analysis', 'code']
+      capabilities: ['reasoning', 'math', 'analysis', 'code'],
     },
     // Additional Qwen2.5 variants
     {
@@ -292,7 +303,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Ultra-lightweight model for basic tasks',
       contextLength: 128000,
-      capabilities: ['chat', 'fast', 'lightweight']
+      capabilities: ['chat', 'fast', 'lightweight'],
     },
     {
       id: 'qwen2.5:1.5b',
@@ -301,7 +312,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Small but capable model for general use',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'fast']
+      capabilities: ['chat', 'code', 'fast'],
     },
     {
       id: 'qwen2.5:3b',
@@ -310,7 +321,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Compact model with good balance of speed and capability',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'fast']
+      capabilities: ['chat', 'code', 'fast'],
     },
     {
       id: 'qwen2.5:72b',
@@ -319,7 +330,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Largest Qwen 2.5 model for complex tasks',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning', 'complex']
+      capabilities: ['chat', 'code', 'reasoning', 'complex'],
     },
     // Additional Qwen2.5-Coder variants
     {
@@ -329,7 +340,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Ultra-fast coding model for basic tasks',
       contextLength: 128000,
-      capabilities: ['code', 'fast', 'lightweight']
+      capabilities: ['code', 'fast', 'lightweight'],
     },
     {
       id: 'qwen2.5-coder:1.5b',
@@ -338,7 +349,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Small coding model with good performance',
       contextLength: 128000,
-      capabilities: ['code', 'debugging', 'fast']
+      capabilities: ['code', 'debugging', 'fast'],
     },
     {
       id: 'qwen2.5-coder:3b',
@@ -347,7 +358,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Compact coding model for general development',
       contextLength: 128000,
-      capabilities: ['code', 'debugging', 'fast']
+      capabilities: ['code', 'debugging', 'fast'],
     },
     {
       id: 'qwen2.5-coder:7b',
@@ -356,7 +367,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Balanced coding model for most development tasks',
       contextLength: 128000,
-      capabilities: ['code', 'debugging', 'reasoning']
+      capabilities: ['code', 'debugging', 'reasoning'],
     },
     {
       id: 'qwen2.5-coder:14b',
@@ -365,7 +376,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Large coding model for complex development',
       contextLength: 128000,
-      capabilities: ['code', 'debugging', 'reasoning', 'complex']
+      capabilities: ['code', 'debugging', 'reasoning', 'complex'],
     },
     // Llama 3.1 additional variants
     {
@@ -375,7 +386,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Efficient Llama 3.1 model for general use',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning']
+      capabilities: ['chat', 'code', 'reasoning'],
     },
     {
       id: 'llama3.1:405b',
@@ -384,7 +395,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Massive Llama model for the most demanding tasks',
       contextLength: 128000,
-      capabilities: ['chat', 'code', 'reasoning', 'complex', 'research']
+      capabilities: ['chat', 'code', 'reasoning', 'complex', 'research'],
     },
     // Llama 3.2 additional variants
     {
@@ -394,7 +405,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Ultra-efficient Llama model for edge computing',
       contextLength: 128000,
-      capabilities: ['chat', 'fast', 'lightweight']
+      capabilities: ['chat', 'fast', 'lightweight'],
     },
     // Code Llama variants
     {
@@ -404,7 +415,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Specialized coding model based on Llama',
       contextLength: 16384,
-      capabilities: ['code', 'debugging', 'generation']
+      capabilities: ['code', 'debugging', 'generation'],
     },
     {
       id: 'codellama:13b',
@@ -413,7 +424,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Larger coding model with enhanced capabilities',
       contextLength: 16384,
-      capabilities: ['code', 'debugging', 'generation', 'reasoning']
+      capabilities: ['code', 'debugging', 'generation', 'reasoning'],
     },
     {
       id: 'codellama:34b',
@@ -422,7 +433,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Large coding model for complex development tasks',
       contextLength: 16384,
-      capabilities: ['code', 'debugging', 'generation', 'reasoning', 'complex']
+      capabilities: ['code', 'debugging', 'generation', 'reasoning', 'complex'],
     },
     // StarCoder2 variants
     {
@@ -432,7 +443,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Latest code generation model from BigCode',
       contextLength: 16384,
-      capabilities: ['code', 'generation', 'fast']
+      capabilities: ['code', 'generation', 'fast'],
     },
     {
       id: 'starcoder2:7b',
@@ -441,7 +452,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Balanced StarCoder model for code generation',
       contextLength: 16384,
-      capabilities: ['code', 'generation', 'debugging']
+      capabilities: ['code', 'generation', 'debugging'],
     },
     {
       id: 'starcoder2:15b',
@@ -450,7 +461,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Large StarCoder model for advanced code tasks',
       contextLength: 16384,
-      capabilities: ['code', 'generation', 'debugging', 'complex']
+      capabilities: ['code', 'generation', 'debugging', 'complex'],
     },
     // Mixtral variants
     {
@@ -460,16 +471,17 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Mixture of experts model with 47B total parameters',
       contextLength: 32768,
-      capabilities: ['chat', 'code', 'reasoning', 'complex']
+      capabilities: ['chat', 'code', 'reasoning', 'complex'],
     },
     {
       id: 'mixtral:8x22b',
       name: 'Mixtral 8x22B',
       provider: ProviderType.OLLAMA,
       category: 'local',
-      description: 'Large mixture of experts model with exceptional capabilities',
+      description:
+        'Large mixture of experts model with exceptional capabilities',
       contextLength: 64000,
-      capabilities: ['chat', 'code', 'reasoning', 'complex', 'research']
+      capabilities: ['chat', 'code', 'reasoning', 'complex', 'research'],
     },
     // Vision Models
     {
@@ -479,7 +491,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Large Language and Vision Assistant for multimodal tasks',
       contextLength: 4096,
-      capabilities: ['chat', 'vision', 'multimodal', 'analysis']
+      capabilities: ['chat', 'vision', 'multimodal', 'analysis'],
     },
     {
       id: 'llava:13b',
@@ -488,7 +500,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Larger vision-language model with enhanced capabilities',
       contextLength: 4096,
-      capabilities: ['chat', 'vision', 'multimodal', 'analysis', 'reasoning']
+      capabilities: ['chat', 'vision', 'multimodal', 'analysis', 'reasoning'],
     },
     {
       id: 'llava:34b',
@@ -497,7 +509,14 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Large vision-language model for complex visual tasks',
       contextLength: 4096,
-      capabilities: ['chat', 'vision', 'multimodal', 'analysis', 'reasoning', 'complex']
+      capabilities: [
+        'chat',
+        'vision',
+        'multimodal',
+        'analysis',
+        'reasoning',
+        'complex',
+      ],
     },
     // SmolLM2 (Microsoft)
     {
@@ -507,7 +526,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Ultra-lightweight model for constrained environments',
       contextLength: 8192,
-      capabilities: ['chat', 'fast', 'lightweight', 'edge']
+      capabilities: ['chat', 'fast', 'lightweight', 'edge'],
     },
     {
       id: 'smollm2:360m',
@@ -516,7 +535,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Small efficient model for basic tasks',
       contextLength: 8192,
-      capabilities: ['chat', 'fast', 'lightweight']
+      capabilities: ['chat', 'fast', 'lightweight'],
     },
     {
       id: 'smollm2:1.7b',
@@ -525,8 +544,8 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       category: 'local',
       description: 'Larger SmolLM model with better capabilities',
       contextLength: 8192,
-      capabilities: ['chat', 'code', 'fast']
-    }
+      capabilities: ['chat', 'code', 'fast'],
+    },
   ],
 
   [ProviderType.OPENAI]: [
@@ -535,10 +554,11 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       name: 'o3',
       provider: ProviderType.OPENAI,
       category: 'cloud',
-      description: 'Most intelligent model for complex reasoning and scientific tasks',
+      description:
+        'Most intelligent model for complex reasoning and scientific tasks',
       contextLength: 1000000,
       pricing: { input: 20, output: 80, unit: '$/1M tokens' },
-      capabilities: ['reasoning', 'complex', 'math', 'science', 'thinking']
+      capabilities: ['reasoning', 'complex', 'math', 'science', 'thinking'],
     },
     {
       id: 'o4-mini',
@@ -548,17 +568,18 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Cost-efficient reasoning model with extended capabilities',
       contextLength: 200000,
       pricing: { input: 2, output: 8, unit: '$/1M tokens' },
-      capabilities: ['reasoning', 'math', 'fast', 'cost-effective']
+      capabilities: ['reasoning', 'math', 'fast', 'cost-effective'],
     },
     {
       id: 'gpt-4.1',
       name: 'GPT-4.1',
       provider: ProviderType.OPENAI,
       category: 'cloud',
-      description: 'Latest GPT-4 with 1M token context and improved performance',
+      description:
+        'Latest GPT-4 with 1M token context and improved performance',
       contextLength: 1000000,
       pricing: { input: 2.5, output: 10, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'vision', 'reasoning', 'long-context']
+      capabilities: ['chat', 'code', 'vision', 'reasoning', 'long-context'],
     },
     {
       id: 'gpt-4.1-nano',
@@ -568,7 +589,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Fastest and most cost-effective GPT-4.1 variant',
       contextLength: 1000000,
       pricing: { input: 0.1, output: 0.4, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'fast', 'cost-effective', 'long-context']
+      capabilities: ['chat', 'code', 'fast', 'cost-effective', 'long-context'],
     },
     {
       id: 'gpt-4o',
@@ -578,7 +599,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Advanced multimodal model with vision capabilities',
       contextLength: 128000,
       pricing: { input: 2.5, output: 10, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'vision', 'reasoning', 'multimodal']
+      capabilities: ['chat', 'code', 'vision', 'reasoning', 'multimodal'],
     },
     {
       id: 'gpt-4o-mini',
@@ -588,8 +609,8 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Faster, more cost-effective GPT-4o model',
       contextLength: 128000,
       pricing: { input: 0.15, output: 0.6, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'fast', 'reasoning']
-    }
+      capabilities: ['chat', 'code', 'fast', 'reasoning'],
+    },
   ],
 
   [ProviderType.ANTHROPIC]: [
@@ -598,20 +619,29 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       name: 'Claude Opus 4',
       provider: ProviderType.ANTHROPIC,
       category: 'cloud',
-      description: 'Most powerful Claude model, excellent for complex coding (72.5% SWE-bench)',
+      description:
+        'Most powerful Claude model, excellent for complex coding (72.5% SWE-bench)',
       contextLength: 200000,
       pricing: { input: 15, output: 75, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'complex', 'thinking', 'computer-use']
+      capabilities: [
+        'chat',
+        'code',
+        'reasoning',
+        'complex',
+        'thinking',
+        'computer-use',
+      ],
     },
     {
       id: 'claude-sonnet-4',
       name: 'Claude Sonnet 4',
       provider: ProviderType.ANTHROPIC,
       category: 'cloud',
-      description: 'Advanced coding model with improved capabilities (72.7% SWE-bench)',
+      description:
+        'Advanced coding model with improved capabilities (72.7% SWE-bench)',
       contextLength: 200000,
       pricing: { input: 3, output: 15, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'thinking', 'computer-use']
+      capabilities: ['chat', 'code', 'reasoning', 'thinking', 'computer-use'],
     },
     {
       id: 'claude-3-5-sonnet-20241022',
@@ -621,7 +651,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'High-performance Claude model with excellent reasoning',
       contextLength: 200000,
       pricing: { input: 3, output: 15, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'complex', 'analysis']
+      capabilities: ['chat', 'code', 'reasoning', 'complex', 'analysis'],
     },
     {
       id: 'claude-3-haiku-20240307',
@@ -631,8 +661,8 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Fast and efficient Claude model',
       contextLength: 200000,
       pricing: { input: 0.25, output: 1.25, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'fast']
-    }
+      capabilities: ['chat', 'code', 'fast'],
+    },
   ],
 
   [ProviderType.GEMINI]: [
@@ -644,7 +674,14 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'State-of-the-art thinking model for complex reasoning',
       contextLength: 1000000,
       pricing: { input: 2.5, output: 10, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'vision', 'reasoning', 'thinking', 'long-context']
+      capabilities: [
+        'chat',
+        'code',
+        'vision',
+        'reasoning',
+        'thinking',
+        'long-context',
+      ],
     },
     {
       id: 'gemini-2.5-flash',
@@ -654,17 +691,18 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Fast and powerful next-gen model with improved performance',
       contextLength: 1000000,
       pricing: { input: 0.1, output: 0.4, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'vision', 'fast', 'multimodal']
+      capabilities: ['chat', 'code', 'vision', 'fast', 'multimodal'],
     },
     {
       id: 'gemini-2.0-flash-exp',
       name: 'Gemini 2.0 Flash Experimental',
       provider: ProviderType.GEMINI,
       category: 'cloud',
-      description: 'Latest experimental Gemini model (Limited non-English language support)',
+      description:
+        'Latest experimental Gemini model (Limited non-English language support)',
       contextLength: 1000000,
       pricing: { input: 0.075, output: 0.3, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'vision', 'multimodal', 'fast']
+      capabilities: ['chat', 'code', 'vision', 'multimodal', 'fast'],
     },
     {
       id: 'gemini-1.5-pro',
@@ -674,18 +712,19 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Advanced Gemini model with long context',
       contextLength: 2000000,
       pricing: { input: 1.25, output: 5, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'vision', 'reasoning', 'long-context']
+      capabilities: ['chat', 'code', 'vision', 'reasoning', 'long-context'],
     },
     {
       id: 'gemini-1.5-flash',
       name: 'Gemini 1.5 Flash',
       provider: ProviderType.GEMINI,
       category: 'cloud',
-      description: 'Fast and efficient Gemini model (Recommended, full language support)',
+      description:
+        'Fast and efficient Gemini model (Recommended, full language support)',
       contextLength: 1000000,
       pricing: { input: 0.075, output: 0.3, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'fast', 'vision']
-    }
+      capabilities: ['chat', 'code', 'fast', 'vision'],
+    },
   ],
 
   // Removed unsupported GROQ provider
@@ -699,7 +738,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: '123B parameter model for complex reasoning and analysis',
       contextLength: 128000,
       pricing: { input: 2, output: 6, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'complex', 'analysis']
+      capabilities: ['chat', 'code', 'reasoning', 'complex', 'analysis'],
     },
     {
       id: 'codestral-25.01',
@@ -709,7 +748,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Latest coding model supporting 80+ programming languages',
       contextLength: 128000,
       pricing: { input: 0.25, output: 0.75, unit: '$/1M tokens' },
-      capabilities: ['code', 'debugging', 'refactoring', 'generation']
+      capabilities: ['code', 'debugging', 'refactoring', 'generation'],
     },
     {
       id: 'mistral-medium-2505',
@@ -719,7 +758,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Mid-tier model with balanced performance and cost',
       contextLength: 128000,
       pricing: { input: 1, output: 3, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning']
+      capabilities: ['chat', 'code', 'reasoning'],
     },
     {
       id: 'mistral-small-2503',
@@ -729,7 +768,7 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Efficient small model with improved tokenizer',
       contextLength: 128000,
       pricing: { input: 0.2, output: 0.6, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'fast', 'cost-effective']
+      capabilities: ['chat', 'code', 'fast', 'cost-effective'],
     },
     {
       id: 'devstral-small-2505',
@@ -739,8 +778,8 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Developer-focused model for software engineering tasks',
       contextLength: 128000,
       pricing: { input: 0.15, output: 0.45, unit: '$/1M tokens' },
-      capabilities: ['code', 'debugging', 'development', 'fast']
-    }
+      capabilities: ['code', 'debugging', 'development', 'fast'],
+    },
   ],
 
   [ProviderType.HUGGINGFACE]: [
@@ -749,40 +788,44 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       name: 'Llama 3.3 70B Instruct',
       provider: ProviderType.HUGGINGFACE,
       category: 'cloud',
-      description: 'Meta\'s latest large language model with improved instruction following',
+      description:
+        "Meta's latest large language model with improved instruction following",
       contextLength: 128000,
       pricing: { input: 0.7, output: 0.8, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'instruction-following']
+      capabilities: ['chat', 'code', 'reasoning', 'instruction-following'],
     },
     {
       id: 'meta-llama/Meta-Llama-3.1-70B-Instruct',
       name: 'Llama 3.1 70B Instruct',
       provider: ProviderType.HUGGINGFACE,
       category: 'cloud',
-      description: 'Powerful 70B parameter model with strong reasoning capabilities',
+      description:
+        'Powerful 70B parameter model with strong reasoning capabilities',
       contextLength: 128000,
       pricing: { input: 0.7, output: 0.8, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'analysis']
+      capabilities: ['chat', 'code', 'reasoning', 'analysis'],
     },
     {
       id: 'meta-llama/Meta-Llama-3.1-8B-Instruct',
       name: 'Llama 3.1 8B Instruct',
       provider: ProviderType.HUGGINGFACE,
       category: 'cloud',
-      description: 'Efficient 8B parameter model, good balance of performance and cost',
+      description:
+        'Efficient 8B parameter model, good balance of performance and cost',
       contextLength: 128000,
       pricing: { input: 0.2, output: 0.2, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'fast', 'cost-effective']
+      capabilities: ['chat', 'code', 'fast', 'cost-effective'],
     },
     {
       id: 'Qwen/Qwen2.5-Coder-32B-Instruct',
       name: 'Qwen 2.5 Coder 32B',
       provider: ProviderType.HUGGINGFACE,
       category: 'cloud',
-      description: 'Specialized coding model with excellent programming capabilities',
+      description:
+        'Specialized coding model with excellent programming capabilities',
       contextLength: 128000,
       pricing: { input: 0.3, output: 0.3, unit: '$/1M tokens' },
-      capabilities: ['code', 'debugging', 'generation', 'refactoring']
+      capabilities: ['code', 'debugging', 'generation', 'refactoring'],
     },
     {
       id: 'microsoft/DialoGPT-large',
@@ -792,9 +835,9 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Conversational AI model optimized for dialogue',
       contextLength: 32000,
       pricing: { input: 0.1, output: 0.1, unit: '$/1M tokens' },
-      capabilities: ['chat', 'conversation', 'fast']
-    }
-  ]
+      capabilities: ['chat', 'conversation', 'fast'],
+    },
+  ],
 };
 
 export function getModelsForProvider(providerType: ProviderType): ModelInfo[] {
@@ -806,32 +849,37 @@ export function getAllModels(): ModelInfo[] {
 }
 
 export function getLocalModels(): ModelInfo[] {
-  return getAllModels().filter(model => model.category === 'local');
+  return getAllModels().filter((model) => model.category === 'local');
 }
 
 export function getCloudModels(): ModelInfo[] {
-  return getAllModels().filter(model => model.category === 'cloud');
+  return getAllModels().filter((model) => model.category === 'cloud');
 }
 
 export function getModelsByCapability(capability: string): ModelInfo[] {
-  return getAllModels().filter(model => model.capabilities.includes(capability));
+  return getAllModels().filter((model) =>
+    model.capabilities.includes(capability),
+  );
 }
 
 export function findModel(modelId: string): ModelInfo | undefined {
-  return getAllModels().find(model => model.id === modelId);
+  return getAllModels().find((model) => model.id === modelId);
 }
 
 export function findModelByPartialMatch(partialId: string): ModelInfo[] {
   const searchTerm = partialId.toLowerCase();
-  return getAllModels().filter(model => 
-    model.id.toLowerCase().includes(searchTerm) ||
-    model.name.toLowerCase().includes(searchTerm)
+  return getAllModels().filter(
+    (model) =>
+      model.id.toLowerCase().includes(searchTerm) ||
+      model.name.toLowerCase().includes(searchTerm),
   );
 }
 
-export function getRecommendedModelsForTask(task: 'code' | 'chat' | 'reasoning' | 'fast'): ModelInfo[] {
+export function getRecommendedModelsForTask(
+  task: 'code' | 'chat' | 'reasoning' | 'fast',
+): ModelInfo[] {
   return getAllModels()
-    .filter(model => model.capabilities.includes(task))
+    .filter((model) => model.capabilities.includes(task))
     .sort((a, b) => {
       // Prioritize by category (local first), then by context length
       if (a.category !== b.category) {
@@ -842,17 +890,20 @@ export function getRecommendedModelsForTask(task: 'code' | 'chat' | 'reasoning' 
     .slice(0, 5);
 }
 
-export function validateModelCompatibility(modelId: string, providerType: ProviderType): boolean {
+export function validateModelCompatibility(
+  modelId: string,
+  providerType: ProviderType,
+): boolean {
   const model = findModel(modelId);
   if (model) {
     return model.provider === providerType;
   }
-  
+
   // For Ollama, allow any model that follows naming patterns
   if (providerType === ProviderType.OLLAMA) {
     return isValidOllamaModelPattern(modelId);
   }
-  
+
   return false;
 }
 
@@ -864,14 +915,19 @@ export function isValidOllamaModelPattern(modelId: string): boolean {
     /^[a-zA-Z0-9_-]+-[a-zA-Z0-9_-]+:[a-zA-Z0-9._-]+$/, // family-variant:version (e.g., qwen2.5-coder:32b)
     /^[a-zA-Z0-9_-]+$/, // simple name (e.g., codellama)
   ];
-  
-  return patterns.some(pattern => pattern.test(modelId));
+
+  return patterns.some((pattern) => pattern.test(modelId));
 }
 
-export function getProviderModels(providerType: ProviderType, includeExperimental: boolean = false): ModelInfo[] {
+export function getProviderModels(
+  providerType: ProviderType,
+  includeExperimental: boolean = false,
+): ModelInfo[] {
   const models = getModelsForProvider(providerType);
   if (!includeExperimental) {
-    return models.filter(model => !model.capabilities.includes('experimental'));
+    return models.filter(
+      (model) => !model.capabilities.includes('experimental'),
+    );
   }
   return models;
 }
@@ -879,28 +935,40 @@ export function getProviderModels(providerType: ProviderType, includeExperimenta
 export function inferModelCapabilities(modelId: string): string[] {
   const capabilities: string[] = ['chat']; // Base capability
   const modelLower = modelId.toLowerCase();
-  
+
   // Reasoning models
-  if (modelLower.includes('r1') || modelLower.includes('phi4') || modelLower.includes('o3')) {
+  if (
+    modelLower.includes('r1') ||
+    modelLower.includes('phi4') ||
+    modelLower.includes('o3')
+  ) {
     capabilities.push('reasoning', 'math', 'analysis');
   }
-  
+
   // Coding models
-  if (modelLower.includes('coder') || modelLower.includes('code') || modelLower.includes('star')) {
+  if (
+    modelLower.includes('coder') ||
+    modelLower.includes('code') ||
+    modelLower.includes('star')
+  ) {
     capabilities.push('code', 'debugging', 'generation');
   }
-  
+
   // Vision models
-  if (modelLower.includes('llava') || modelLower.includes('vl') || modelLower.includes('vision')) {
+  if (
+    modelLower.includes('llava') ||
+    modelLower.includes('vl') ||
+    modelLower.includes('vision')
+  ) {
     capabilities.push('vision', 'multimodal', 'analysis');
   }
-  
+
   // Size-based capabilities
   const sizeMatch = modelId.match(/(\d+\.?\d*)([bm])/i);
   if (sizeMatch) {
     const size = parseFloat(sizeMatch[1]);
     const unit = sizeMatch[2].toLowerCase();
-    
+
     if (unit === 'm' || (unit === 'b' && size < 1)) {
       capabilities.push('fast', 'lightweight', 'edge');
     } else if (unit === 'b') {
@@ -916,17 +984,20 @@ export function inferModelCapabilities(modelId: string): string[] {
       }
     }
   }
-  
+
   return capabilities;
 }
 
-export function createDynamicModelInfo(modelId: string, providerType: ProviderType): ModelInfo {
+export function createDynamicModelInfo(
+  modelId: string,
+  providerType: ProviderType,
+): ModelInfo {
   const capabilities = inferModelCapabilities(modelId);
-  
+
   // Infer context length based on model family
   let contextLength = 4096; // Default
   const modelLower = modelId.toLowerCase();
-  
+
   if (modelLower.includes('qwen') || modelLower.includes('llama3')) {
     contextLength = 128000;
   } else if (modelLower.includes('mixtral')) {
@@ -936,14 +1007,15 @@ export function createDynamicModelInfo(modelId: string, providerType: ProviderTy
   } else if (modelLower.includes('phi')) {
     contextLength = 16384;
   }
-  
+
   return {
     id: modelId,
-    name: modelId.charAt(0).toUpperCase() + modelId.slice(1).replace(/[:-]/g, ' '),
+    name:
+      modelId.charAt(0).toUpperCase() + modelId.slice(1).replace(/[:-]/g, ' '),
     provider: providerType,
     category: providerType === ProviderType.OLLAMA ? 'local' : 'cloud',
     description: `Dynamically detected ${modelId} model`,
     contextLength,
-    capabilities
+    capabilities,
   };
 }

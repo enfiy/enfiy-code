@@ -11,14 +11,19 @@ export declare const DEFAULT_ENCODING: BufferEncoding;
  * @param filePath Path to the file.
  * @returns The specific MIME type string (e.g., 'text/python', 'application/javascript') or undefined if not found or ambiguous.
  */
-export declare function getSpecificMimeType(filePath: string): string | undefined;
+export declare function getSpecificMimeType(
+  filePath: string,
+): string | undefined;
 /**
  * Checks if a path is within a given root directory.
  * @param pathToCheck The absolute path to check.
  * @param rootDirectory The absolute root directory.
  * @returns True if the path is within the root directory, false otherwise.
  */
-export declare function isWithinRoot(pathToCheck: string, rootDirectory: string): boolean;
+export declare function isWithinRoot(
+  pathToCheck: string,
+  rootDirectory: string,
+): boolean;
 /**
  * Determines if a file is likely binary based on content sampling.
  * @param filePath Path to the file.
@@ -30,14 +35,16 @@ export declare function isBinaryFile(filePath: string): boolean;
  * @param filePath Path to the file.
  * @returns 'text', 'image', 'pdf', or 'binary'.
  */
-export declare function detectFileType(filePath: string): 'text' | 'image' | 'pdf' | 'binary';
+export declare function detectFileType(
+  filePath: string,
+): 'text' | 'image' | 'pdf' | 'binary';
 export interface ProcessedFileReadResult {
-    llmContent: PartUnion;
-    returnDisplay: string;
-    error?: string;
-    isTruncated?: boolean;
-    originalLineCount?: number;
-    linesShown?: [number, number];
+  llmContent: PartUnion;
+  returnDisplay: string;
+  error?: string;
+  isTruncated?: boolean;
+  originalLineCount?: number;
+  linesShown?: [number, number];
 }
 /**
  * Reads and processes a single file, handling text, images, and PDFs.
@@ -47,7 +54,12 @@ export interface ProcessedFileReadResult {
  * @param limit Optional limit for text files (number of lines to read).
  * @returns ProcessedFileReadResult object.
  */
-export declare function processSingleFileContent(filePath: string, rootDirectory: string, offset?: number, limit?: number): Promise<ProcessedFileReadResult>;
+export declare function processSingleFileContent(
+  filePath: string,
+  rootDirectory: string,
+  offset?: number,
+  limit?: number,
+): Promise<ProcessedFileReadResult>;
 /**
  * Cached file reading with TTL to avoid repeated file system access
  */
@@ -59,4 +71,6 @@ export declare function isBinaryFileAsync(filePath: string): Promise<boolean>;
 /**
  * Batch file reading for better I/O performance
  */
-export declare function readMultipleFiles(filePaths: string[]): Promise<Map<string, string>>;
+export declare function readMultipleFiles(
+  filePaths: string[],
+): Promise<Map<string, string>>;

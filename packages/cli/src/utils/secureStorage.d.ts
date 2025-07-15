@@ -5,15 +5,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 interface SecureConfig {
-    providers: {
-        [key: string]: {
-            apiKey?: string;
-            endpoint?: string;
-            authMethod?: string;
-            encrypted: boolean;
-        };
+  providers: {
+    [key: string]: {
+      apiKey?: string;
+      endpoint?: string;
+      authMethod?: string;
+      encrypted: boolean;
     };
-    version: string;
+  };
+  version: string;
 }
 /**
  * Load secure configuration
@@ -26,7 +26,12 @@ export declare function saveSecureConfig(config: SecureConfig): void;
 /**
  * Store API key securely
  */
-export declare function storeApiKey(provider: string, apiKey: string, endpoint?: string, authMethod?: string): void;
+export declare function storeApiKey(
+  provider: string,
+  apiKey: string,
+  endpoint?: string,
+  authMethod?: string,
+): void;
 /**
  * Retrieve API key
  */
@@ -50,5 +55,8 @@ export declare function loadApiKeysIntoEnvironment(): void;
 /**
  * Validate API key format
  */
-export declare function validateApiKey(provider: string, apiKey: string): boolean;
+export declare function validateApiKey(
+  provider: string,
+  apiKey: string,
+): boolean;
 export {};

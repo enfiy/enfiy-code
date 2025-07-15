@@ -28,22 +28,21 @@ export const EnfiyMessage: React.FC<EnfiyMessageProps> = ({
   model,
 }) => {
   // Function to determine color based on content type and model
-  const getIndicatorColor = () => 
-     '#fb923c' // Always use orange theme color
-  ;
-
+  const getIndicatorColor = () => '#fb923c'; // Always use orange theme color
   const indicatorColor = getIndicatorColor();
   const modelDisplay = model ? ` ${model}` : '';
   const prefix = '● ';
-  
+
   return (
     <Box flexDirection="column">
       {/* Model name header */}
       <Box flexDirection="row" marginBottom={0}>
         <Text color={indicatorColor}>{prefix}</Text>
-        <Text color={indicatorColor} bold>{modelDisplay}</Text>
+        <Text color={indicatorColor} bold>
+          {modelDisplay}
+        </Text>
       </Box>
-      
+
       {/* Message content with indentation */}
       <Box flexDirection="column" paddingLeft={2}>
         <MarkdownDisplay

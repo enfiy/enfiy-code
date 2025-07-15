@@ -22,11 +22,13 @@ import * as os from 'os';
 // 🔧 TODO: URGENT - Register proper Enfiy Code OAuth application with Google
 // 📝 User will see "Google Cloud Code" or "gemini" in OAuth consent screen
 // 🎯 Need to create dedicated OAuth client at: https://console.developers.google.com/auth/clients
-const OAUTH_CLIENT_ID = process.env.ENFIY_GOOGLE_OAUTH_CLIENT_ID || 
+const OAUTH_CLIENT_ID =
+  process.env.ENFIY_GOOGLE_OAUTH_CLIENT_ID ||
   '681255809395-oo8ft2oprdrnp9e3aqf6av3hmdib135j.apps.googleusercontent.com';
 
 // OAuth Secret value - Temporary
-const OAUTH_CLIENT_SECRET = process.env.ENFIY_GOOGLE_OAUTH_CLIENT_SECRET || 
+const OAUTH_CLIENT_SECRET =
+  process.env.ENFIY_GOOGLE_OAUTH_CLIENT_SECRET ||
   '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';
 
 // OAuth Scopes for Cloud Code authorization.
@@ -37,10 +39,8 @@ const OAUTH_SCOPE = [
 ];
 
 const HTTP_REDIRECT = 301;
-const SIGN_IN_SUCCESS_URL =
-  'https://enfiy.com/auth/success';
-const SIGN_IN_FAILURE_URL =
-  'https://enfiy.com/auth/failure';
+const SIGN_IN_SUCCESS_URL = 'https://enfiy.com/auth/success';
+const SIGN_IN_FAILURE_URL = 'https://enfiy.com/auth/failure';
 
 const ENFIY_DIR = '.enfiy';
 const CREDENTIAL_FILENAME = 'gemini_oauth_creds.json';
@@ -71,30 +71,40 @@ export async function getOauthClient(): Promise<OAuth2Client> {
   const isWSL = process.env.WSL_DISTRO_NAME || process.env.WSL_INTEROP;
   const isLinux = process.platform === 'linux';
   const isDocker = process.env.container || process.env.DOCKER_CONTAINER;
-  
+
   console.log('\n🔐 Enfiy Code - Gemini authentication required');
   console.log('Opening browser for Google account authentication...');
-  console.log('⚠️  Note: OAuth consent screen may show "Google Cloud Code" or "gemini"');
-  console.log('    This is temporary - working on Enfiy Code specific OAuth registration');
+  console.log(
+    '⚠️  Note: OAuth consent screen may show "Google Cloud Code" or "gemini"',
+  );
+  console.log(
+    '    This is temporary - working on Enfiy Code specific OAuth registration',
+  );
   console.log('');
-  
+
   if (isWSL || isLinux || isDocker) {
     console.log('🌐 Remote/containerized environment detected');
-    console.log('If browser doesn\'t open automatically, copy this URL to your browser:');
+    console.log(
+      "If browser doesn't open automatically, copy this URL to your browser:",
+    );
     console.log('');
     console.log(`🔗 ${webLogin.authUrl}`);
     console.log('');
   }
-  
+
   try {
     console.log('Attempting to open URL with open package:', webLogin.authUrl);
-    
+
     if (isWSL) {
       console.log('🔧 WSL detected - trying Windows browser commands...');
       try {
         const { spawn } = await import('child_process');
         // Try PowerShell to open browser from WSL
-        const result = spawn('powershell.exe', ['Start-Process', `'${webLogin.authUrl}'`], { stdio: 'inherit' });
+        const result = spawn(
+          'powershell.exe',
+          ['Start-Process', `'${webLogin.authUrl}'`],
+          { stdio: 'inherit' },
+        );
         result.on('error', (err) => {
           console.log('PowerShell browser command failed:', err.message);
           throw err;
@@ -104,7 +114,9 @@ export async function getOauthClient(): Promise<OAuth2Client> {
         console.log('WSL PowerShell browser failed, trying wslview...');
         try {
           const { spawn } = await import('child_process');
-          const result = spawn('wslview', [webLogin.authUrl], { stdio: 'inherit' });
+          const result = spawn('wslview', [webLogin.authUrl], {
+            stdio: 'inherit',
+          });
           result.on('error', (err) => {
             console.log('wslview command failed:', err.message);
             throw err;
@@ -126,7 +138,7 @@ export async function getOauthClient(): Promise<OAuth2Client> {
     console.log('');
     console.log(`🔗 ${webLogin.authUrl}`);
     console.log('');
-    
+
     if (isWSL) {
       console.log('💡 WSL/Linux Tips:');
       console.log(`• wslview "${webLogin.authUrl}"`);
@@ -135,13 +147,15 @@ export async function getOauthClient(): Promise<OAuth2Client> {
       console.log('');
     }
   }
-  
+
   console.log('⏳ Waiting for authentication in browser...');
   console.log('   Please complete the login process in your browser window');
 
   await webLogin.loginCompletePromise;
-  
-  console.log('✅ Authentication successful! Credentials cached for future use.');
+
+  console.log(
+    '✅ Authentication successful! Credentials cached for future use.',
+  );
 
   return client;
 }

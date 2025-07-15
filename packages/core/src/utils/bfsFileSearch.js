@@ -9,8 +9,7 @@ import * as path from 'path';
 // Simple console logger for now.
 // TODO: Integrate with a more robust server-side logger.
 const logger = {
-     
-    debug: (...args) => console.debug('[DEBUG] [BfsFileSearch]', ...args),
+  debug: (...args) => console.debug('[DEBUG] [BfsFileSearch]', ...args),
 };
 /**
  * Performs a breadth-first search for a specific file within a directory structure.
@@ -20,44 +19,48 @@ const logger = {
  * @returns A promise that resolves to an array of paths where the file was found.
  */
 export async function bfsFileSearch(rootDir, options) {
-    const { fileName, ignoreDirs = [], maxDirs = Infinity, debug = false, fileService, } = options;
-    const foundFiles = [];
-    const queue = [rootDir];
-    const visited = new Set();
-    let scannedDirCount = 0;
-    while (queue.length > 0 && scannedDirCount < maxDirs) {
-        const currentDir = queue.shift();
-        if (visited.has(currentDir)) {
-            continue;
-        }
-        visited.add(currentDir);
-        scannedDirCount++;
-        if (debug) {
-            logger.debug(`Scanning [${scannedDirCount}/${maxDirs}]: ${currentDir}`);
-        }
-        let entries;
-        try {
-            entries = await fs.readdir(currentDir, { withFileTypes: true });
-        }
-        catch {
-            // Ignore errors for directories we can't read (e.g., permissions)
-            continue;
-        }
-        for (const entry of entries) {
-            const fullPath = path.join(currentDir, entry.name);
-            if (fileService?.shouldGitIgnoreFile(fullPath)) {
-                continue;
-            }
-            if (entry.isDirectory()) {
-                if (!ignoreDirs.includes(entry.name)) {
-                    queue.push(fullPath);
-                }
-            }
-            else if (entry.isFile() && entry.name === fileName) {
-                foundFiles.push(fullPath);
-            }
-        }
+  const {
+    fileName,
+    ignoreDirs = [],
+    maxDirs = Infinity,
+    debug = false,
+    fileService,
+  } = options;
+  const foundFiles = [];
+  const queue = [rootDir];
+  const visited = new Set();
+  let scannedDirCount = 0;
+  while (queue.length > 0 && scannedDirCount < maxDirs) {
+    const currentDir = queue.shift();
+    if (visited.has(currentDir)) {
+      continue;
     }
-    return foundFiles;
+    visited.add(currentDir);
+    scannedDirCount++;
+    if (debug) {
+      logger.debug(`Scanning [${scannedDirCount}/${maxDirs}]: ${currentDir}`);
+    }
+    let entries;
+    try {
+      entries = await fs.readdir(currentDir, { withFileTypes: true });
+    } catch {
+      // Ignore errors for directories we can't read (e.g., permissions)
+      continue;
+    }
+    for (const entry of entries) {
+      const fullPath = path.join(currentDir, entry.name);
+      if (fileService?.shouldGitIgnoreFile(fullPath)) {
+        continue;
+      }
+      if (entry.isDirectory()) {
+        if (!ignoreDirs.includes(entry.name)) {
+          queue.push(fullPath);
+        }
+      } else if (entry.isFile() && entry.name === fileName) {
+        foundFiles.push(fullPath);
+      }
+    }
+  }
+  return foundFiles;
 }
 //# sourceMappingURL=bfsFileSearch.js.map

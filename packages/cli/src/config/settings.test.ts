@@ -406,9 +406,9 @@ describe('Settings Loading and Merging', () => {
       expect(settings.workspace.settings.endpoint).toBe(
         'workspace_endpoint_from_env/api',
       );
-      expect((settings.workspace.settings.nested as Record<string, unknown>).value).toBe(
-        'workspace_endpoint_from_env',
-      );
+      expect(
+        (settings.workspace.settings.nested as Record<string, unknown>).value,
+      ).toBe('workspace_endpoint_from_env');
       expect(settings.merged.endpoint).toBe('workspace_endpoint_from_env/api');
       delete process.env.WORKSPACE_ENDPOINT;
     });
@@ -558,13 +558,25 @@ describe('Settings Loading and Merging', () => {
       expect(settings.user.settings.stringVal).toBe('env_string_value');
       expect(settings.user.settings.undefinedVal).toBeUndefined();
 
-      expect((settings.user.settings.nestedObj as Record<string, unknown>).nestedNull).toBeNull();
-      expect((settings.user.settings.nestedObj as Record<string, unknown>).nestedBool).toBe(true);
-      expect((settings.user.settings.nestedObj as Record<string, unknown>).nestedNum).toBe(0);
-      expect((settings.user.settings.nestedObj as Record<string, unknown>).nestedString).toBe('literal');
-      expect((settings.user.settings.nestedObj as Record<string, unknown>).anotherEnv).toBe(
-        'env_string_nested_value',
-      );
+      expect(
+        (settings.user.settings.nestedObj as Record<string, unknown>)
+          .nestedNull,
+      ).toBeNull();
+      expect(
+        (settings.user.settings.nestedObj as Record<string, unknown>)
+          .nestedBool,
+      ).toBe(true);
+      expect(
+        (settings.user.settings.nestedObj as Record<string, unknown>).nestedNum,
+      ).toBe(0);
+      expect(
+        (settings.user.settings.nestedObj as Record<string, unknown>)
+          .nestedString,
+      ).toBe('literal');
+      expect(
+        (settings.user.settings.nestedObj as Record<string, unknown>)
+          .anotherEnv,
+      ).toBe('env_string_nested_value');
 
       delete process.env.MY_ENV_STRING;
       delete process.env.MY_ENV_STRING_NESTED;

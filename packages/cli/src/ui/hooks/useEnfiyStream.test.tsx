@@ -445,7 +445,12 @@ describe('useEnfiyStream', () => {
         endTime: Date.now(),
       } as TrackedCompletedToolCall,
       {
-        request: { callId: 'call2', name: 'tool2', args: {}, isClientInitiated: false },
+        request: {
+          callId: 'call2',
+          name: 'tool2',
+          args: {},
+          isClientInitiated: false,
+        },
         status: 'executing',
         responseSubmittedToGemini: false,
         tool: {
@@ -485,11 +490,11 @@ describe('useEnfiyStream', () => {
         },
         status: 'success',
         responseSubmittedToGemini: false,
-        response: { 
-          callId: 'call1', 
+        response: {
+          callId: 'call1',
           responseParts: toolCall1ResponseParts,
           resultDisplay: undefined,
-          error: undefined
+          error: undefined,
         },
         tool: {
           name: 'tool1',
@@ -506,11 +511,11 @@ describe('useEnfiyStream', () => {
         },
         status: 'error',
         responseSubmittedToGemini: false,
-        response: { 
-          callId: 'call2', 
+        response: {
+          callId: 'call2',
           responseParts: toolCall2ResponseParts,
           resultDisplay: undefined,
-          error: new Error('Tool error')
+          error: new Error('Tool error'),
         },
         tool: {
           name: 'tool2',
@@ -579,11 +584,11 @@ describe('useEnfiyStream', () => {
           isClientInitiated: false,
         },
         status: 'cancelled',
-        response: { 
-          callId: '1', 
+        response: {
+          callId: '1',
           responseParts: [{ text: 'cancelled' }],
           resultDisplay: undefined,
-          error: undefined
+          error: undefined,
         },
         responseSubmittedToGemini: false,
         tool: {
@@ -942,7 +947,12 @@ describe('useEnfiyStream', () => {
     it('should not cancel if a tool call is in progress (not just responding)', async () => {
       const toolCalls: TrackedToolCall[] = [
         {
-          request: { callId: 'call1', name: 'tool1', args: {}, isClientInitiated: false },
+          request: {
+            callId: 'call1',
+            name: 'tool1',
+            args: {},
+            isClientInitiated: false,
+          },
           status: 'executing',
           responseSubmittedToGemini: false,
           tool: {

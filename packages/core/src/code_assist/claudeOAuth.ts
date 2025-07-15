@@ -22,7 +22,7 @@ const CLAUDE_CLIENT_ID = '9d1c250a-e61b-44d9-88ed-5944d1962f5e';
 const CLAUDE_OAUTH_SCOPES = [
   'org:create_api_key',
   'user:profile',
-  'user:inference'
+  'user:inference',
 ];
 
 const ENFIY_DIR = '.enfiy';
@@ -55,19 +55,21 @@ export async function getClaudeOAuthClient(): Promise<ClaudeOAuthResponse> {
   const isWSL = process.env.WSL_DISTRO_NAME || process.env.WSL_INTEROP;
   const isLinux = process.platform === 'linux';
   const isDocker = process.env.container || process.env.DOCKER_CONTAINER;
-  
+
   console.log('\n🔐 Claude authentication required');
   console.log('Opening browser for Claude.ai account authentication...');
   console.log('');
-  
+
   if (isWSL || isLinux || isDocker) {
     console.log('🌐 Remote/containerized environment detected');
-    console.log('If browser doesn\'t open automatically, copy this URL to your browser:');
+    console.log(
+      "If browser doesn't open automatically, copy this URL to your browser:",
+    );
     console.log('');
     console.log(`🔗 ${webLogin.authUrl}`);
     console.log('');
   }
-  
+
   try {
     await open(webLogin.authUrl);
     console.log('✅ Browser opened successfully');
@@ -77,7 +79,7 @@ export async function getClaudeOAuthClient(): Promise<ClaudeOAuthResponse> {
     console.log('');
     console.log(`🔗 ${webLogin.authUrl}`);
     console.log('');
-    
+
     if (isWSL) {
       console.log('💡 WSL/Linux Tips:');
       console.log(`• wslview "${webLogin.authUrl}"`);
@@ -86,13 +88,15 @@ export async function getClaudeOAuthClient(): Promise<ClaudeOAuthResponse> {
       console.log('');
     }
   }
-  
+
   console.log('⏳ Waiting for authentication in browser...');
   console.log('   Please complete the login process in your browser window');
 
   const response = await webLogin.loginCompletePromise;
-  
-  console.log('✅ Claude authentication successful! Credentials cached for future use.');
+
+  console.log(
+    '✅ Claude authentication successful! Credentials cached for future use.',
+  );
 
   // Cache the credentials
   await cacheClaudeCredentials(response);
@@ -119,94 +123,110 @@ async function authWithClaudeWeb(): Promise<ClaudeWebLogin> {
     scope: CLAUDE_OAUTH_SCOPES.join(' '),
     code_challenge: codeChallenge,
     code_challenge_method: 'S256',
-    state
+    state,
   });
 
   const authUrl = `${CLAUDE_OAUTH_BASE_URL}?${authParams.toString()}`;
 
-  const loginCompletePromise = new Promise<ClaudeOAuthResponse>((resolve, reject) => {
-    const server = http.createServer(async (req, res) => {
-      try {
-        const parsedUrl = new url.URL(req.url!, `http://localhost:${port}`);
-        
-        if (parsedUrl.pathname !== '/callback') {
-          res.writeHead(404);
-          res.end('Not found');
-          return;
-        }
-
-        const code = parsedUrl.searchParams.get('code');
-        const returnedState = parsedUrl.searchParams.get('state');
-        const error = parsedUrl.searchParams.get('error');
-
-        if (error) {
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h1>Authentication Failed</h1><p>You can close this window.</p></body></html>');
-          reject(new Error(`Claude OAuth error: ${error}`));
-          server.close();
-          return;
-        }
-
-        if (returnedState !== state) {
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h1>Authentication Failed</h1><p>State mismatch. You can close this window.</p></body></html>');
-          reject(new Error('State mismatch. Possible CSRF attack'));
-          server.close();
-          return;
-        }
-
-        if (!code) {
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h1>Authentication Failed</h1><p>No authorization code received. You can close this window.</p></body></html>');
-          reject(new Error('No authorization code received'));
-          server.close();
-          return;
-        }
-
-        // Exchange code for token
+  const loginCompletePromise = new Promise<ClaudeOAuthResponse>(
+    (resolve, reject) => {
+      const server = http.createServer(async (req, res) => {
         try {
-          const tokenResponse = await exchangeCodeForToken(code, redirectUri, codeVerifier);
-          
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h1>Authentication Successful!</h1><p>You can close this window and return to Enfiy Code.</p></body></html>');
-          
-          resolve(tokenResponse);
-        } catch (tokenError) {
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h1>Authentication Failed</h1><p>Failed to exchange code for token. You can close this window.</p></body></html>');
-          reject(tokenError);
+          const parsedUrl = new url.URL(req.url!, `http://localhost:${port}`);
+
+          if (parsedUrl.pathname !== '/callback') {
+            res.writeHead(404);
+            res.end('Not found');
+            return;
+          }
+
+          const code = parsedUrl.searchParams.get('code');
+          const returnedState = parsedUrl.searchParams.get('state');
+          const error = parsedUrl.searchParams.get('error');
+
+          if (error) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(
+              '<html><body><h1>Authentication Failed</h1><p>You can close this window.</p></body></html>',
+            );
+            reject(new Error(`Claude OAuth error: ${error}`));
+            server.close();
+            return;
+          }
+
+          if (returnedState !== state) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(
+              '<html><body><h1>Authentication Failed</h1><p>State mismatch. You can close this window.</p></body></html>',
+            );
+            reject(new Error('State mismatch. Possible CSRF attack'));
+            server.close();
+            return;
+          }
+
+          if (!code) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(
+              '<html><body><h1>Authentication Failed</h1><p>No authorization code received. You can close this window.</p></body></html>',
+            );
+            reject(new Error('No authorization code received'));
+            server.close();
+            return;
+          }
+
+          // Exchange code for token
+          try {
+            const tokenResponse = await exchangeCodeForToken(
+              code,
+              redirectUri,
+              codeVerifier,
+            );
+
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(
+              '<html><body><h1>Authentication Successful!</h1><p>You can close this window and return to Enfiy Code.</p></body></html>',
+            );
+
+            resolve(tokenResponse);
+          } catch (tokenError) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(
+              '<html><body><h1>Authentication Failed</h1><p>Failed to exchange code for token. You can close this window.</p></body></html>',
+            );
+            reject(tokenError);
+          }
+
+          server.close();
+        } catch (_error) {
+          reject(_error);
+          server.close();
         }
-        
-        server.close();
-      } catch (_error) {
-        reject(_error);
-        server.close();
-      }
-    });
-    
-    server.listen(port);
-  });
+      });
+
+      server.listen(port);
+    },
+  );
 
   return {
     authUrl,
-    loginCompletePromise
+    loginCompletePromise,
   };
 }
 
 async function exchangeCodeForToken(
   code: string,
   redirectUri: string,
-  codeVerifier: string
+  codeVerifier: string,
 ): Promise<ClaudeOAuthResponse> {
   // Claude OAuth token exchange endpoint
   const tokenUrl = 'https://claude.ai/oauth/token';
-  
+
   const tokenParams = new URLSearchParams({
     grant_type: 'authorization_code',
     code,
     redirect_uri: redirectUri,
     client_id: CLAUDE_CLIENT_ID,
-    code_verifier: codeVerifier
+    code_verifier: codeVerifier,
   });
 
   const response = await fetch(tokenUrl, {
@@ -214,7 +234,7 @@ async function exchangeCodeForToken(
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: tokenParams.toString()
+    body: tokenParams.toString(),
   });
 
   if (!response.ok) {
@@ -222,7 +242,7 @@ async function exchangeCodeForToken(
     throw new Error(`Token exchange failed: ${response.status} ${errorText}`);
   }
 
-  const tokenData = await response.json() as ClaudeOAuthResponse;
+  const tokenData = (await response.json()) as ClaudeOAuthResponse;
   return tokenData;
 }
 
@@ -252,9 +272,9 @@ async function loadCachedClaudeCredentials(): Promise<ClaudeOAuthResponse | null
     const credPath = getClaudeCachedCredentialPath();
     const credsData = await fs.readFile(credPath, 'utf-8');
     const creds = JSON.parse(credsData) as ClaudeOAuthResponse;
-    
+
     // TODO: Validate token expiry and refresh if needed
-    
+
     return creds;
   } catch {
     return null;
@@ -264,7 +284,7 @@ async function loadCachedClaudeCredentials(): Promise<ClaudeOAuthResponse | null
 async function cacheClaudeCredentials(credentials: ClaudeOAuthResponse) {
   const filePath = getClaudeCachedCredentialPath();
   await fs.mkdir(path.dirname(filePath), { recursive: true });
-  
+
   const credString = JSON.stringify(credentials, null, 2);
   await fs.writeFile(filePath, credString);
 }

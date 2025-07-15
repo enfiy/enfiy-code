@@ -10,7 +10,12 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
-import { shortenPath, tildeifyPath, tokenLimit, ProviderType } from '@enfiy/core';
+import {
+  shortenPath,
+  tildeifyPath,
+  tokenLimit,
+  ProviderType,
+} from '@enfiy/core';
 import { ConsoleSummaryDisplay } from './ConsoleSummaryDisplay.js';
 import process from 'node:process';
 import { MemoryUsageDisplay } from './MemoryUsageDisplay.js';
@@ -51,7 +56,7 @@ export const Footer: React.FC<FooterProps> = ({
   // Get authentication type for current model
   const getAuthType = (modelName: string): string => {
     if (!modelName) return '';
-    
+
     let provider: ProviderType | null = null;
     if (modelName.includes('claude') || modelName.includes('anthropic')) {
       provider = ProviderType.ANTHROPIC;
@@ -60,19 +65,19 @@ export const Footer: React.FC<FooterProps> = ({
     } else if (modelName.includes('gpt')) {
       provider = ProviderType.OPENAI;
     }
-    
+
     if (!provider) return '';
-    
+
     const apiKey = getApiKey(provider);
     if (!apiKey) return '';
-    
+
     // Check for subscription authentication
     if (apiKey.includes('CLAUDE_PRO_OAUTH')) return ' (Pro)';
     if (apiKey.includes('CLAUDE_MAX_OAUTH')) return ' (Max)';
     if (apiKey.includes('CLAUDE_PRO_SUBSCRIPTION')) return ' (Pro)';
     if (apiKey.includes('CLAUDE_MAX_SUBSCRIPTION')) return ' (Max)';
     if (apiKey === 'OAUTH_AUTHENTICATED') return ' (OAuth)';
-    
+
     // Regular API key
     return ' (API)';
   };
@@ -81,12 +86,25 @@ export const Footer: React.FC<FooterProps> = ({
   const authType = getAuthType(model);
   const modelDisplay = !model ? (
     <Text color={Colors.Gray}>AI not selected</Text>
-  ) : model.includes('llama') || model.includes('phi') || model.includes('qwen') || model.includes('deepseek') ? (
+  ) : model.includes('llama') ||
+    model.includes('phi') ||
+    model.includes('qwen') ||
+    model.includes('deepseek') ? (
     <Text color={Colors.AccentBlue}>[Local] {model}</Text>
-  ) : model.includes('gemini') || model.includes('gpt') || model.includes('claude') || model.includes('anthropic') || model.includes('mistral') ? (
-    <Text color={Colors.AccentBlue}>[Cloud] {model}{authType}</Text>
+  ) : model.includes('gemini') ||
+    model.includes('gpt') ||
+    model.includes('claude') ||
+    model.includes('anthropic') ||
+    model.includes('mistral') ? (
+    <Text color={Colors.AccentBlue}>
+      [Cloud] {model}
+      {authType}
+    </Text>
   ) : (
-    <Text color={Colors.AccentBlue}>{model}{authType}</Text>
+    <Text color={Colors.AccentBlue}>
+      {model}
+      {authType}
+    </Text>
   );
 
   return (
@@ -101,9 +119,7 @@ export const Footer: React.FC<FooterProps> = ({
               {branchName && <Text color={Colors.Gray}> ({branchName}*)</Text>}
             </Text>
             {debugMode && (
-              <Text color={Colors.AccentRed}>
-                {' '}{debugMessage || '--debug'}
-              </Text>
+              <Text color={Colors.AccentRed}> {debugMessage || '--debug'}</Text>
             )}
 
             {/* Additional info on same line */}
@@ -142,7 +158,8 @@ export const Footer: React.FC<FooterProps> = ({
         <Box alignItems="center">
           {modelDisplay}
           <Text color={Colors.Gray}>
-            {' '}({((1 - percentage) * 100).toFixed(0)}% context left)
+            {' '}
+            ({((1 - percentage) * 100).toFixed(0)}% context left)
           </Text>
         </Box>
       </Box>
@@ -158,7 +175,9 @@ export const Footer: React.FC<FooterProps> = ({
             ) : process.env.SANDBOX === 'sandbox-exec' ? (
               <Text color={Colors.AccentYellow}>
                 MacOS Seatbelt{' '}
-                <Text color={Colors.Gray}>({process.env.SEATBELT_PROFILE})</Text>
+                <Text color={Colors.Gray}>
+                  ({process.env.SEATBELT_PROFILE})
+                </Text>
               </Text>
             ) : (
               <Text color={Colors.AccentYellow}>

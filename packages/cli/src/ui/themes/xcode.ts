@@ -152,5 +152,3 @@ export const XCode: Theme = new Theme(
   },
   xcodeColors,
 );
-
-

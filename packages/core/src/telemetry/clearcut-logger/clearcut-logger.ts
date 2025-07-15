@@ -39,8 +39,10 @@ export interface LogResponse {
 export class ClearcutLogger {
   private static instance: ClearcutLogger;
   private config?: Config;
-   
-  private readonly events: Array<Array<{ event_time_ms: number; source_extension_json: string; }>> = [];
+
+  private readonly events: Array<
+    Array<{ event_time_ms: number; source_extension_json: string }>
+  > = [];
   private last_flush_time: number = Date.now();
   private flush_interval_ms: number = 1000 * 60; // Wait at least a minute before flushing events.
 

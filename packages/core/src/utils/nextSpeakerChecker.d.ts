@@ -7,7 +7,11 @@
 import { EnfiyClient } from '../core/client.js';
 import { EnfiyChat } from '../core/enfiyChat.js';
 export interface NextSpeakerResponse {
-    reasoning: string;
-    next_speaker: 'user' | 'model';
+  reasoning: string;
+  next_speaker: 'user' | 'model';
 }
-export declare function checkNextSpeaker(chat: EnfiyChat, enfiyClient: EnfiyClient, abortSignal: AbortSignal): Promise<NextSpeakerResponse | null>;
+export declare function checkNextSpeaker(
+  chat: EnfiyChat,
+  enfiyClient: EnfiyClient,
+  abortSignal: AbortSignal,
+): Promise<NextSpeakerResponse | null>;

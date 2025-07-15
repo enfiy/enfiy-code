@@ -22,14 +22,15 @@ export function isTelemetrySdkInitialized(): boolean {
   return telemetryInitialized;
 }
 
-
 export function initializeTelemetry(config: Config): void {
   if (telemetryInitialized || !config.getTelemetryEnabled()) {
     return;
   }
 
   // Temporarily disable telemetry initialization due to dependency conflicts
-  console.warn('Telemetry is temporarily disabled due to OpenTelemetry dependency conflicts');
+  console.warn(
+    'Telemetry is temporarily disabled due to OpenTelemetry dependency conflicts',
+  );
   telemetryInitialized = true;
   return;
 
@@ -97,7 +98,7 @@ export async function shutdownTelemetry(): Promise<void> {
   if (!telemetryInitialized) {
     return;
   }
-  
+
   try {
     ClearcutLogger.getInstance()?.shutdown();
     if (sdk) {

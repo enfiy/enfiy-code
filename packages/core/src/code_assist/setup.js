@@ -4,12 +4,14 @@
  * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-import { UserTierId, } from './types.js';
+import { UserTierId } from './types.js';
 import { CodeAssistServer } from './server.js';
 export class ProjectIdRequiredError extends Error {
-    constructor() {
-        super('This account requires setting the GOOGLE_CLOUD_PROJECT env var. See https://goo.gle/enfiy-cli-auth-docs#workspace-gca');
-    }
+  constructor() {
+    super(
+      'This account requires setting the GOOGLE_CLOUD_PROJECT env var. See https://goo.gle/enfiy-cli-auth-docs#workspace-gca',
+    );
+  }
 }
 /**
  *
@@ -17,52 +19,52 @@ export class ProjectIdRequiredError extends Error {
  * @returns the user's actual project id
  */
 export async function setupUser(authClient) {
-    let projectId = process.env.GOOGLE_CLOUD_PROJECT;
-    const caServer = new CodeAssistServer(authClient, projectId);
-    const clientMetadata = {
-        ideType: 'IDE_UNSPECIFIED',
-        platform: 'PLATFORM_UNSPECIFIED',
-        pluginType: 'GEMINI',
-        duetProject: projectId,
-    };
-    const loadRes = await caServer.loadCodeAssist({
-        cloudaicompanionProject: projectId,
-        metadata: clientMetadata,
-    });
-    if (!projectId && loadRes.cloudaicompanionProject) {
-        projectId = loadRes.cloudaicompanionProject;
-    }
-    const tier = getOnboardTier(loadRes);
-    if (tier.userDefinedCloudaicompanionProject && !projectId) {
-        throw new ProjectIdRequiredError();
-    }
-    const onboardReq = {
-        tierId: tier.id,
-        cloudaicompanionProject: projectId,
-        metadata: clientMetadata,
-    };
-    // Poll onboardUser until long running operation is complete.
-    let lroRes = await caServer.onboardUser(onboardReq);
-    while (!lroRes.done) {
-        await new Promise((f) => setTimeout(f, 5000));
-        lroRes = await caServer.onboardUser(onboardReq);
-    }
-    return lroRes.response?.cloudaicompanionProject?.id || '';
+  let projectId = process.env.GOOGLE_CLOUD_PROJECT;
+  const caServer = new CodeAssistServer(authClient, projectId);
+  const clientMetadata = {
+    ideType: 'IDE_UNSPECIFIED',
+    platform: 'PLATFORM_UNSPECIFIED',
+    pluginType: 'GEMINI',
+    duetProject: projectId,
+  };
+  const loadRes = await caServer.loadCodeAssist({
+    cloudaicompanionProject: projectId,
+    metadata: clientMetadata,
+  });
+  if (!projectId && loadRes.cloudaicompanionProject) {
+    projectId = loadRes.cloudaicompanionProject;
+  }
+  const tier = getOnboardTier(loadRes);
+  if (tier.userDefinedCloudaicompanionProject && !projectId) {
+    throw new ProjectIdRequiredError();
+  }
+  const onboardReq = {
+    tierId: tier.id,
+    cloudaicompanionProject: projectId,
+    metadata: clientMetadata,
+  };
+  // Poll onboardUser until long running operation is complete.
+  let lroRes = await caServer.onboardUser(onboardReq);
+  while (!lroRes.done) {
+    await new Promise((f) => setTimeout(f, 5000));
+    lroRes = await caServer.onboardUser(onboardReq);
+  }
+  return lroRes.response?.cloudaicompanionProject?.id || '';
 }
 function getOnboardTier(res) {
-    if (res.currentTier) {
-        return res.currentTier;
+  if (res.currentTier) {
+    return res.currentTier;
+  }
+  for (const tier of res.allowedTiers || []) {
+    if (tier.isDefault) {
+      return tier;
     }
-    for (const tier of res.allowedTiers || []) {
-        if (tier.isDefault) {
-            return tier;
-        }
-    }
-    return {
-        name: '',
-        description: '',
-        id: UserTierId.LEGACY,
-        userDefinedCloudaicompanionProject: true,
-    };
+  }
+  return {
+    name: '',
+    description: '',
+    id: UserTierId.LEGACY,
+    userDefinedCloudaicompanionProject: true,
+  };
 }
 //# sourceMappingURL=setup.js.map

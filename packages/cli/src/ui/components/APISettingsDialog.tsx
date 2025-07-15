@@ -11,10 +11,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
 import { ProviderType } from '@enfiy/core';
-import { 
-  hasStoredCredentials,
-  getApiKey
-} from '../../utils/secureStorage.js';
+import { hasStoredCredentials, getApiKey } from '../../utils/secureStorage.js';
 
 export interface APISettingsDialogProps {
   onManageProvider: (provider: ProviderType) => void;
@@ -35,7 +32,9 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
   terminalWidth,
 }) => {
   const [highlightedIndex, setHighlightedIndex] = useState(0);
-  const [configuredProviders, setConfiguredProviders] = useState<ConfiguredProvider[]>([]);
+  const [configuredProviders, setConfiguredProviders] = useState<
+    ConfiguredProvider[]
+  >([]);
 
   // Get provider display name
   const getProviderDisplayName = (provider: ProviderType): string => {
@@ -59,7 +58,7 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
   const getMaskedKey = (provider: ProviderType): string => {
     const key = getApiKey(provider);
     if (!key) return 'Not configured';
-    
+
     // Handle special authentication types
     if (key === 'OAUTH_AUTHENTICATED') {
       return 'Google Account';
@@ -67,21 +66,25 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
     if (key === 'CLAUDE_MAX_AUTHENTICATED') {
       return 'Claude Max Plan';
     }
-    
+
     if (key.length <= 8) {
       return '•'.repeat(key.length);
     }
-    
+
     // Calculate middle dots to keep total under 25 chars
     const prefixLength = 3;
     const suffixLength = 3;
     const maxTotalLength = 25;
     const maxMiddleDots = maxTotalLength - prefixLength - suffixLength;
-    
+
     const actualMiddleLength = key.length - prefixLength - suffixLength;
     const middleDots = Math.min(actualMiddleLength, maxMiddleDots);
-    
-    return key.slice(0, prefixLength) + '•'.repeat(middleDots) + key.slice(-suffixLength);
+
+    return (
+      key.slice(0, prefixLength) +
+      '•'.repeat(middleDots) +
+      key.slice(-suffixLength)
+    );
   };
 
   // Load configured providers
@@ -91,14 +94,14 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
       ProviderType.OPENAI,
       ProviderType.GEMINI,
       ProviderType.MISTRAL,
-      ProviderType.HUGGINGFACE
+      ProviderType.HUGGINGFACE,
     ];
 
-    const providers: ConfiguredProvider[] = cloudProviders.map(provider => ({
+    const providers: ConfiguredProvider[] = cloudProviders.map((provider) => ({
       type: provider,
       displayName: getProviderDisplayName(provider),
       isConfigured: hasStoredCredentials(provider),
-      maskedKey: getMaskedKey(provider)
+      maskedKey: getMaskedKey(provider),
     }));
 
     setConfiguredProviders(providers);
@@ -108,37 +111,42 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
     loadConfiguredProviders();
   }, [loadConfiguredProviders]);
 
-  const handleInput = useCallback((input: string, key: Record<string, boolean>) => {
-    if (key.escape || (key.ctrl && input === 'c')) {
-      onCancel();
-      return;
-    }
-
-    if (key.upArrow) {
-      setHighlightedIndex(prev => Math.max(0, prev - 1));
-      return;
-    }
-
-    if (key.downArrow) {
-      setHighlightedIndex(prev => Math.min(configuredProviders.length, prev + 1));
-      return;
-    }
-
-    if (key.return) {
-      if (highlightedIndex === configuredProviders.length) {
-        // Back option selected
+  const handleInput = useCallback(
+    (input: string, key: Record<string, boolean>) => {
+      if (key.escape || (key.ctrl && input === 'c')) {
         onCancel();
-      } else {
-        // Provider selected
-        const selectedProvider = configuredProviders[highlightedIndex];
-        onManageProvider(selectedProvider.type);
+        return;
       }
-    }
 
-    if (key.leftArrow || key.backspace) {
-      onCancel();
-    }
-  }, [highlightedIndex, configuredProviders, onCancel, onManageProvider]);
+      if (key.upArrow) {
+        setHighlightedIndex((prev) => Math.max(0, prev - 1));
+        return;
+      }
+
+      if (key.downArrow) {
+        setHighlightedIndex((prev) =>
+          Math.min(configuredProviders.length, prev + 1),
+        );
+        return;
+      }
+
+      if (key.return) {
+        if (highlightedIndex === configuredProviders.length) {
+          // Back option selected
+          onCancel();
+        } else {
+          // Provider selected
+          const selectedProvider = configuredProviders[highlightedIndex];
+          onManageProvider(selectedProvider.type);
+        }
+      }
+
+      if (key.leftArrow || key.backspace) {
+        onCancel();
+      }
+    },
+    [highlightedIndex, configuredProviders, onCancel, onManageProvider],
+  );
 
   useInput(handleInput);
 
@@ -158,14 +166,31 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
         {configuredProviders.map((provider, index) => (
           <Box key={provider.type} paddingLeft={1}>
             <Text
-              color={index === highlightedIndex ? Colors.AccentBlue : Colors.Foreground}
+              color={
+                index === highlightedIndex
+                  ? Colors.AccentBlue
+                  : Colors.Foreground
+              }
               bold={index === highlightedIndex}
             >
               {index === highlightedIndex ? '> ' : '  '}
-              <Text color={provider.isConfigured ? Colors.AccentGreen : Colors.Gray}>
+              <Text
+                color={provider.isConfigured ? Colors.AccentGreen : Colors.Gray}
+              >
                 {provider.isConfigured ? '•' : '◦'}
+              </Text>{' '}
+              {provider.displayName.padEnd(18)}
+              <Text
+                color={
+                  index === highlightedIndex
+                    ? '{Colors.Comment}'
+                    : '{Colors.Gray}'
+                }
+              >
+                {provider.isConfigured
+                  ? `${provider.maskedKey}`
+                  : 'Setup API Key'}
               </Text>
-              {' '}{provider.displayName.padEnd(18)}<Text color={index === highlightedIndex ? "{Colors.Comment}" : "{Colors.Gray}"}>{provider.isConfigured ? `${provider.maskedKey}` : 'Setup API Key'}</Text>
             </Text>
           </Box>
         ))}
@@ -173,10 +198,15 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
         {/* Back option */}
         <Box paddingLeft={1}>
           <Text
-            color={configuredProviders.length === highlightedIndex ? Colors.AccentBlue : Colors.Gray}
+            color={
+              configuredProviders.length === highlightedIndex
+                ? Colors.AccentBlue
+                : Colors.Gray
+            }
             bold={configuredProviders.length === highlightedIndex}
           >
-            {configuredProviders.length === highlightedIndex ? '> ' : '  '}← Back
+            {configuredProviders.length === highlightedIndex ? '> ' : '  '}←
+            Back
           </Text>
         </Box>
       </Box>

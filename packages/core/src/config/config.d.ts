@@ -13,159 +13,175 @@ import { GitService } from '../services/gitService.js';
 import { TelemetryTarget } from '../telemetry/index.js';
 import { DEFAULT_ENFIY_FLASH_MODEL } from './models.js';
 export declare enum ApprovalMode {
-    DEFAULT = "default",
-    AUTO_EDIT = "autoEdit",
-    YOLO = "yolo"
+  DEFAULT = 'default',
+  AUTO_EDIT = 'autoEdit',
+  YOLO = 'yolo',
 }
 export interface AccessibilitySettings {
-    disableLoadingPhrases?: boolean;
+  disableLoadingPhrases?: boolean;
 }
 export interface BugCommandSettings {
-    urlTemplate: string;
+  urlTemplate: string;
 }
 export interface TelemetrySettings {
-    enabled?: boolean;
-    target?: TelemetryTarget;
-    otlpEndpoint?: string;
-    logPrompts?: boolean;
+  enabled?: boolean;
+  target?: TelemetryTarget;
+  otlpEndpoint?: string;
+  logPrompts?: boolean;
 }
 export declare class MCPServerConfig {
-    readonly command?: string | undefined;
-    readonly args?: string[] | undefined;
-    readonly env?: Record<string, string> | undefined;
-    readonly cwd?: string | undefined;
-    readonly url?: string | undefined;
-    readonly httpUrl?: string | undefined;
-    readonly tcp?: string | undefined;
-    readonly timeout?: number | undefined;
-    readonly trust?: boolean | undefined;
-    readonly description?: string | undefined;
-    constructor(command?: string | undefined, args?: string[] | undefined, env?: Record<string, string> | undefined, cwd?: string | undefined, url?: string | undefined, httpUrl?: string | undefined, tcp?: string | undefined, timeout?: number | undefined, trust?: boolean | undefined, description?: string | undefined);
+  readonly command?: string | undefined;
+  readonly args?: string[] | undefined;
+  readonly env?: Record<string, string> | undefined;
+  readonly cwd?: string | undefined;
+  readonly url?: string | undefined;
+  readonly httpUrl?: string | undefined;
+  readonly tcp?: string | undefined;
+  readonly timeout?: number | undefined;
+  readonly trust?: boolean | undefined;
+  readonly description?: string | undefined;
+  constructor(
+    command?: string | undefined,
+    args?: string[] | undefined,
+    env?: Record<string, string> | undefined,
+    cwd?: string | undefined,
+    url?: string | undefined,
+    httpUrl?: string | undefined,
+    tcp?: string | undefined,
+    timeout?: number | undefined,
+    trust?: boolean | undefined,
+    description?: string | undefined,
+  );
 }
 export interface SandboxConfig {
-    command: 'docker' | 'podman' | 'sandbox-exec';
-    image: string;
+  command: 'docker' | 'podman' | 'sandbox-exec';
+  image: string;
 }
-export type FlashFallbackHandler = (currentModel: string, fallbackModel: string) => Promise<boolean>;
+export type FlashFallbackHandler = (
+  currentModel: string,
+  fallbackModel: string,
+) => Promise<boolean>;
 export interface ConfigParameters {
-    sessionId: string;
-    embeddingModel?: string;
-    sandbox?: SandboxConfig;
-    targetDir: string;
-    debugMode: boolean;
-    question?: string;
-    fullContext?: boolean;
-    coreTools?: string[];
-    excludeTools?: string[];
-    toolDiscoveryCommand?: string;
-    toolCallCommand?: string;
-    mcpServerCommand?: string;
-    mcpServers?: Record<string, MCPServerConfig>;
-    userMemory?: string;
-    enfiyMdFileCount?: number;
-    approvalMode?: ApprovalMode;
-    showMemoryUsage?: boolean;
-    contextFileName?: string | string[];
-    accessibility?: AccessibilitySettings;
-    telemetry?: TelemetrySettings;
-    usageStatisticsEnabled?: boolean;
-    fileFiltering?: {
-        respectGitIgnore?: boolean;
-        enableRecursiveFileSearch?: boolean;
-    };
-    checkpointing?: boolean;
-    proxy?: string;
-    cwd: string;
-    fileDiscoveryService?: FileDiscoveryService;
-    bugCommand?: BugCommandSettings;
-    model: string;
-    extensionContextFilePaths?: string[];
-    providerConfig?: ProviderConfig;
+  sessionId: string;
+  embeddingModel?: string;
+  sandbox?: SandboxConfig;
+  targetDir: string;
+  debugMode: boolean;
+  question?: string;
+  fullContext?: boolean;
+  coreTools?: string[];
+  excludeTools?: string[];
+  toolDiscoveryCommand?: string;
+  toolCallCommand?: string;
+  mcpServerCommand?: string;
+  mcpServers?: Record<string, MCPServerConfig>;
+  userMemory?: string;
+  enfiyMdFileCount?: number;
+  approvalMode?: ApprovalMode;
+  showMemoryUsage?: boolean;
+  contextFileName?: string | string[];
+  accessibility?: AccessibilitySettings;
+  telemetry?: TelemetrySettings;
+  usageStatisticsEnabled?: boolean;
+  fileFiltering?: {
+    respectGitIgnore?: boolean;
+    enableRecursiveFileSearch?: boolean;
+  };
+  checkpointing?: boolean;
+  proxy?: string;
+  cwd: string;
+  fileDiscoveryService?: FileDiscoveryService;
+  bugCommand?: BugCommandSettings;
+  model: string;
+  extensionContextFilePaths?: string[];
+  providerConfig?: ProviderConfig;
 }
 export declare class Config {
-    private toolRegistry;
-    private readonly sessionId;
-    private contentGeneratorConfig;
-    private readonly embeddingModel;
-    private readonly sandbox;
-    private readonly targetDir;
-    private readonly debugMode;
-    private readonly question;
-    private readonly fullContext;
-    private readonly coreTools;
-    private readonly excludeTools;
-    private readonly toolDiscoveryCommand;
-    private readonly toolCallCommand;
-    private readonly mcpServerCommand;
-    private readonly mcpServers;
-    private userMemory;
-    private enfiyMdFileCount;
-    private approvalMode;
-    private readonly showMemoryUsage;
-    private readonly accessibility;
-    private readonly telemetrySettings;
-    private readonly usageStatisticsEnabled;
-    private enfiyClient;
-    private readonly fileFiltering;
-    private fileDiscoveryService;
-    private gitService;
-    private readonly checkpointing;
-    private readonly proxy;
-    private readonly cwd;
-    private readonly bugCommand;
-    private readonly model;
-    private readonly extensionContextFilePaths;
-    private modelSwitchedDuringSession;
-    flashFallbackHandler?: FlashFallbackHandler;
-    constructor(params: ConfigParameters);
-    refreshAuth(authMethod: AuthType): Promise<void>;
-    getSessionId(): string;
-    getContentGeneratorConfig(): ContentGeneratorConfig;
-    getModel(): string;
-    setModel(newModel: string): void;
-    isModelSwitchedDuringSession(): boolean;
-    resetModelToDefault(): void;
-    setFlashFallbackHandler(handler: FlashFallbackHandler): void;
-    getEmbeddingModel(): string;
-    getSandbox(): SandboxConfig | undefined;
-    getTargetDir(): string;
-    getProjectRoot(): string;
-    getToolRegistry(): Promise<ToolRegistry>;
-    getDebugMode(): boolean;
-    getQuestion(): string | undefined;
-    getFullContext(): boolean;
-    getCoreTools(): string[] | undefined;
-    getExcludeTools(): string[] | undefined;
-    getToolDiscoveryCommand(): string | undefined;
-    getToolCallCommand(): string | undefined;
-    getMcpServerCommand(): string | undefined;
-    getMcpServers(): Record<string, MCPServerConfig> | undefined;
-    getUserMemory(): string;
-    setUserMemory(newUserMemory: string): void;
-    getEnfiyMdFileCount(): number;
-    setEnfiyMdFileCount(count: number): void;
-    getApprovalMode(): ApprovalMode;
-    setApprovalMode(mode: ApprovalMode): void;
-    getShowMemoryUsage(): boolean;
-    getAccessibility(): AccessibilitySettings;
-    getTelemetryEnabled(): boolean;
-    getTelemetryLogPromptsEnabled(): boolean;
-    getTelemetryOtlpEndpoint(): string;
-    getTelemetryTarget(): TelemetryTarget;
-    getEnfiyClient(): EnfiyClient;
-    reinitializeEnfiyClient(): Promise<void>;
-    getEnfiyDir(): string;
-    getProjectTempDir(): string;
-    getEnableRecursiveFileSearch(): boolean;
-    getFileFilteringRespectGitIgnore(): boolean;
-    getCheckpointingEnabled(): boolean;
-    getProxy(): string | undefined;
-    getWorkingDir(): string;
-    getBugCommand(): BugCommandSettings | undefined;
-    getFileService(): FileDiscoveryService;
-    getUsageStatisticsEnabled(): boolean;
-    getExtensionContextFilePaths(): string[];
-    getGitService(): Promise<GitService>;
+  private toolRegistry;
+  private readonly sessionId;
+  private contentGeneratorConfig;
+  private readonly embeddingModel;
+  private readonly sandbox;
+  private readonly targetDir;
+  private readonly debugMode;
+  private readonly question;
+  private readonly fullContext;
+  private readonly coreTools;
+  private readonly excludeTools;
+  private readonly toolDiscoveryCommand;
+  private readonly toolCallCommand;
+  private readonly mcpServerCommand;
+  private readonly mcpServers;
+  private userMemory;
+  private enfiyMdFileCount;
+  private approvalMode;
+  private readonly showMemoryUsage;
+  private readonly accessibility;
+  private readonly telemetrySettings;
+  private readonly usageStatisticsEnabled;
+  private enfiyClient;
+  private readonly fileFiltering;
+  private fileDiscoveryService;
+  private gitService;
+  private readonly checkpointing;
+  private readonly proxy;
+  private readonly cwd;
+  private readonly bugCommand;
+  private readonly model;
+  private readonly extensionContextFilePaths;
+  private modelSwitchedDuringSession;
+  flashFallbackHandler?: FlashFallbackHandler;
+  constructor(params: ConfigParameters);
+  refreshAuth(authMethod: AuthType): Promise<void>;
+  getSessionId(): string;
+  getContentGeneratorConfig(): ContentGeneratorConfig;
+  getModel(): string;
+  setModel(newModel: string): void;
+  isModelSwitchedDuringSession(): boolean;
+  resetModelToDefault(): void;
+  setFlashFallbackHandler(handler: FlashFallbackHandler): void;
+  getEmbeddingModel(): string;
+  getSandbox(): SandboxConfig | undefined;
+  getTargetDir(): string;
+  getProjectRoot(): string;
+  getToolRegistry(): Promise<ToolRegistry>;
+  getDebugMode(): boolean;
+  getQuestion(): string | undefined;
+  getFullContext(): boolean;
+  getCoreTools(): string[] | undefined;
+  getExcludeTools(): string[] | undefined;
+  getToolDiscoveryCommand(): string | undefined;
+  getToolCallCommand(): string | undefined;
+  getMcpServerCommand(): string | undefined;
+  getMcpServers(): Record<string, MCPServerConfig> | undefined;
+  getUserMemory(): string;
+  setUserMemory(newUserMemory: string): void;
+  getEnfiyMdFileCount(): number;
+  setEnfiyMdFileCount(count: number): void;
+  getApprovalMode(): ApprovalMode;
+  setApprovalMode(mode: ApprovalMode): void;
+  getShowMemoryUsage(): boolean;
+  getAccessibility(): AccessibilitySettings;
+  getTelemetryEnabled(): boolean;
+  getTelemetryLogPromptsEnabled(): boolean;
+  getTelemetryOtlpEndpoint(): string;
+  getTelemetryTarget(): TelemetryTarget;
+  getEnfiyClient(): EnfiyClient;
+  reinitializeEnfiyClient(): Promise<void>;
+  getEnfiyDir(): string;
+  getProjectTempDir(): string;
+  getEnableRecursiveFileSearch(): boolean;
+  getFileFilteringRespectGitIgnore(): boolean;
+  getCheckpointingEnabled(): boolean;
+  getProxy(): string | undefined;
+  getWorkingDir(): string;
+  getBugCommand(): BugCommandSettings | undefined;
+  getFileService(): FileDiscoveryService;
+  getUsageStatisticsEnabled(): boolean;
+  getExtensionContextFilePaths(): string[];
+  getGitService(): Promise<GitService>;
 }
-export declare function createToolRegistry(config: Config): Promise<ToolRegistry>;
+export declare function createToolRegistry(
+  config: Config,
+): Promise<ToolRegistry>;
 export { DEFAULT_ENFIY_FLASH_MODEL };

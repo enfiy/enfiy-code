@@ -5,11 +5,13 @@ This guide covers different ways to deploy and run Enfiy Code in various environ
 ## Installation Methods
 
 ### NPM Installation (Recommended)
+
 ```bash
 npm install -g @enfiy/enfiy-code
 ```
 
 ### From Source
+
 ```bash
 git clone https://github.com/your-org/enfiy-code.git
 cd enfiy-code
@@ -21,12 +23,14 @@ npm link
 ## System Requirements
 
 ### Minimum Requirements
+
 - **Node.js**: 18.0.0 or higher
 - **RAM**: 2GB available memory
 - **Storage**: 1GB free space
 - **Platform**: Windows, macOS, Linux
 
 ### Recommended Requirements
+
 - **Node.js**: 20.0.0 or higher
 - **RAM**: 4GB available memory
 - **Storage**: 5GB free space (for local models)
@@ -35,6 +39,7 @@ npm link
 ## Deployment Scenarios
 
 ### Local Development Environment
+
 ```bash
 # Install dependencies
 pnpm install
@@ -47,6 +52,7 @@ pnpm start
 ```
 
 ### CI/CD Integration
+
 ```yaml
 # Example GitHub Actions workflow
 name: Enfiy Code CI
@@ -67,6 +73,7 @@ jobs:
 ```
 
 ### Docker Deployment
+
 ```dockerfile
 FROM node:20-alpine
 
@@ -85,6 +92,7 @@ CMD ["node", "dist/index.js"]
 ```
 
 ### Server Deployment
+
 For server environments without interactive terminal:
 
 ```bash
@@ -100,6 +108,7 @@ echo "Help me write a function" | enfiy-code
 ## Configuration
 
 ### Environment Variables
+
 ```bash
 # API Keys
 export OPENAI_API_KEY=your-openai-key
@@ -119,6 +128,7 @@ export ENFIY_LOG_LEVEL=info
 ```
 
 ### Configuration Files
+
 Create `.enfiy/settings.json` in your home directory:
 
 ```json
@@ -133,24 +143,28 @@ Create `.enfiy/settings.json` in your home directory:
 ## Production Considerations
 
 ### Security
+
 - Store API keys securely using environment variables or secret managers
 - Use encrypted storage for credentials
 - Regularly rotate API keys
 - Limit API key permissions where possible
 
 ### Performance
+
 - Use local models (Ollama) for better latency and privacy
 - Configure appropriate token limits
 - Monitor API usage and costs
 - Use caching where appropriate
 
 ### Monitoring
+
 - Enable telemetry for usage tracking
 - Monitor API response times
 - Set up alerts for API failures
 - Track resource usage
 
 ### Scaling
+
 - Use load balancers for multiple instances
 - Configure rate limiting
 - Implement request queuing for high volume
@@ -161,6 +175,7 @@ Create `.enfiy/settings.json` in your home directory:
 ### Common Issues
 
 **Installation fails:**
+
 ```bash
 # Clear npm cache
 npm cache clean --force
@@ -171,6 +186,7 @@ npm install -g @enfiy/enfiy-code
 ```
 
 **Build errors:**
+
 ```bash
 # Clean and rebuild
 pnpm clean
@@ -179,6 +195,7 @@ pnpm run build
 ```
 
 **Runtime errors:**
+
 ```bash
 # Check logs
 enfiy-code --debug
@@ -190,15 +207,18 @@ enfiy-code --check-config
 ### Platform-Specific Issues
 
 **Windows:**
+
 - Use PowerShell or WSL2 for best experience
 - May need to enable long path support
 - Consider using Windows Terminal
 
 **macOS:**
+
 - May need to allow unsigned software in Security settings
 - Ensure Xcode Command Line Tools are installed
 
 **Linux:**
+
 - Some distributions may need additional dependencies
 - Check locale settings for Unicode support
 
@@ -218,12 +238,14 @@ enfiy-code --test-providers
 ## Backup and Recovery
 
 ### Important Files to Backup
+
 - `~/.enfiy/settings.json` - User configuration
 - `~/.enfiy/secure.json` - Encrypted credentials
 - `~/.enfiy/.key` - Encryption key
 - Project-specific `.enfiy/` directories
 
 ### Recovery Process
+
 1. Restore configuration files
 2. Verify API key access
 3. Test provider connectivity

@@ -29,16 +29,14 @@ export const EnfiyMessageContent: React.FC<EnfiyMessageContentProps> = ({
   isPending,
   availableTerminalHeight,
   terminalWidth,
-}) => 
+}) => (
   // Keep consistent indentation with EnfiyMessage (2 spaces for content)
-   (
-    <Box flexDirection="column" paddingLeft={2}>
-      <MarkdownDisplay
-        text={text}
-        isPending={isPending}
-        availableTerminalHeight={availableTerminalHeight}
-        terminalWidth={terminalWidth}
-      />
-    </Box>
-  )
-;
+  <Box flexDirection="column" paddingLeft={2}>
+    <MarkdownDisplay
+      text={text}
+      isPending={isPending}
+      availableTerminalHeight={availableTerminalHeight}
+      terminalWidth={terminalWidth}
+    />
+  </Box>
+);

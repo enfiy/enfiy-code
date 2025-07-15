@@ -145,5 +145,3 @@ export const GitHubDark: Theme = new Theme(
   },
   githubDarkColors,
 );
-
-

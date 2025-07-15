@@ -66,7 +66,10 @@ async function parseArguments(): Promise<CliArgs> {
       alias: 'm',
       type: 'string',
       description: 'AI model to use',
-      default: process.env.ENFIY_MODEL || process.env.GEMINI_MODEL || DEFAULT_ENFIY_MODEL,
+      default:
+        process.env.ENFIY_MODEL ||
+        process.env.GEMINI_MODEL ||
+        DEFAULT_ENFIY_MODEL,
     })
     .option('prompt', {
       alias: 'p',
@@ -114,7 +117,15 @@ async function parseArguments(): Promise<CliArgs> {
       description: 'Automatically approve all AI actions without confirmation',
       default: false,
     })
-    .group(['telemetry', 'telemetry-target', 'telemetry-otlp-endpoint', 'telemetry-log-prompts'], 'Telemetry Options:')
+    .group(
+      [
+        'telemetry',
+        'telemetry-target',
+        'telemetry-otlp-endpoint',
+        'telemetry-log-prompts',
+      ],
+      'Telemetry Options:',
+    )
     .option('telemetry', {
       type: 'boolean',
       description: 'Enable usage telemetry collection',
@@ -140,7 +151,9 @@ async function parseArguments(): Promise<CliArgs> {
     .example('$0 -m "gpt-4"', 'Use specific model')
     .example('$0 -p "Review my code"', 'Start with a prompt')
     .example('$0 --auto', 'Auto-approve all actions')
-    .epilog('For more information, visit: https://github.com/enfiy-ecosystem/enfiy-code')
+    .epilog(
+      'For more information, visit: https://github.com/enfiy-ecosystem/enfiy-code',
+    )
     .strict().argv;
 
   return argv;
@@ -176,10 +189,12 @@ export async function loadCliConfig(
   sessionId: string,
 ): Promise<Config> {
   loadEnvironment();
-  
+
   // Load API keys from secure storage into environment variables
   try {
-    const { loadApiKeysIntoEnvironment } = await import('../utils/secureStorage.js');
+    const { loadApiKeysIntoEnvironment } = await import(
+      '../utils/secureStorage.js'
+    );
     loadApiKeysIntoEnvironment();
   } catch (error) {
     console.error('❌ Could not load API keys from secure storage:', error);

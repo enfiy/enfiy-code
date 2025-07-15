@@ -19,9 +19,11 @@ This document provides a comprehensive overview of Enfiy Code's architecture, in
 ## Package Structure
 
 ### packages/cli
+
 The command-line interface and user-facing components.
 
 **Key Components:**
+
 - **UI Framework**: Ink-based React components for terminal UI
 - **Command Processor**: Handles slash commands (`/help`, `/provider`, etc.)
 - **Theme System**: Customizable color schemes and styling
@@ -29,6 +31,7 @@ The command-line interface and user-facing components.
 - **Session Management**: Chat history and context
 
 **Main Files:**
+
 - `src/enfiy.tsx` - Entry point and main application
 - `src/ui/App.tsx` - Core UI application component
 - `src/ui/components/` - Reusable UI components
@@ -36,9 +39,11 @@ The command-line interface and user-facing components.
 - `src/config/` - Configuration management
 
 ### packages/core
+
 The backend logic and AI provider integration.
 
 **Key Components:**
+
 - **Provider System**: Multi-provider AI model management
 - **Tool Registry**: File system, web, and custom tools
 - **Content Generation**: Request/response handling
@@ -46,6 +51,7 @@ The backend logic and AI provider integration.
 - **Telemetry**: Usage tracking and analytics
 
 **Main Files:**
+
 - `src/core/` - Core chat and request logic
 - `src/providers/` - AI provider implementations
 - `src/tools/` - Built-in tool implementations
@@ -55,22 +61,29 @@ The backend logic and AI provider integration.
 ## Design Patterns
 
 ### Provider Pattern
+
 Each AI provider implements a common interface:
 
 ```typescript
 interface ContentGenerator {
-  generateContent(request: GenerateContentParameters): Promise<GenerateContentResponse>;
-  generateContentStream(request: GenerateContentParameters): Promise<AsyncGenerator<GenerateContentResponse>>;
+  generateContent(
+    request: GenerateContentParameters,
+  ): Promise<GenerateContentResponse>;
+  generateContentStream(
+    request: GenerateContentParameters,
+  ): Promise<AsyncGenerator<GenerateContentResponse>>;
   listModels(): Promise<string[]>;
 }
 ```
 
 **Benefits:**
+
 - Easy to add new providers
 - Consistent behavior across providers
 - Seamless provider switching
 
 ### Plugin Architecture
+
 Tools are implemented as plugins:
 
 ```typescript
@@ -83,6 +96,7 @@ interface Tool {
 ```
 
 **Built-in Tools:**
+
 - File system operations (read, write, edit)
 - Shell command execution
 - Web fetching and searching
@@ -90,6 +104,7 @@ interface Tool {
 - MCP (Model Context Protocol) integration
 
 ### Streaming Pattern
+
 Real-time response streaming for better UX:
 
 ```typescript
@@ -104,6 +119,7 @@ async function* generateContentStream(): AsyncGenerator<GenerateContentResponse>
 ## Data Flow
 
 ### Request Flow
+
 1. **User Input** → CLI captures input
 2. **Command Processing** → Parse commands and content
 3. **Provider Selection** → Route to appropriate AI provider
@@ -113,6 +129,7 @@ async function* generateContentStream(): AsyncGenerator<GenerateContentResponse>
 7. **Post-processing** → Handle tool calls, format output
 
 ### Configuration Flow
+
 1. **Settings Discovery** → Look for config files
 2. **Environment Variables** → Load from environment
 3. **User Preferences** → Apply user customizations
@@ -122,6 +139,7 @@ async function* generateContentStream(): AsyncGenerator<GenerateContentResponse>
 ## Security Architecture
 
 ### API Key Management
+
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   User Input    │───▶│   Encryption    │───▶│ Secure Storage  │
@@ -132,6 +150,7 @@ async function* generateContentStream(): AsyncGenerator<GenerateContentResponse>
 ```
 
 **Security Features:**
+
 - AES-256-GCM encryption for API keys
 - Hardware random key generation
 - Restricted file permissions (0600)
@@ -139,6 +158,7 @@ async function* generateContentStream(): AsyncGenerator<GenerateContentResponse>
 - Secure memory handling
 
 ### Network Security
+
 - HTTPS-only communication
 - Certificate validation
 - Timeout handling
@@ -148,6 +168,7 @@ async function* generateContentStream(): AsyncGenerator<GenerateContentResponse>
 ## State Management
 
 ### CLI State
+
 React-based state management using Context API:
 
 ```typescript
@@ -160,6 +181,7 @@ const AppContext = createContext({
 ```
 
 ### Core State
+
 Immutable state patterns:
 
 ```typescript
@@ -174,18 +196,21 @@ interface EnfiyState {
 ## Extensibility
 
 ### Adding New Providers
+
 1. Implement `ContentGenerator` interface
 2. Register in `provider-factory.ts`
 3. Add authentication flow
 4. Update UI components
 
 ### Adding New Tools
+
 1. Implement `Tool` interface
 2. Register in `tool-registry.ts`
 3. Add parameter schemas
 4. Handle permissions
 
 ### Custom Themes
+
 1. Create theme definition
 2. Add to theme registry
 3. Implement color mappings
@@ -194,18 +219,21 @@ interface EnfiyState {
 ## Performance Considerations
 
 ### Memory Management
+
 - Streaming to avoid large buffers
 - Garbage collection optimization
 - Resource cleanup
 - Memory leak prevention
 
 ### Network Optimization
+
 - Connection pooling
 - Request batching
 - Timeout management
 - Retry logic with backoff
 
 ### UI Performance
+
 - Virtual scrolling for long outputs
 - Efficient re-rendering
 - Debounced input handling
@@ -214,23 +242,26 @@ interface EnfiyState {
 ## Testing Architecture
 
 ### Unit Tests
+
 - Jest/Vitest for core logic
 - React Testing Library for UI
 - Mock providers and tools
 - Isolated component testing
 
 ### Integration Tests
+
 - End-to-end workflows
 - Provider integration
 - File system operations
 - Configuration loading
 
 ### Testing Patterns
+
 ```typescript
 // Provider mocking
 const mockProvider = {
   generateContent: jest.fn(),
-  listModels: jest.fn()
+  listModels: jest.fn(),
 };
 
 // Tool testing
@@ -245,6 +276,7 @@ describe('FileReadTool', () => {
 ## Error Handling
 
 ### Error Categories
+
 - **Network Errors**: API failures, timeouts
 - **Authentication Errors**: Invalid keys, expired tokens
 - **Configuration Errors**: Missing settings, invalid values
@@ -252,6 +284,7 @@ describe('FileReadTool', () => {
 - **User Errors**: Invalid commands, syntax errors
 
 ### Error Recovery
+
 - Graceful degradation
 - Automatic retries
 - Fallback providers
@@ -261,18 +294,21 @@ describe('FileReadTool', () => {
 ## Monitoring and Observability
 
 ### Telemetry
+
 - Usage metrics
 - Performance data
 - Error tracking
 - Feature adoption
 
 ### Logging
+
 - Structured logging
 - Log levels (debug, info, warn, error)
 - Sensitive data filtering
 - Configurable outputs
 
 ### Health Checks
+
 - Provider connectivity
 - Tool availability
 - Configuration validity

@@ -304,19 +304,19 @@ export async function processSingleFileContent(
 export async function readFileWithCache(filePath: string): Promise<string> {
   const now = Date.now();
   const cached = fileCache.get(filePath);
-  
-  if (cached && (now - cached.mtime) < CACHE_TTL) {
+
+  if (cached && now - cached.mtime < CACHE_TTL) {
     return cached.content;
   }
-  
+
   try {
     const [content, _stats] = await Promise.all([
       fsAsync.readFile(filePath, 'utf-8'),
-      fsAsync.stat(filePath)
+      fsAsync.stat(filePath),
     ]);
-    
+
     fileCache.set(filePath, { content, mtime: now });
-    
+
     // Clean up old cache entries periodically
     if (fileCache.size > 100) {
       const cutoff = now - CACHE_TTL;
@@ -326,7 +326,7 @@ export async function readFileWithCache(filePath: string): Promise<string> {
         }
       }
     }
-    
+
     return content;
   } catch (error) {
     throw new Error(`Error reading file ${filePath}: ${error}`);
@@ -344,13 +344,13 @@ export async function isBinaryFileAsync(filePath: string): Promise<boolean> {
       if (stats.size === 0) {
         return false; // Empty file is not considered binary
       }
-      
+
       const bufferSize = Math.min(4096, stats.size);
       const buffer = Buffer.alloc(bufferSize);
       const { bytesRead } = await fileHandle.read(buffer, 0, bufferSize, 0);
-      
+
       if (bytesRead === 0) return false;
-      
+
       let nonPrintableCount = 0;
       for (let i = 0; i < bytesRead; i++) {
         if (buffer[i] === 0) return true; // Null byte is a strong indicator
@@ -371,10 +371,12 @@ export async function isBinaryFileAsync(filePath: string): Promise<boolean> {
 /**
  * Batch file reading for better I/O performance
  */
-export async function readMultipleFiles(filePaths: string[]): Promise<Map<string, string>> {
+export async function readMultipleFiles(
+  filePaths: string[],
+): Promise<Map<string, string>> {
   const results = new Map<string, string>();
   const batchSize = 10; // Read 10 files concurrently
-  
+
   for (let i = 0; i < filePaths.length; i += batchSize) {
     const batch = filePaths.slice(i, i + batchSize);
     const promises = batch.map(async (filePath) => {
@@ -385,7 +387,7 @@ export async function readMultipleFiles(filePaths: string[]): Promise<Map<string
         return { filePath, content: '', error: error as Error };
       }
     });
-    
+
     const batchResults = await Promise.all(promises);
     for (const result of batchResults) {
       if (!result.error) {
@@ -393,6 +395,6 @@ export async function readMultipleFiles(filePaths: string[]): Promise<Map<string
       }
     }
   }
-  
+
   return results;
 }

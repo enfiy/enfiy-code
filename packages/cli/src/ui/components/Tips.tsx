@@ -26,23 +26,36 @@ export const Tips: React.FC<TipsProps> = ({ config }) => {
       </Text>
       <Box marginTop={1} flexDirection="column">
         <Text color={Colors.Foreground}>
-          <Text bold color={Colors.AccentBlue}>/provider</Text> - {t('tipProvider')}
+          <Text bold color={Colors.AccentBlue}>
+            /provider
+          </Text>{' '}
+          - {t('tipProvider')}
         </Text>
         <Text color={Colors.Foreground}>
-          <Text bold color={Colors.AccentBlue}>/mcp</Text> - {t('tipMcp')}
+          <Text bold color={Colors.AccentBlue}>
+            /mcp
+          </Text>{' '}
+          - {t('tipMcp')}
         </Text>
         <Text color={Colors.Foreground}>
-          <Text bold color={Colors.AccentBlue}>/tool</Text> - {t('tipTool')}
+          <Text bold color={Colors.AccentBlue}>
+            /tool
+          </Text>{' '}
+          - {t('tipTool')}
         </Text>
         <Text color={Colors.Foreground}>
-          <Text bold color={Colors.AccentBlue}>/help</Text> - {t('tipHelp')}
+          <Text bold color={Colors.AccentBlue}>
+            /help
+          </Text>{' '}
+          - {t('tipHelp')}
         </Text>
         <Text color={Colors.Foreground}>
-          <Text bold color={Colors.AccentBlue}>/bug</Text> - {t('tipBug')}
+          <Text bold color={Colors.AccentBlue}>
+            /bug
+          </Text>{' '}
+          - {t('tipBug')}
         </Text>
-        <Text color={Colors.Foreground}>
-          {t('tipGeneral')}
-        </Text>
+        <Text color={Colors.Foreground}>{t('tipGeneral')}</Text>
       </Box>
     </Box>
   );

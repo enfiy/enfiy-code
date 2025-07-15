@@ -10,7 +10,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
-import { ProviderType, getLocalModels, getCloudModels, ModelInfo } from '@enfiy/core';
+import {
+  ProviderType,
+  getLocalModels,
+  getCloudModels,
+  ModelInfo,
+} from '@enfiy/core';
 import { t } from '../utils/i18n.js';
 import { hasStoredCredentials } from '../../utils/secureStorage.js';
 
@@ -28,7 +33,9 @@ export interface ProviderSelectionDialogProps {
 
 type SelectionMode = 'category' | 'provider' | 'model' | 'api-settings';
 
-export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = ({
+export const ProviderSelectionDialog: React.FC<
+  ProviderSelectionDialogProps
+> = ({
   onSelect,
   onCancel,
   onSetupRequired,
@@ -39,27 +46,42 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
   inputWidth,
   preselectedProvider,
 }) => {
-  const [mode, setMode] = useState<SelectionMode>(() => 
+  const [mode, setMode] = useState<SelectionMode>(() =>
     // If we have a preselected provider, go directly to model selection
-     preselectedProvider ? 'model' : 'category'
+    preselectedProvider ? 'model' : 'category',
   );
-  const [selectedCategory, setSelectedCategory] = useState<'local' | 'cloud' | 'none' | null>(() => {
+  const [selectedCategory, setSelectedCategory] = useState<
+    'local' | 'cloud' | 'none' | null
+  >(() => {
     // If we have a preselected provider, determine its category
     if (preselectedProvider) {
-      const localProviders = [ProviderType.OLLAMA, ProviderType.VLLM, ProviderType.HUGGINGFACE];
+      const localProviders = [
+        ProviderType.OLLAMA,
+        ProviderType.VLLM,
+        ProviderType.HUGGINGFACE,
+      ];
       return localProviders.includes(preselectedProvider) ? 'local' : 'cloud';
     }
     return null;
   });
-  const [selectedProvider, setSelectedProvider] = useState<ProviderType | null>(preselectedProvider || null);
+  const [selectedProvider, setSelectedProvider] = useState<ProviderType | null>(
+    preselectedProvider || null,
+  );
   const [highlightedIndex, setHighlightedIndex] = useState(0);
-  const [availableProviders, setAvailableProviders] = useState<ProviderType[]>([]);
+  const [availableProviders, setAvailableProviders] = useState<ProviderType[]>(
+    [],
+  );
   const [availableModels, setAvailableModels] = useState<ModelInfo[]>([]);
   const [isCheckingProvider, setIsCheckingProvider] = useState(false);
-  const [providerConfigurations, setProviderConfigurations] = useState<Record<string, boolean>>({});
+  const [providerConfigurations, setProviderConfigurations] = useState<
+    Record<string, boolean>
+  >({});
 
   // Helper function to check if provider needs setup
-  const checkProviderNeedsSetup = async (provider: ProviderType, isLocal: boolean): Promise<boolean> => {
+  const checkProviderNeedsSetup = async (
+    provider: ProviderType,
+    isLocal: boolean,
+  ): Promise<boolean> => {
     if (isLocal) {
       if (provider === ProviderType.OLLAMA) {
         // Check if Ollama is actually installed and running with models
@@ -68,18 +90,18 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
             method: 'GET',
             signal: AbortSignal.timeout(3000),
           });
-          
+
           if (!response.ok) {
             return true; // Needs setup - not running
           }
-          
+
           const data = await response.json();
           const models = data.models || [];
-          
+
           if (models.length === 0) {
             return true; // Needs setup - no models installed
           }
-          
+
           return false; // All good, no setup needed
         } catch {
           return true; // Needs setup - connection failed
@@ -98,41 +120,49 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
   };
 
   // Categories
-  const categories = useMemo(() => [
-    { 
-      id: 'local' as const, 
-      name: t('localAI'), 
-      description: t('localAIDescription'),
-      providers: [ProviderType.OLLAMA]
-    },
-    { 
-      id: 'cloud' as const, 
-      name: t('cloudAI'), 
-      description: t('cloudAIDescription'),
-      providers: [ProviderType.ANTHROPIC, ProviderType.OPENAI, ProviderType.GEMINI, ProviderType.MISTRAL]
-    },
-    { 
-      id: 'settings' as const,
-      name: 'Settings',
-      description: 'Manage API keys and provider configurations',
-      providers: []
-    },
-    { 
-      id: 'none' as const,
-      name: 'Skip Setup',
-      description: 'Do not configure AI provider now',
-      providers: []
-    }
-  ], []);
+  const categories = useMemo(
+    () => [
+      {
+        id: 'local' as const,
+        name: t('localAI'),
+        description: t('localAIDescription'),
+        providers: [ProviderType.OLLAMA],
+      },
+      {
+        id: 'cloud' as const,
+        name: t('cloudAI'),
+        description: t('cloudAIDescription'),
+        providers: [
+          ProviderType.ANTHROPIC,
+          ProviderType.OPENAI,
+          ProviderType.GEMINI,
+          ProviderType.MISTRAL,
+        ],
+      },
+      {
+        id: 'settings' as const,
+        name: 'Settings',
+        description: 'Manage API keys and provider configurations',
+        providers: [],
+      },
+      {
+        id: 'none' as const,
+        name: 'Skip Setup',
+        description: 'Do not configure AI provider now',
+        providers: [],
+      },
+    ],
+    [],
+  );
 
   // Check provider configurations
   useEffect(() => {
     const checkProviderConfigurations = async () => {
       if (availableProviders.length === 0) return;
-      
+
       const configs: Record<string, boolean> = {};
       const isLocal = selectedCategory === 'local';
-      
+
       for (const provider of availableProviders) {
         if (isLocal) {
           if (provider === ProviderType.OLLAMA) {
@@ -153,17 +183,17 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
           configs[provider] = hasStoredCredentials(provider);
         }
       }
-      
+
       setProviderConfigurations(configs);
     };
-    
+
     checkProviderConfigurations();
   }, [availableProviders, selectedCategory]);
 
   // Provider name display
   const getProviderDisplayName = (provider: ProviderType): string => {
     const isLocal = selectedCategory === 'local';
-    
+
     switch (provider) {
       case ProviderType.OLLAMA:
         return 'Ollama';
@@ -185,15 +215,11 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
   };
 
   // Get status indicator
-  const getStatusIndicator = (isConfigured: boolean): string => 
-     isConfigured ? '•' : '◦' // Small bullet vs small hollow circle
-  ;
-
+  const getStatusIndicator = (isConfigured: boolean): string =>
+    isConfigured ? '•' : '◦'; // Small bullet vs small hollow circle
   // Get status indicator color
-  const getStatusColor = (isConfigured: boolean): string => 
-     isConfigured ? Colors.AccentGreen : Colors.Gray // Green for configured, gray for unconfigured
-  ;
-
+  const getStatusColor = (isConfigured: boolean): string =>
+    isConfigured ? Colors.AccentGreen : Colors.Gray; // Green for configured, gray for unconfigured
   // Get status legend with proper colors
   const getStatusLegend = (): Array<{ text: string; color: string }> => {
     const _isLocal = selectedCategory === 'local';
@@ -202,7 +228,7 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
       { text: ' Configured', color: Colors.Gray },
       { text: '   ', color: Colors.Gray },
       { text: '◦', color: Colors.Gray },
-      { text: ' Setup required', color: Colors.Gray }
+      { text: ' Setup required', color: Colors.Gray },
     ];
   };
 
@@ -226,7 +252,7 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
 
   useEffect(() => {
     if (mode === 'provider' && selectedCategory) {
-      const categoryData = categories.find(c => c.id === selectedCategory);
+      const categoryData = categories.find((c) => c.id === selectedCategory);
       setAvailableProviders(categoryData?.providers || []);
       setHighlightedIndex(0);
     } else if (mode === 'model' && selectedProvider) {
@@ -234,20 +260,23 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
         if (selectedProvider === ProviderType.OLLAMA) {
           // For Ollama, check actually installed models
           try {
-            const { checkOllamaInstallation } = await import('../../utils/ollamaSetup.js');
+            const { checkOllamaInstallation } = await import(
+              '../../utils/ollamaSetup.js'
+            );
             const status = await checkOllamaInstallation();
-            
+
             if (status.installedModels.length > 0) {
               // Convert installed models to ModelInfo format
-              const installedModelInfos: ModelInfo[] = status.installedModels.map(modelId => ({
-                id: modelId,
-                name: modelId,
-                provider: ProviderType.OLLAMA,
-                category: 'local' as const,
-                description: `Installed Ollama model: ${modelId}`,
-                contextLength: 128000,
-                capabilities: ['chat', 'code']
-              }));
+              const installedModelInfos: ModelInfo[] =
+                status.installedModels.map((modelId) => ({
+                  id: modelId,
+                  name: modelId,
+                  provider: ProviderType.OLLAMA,
+                  category: 'local' as const,
+                  description: `Installed Ollama model: ${modelId}`,
+                  contextLength: 128000,
+                  capabilities: ['chat', 'code'],
+                }));
               setAvailableModels(installedModelInfos);
             } else {
               setAvailableModels([]);
@@ -258,13 +287,16 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
           }
         } else {
           // For other providers, use the registry
-          const models = selectedCategory === 'local' ? getLocalModels() : getCloudModels();
-          const providerModels = models.filter((m: ModelInfo) => m.provider === selectedProvider);
+          const models =
+            selectedCategory === 'local' ? getLocalModels() : getCloudModels();
+          const providerModels = models.filter(
+            (m: ModelInfo) => m.provider === selectedProvider,
+          );
           setAvailableModels(providerModels);
         }
         setHighlightedIndex(0);
       };
-      
+
       loadModels();
     }
   }, [mode, selectedCategory, selectedProvider, categories]);
@@ -296,11 +328,10 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
       setHighlightedIndex(Math.min(getTotalItems() - 1, highlightedIndex + 1));
     }
 
-
     if (key.return) {
       if (mode === 'category') {
         const selected = categories[highlightedIndex];
-        
+
         if (selected.id === 'settings') {
           // Open Settings
           if (onOpenAPISettings) {
@@ -308,13 +339,13 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
           }
           return;
         }
-        
+
         if (selected.id === 'none') {
           // User chose not to configure - close dialog
           onCancel();
           return;
         }
-        
+
         setSelectedCategory(selected.id as 'local' | 'cloud');
         setMode('provider');
       } else if (mode === 'provider') {
@@ -324,34 +355,39 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
           setSelectedCategory(null);
           return;
         }
-        
+
         // Select the provider directly by index
         const selected = availableProviders[highlightedIndex];
-        
+
         // For cloud providers, always show setup dialog to allow authentication method selection
         if (selectedCategory === 'cloud') {
-          console.log('Provider selected in cloud category, showing setup dialog:', selected);
+          console.log(
+            'Provider selected in cloud category, showing setup dialog:',
+            selected,
+          );
           onSetupRequired(selected);
           return;
         }
-        
+
         // For local providers (now only Ollama), check if setup is needed
         setIsCheckingProvider(true);
-        checkProviderNeedsSetup(selected, selectedCategory === 'local').then((needsSetup) => {
-          setIsCheckingProvider(false);
-          if (needsSetup) {
+        checkProviderNeedsSetup(selected, selectedCategory === 'local')
+          .then((needsSetup) => {
+            setIsCheckingProvider(false);
+            if (needsSetup) {
+              onSetupRequired(selected);
+            } else {
+              // Provider is ready, proceed to model selection
+              setSelectedProvider(selected);
+              setMode('model');
+            }
+          })
+          .catch(() => {
+            setIsCheckingProvider(false);
+            // On error, assume setup is needed
             onSetupRequired(selected);
-          } else {
-            // Provider is ready, proceed to model selection
-            setSelectedProvider(selected);
-            setMode('model');
-          }
-        }).catch(() => {
-          setIsCheckingProvider(false);
-          // On error, assume setup is needed
-          onSetupRequired(selected);
-        });
-        
+          });
+
         return; // Exit early since we're handling async
       } else if (mode === 'model') {
         // Check if back option is selected
@@ -360,7 +396,7 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
           setSelectedProvider(null);
           return;
         }
-        
+
         const selected = availableModels[highlightedIndex];
         onSelect(selected.provider, selected.id);
       }
@@ -376,7 +412,6 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
       }
     }
   });
-
 
   return (
     <Box
@@ -395,18 +430,28 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
       {mode === 'category' && (
         <Box flexDirection="column">
           <Box marginBottom={1}>
-            <Text color={Colors.Gray}>
-              {t('selectCategoryPrompt')}
-            </Text>
+            <Text color={Colors.Gray}>{t('selectCategoryPrompt')}</Text>
           </Box>
-          
+
           {categories.map((category, index) => (
             <Box key={category.id} paddingLeft={1}>
               <Text
-                color={index === highlightedIndex ? Colors.AccentBlue : Colors.Foreground}
+                color={
+                  index === highlightedIndex
+                    ? Colors.AccentBlue
+                    : Colors.Foreground
+                }
                 bold={index === highlightedIndex}
               >
-                {index === highlightedIndex ? '> ' : '  '}{category.name}   <Text color={index === highlightedIndex ? Colors.Comment : Colors.Gray}>{category.description}</Text>
+                {index === highlightedIndex ? '> ' : '  '}
+                {category.name}{' '}
+                <Text
+                  color={
+                    index === highlightedIndex ? Colors.Comment : Colors.Gray
+                  }
+                >
+                  {category.description}
+                </Text>
               </Text>
             </Box>
           ))}
@@ -426,7 +471,7 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
               )}
             </Text>
           </Box>
-          
+
           {isCheckingProvider && (
             <Box paddingLeft={1} marginBottom={1}>
               <Text color={Colors.AccentBlue}>
@@ -434,7 +479,7 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
               </Text>
             </Box>
           )}
-          
+
           {availableProviders.map((provider, index) => {
             const isConfigured = providerConfigurations[provider] || false;
             const isHighlighted = index === highlightedIndex;
@@ -443,35 +488,46 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
             const providerName = getProviderDisplayName(provider).padEnd(18);
             const description = getProviderDescription(provider);
             const configuredText = isConfigured ? ' (Configured)' : '';
-            
+
             return (
               <Box key={provider} paddingLeft={1} flexDirection="row">
-                <Text color={isHighlighted ? Colors.AccentBlue : Colors.Foreground}>
+                <Text
+                  color={isHighlighted ? Colors.AccentBlue : Colors.Foreground}
+                >
                   {prefix}
                 </Text>
                 <Text color={isConfigured ? Colors.AccentGreen : Colors.Gray}>
                   {statusIndicator}
                 </Text>
-                <Text color={isHighlighted ? Colors.AccentBlue : Colors.Foreground}>
-                  {' '}{providerName}
+                <Text
+                  color={isHighlighted ? Colors.AccentBlue : Colors.Foreground}
+                >
+                  {' '}
+                  {providerName}
                 </Text>
                 <Text color={isHighlighted ? Colors.Comment : Colors.Gray}>
-                  {description}{configuredText}
+                  {description}
+                  {configuredText}
                 </Text>
               </Box>
             );
           })}
-          
+
           {/* Back option */}
           <Box paddingLeft={1}>
             <Text
-              color={getBackOptionIndex() === highlightedIndex ? Colors.AccentBlue : Colors.Gray}
+              color={
+                getBackOptionIndex() === highlightedIndex
+                  ? Colors.AccentBlue
+                  : Colors.Gray
+              }
               bold={getBackOptionIndex() === highlightedIndex}
             >
-              {getBackOptionIndex() === highlightedIndex ? '> ' : '  '}← {t('navBack').replace('← ', '')}
+              {getBackOptionIndex() === highlightedIndex ? '> ' : '  '}←{' '}
+              {t('navBack').replace('← ', '')}
             </Text>
           </Box>
-          
+
           {/* Status legend and management hint */}
           <Box paddingLeft={1} marginTop={1}>
             <Box flexDirection="row">
@@ -482,9 +538,7 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
               ))}
             </Box>
             <Box marginTop={1}>
-              <Text color={Colors.Gray}>
-                Enter: Use provider | ← Back
-              </Text>
+              <Text color={Colors.Gray}>Enter: Use provider | ← Back</Text>
             </Box>
           </Box>
         </Box>
@@ -493,13 +547,16 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
       {mode === 'model' && selectedProvider && (
         <Box flexDirection="column">
           <Box marginBottom={1}>
-            <Text color={Colors.Gray}>
-              {t('selectModelPrompt')}
-            </Text>
+            <Text color={Colors.Gray}>{t('selectModelPrompt')}</Text>
           </Box>
-          
+
           {availableModels.length === 0 ? (
-            <Box paddingX={2} paddingY={1} borderStyle="single" borderColor={Colors.AccentRed}>
+            <Box
+              paddingX={2}
+              paddingY={1}
+              borderStyle="single"
+              borderColor={Colors.AccentRed}
+            >
               <Text color={Colors.AccentRed}>
                 {t('noModelsAvailable')} {selectedProvider}.
                 {(() => {
@@ -516,14 +573,16 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
           ) : (
             availableModels.map((model, index) => {
               // Find the longest model name for alignment
-              const maxModelNameLength = Math.max(...availableModels.map(m => m.name.length));
+              const maxModelNameLength = Math.max(
+                ...availableModels.map((m) => m.name.length),
+              );
               const paddingNeeded = maxModelNameLength - model.name.length + 2; // +2 for extra spacing
               const padding = ' '.repeat(paddingNeeded);
-              
+
               const isHighlighted = index === highlightedIndex;
               const prefix = isHighlighted ? '> ' : '  ';
               const modelDescription = `${model.description} (${model.contextLength.toLocaleString()}t | ${model.capabilities.join(', ')})`;
-              
+
               // Calculate available width for description (assuming reasonable terminal width)
               const prefixLength = prefix.length;
               const nameLength = model.name.length;
@@ -531,31 +590,51 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
               const usedWidth = prefixLength + nameLength + paddingLength;
               const maxReasonableWidth = Math.min(terminalWidth - 10, 120); // -10 for margins and borders
               const availableWidth = maxReasonableWidth - usedWidth;
-              
+
               // Truncate description if it's too long
-              const truncatedDescription = modelDescription.length > availableWidth 
-                ? modelDescription.substring(0, availableWidth - 3) + '...'
-                : modelDescription;
-              
+              const truncatedDescription =
+                modelDescription.length > availableWidth
+                  ? modelDescription.substring(0, availableWidth - 3) + '...'
+                  : modelDescription;
+
               return (
                 <Box key={model.id} paddingLeft={1}>
-                  <Text color={isHighlighted ? Colors.AccentBlue : Colors.Foreground}>
+                  <Text
+                    color={
+                      isHighlighted ? Colors.AccentBlue : Colors.Foreground
+                    }
+                  >
                     {prefix}
-                    <Text bold color={isHighlighted ? Colors.AccentBlue : Colors.Foreground}>{model.name}</Text>
-                    <Text color={isHighlighted ? Colors.Comment : Colors.Gray}>{padding}{truncatedDescription}</Text>
+                    <Text
+                      bold
+                      color={
+                        isHighlighted ? Colors.AccentBlue : Colors.Foreground
+                      }
+                    >
+                      {model.name}
+                    </Text>
+                    <Text color={isHighlighted ? Colors.Comment : Colors.Gray}>
+                      {padding}
+                      {truncatedDescription}
+                    </Text>
                   </Text>
                 </Box>
               );
             })
           )}
-          
+
           {/* Back option for models */}
           <Box paddingLeft={1}>
             <Text
-              color={availableModels.length === highlightedIndex ? Colors.AccentBlue : Colors.Gray}
+              color={
+                availableModels.length === highlightedIndex
+                  ? Colors.AccentBlue
+                  : Colors.Gray
+              }
               bold={availableModels.length === highlightedIndex}
             >
-              {availableModels.length === highlightedIndex ? '> ' : '  '}← {t('navBack').replace('← ', '')}
+              {availableModels.length === highlightedIndex ? '> ' : '  '}←{' '}
+              {t('navBack').replace('← ', '')}
             </Text>
           </Box>
         </Box>
@@ -563,9 +642,12 @@ export const ProviderSelectionDialog: React.FC<ProviderSelectionDialogProps> = (
 
       <Box marginTop={1}>
         <Text color={Colors.Gray} dimColor>
-          {mode === 'category' && `${t('navMove')} | ${t('navSelect')} | ${t('navCancel')}`}
-          {mode === 'provider' && `${t('navMove')} | Enter: Use | ${t('navBack')} | ${t('navCancel')}`}
-          {mode === 'model' && `${t('navMove')} | ${t('navSelect')} | Select "${t('navBack').replace('← ', '')}" to go back | ${t('navCancel')}`}
+          {mode === 'category' &&
+            `${t('navMove')} | ${t('navSelect')} | ${t('navCancel')}`}
+          {mode === 'provider' &&
+            `${t('navMove')} | Enter: Use | ${t('navBack')} | ${t('navCancel')}`}
+          {mode === 'model' &&
+            `${t('navMove')} | ${t('navSelect')} | Select "${t('navBack').replace('← ', '')}" to go back | ${t('navCancel')}`}
         </Text>
       </Box>
     </Box>

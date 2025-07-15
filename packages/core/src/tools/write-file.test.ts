@@ -102,9 +102,7 @@ describe('WriteFileTool', () => {
     vi.mocked(EnfiyClient).mockImplementation(() => mockEnfiyClientInstance);
 
     // Now that mockEnfiyClientInstance is initialized, set the mock implementation for getEnfiyClient
-    mockConfigInternal.getEnfiyClient.mockReturnValue(
-      mockEnfiyClientInstance,
-    );
+    mockConfigInternal.getEnfiyClient.mockReturnValue(mockEnfiyClientInstance);
 
     tool = new WriteFileTool(mockConfig);
 

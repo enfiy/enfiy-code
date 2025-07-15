@@ -35,13 +35,13 @@ export class CodeBlockConverter {
       /<html[\s>]/i,
       /<head[\s>]/i,
       /<body[\s>]/i,
-      /<\/html>/i
+      /<\/html>/i,
     ],
     css: [
       /\s*[\w\-.#]+\s*\{[^}]*\}/,
       /@media\s+/i,
       /@import\s+/i,
-      /:\s*[\w\-#]+\s*;/
+      /:\s*[\w\-#]+\s*;/,
     ],
     javascript: [
       /function\s+\w+\s*\(/,
@@ -51,13 +51,13 @@ export class CodeBlockConverter {
       /console\.log\s*\(/,
       /=>\s*{/,
       /require\s*\(/,
-      /import\s+.*from/
+      /import\s+.*from/,
     ],
     typescript: [
       /interface\s+\w+/,
       /type\s+\w+\s*=/,
       /:\s*(string|number|boolean|object)/,
-      /export\s+(interface|type|class)/
+      /export\s+(interface|type|class)/,
     ],
     python: [
       /def\s+\w+\s*\(/,
@@ -65,142 +65,99 @@ export class CodeBlockConverter {
       /import\s+\w+/,
       /from\s+\w+\s+import/,
       /print\s*\(/,
-      /if\s+__name__\s*==\s*['"']__main__['"']/
+      /if\s+__name__\s*==\s*['"']__main__['"']/,
     ],
     java: [
       /public\s+class\s+\w+/,
       /public\s+static\s+void\s+main/,
       /System\.out\.print/,
       /@Override/,
-      /package\s+[\w.]+/
+      /package\s+[\w.]+/,
     ],
     cpp: [
       /#include\s*<.*>/,
       /std::/,
-      /cout\s*<</, 
+      /cout\s*<</,
       /cin\s*>>/,
-      /int\s+main\s*\(/
+      /int\s+main\s*\(/,
     ],
     c: [
       /#include\s*<.*>/,
       /printf\s*\(/,
       /scanf\s*\(/,
       /int\s+main\s*\(/,
-      /void\s+\w+\s*\(/
+      /void\s+\w+\s*\(/,
     ],
-    php: [
-      /<\?php/,
-      /echo\s+/,
-      /\$\w+/,
-      /function\s+\w+\s*\(/
-    ],
-    ruby: [
-      /def\s+\w+/,
-      /class\s+\w+/,
-      /puts\s+/,
-      /require\s+['"']/,
-      /end$/m
-    ],
-    go: [
-      /package\s+\w+/,
-      /func\s+\w+/,
-      /import\s+['"']/,
-      /fmt\.Print/
-    ],
-    rust: [
-      /fn\s+\w+/,
-      /let\s+mut\s+/,
-      /use\s+std::/,
-      /println!\s*\(/
-    ],
+    php: [/<\?php/, /echo\s+/, /\$\w+/, /function\s+\w+\s*\(/],
+    ruby: [/def\s+\w+/, /class\s+\w+/, /puts\s+/, /require\s+['"']/, /end$/m],
+    go: [/package\s+\w+/, /func\s+\w+/, /import\s+['"']/, /fmt\.Print/],
+    rust: [/fn\s+\w+/, /let\s+mut\s+/, /use\s+std::/, /println!\s*\(/],
     swift: [
       /func\s+\w+/,
       /var\s+\w+/,
       /let\s+\w+/,
       /print\s*\(/,
-      /import\s+\w+/
+      /import\s+\w+/,
     ],
-    kotlin: [
-      /fun\s+\w+/,
-      /val\s+\w+/,
-      /var\s+\w+/,
-      /println\s*\(/
-    ],
-    json: [
-      /^\s*\{[\s\S]*\}\s*$/,
-      /['"']\w+['"']\s*:\s*['"']/
-    ],
-    xml: [
-      /<\?xml/,
-      /<\/\w+>/,
-      /<\w+[\s>]/
-    ],
-    yaml: [
-      /^\s*\w+\s*:\s*/m,
-      /^\s*-\s+/m
-    ],
+    kotlin: [/fun\s+\w+/, /val\s+\w+/, /var\s+\w+/, /println\s*\(/],
+    json: [/^\s*\{[\s\S]*\}\s*$/, /['"']\w+['"']\s*:\s*['"']/],
+    xml: [/<\?xml/, /<\/\w+>/, /<\w+[\s>]/],
+    yaml: [/^\s*\w+\s*:\s*/m, /^\s*-\s+/m],
     sql: [
       /SELECT\s+.*FROM/i,
       /INSERT\s+INTO/i,
       /UPDATE\s+.*SET/i,
       /DELETE\s+FROM/i,
-      /CREATE\s+TABLE/i
+      /CREATE\s+TABLE/i,
     ],
-    sh: [
-      /#!/,
-      /echo\s+/,
-      /\$\w+/,
-      /if\s+\[/,
-      /for\s+\w+\s+in/
-    ],
-    dockerfile: [
-      /FROM\s+\w+/i,
-      /RUN\s+/i,
-      /COPY\s+/i,
-      /WORKDIR\s+/i
-    ]
+    sh: [/#!/, /echo\s+/, /\$\w+/, /if\s+\[/, /for\s+\w+\s+in/],
+    dockerfile: [/FROM\s+\w+/i, /RUN\s+/i, /COPY\s+/i, /WORKDIR\s+/i],
   };
 
   /**
    * File extension to language mapping
    */
   private static readonly EXTENSION_TO_LANGUAGE: Record<string, string> = {
-    'html': 'html',
-    'htm': 'html',
-    'css': 'css',
-    'js': 'javascript',
-    'jsx': 'javascript',
-    'ts': 'typescript',
-    'tsx': 'typescript',
-    'py': 'python',
-    'java': 'java',
-    'cpp': 'cpp',
-    'cc': 'cpp',
-    'cxx': 'cpp',
-    'c': 'c',
-    'php': 'php',
-    'rb': 'ruby',
-    'go': 'go',
-    'rs': 'rust',
-    'swift': 'swift',
-    'kt': 'kotlin',
-    'json': 'json',
-    'xml': 'xml',
-    'yaml': 'yaml',
-    'yml': 'yaml',
-    'sql': 'sql',
-    'sh': 'sh',
-    'bash': 'sh',
-    'dockerfile': 'dockerfile'
+    html: 'html',
+    htm: 'html',
+    css: 'css',
+    js: 'javascript',
+    jsx: 'javascript',
+    ts: 'typescript',
+    tsx: 'typescript',
+    py: 'python',
+    java: 'java',
+    cpp: 'cpp',
+    cc: 'cpp',
+    cxx: 'cpp',
+    c: 'c',
+    php: 'php',
+    rb: 'ruby',
+    go: 'go',
+    rs: 'rust',
+    swift: 'swift',
+    kt: 'kotlin',
+    json: 'json',
+    xml: 'xml',
+    yaml: 'yaml',
+    yml: 'yaml',
+    sql: 'sql',
+    sh: 'sh',
+    bash: 'sh',
+    dockerfile: 'dockerfile',
   };
 
   /**
    * Detect the programming language of given content
    */
-  static detectLanguage(content: string, hints?: { fileName?: string; extension?: string }): string {
+  static detectLanguage(
+    content: string,
+    hints?: { fileName?: string; extension?: string },
+  ): string {
     // If extension hint is provided, use it first
     if (hints?.extension) {
-      const language = this.EXTENSION_TO_LANGUAGE[hints.extension.toLowerCase()];
+      const language =
+        this.EXTENSION_TO_LANGUAGE[hints.extension.toLowerCase()];
       if (language) return language;
     }
 
@@ -238,7 +195,7 @@ export class CodeBlockConverter {
         content: htmlMatch[1],
         language: 'html',
         startIndex: htmlMatch.index || 0,
-        endIndex: (htmlMatch.index || 0) + htmlMatch[1].length
+        endIndex: (htmlMatch.index || 0) + htmlMatch[1].length,
       });
     }
 
@@ -250,13 +207,14 @@ export class CodeBlockConverter {
           content: match[1],
           language: 'css',
           startIndex: match.index || 0,
-          endIndex: (match.index || 0) + match[1].length
+          endIndex: (match.index || 0) + match[1].length,
         });
       }
     }
 
     // JavaScript/TypeScript extraction
-    const jsPattern = /((?:function\s+\w+|const\s+\w+\s*=|let\s+\w+\s*=)[\s\S]*?)(?=\n\s*$|\n\s*[A-Z]|\n\s*\/\/|\n\s*\*|$)/gm;
+    const jsPattern =
+      /((?:function\s+\w+|const\s+\w+\s*=|let\s+\w+\s*=)[\s\S]*?)(?=\n\s*$|\n\s*[A-Z]|\n\s*\/\/|\n\s*\*|$)/gm;
     const jsMatches = text.matchAll(jsPattern);
     for (const match of jsMatches) {
       if (match[1]) {
@@ -266,14 +224,15 @@ export class CodeBlockConverter {
             content: match[1],
             language,
             startIndex: match.index || 0,
-            endIndex: (match.index || 0) + match[1].length
+            endIndex: (match.index || 0) + match[1].length,
           });
         }
       }
     }
 
     // Python extraction
-    const pythonPattern = /((?:def\s+\w+|class\s+\w+|import\s+\w+)[\s\S]*?)(?=\n\s*$|\n\s*[A-Z]|\n\s*#|$)/gm;
+    const pythonPattern =
+      /((?:def\s+\w+|class\s+\w+|import\s+\w+)[\s\S]*?)(?=\n\s*$|\n\s*[A-Z]|\n\s*#|$)/gm;
     const pythonMatches = text.matchAll(pythonPattern);
     for (const match of pythonMatches) {
       if (match[1] && this.detectLanguage(match[1]) === 'python') {
@@ -281,7 +240,7 @@ export class CodeBlockConverter {
           content: match[1],
           language: 'python',
           startIndex: match.index || 0,
-          endIndex: (match.index || 0) + match[1].length
+          endIndex: (match.index || 0) + match[1].length,
         });
       }
     }
@@ -292,7 +251,10 @@ export class CodeBlockConverter {
   /**
    * Convert raw code content to markdown code blocks
    */
-  static convertToMarkdown(text: string, hints?: { fileName?: string; extension?: string }): ConversionResult {
+  static convertToMarkdown(
+    text: string,
+    hints?: { fileName?: string; extension?: string },
+  ): ConversionResult {
     const originalText = text;
     let convertedText = text;
     const conversions: CodeBlockMatch[] = [];
@@ -302,7 +264,7 @@ export class CodeBlockConverter {
       return {
         originalText,
         convertedText,
-        conversions
+        conversions,
       };
     }
 
@@ -312,35 +274,36 @@ export class CodeBlockConverter {
     // Convert each match to markdown code block
     let offset = 0;
     for (const match of codeMatches) {
-      const language = hints?.extension ? 
-        this.detectLanguage(match.content, hints) : 
-        match.language;
+      const language = hints?.extension
+        ? this.detectLanguage(match.content, hints)
+        : match.language;
 
       const markdownBlock = `\`\`\`${language}\n${match.content}\n\`\`\``;
-      
+
       const adjustedStart = match.startIndex + offset;
       const adjustedEnd = match.endIndex + offset;
-      
-      convertedText = 
-        convertedText.slice(0, adjustedStart) + 
-        markdownBlock + 
+
+      convertedText =
+        convertedText.slice(0, adjustedStart) +
+        markdownBlock +
         convertedText.slice(adjustedEnd);
 
-      const lengthDiff = markdownBlock.length - (match.endIndex - match.startIndex);
+      const lengthDiff =
+        markdownBlock.length - (match.endIndex - match.startIndex);
       offset += lengthDiff;
 
       conversions.push({
         content: match.content,
         language,
         startIndex: match.startIndex,
-        endIndex: match.endIndex
+        endIndex: match.endIndex,
       });
     }
 
     return {
       originalText,
       convertedText,
-      conversions
+      conversions,
     };
   }
 

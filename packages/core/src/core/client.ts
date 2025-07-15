@@ -52,7 +52,7 @@ function formatModelName(modelName: string): string {
   if (!modelName.startsWith('models/')) {
     modelName = 'models/' + modelName;
   }
-  
+
   // Map specific model names that might need correction
   if (modelName === 'models/gemini-1.5-flash') {
     modelName = 'models/gemini-1.5-flash-latest';
@@ -61,7 +61,7 @@ function formatModelName(modelName: string): string {
   } else if (modelName === 'models/gemini-2.0-flash-exp') {
     modelName = 'models/gemini-2.0-flash-exp';
   }
-  
+
   return modelName;
 }
 
@@ -89,7 +89,7 @@ export class EnfiyClient {
 
     // Use the original model - contentGenerator will handle provider selection
     this.model = config.getModel();
-    
+
     // Initialize the multi-provider client
     this.multiProviderClient = new MultiProviderClient(config);
     this.embeddingModel = config.getEmbeddingModel();
@@ -104,10 +104,14 @@ export class EnfiyClient {
       this.chat = await this.startChat();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
-      if (errorMessage.includes('Requested entity was not found') || 
-          errorMessage.includes('404') ||
-          errorMessage.includes('API key')) {
-        throw new Error(`API key configuration error: ${errorMessage}\n\nPlease verify your API key is valid and properly configured.`);
+      if (
+        errorMessage.includes('Requested entity was not found') ||
+        errorMessage.includes('404') ||
+        errorMessage.includes('API key')
+      ) {
+        throw new Error(
+          `API key configuration error: ${errorMessage}\n\nPlease verify your API key is valid and properly configured.`,
+        );
       }
       throw error;
     }
@@ -340,14 +344,19 @@ export class EnfiyClient {
       try {
         // Check if response starts with HTML (common Ollama error)
         if (text.trim().startsWith('<')) {
-          console.warn('🔥 [generateJson] Received HTML response instead of JSON:', text.substring(0, 200));
-          throw new Error('API returned HTML instead of JSON - possible Ollama server error');
+          console.warn(
+            '🔥 [generateJson] Received HTML response instead of JSON:',
+            text.substring(0, 200),
+          );
+          throw new Error(
+            'API returned HTML instead of JSON - possible Ollama server error',
+          );
         }
-        
+
         // Try to extract JSON from markdown code blocks if present
         const jsonMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
         const jsonText = jsonMatch ? jsonMatch[1].trim() : text.trim();
-        
+
         return JSON.parse(jsonText);
       } catch (parseError) {
         await reportError(
@@ -488,11 +497,11 @@ export class EnfiyClient {
     }
 
     const formattedModel = formatModelName(this.model);
-    console.log('[CLIENT] CountTokens with model:', { 
-      original: this.model, 
-      formatted: formattedModel 
+    console.log('[CLIENT] CountTokens with model:', {
+      original: this.model,
+      formatted: formattedModel,
     });
-    
+
     const { totalTokens: originalTokenCount } =
       await this.getContentGenerator().countTokens({
         model: formattedModel,
@@ -542,11 +551,11 @@ export class EnfiyClient {
     ];
     this.chat = await this.startChat(newHistory);
     const formattedModelForNew = formatModelName(this.model);
-    console.log('[CLIENT] CountTokens for new history with model:', { 
-      original: this.model, 
-      formatted: formattedModelForNew 
+    console.log('[CLIENT] CountTokens for new history with model:', {
+      original: this.model,
+      formatted: formattedModelForNew,
     });
-    
+
     const newTokenCount = (
       await this.getContentGenerator().countTokens({
         model: formattedModelForNew,

@@ -11,8 +11,8 @@ import { OAuth2Client } from 'google-auth-library';
  * been refreshed (or which throws error when refreshing credentials failed).
  */
 export interface OauthWebLogin {
-    authUrl: string;
-    loginCompletePromise: Promise<void>;
+  authUrl: string;
+  loginCompletePromise: Promise<void>;
 }
 export declare function getOauthClient(): Promise<OAuth2Client>;
 export declare function getAvailablePort(): Promise<number>;

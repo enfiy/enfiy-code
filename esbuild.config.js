@@ -51,7 +51,9 @@ esbuild
     ],
     define: {
       'process.env.CLI_VERSION': JSON.stringify(pkg.version),
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+      'process.env.NODE_ENV': JSON.stringify(
+        process.env.NODE_ENV || 'development',
+      ),
     },
     banner: {
       js: `import { createRequire } from 'module'; const require = createRequire(import.meta.url); globalThis.__filename = require('url').fileURLToPath(import.meta.url); globalThis.__dirname = require('path').dirname(globalThis.__filename);`,
@@ -113,24 +115,24 @@ esbuild
       'ansi-regex',
       'node-fetch',
       'ws',
-      'zod'
+      'zod',
     ],
   })
   .then((result) => {
     if (result.metafile) {
       const analysis = esbuild.analyzeMetafileSync(result.metafile);
-      
+
       if (isProduction) {
         console.log('Bundle analysis:', analysis);
       }
-      
+
       // Bundle size monitoring - JS files only
       const outputFiles = Object.keys(result.metafile.outputs);
       let totalSize = 0;
-      
-      outputFiles.forEach(file => {
+
+      outputFiles.forEach((file) => {
         const fileInfo = result.metafile.outputs[file];
-        
+
         // Only count JS files, not source maps
         if (file.endsWith('.js') && !file.includes('.map')) {
           totalSize += fileInfo.bytes;
@@ -138,14 +140,16 @@ esbuild
           console.log(`  ${file.replace('bundle/', '')}: ${sizeInMB}MB`);
         }
       });
-      
+
       const totalSizeInMB = (totalSize / 1024 / 1024).toFixed(2);
       console.log(`Bundle size (JS only): ${totalSizeInMB}MB`);
-      
+
       // Size warnings - adjusted for CLI tools
-      if (totalSize > 2 * 1024 * 1024) { // 2MB threshold for CLI
+      if (totalSize > 2 * 1024 * 1024) {
+        // 2MB threshold for CLI
         console.warn('⚠️  Bundle size is larger than 2MB');
-        if (totalSize > 4 * 1024 * 1024) { // 4MB critical threshold
+        if (totalSize > 4 * 1024 * 1024) {
+          // 4MB critical threshold
           console.warn('❌ Bundle size is critically large (>4MB)');
         }
       } else {

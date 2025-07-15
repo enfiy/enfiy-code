@@ -144,5 +144,3 @@ export const GoogleCode: Theme = new Theme(
   },
   googleCodeColors,
 );
-
-

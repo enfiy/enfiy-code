@@ -20,25 +20,51 @@ import { Help as HelpProps } from './Help.js';
 import { AboutBoxProps } from './AboutBox.js';
 
 // Lazy load heavy components
-const LazyProviderSelectionDialog = lazy(() => import('./ProviderSelectionDialog.js').then(m => ({ default: m.ProviderSelectionDialog })));
-const LazyProviderSetupDialog = lazy(() => import('./ProviderSetupDialog.js').then(m => ({ default: m.ProviderSetupDialog })));
-const LazyCloudAISetupDialog = lazy(() => import('./CloudAISetupDialog.js').then(m => ({ default: m.CloudAISetupDialog })));
-const LazyAPISettingsDialog = lazy(() => import('./APISettingsDialog.js').then(m => ({ default: m.APISettingsDialog })));
-const LazyThemeDialog = lazy(() => import('./ThemeDialog.js').then(m => ({ default: m.ThemeDialog })));
-const LazyEditorSettingsDialog = lazy(() => import('./EditorSettingsDialog.js').then(m => ({ default: m.EditorSettingsDialog })));
-const LazyAuthDialog = lazy(() => import('./AuthDialog.js').then(m => ({ default: m.AuthDialog })));
-const LazyHelp = lazy(() => import('./Help.js').then(m => ({ default: m.Help })));
-const LazyAboutBox = lazy(() => import('./AboutBox.js').then(m => ({ default: m.AboutBox })));
+const LazyProviderSelectionDialog = lazy(() =>
+  import('./ProviderSelectionDialog.js').then((m) => ({
+    default: m.ProviderSelectionDialog,
+  })),
+);
+const LazyProviderSetupDialog = lazy(() =>
+  import('./ProviderSetupDialog.js').then((m) => ({
+    default: m.ProviderSetupDialog,
+  })),
+);
+const LazyCloudAISetupDialog = lazy(() =>
+  import('./CloudAISetupDialog.js').then((m) => ({
+    default: m.CloudAISetupDialog,
+  })),
+);
+const LazyAPISettingsDialog = lazy(() =>
+  import('./APISettingsDialog.js').then((m) => ({
+    default: m.APISettingsDialog,
+  })),
+);
+const LazyThemeDialog = lazy(() =>
+  import('./ThemeDialog.js').then((m) => ({ default: m.ThemeDialog })),
+);
+const LazyEditorSettingsDialog = lazy(() =>
+  import('./EditorSettingsDialog.js').then((m) => ({
+    default: m.EditorSettingsDialog,
+  })),
+);
+const LazyAuthDialog = lazy(() =>
+  import('./AuthDialog.js').then((m) => ({ default: m.AuthDialog })),
+);
+const LazyHelp = lazy(() =>
+  import('./Help.js').then((m) => ({ default: m.Help })),
+);
+const LazyAboutBox = lazy(() =>
+  import('./AboutBox.js').then((m) => ({ default: m.AboutBox })),
+);
 
 // Loading component
-const LoadingSpinner = () => (
-  <Text color="gray">Loading...</Text>
-);
+const LoadingSpinner = () => <Text color="gray">Loading...</Text>;
 
 // Higher-order component for lazy loading with suspense
 export function withLazyLoading<P extends object>(
   Component: React.ComponentType<P>,
-  fallback: React.ComponentType = LoadingSpinner
+  fallback: React.ComponentType = LoadingSpinner,
 ): React.ComponentType<P> {
   const FallbackComponent = fallback;
   return function LazyWrapper(props: P) {
@@ -51,12 +77,21 @@ export function withLazyLoading<P extends object>(
 }
 
 // Pre-wrapped lazy components with type assertions to avoid naming conflicts
-export const ProviderSelectionDialog = withLazyLoading<ProviderSelectionDialogProps>(LazyProviderSelectionDialog);
-export const ProviderSetupDialog = withLazyLoading<ProviderSetupDialogProps>(LazyProviderSetupDialog);
-export const CloudAISetupDialog = withLazyLoading<CloudAISetupDialogProps>(LazyCloudAISetupDialog);
-export const APISettingsDialog = withLazyLoading<APISettingsDialogProps>(LazyAPISettingsDialog);
+export const ProviderSelectionDialog =
+  withLazyLoading<ProviderSelectionDialogProps>(LazyProviderSelectionDialog);
+export const ProviderSetupDialog = withLazyLoading<ProviderSetupDialogProps>(
+  LazyProviderSetupDialog,
+);
+export const CloudAISetupDialog = withLazyLoading<CloudAISetupDialogProps>(
+  LazyCloudAISetupDialog,
+);
+export const APISettingsDialog = withLazyLoading<APISettingsDialogProps>(
+  LazyAPISettingsDialog,
+);
 export const ThemeDialog = withLazyLoading<ThemeDialogProps>(LazyThemeDialog);
-export const EditorSettingsDialog = withLazyLoading<EditorDialogProps>(LazyEditorSettingsDialog);
+export const EditorSettingsDialog = withLazyLoading<EditorDialogProps>(
+  LazyEditorSettingsDialog,
+);
 export const AuthDialog = withLazyLoading<AuthDialogProps>(LazyAuthDialog);
 export const Help = withLazyLoading<HelpProps>(LazyHelp);
 export const AboutBox = withLazyLoading<AboutBoxProps>(LazyAboutBox);

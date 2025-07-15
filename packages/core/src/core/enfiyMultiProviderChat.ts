@@ -378,10 +378,7 @@ export class EnfiyMultiProviderChat {
     this.recordHistory(inputContent, outputContent);
   }
 
-  private recordHistory(
-    userInput: Content,
-    modelOutput: Content[],
-  ) {
+  private recordHistory(userInput: Content, modelOutput: Content[]) {
     const nonThoughtModelOutput = modelOutput.filter(
       (content) => !this.isThoughtContent(content),
     );

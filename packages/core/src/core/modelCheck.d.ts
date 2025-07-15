@@ -12,4 +12,7 @@
  * @returns An object indicating the model to use, whether a switch occurred,
  *          and the original model if a switch happened.
  */
-export declare function getEffectiveModel(apiKey: string, currentConfiguredModel: string): Promise<string>;
+export declare function getEffectiveModel(
+  apiKey: string,
+  currentConfiguredModel: string,
+): Promise<string>;

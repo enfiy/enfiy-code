@@ -40,9 +40,7 @@ export const CompressionMessage: React.FC<CompressionDisplayProps> = ({
       </Box>
       <Box>
         <Text
-          color={
-            compression.isPending ? Colors.AccentBlue : Colors.AccentGreen
-          }
+          color={compression.isPending ? Colors.AccentBlue : Colors.AccentGreen}
         >
           {text}
         </Text>

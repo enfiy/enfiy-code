@@ -103,10 +103,11 @@ export async function createContentGeneratorConfig(
   if (authType === AuthType.API_KEY) {
     // Determine which API key to use based on the model
     const providerType = getProviderTypeFromModel(effectiveModel);
-    
+
     switch (providerType) {
       case 'gemini':
-        contentGeneratorConfig.apiKey = geminiApiKey || process.env.GEMINI_API_KEY;
+        contentGeneratorConfig.apiKey =
+          geminiApiKey || process.env.GEMINI_API_KEY;
         break;
       case 'openai':
         contentGeneratorConfig.apiKey = process.env.OPENAI_API_KEY;
@@ -123,7 +124,7 @@ export async function createContentGeneratorConfig(
       default:
         contentGeneratorConfig.apiKey = geminiApiKey;
     }
-    
+
     return contentGeneratorConfig;
   }
 
@@ -142,8 +143,7 @@ export async function createContentGenerator(
 
   // Determine provider type from model
   const providerType = getProviderTypeFromModel(config.model);
-  
-  
+
   // For non-Gemini providers, use MultiProviderClient wrapper
   if (providerType !== 'gemini' && config.authType === AuthType.API_KEY) {
     return createMultiProviderContentGenerator(config);
@@ -178,41 +178,63 @@ export async function createContentGenerator(
  */
 function getProviderTypeFromModel(model: string): string {
   const modelLower = model.toLowerCase();
-  
+
   // OpenAI models
-  if (modelLower.includes('gpt') || modelLower.includes('openai') || modelLower.startsWith('o3') || modelLower.startsWith('o4')) {
+  if (
+    modelLower.includes('gpt') ||
+    modelLower.includes('openai') ||
+    modelLower.startsWith('o3') ||
+    modelLower.startsWith('o4')
+  ) {
     return 'openai';
   }
-  
+
   // Anthropic models
   if (modelLower.includes('claude') || modelLower.includes('anthropic')) {
     return 'anthropic';
   }
-  
+
   // Gemini models
   if (modelLower.includes('gemini')) {
     return 'gemini';
   }
-  
+
   // Mistral models
-  if (modelLower.includes('mistral') || modelLower.includes('codestral') || modelLower.includes('devstral')) {
+  if (
+    modelLower.includes('mistral') ||
+    modelLower.includes('codestral') ||
+    modelLower.includes('devstral')
+  ) {
     return 'mistral';
   }
-  
+
   // Ollama models (expanded to include qwen, deepseek)
-  if (modelLower.includes('llama') || modelLower.includes('codellama') || modelLower.includes('ollama') ||
-      modelLower.includes('qwen') || modelLower.includes('deepseek') || modelLower.includes(':')) {
+  if (
+    modelLower.includes('llama') ||
+    modelLower.includes('codellama') ||
+    modelLower.includes('ollama') ||
+    modelLower.includes('qwen') ||
+    modelLower.includes('deepseek') ||
+    modelLower.includes(':')
+  ) {
     return 'ollama';
   }
-  
+
   // HuggingFace models (models with / or specific prefixes)
-  if (modelLower.includes('huggingface') || modelLower.includes('hf') || model.includes('/') ||
-      modelLower.startsWith('meta-') || modelLower.startsWith('microsoft/')) {
+  if (
+    modelLower.includes('huggingface') ||
+    modelLower.includes('hf') ||
+    model.includes('/') ||
+    modelLower.startsWith('meta-') ||
+    modelLower.startsWith('microsoft/')
+  ) {
     return 'huggingface';
   }
-  
+
   // Default to ollama for local-first approach
-  console.log(`⚠️  Unknown model type: ${model}, defaulting to Ollama (local AI)`);
+  console.log(
+    `⚠️  Unknown model type: ${model}, defaulting to Ollama (local AI)`,
+  );
   return 'ollama';
 }
 
@@ -222,6 +244,8 @@ function getProviderTypeFromModel(model: string): string {
 async function createMultiProviderContentGenerator(
   config: ContentGeneratorConfig,
 ): Promise<ContentGenerator> {
-  const { MultiProviderContentGeneratorWrapper } = await import('./multiProviderClient.js');
+  const { MultiProviderContentGeneratorWrapper } = await import(
+    './multiProviderClient.js'
+  );
   return new MultiProviderContentGeneratorWrapper(config);
 }

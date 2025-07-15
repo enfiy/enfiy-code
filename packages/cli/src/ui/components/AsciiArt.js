@@ -17,4 +17,4 @@ export const shortAsciiLogo = `
  |______ __,_ __ ___||___/  CLI
 `;
 
-export const longAsciiLogo = shortAsciiLogo;   // 好みで大きなロゴを用意しても OK
+export const longAsciiLogo = shortAsciiLogo; // 好みで大きなロゴを用意しても OK

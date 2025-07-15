@@ -7,14 +7,18 @@
  * Based on original work by Google LLC (2025)
  * Modified and extended by Hayate Esaki (2025)
  */
-import { Content, GenerateContentResponse, GenerateContentConfig } from '@google/genai';
+import {
+  Content,
+  GenerateContentResponse,
+  GenerateContentConfig,
+} from '@google/genai';
 
 export enum ProviderType {
   // Local AI Providers
   OLLAMA = 'ollama',
   HUGGINGFACE = 'huggingface',
   VLLM = 'vllm',
-  
+
   // Cloud AI Providers
   OPENAI = 'openai',
   ANTHROPIC = 'anthropic',
@@ -38,25 +42,25 @@ export interface ProviderConfig {
 export interface Provider {
   type: ProviderType;
   name: string;
-  
+
   initialize(config: ProviderConfig): Promise<void>;
-  
+
   generateContent(params: {
     model: string;
     contents: Content[];
     config?: GenerateContentConfig;
   }): Promise<GenerateContentResponse>;
-  
+
   generateContentStream(params: {
     model: string;
     contents: Content[];
     config?: GenerateContentConfig;
   }): Promise<AsyncGenerator<GenerateContentResponse>>;
-  
+
   isAvailable(): Promise<boolean>;
-  
+
   listModels?(): Promise<string[]>;
-  
+
   isLocalProvider(): boolean;
   getCapabilities(): {
     supportsStreaming: boolean;

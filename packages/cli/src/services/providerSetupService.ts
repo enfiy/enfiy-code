@@ -23,25 +23,29 @@ export class ProviderSetupService {
   private static readonly PROVIDER_CONFIG_KEY = 'enfiy_provider_config';
   private static readonly SETUP_COMPLETE_KEY = 'enfiy_setup_complete';
 
-  static async detectAndSetupProvider(forceSetup: boolean = false): Promise<ProviderSetupResult> {
+  static async detectAndSetupProvider(
+    forceSetup: boolean = false,
+  ): Promise<ProviderSetupResult> {
     const isFirstTime = !this.isSetupComplete() || forceSetup;
-    
+
     // Detect available providers
     const availableProviders = await ProviderFactory.detectAvailableProviders();
-    
+
     let config: ProviderConfig;
-    
+
     if (isFirstTime) {
       // First time setup - prefer local providers
       const preferredProvider = await ProviderFactory.getPreferredProvider();
       config = this.createDefaultConfigForProvider(preferredProvider);
-      
+
       // Save the selection
       this.saveProviderConfig(config);
       this.markSetupComplete();
     } else {
       // Load existing configuration
-      config = this.loadProviderConfig() || this.createDefaultConfigForProvider(ProviderType.OLLAMA);
+      config =
+        this.loadProviderConfig() ||
+        this.createDefaultConfigForProvider(ProviderType.OLLAMA);
     }
 
     return {
@@ -113,7 +117,9 @@ export class ProviderSetupService {
     }
   }
 
-  static async validateProviderConfig(config: ProviderConfig): Promise<boolean> {
+  static async validateProviderConfig(
+    config: ProviderConfig,
+  ): Promise<boolean> {
     try {
       const provider = ProviderFactory.createProvider(config.type);
       await provider.initialize(config);
@@ -123,7 +129,11 @@ export class ProviderSetupService {
     }
   }
 
-  static getProviderDisplayInfo(type: ProviderType): { name: string; description: string; icon: string } {
+  static getProviderDisplayInfo(type: ProviderType): {
+    name: string;
+    description: string;
+    icon: string;
+  } {
     switch (type) {
       case ProviderType.OLLAMA:
         return {

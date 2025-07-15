@@ -85,7 +85,7 @@ const UNTOUCHED_FILES = [
 const LICENSE_PATTERNS_TO_REMOVE = [
   /^\/\*\*\s*\* @license[\s\S]*?\*\/\s*\n/m,
   /\/\*\s*\* Modifications Copyright 2025 The Enfiy Community Contributors[\s\S]*?\*\//g,
-  /\/\*\s*Modifications Copyright 2025 The Enfiy Community Contributors[\s\S]*?\*\//g
+  /\/\*\s*Modifications Copyright 2025 The Enfiy Community Contributors[\s\S]*?\*\//g,
 ];
 
 function findSourceFiles(dir) {
@@ -96,7 +96,16 @@ function findSourceFiles(dir) {
     const fullPath = path.join(dir, entry.name);
 
     if (entry.isDirectory()) {
-      if (!['node_modules', 'dist', 'coverage', '.git', 'build', 'bundle'].includes(entry.name)) {
+      if (
+        ![
+          'node_modules',
+          'dist',
+          'coverage',
+          '.git',
+          'build',
+          'bundle',
+        ].includes(entry.name)
+      ) {
         files.push(...findSourceFiles(fullPath));
       }
     } else if (entry.isFile() && /\.(ts|tsx|js|jsx|sh)$/.test(entry.name)) {
@@ -107,7 +116,9 @@ function findSourceFiles(dir) {
 }
 
 function getLicenseInfo(filePath) {
-  const relativePath = path.relative(process.cwd(), filePath).replace(/\\/g, '/');
+  const relativePath = path
+    .relative(process.cwd(), filePath)
+    .replace(/\\/g, '/');
 
   if (NEW_FILES.includes(relativePath)) {
     return { header: HAYATE_ESAKI_HEADER, type: 'Hayate Esaki' };
@@ -117,7 +128,10 @@ function getLicenseInfo(filePath) {
     return { header: GOOGLE_LICENSE_HEADER, type: 'Google LLC' };
   }
 
-  return { header: GOOGLE_AND_HAYATE_ESAKI_HEADER, type: 'Google + Hayate Esaki' };
+  return {
+    header: GOOGLE_AND_HAYATE_ESAKI_HEADER,
+    type: 'Google + Hayate Esaki',
+  };
 }
 
 function fixLicenseHeader(filePath) {
@@ -140,7 +154,9 @@ function fixLicenseHeader(filePath) {
   const finalContent = shebang + header + '\n' + content;
 
   fs.writeFileSync(filePath, finalContent);
-  console.log(`Fixed: ${path.relative(process.cwd(), filePath)} (${type} license)`);
+  console.log(
+    `Fixed: ${path.relative(process.cwd(), filePath)} (${type} license)`,
+  );
 }
 
 function main() {
@@ -160,7 +176,9 @@ function main() {
     }
   }
 
-  console.log(`\nLicense header fix complete. Fixed ${fixedCount} files. Encountered ${errorCount} errors.`);
+  console.log(
+    `\nLicense header fix complete. Fixed ${fixedCount} files. Encountered ${errorCount} errors.`,
+  );
 }
 
 main();

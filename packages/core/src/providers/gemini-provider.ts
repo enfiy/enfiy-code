@@ -7,14 +7,18 @@
  * Based on original work by Google LLC (2025)
  * Modified and extended by Hayate Esaki (2025)
  */
-import { Content, GenerateContentResponse, GenerateContentConfig } from '@google/genai';
+import {
+  Content,
+  GenerateContentResponse,
+  GenerateContentConfig,
+} from '@google/genai';
 import { Provider, ProviderType, ProviderConfig } from './types.js';
 import { ContentGenerator } from '../core/contentGenerator.js';
 
 export class GeminiProvider implements Provider {
   readonly type = ProviderType.GEMINI;
   readonly name = 'Google Gemini';
-  
+
   private contentGenerator!: ContentGenerator;
   private model: string = 'gemini-1.5-flash';
 

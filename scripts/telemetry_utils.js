@@ -214,9 +214,7 @@ export async function ensureBinary(
   }
 
   const downloadUrl = asset.browser_download_url;
-  const tmpDir = fs.mkdtempSync(
-    path.join(os.tmpdir(), 'enfiy-cli-telemetry-'),
-  );
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'enfiy-cli-telemetry-'));
   const archivePath = path.join(tmpDir, asset.name);
 
   try {

@@ -7,18 +7,33 @@
 import { BaseTool, ToolResult, ToolCallConfirmationDetails } from './tools.js';
 import { CallableTool } from '@google/genai';
 type ToolParams = Record<string, unknown>;
-export declare class DiscoveredMCPTool extends BaseTool<ToolParams, ToolResult> {
-    private readonly mcpTool;
-    readonly serverName: string;
-    readonly name: string;
-    readonly description: string;
-    readonly parameterSchema: Record<string, unknown>;
-    readonly serverToolName: string;
-    readonly timeout?: number | undefined;
-    readonly trust?: boolean | undefined;
-    private static readonly allowlist;
-    constructor(mcpTool: CallableTool, serverName: string, name: string, description: string, parameterSchema: Record<string, unknown>, serverToolName: string, timeout?: number | undefined, trust?: boolean | undefined);
-    shouldConfirmExecute(_params: ToolParams, _abortSignal: AbortSignal): Promise<ToolCallConfirmationDetails | false>;
-    execute(params: ToolParams): Promise<ToolResult>;
+export declare class DiscoveredMCPTool extends BaseTool<
+  ToolParams,
+  ToolResult
+> {
+  private readonly mcpTool;
+  readonly serverName: string;
+  readonly name: string;
+  readonly description: string;
+  readonly parameterSchema: Record<string, unknown>;
+  readonly serverToolName: string;
+  readonly timeout?: number | undefined;
+  readonly trust?: boolean | undefined;
+  private static readonly allowlist;
+  constructor(
+    mcpTool: CallableTool,
+    serverName: string,
+    name: string,
+    description: string,
+    parameterSchema: Record<string, unknown>,
+    serverToolName: string,
+    timeout?: number | undefined,
+    trust?: boolean | undefined,
+  );
+  shouldConfirmExecute(
+    _params: ToolParams,
+    _abortSignal: AbortSignal,
+  ): Promise<ToolCallConfirmationDetails | false>;
+  execute(params: ToolParams): Promise<ToolResult>;
 }
 export {};

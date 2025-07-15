@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 export const DEFAULT_DIFF_OPTIONS = {
-    context: 3,
-    ignoreWhitespace: true,
+  context: 3,
+  ignoreWhitespace: true,
 };
 //# sourceMappingURL=diffOptions.js.map

@@ -194,7 +194,7 @@ export function loadSettings(workspaceDir: string): LoadedSettings {
       if (!fs.existsSync(USER_SETTINGS_DIR)) {
         fs.mkdirSync(USER_SETTINGS_DIR, { recursive: true, mode: 0o700 });
       }
-      
+
       // Copy old settings to new location
       const oldContent = fs.readFileSync(oldSettingsPath, 'utf-8');
       fs.writeFileSync(USER_SETTINGS_PATH, oldContent, { mode: 0o600 });

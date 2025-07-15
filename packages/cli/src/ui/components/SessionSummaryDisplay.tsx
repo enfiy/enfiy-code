@@ -30,12 +30,8 @@ const StatRow: React.FC<{
   isTotal?: boolean;
 }> = ({ label, value, isTotal = false }) => (
   <Box justifyContent="space-between">
-    <Text bold={isTotal}>
-      {label}
-    </Text>
-    <Text bold={isTotal}>
-      {value}
-    </Text>
+    <Text bold={isTotal}>{label}</Text>
+    <Text bold={isTotal}>{value}</Text>
   </Box>
 );
 
@@ -69,17 +65,13 @@ export const SessionSummaryDisplay: React.FC<SessionSummaryDisplayProps> = ({
     >
       {/* Header */}
       <Box marginBottom={2} justifyContent="center">
-        <Text bold>
-          Enfiy Code Session Complete!
-        </Text>
+        <Text bold>Enfiy Code Session Complete!</Text>
       </Box>
 
       {/* Stats Section */}
       <Box marginTop={1} flexDirection="column">
-        <Text bold>
-          Session Statistics ({stats.turnCount} Turns)
-        </Text>
-        
+        <Text bold>Session Statistics ({stats.turnCount} Turns)</Text>
+
         <StatRow
           label="Input Tokens"
           value={cumulativeFormatted.inputTokens.toLocaleString()}
@@ -99,19 +91,16 @@ export const SessionSummaryDisplay: React.FC<SessionSummaryDisplayProps> = ({
           value={cumulativeFormatted.thoughtsTokens.toLocaleString()}
         />
         {cumulativeFormatted.cachedTokens > 0 && (
-          <StatRow
-            label="Cached Tokens"
-            value={cachedDisplay}
-          />
+          <StatRow label="Cached Tokens" value={cachedDisplay} />
         )}
-        
+
         {/* Divider */}
         <Box>
           <Text>
             ────────────────────────────────────────────────────────────
           </Text>
         </Box>
-        
+
         <StatRow
           label="Total Tokens"
           value={cumulativeFormatted.totalTokens.toLocaleString()}
@@ -121,17 +110,9 @@ export const SessionSummaryDisplay: React.FC<SessionSummaryDisplayProps> = ({
 
       {/* Duration Section */}
       <Box marginTop={1} flexDirection="column">
-        <Text bold>
-          Performance Metrics
-        </Text>
-        <StatRow
-          label="API Duration"
-          value={formatDuration(stats.apiTimeMs)}
-        />
-        <StatRow
-          label="Total Duration"
-          value={duration}
-        />
+        <Text bold>Performance Metrics</Text>
+        <StatRow label="API Duration" value={formatDuration(stats.apiTimeMs)} />
+        <StatRow label="Total Duration" value={duration} />
       </Box>
 
       {/* Footer */}

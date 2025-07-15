@@ -7,10 +7,7 @@
  * Based on original work by Google LLC (2025)
  * Modified and extended by Hayate Esaki (2025)
  */
-import {
-  ToolCallConfirmationDetails,
-  ToolResultDisplay,
-} from '@enfiy/core';
+import { ToolCallConfirmationDetails, ToolResultDisplay } from '@enfiy/core';
 import { CumulativeStats } from './contexts/SessionContext.js';
 
 // Only defining the state enum needed by the UI

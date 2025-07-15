@@ -124,10 +124,7 @@ const ToolStatusIndicator: React.FC<ToolStatusIndicatorProps> = ({
       <Text color={Colors.AccentGreen}>o</Text>
     )}
     {status === ToolCallStatus.Executing && (
-      <EnfiyRespondingSpinner
-        spinnerType="toggle"
-        nonRespondingDisplay={'⊷'}
-      />
+      <EnfiyRespondingSpinner spinnerType="toggle" nonRespondingDisplay={'⊷'} />
     )}
     {status === ToolCallStatus.Success && (
       <Text color={Colors.AccentGreen}>✔</Text>

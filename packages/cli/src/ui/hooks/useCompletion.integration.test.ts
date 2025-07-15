@@ -101,7 +101,7 @@ describe('useCompletion git-aware filtering integration', () => {
       { name: 'dist', isDirectory: () => true },
       { name: 'README.md', isDirectory: () => false },
       { name: '.env', isDirectory: () => false },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any);
 
     // Mock git ignore service to ignore certain files
@@ -141,18 +141,19 @@ describe('useCompletion git-aware filtering integration', () => {
             { name: 'src', isDirectory: () => true },
             { name: 'node_modules', isDirectory: () => true },
             { name: 'temp', isDirectory: () => true },
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-] as any ;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ] as any;
         }
         if (String(dirPath).endsWith('/src')) {
           return [
             { name: 'index.ts', isDirectory: () => false },
             { name: 'components', isDirectory: () => true },
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-] as any ;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ] as any;
         }
         if (String(dirPath).endsWith('/temp')) {
-          return [{ name: 'temp.log', isDirectory: () => false }          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return [
+            { name: 'temp.log', isDirectory: () => false }, // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ] as any;
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -195,11 +196,17 @@ describe('useCompletion git-aware filtering integration', () => {
     vi.mocked(fs.readdir).mockResolvedValue([
       { name: 'data', isDirectory: () => true },
       { name: 'dist', isDirectory: () => true },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any);
 
     renderHook(() =>
-      useCompletion('@d', testCwd, true, slashCommands, mockConfigNoRecursive as Config),
+      useCompletion(
+        '@d',
+        testCwd,
+        true,
+        slashCommands,
+        mockConfigNoRecursive as Config,
+      ),
     );
 
     await act(async () => {
@@ -217,7 +224,7 @@ describe('useCompletion git-aware filtering integration', () => {
       { name: 'src', isDirectory: () => true },
       { name: 'node_modules', isDirectory: () => true },
       { name: 'README.md', isDirectory: () => false },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any);
 
     const { result } = renderHook(() =>
@@ -243,7 +250,7 @@ describe('useCompletion git-aware filtering integration', () => {
     vi.mocked(fs.readdir).mockResolvedValue([
       { name: 'src', isDirectory: () => true },
       { name: 'README.md', isDirectory: () => false },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any);
 
     const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -270,7 +277,7 @@ describe('useCompletion git-aware filtering integration', () => {
       { name: 'component.tsx', isDirectory: () => false },
       { name: 'temp.log', isDirectory: () => false },
       { name: 'index.ts', isDirectory: () => false },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any);
 
     mockFileDiscoveryService.shouldGitIgnoreFile.mockImplementation(

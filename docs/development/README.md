@@ -5,12 +5,14 @@ Technical documentation for contributors and developers working on Enfiy Code.
 ## Getting Started
 
 ### Development Setup
+
 1. **Prerequisites**
    - Node.js v18 or higher
    - npm or yarn package manager
    - Git
 
 2. **Environment Setup**
+
    ```bash
    git clone https://github.com/enfiy-ecosystem/enfiy-code.git
    cd enfiy-code
@@ -34,15 +36,18 @@ Technical documentation for contributors and developers working on Enfiy Code.
 ## Architecture
 
 ### System Overview
+
 - **[Architecture](./architecture.md)** – High-level system design and component interaction
 - **[Deployment](./deployment.md)** – Deployment strategies and environment setup
 
 ### Extension Development
+
 - **[Extensions](./extension.md)** – Creating custom extensions and plugins
 
 ## Code Organization
 
 ### Package Structure
+
 ```
 enfiy-code/
 ├── packages/
@@ -54,6 +59,7 @@ enfiy-code/
 ```
 
 ### Key Directories
+
 - `packages/cli/src/` – CLI implementation
 - `packages/core/src/` – Core system, tools, and providers
 - `docs/` – User and developer documentation
@@ -62,18 +68,21 @@ enfiy-code/
 ## Development Guidelines
 
 ### Code Style
+
 - TypeScript for all new code
 - ESLint configuration enforced
 - Prettier for code formatting
 - Conventional commits for git messages
 
 ### Testing Strategy
+
 - Unit tests for core functionality
 - Integration tests for tool workflows
 - End-to-end tests for CLI interactions
 - Performance benchmarks
 
 ### Pull Request Process
+
 1. Fork the repository
 2. Create a feature branch
 3. Implement changes with tests
@@ -83,6 +92,7 @@ enfiy-code/
 ## Tool Development
 
 ### Creating Custom Tools
+
 ```typescript
 // Example tool implementation
 export class CustomTool extends BaseTool {
@@ -94,13 +104,14 @@ export class CustomTool extends BaseTool {
     return {
       success: true,
       data: result,
-      metadata: { tool: this.name }
+      metadata: { tool: this.name },
     };
   }
 }
 ```
 
 ### Tool Registration
+
 ```typescript
 // Register in tool registry
 toolRegistry.register(new CustomTool());
@@ -109,6 +120,7 @@ toolRegistry.register(new CustomTool());
 ## Provider Development
 
 ### AI Provider Interface
+
 ```typescript
 interface AIProvider {
   name: string;
@@ -119,6 +131,7 @@ interface AIProvider {
 ```
 
 ### Provider Implementation
+
 ```typescript
 export class CustomProvider implements AIProvider {
   name = 'custom-provider';
@@ -137,6 +150,7 @@ export class CustomProvider implements AIProvider {
 ## Testing
 
 ### Running Tests
+
 ```bash
 npm test                    # All tests
 npm run test:unit          # Unit tests only
@@ -145,6 +159,7 @@ npm run test:e2e          # End-to-end tests
 ```
 
 ### Test Structure
+
 ```
 tests/
 ├── unit/              # Unit tests
@@ -154,6 +169,7 @@ tests/
 ```
 
 ### Writing Tests
+
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { CustomTool } from '../src/tools/custom-tool';
@@ -170,18 +186,21 @@ describe('CustomTool', () => {
 ## Debugging
 
 ### Debug Mode
+
 ```bash
 npm run debug           # Start with debug logging
 DEBUG=enfiy:* npm start # Detailed debug output
 ```
 
 ### Common Debug Scenarios
+
 - Provider authentication issues
 - Tool execution failures
 - Configuration problems
 - Performance bottlenecks
 
 ### Debug Tools
+
 - Built-in debug commands
 - Chrome DevTools for Node.js
 - Performance profiling
@@ -190,17 +209,20 @@ DEBUG=enfiy:* npm start # Detailed debug output
 ## Build System
 
 ### Build Process
+
 1. TypeScript compilation
 2. Asset bundling
 3. Dependency resolution
 4. Package preparation
 
 ### Build Configuration
+
 - `tsconfig.json` – TypeScript configuration
 - `esbuild.config.js` – Build tool configuration
 - `package.json` – Package metadata and scripts
 
 ### Release Process
+
 1. Version bump
 2. Changelog generation
 3. Build and test
@@ -210,18 +232,21 @@ DEBUG=enfiy:* npm start # Detailed debug output
 ## Contributing
 
 ### Issue Reporting
+
 - Use GitHub issue templates
 - Provide reproduction steps
 - Include system information
 - Attach relevant logs
 
 ### Feature Requests
+
 - Describe use case clearly
 - Provide implementation ideas
 - Consider backwards compatibility
 - Discuss design implications
 
 ### Code Contributions
+
 - Follow coding standards
 - Include comprehensive tests
 - Update documentation
@@ -230,18 +255,21 @@ DEBUG=enfiy:* npm start # Detailed debug output
 ## Resources
 
 ### Development Tools
+
 - VS Code with recommended extensions
 - GitHub CLI for repository management
 - Node.js debugging tools
 - Performance monitoring
 
 ### External Documentation
+
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [Node.js Documentation](https://nodejs.org/docs/)
 - [Vitest Testing Framework](https://vitest.dev/)
 - [ESLint Rules](https://eslint.org/docs/rules/)
 
 ### Community
+
 - GitHub Discussions for questions
 - Issue tracker for bugs and features
 - Pull requests for contributions

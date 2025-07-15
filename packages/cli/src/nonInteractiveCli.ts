@@ -37,28 +37,30 @@ function getResponseText(response: GenerateContentResponse): string | null {
       if (thoughtPart?.thought) {
         return null;
       }
-      
+
       const fullText = candidate.content.parts
         .filter((part) => part.text)
         .map((part) => part.text)
         .join('');
-      
+
       // If response contains code blocks, summarize instead of showing full content
       if (fullText.includes('```') || fullText.length > 500) {
         // Check if file creation tools are being executed
         if (response.functionCalls && response.functionCalls.length > 0) {
-          const fileCreationCalls = response.functionCalls.filter(fc => fc.name === 'write_file');
+          const fileCreationCalls = response.functionCalls.filter(
+            (fc) => fc.name === 'write_file',
+          );
           if (fileCreationCalls.length > 0) {
             return `Creating ${fileCreationCalls.length} file(s)...`;
           }
         }
-        
+
         // For long responses without tool calls, show summary
         if (fullText.length > 500) {
           return fullText.substring(0, 200) + '... [response truncated]';
         }
       }
-      
+
       return fullText;
     }
   }

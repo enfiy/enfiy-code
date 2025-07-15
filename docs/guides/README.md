@@ -5,26 +5,31 @@ This section contains comprehensive guides for using Enfiy Code effectively in v
 ## Available Guides
 
 ### Core Features
+
 - **[MCP Integration](./mcp-integration.md)** – Connect external tools and services through Model Context Protocol
 - **[Checkpointing](./checkpointing.md)** – Save and restore conversation sessions
 
 ### Workflow Guides
+
 - **[Project Development](./project-development.md)** – Complete workflows for building applications
 - **[Debugging](./debugging.md)** – Systematic approaches to debugging with AI
-- **[Code Review](./code-review.md)** – Using AI assistance for code reviews *(coming soon)*
-- **[Refactoring](./refactoring.md)** – Large-scale code improvements *(coming soon)*
+- **[Code Review](./code-review.md)** – Using AI assistance for code reviews _(coming soon)_
+- **[Refactoring](./refactoring.md)** – Large-scale code improvements _(coming soon)_
 
 ### Provider-Specific Guides
+
 - **[Cloud Providers](./cloud-providers.md)** – OpenAI, Anthropic, Google, Mistral setup and best practices
-- **[Local Providers](./local-providers.md)** – Ollama, HuggingFace local model setup *(coming soon)*
-- **[Model Selection](./model-selection.md)** – Choosing the right model for your task *(coming soon)*
+- **[Local Providers](./local-providers.md)** – Ollama, HuggingFace local model setup _(coming soon)_
+- **[Model Selection](./model-selection.md)** – Choosing the right model for your task _(coming soon)_
 
 ### Advanced Usage
+
 - **[Custom Tools](./custom-tools.md)** – Creating and integrating custom tools
 - **[Automation](./automation.md)** – Automating workflows with Enfiy Code
 - **[Performance Optimization](./performance.md)** – Tips for efficient usage
 
 ### Integration Guides
+
 - **[IDE Integration](./ide-integration.md)** – Using Enfiy Code with your favorite IDE
 - **[CI/CD Integration](./ci-cd.md)** – Incorporating AI assistance in build pipelines
 - **[Team Collaboration](./team-collaboration.md)** – Best practices for teams
@@ -42,12 +47,14 @@ Need help with a specific task?
 ## Contributing
 
 Found a use case not covered? Consider contributing a guide:
+
 1. Fork the repository
 2. Create a new guide in `docs/guides/`
 3. Follow the established format
 4. Submit a pull request
 
 Each guide should include:
+
 - Clear objectives
 - Step-by-step instructions
 - Code examples

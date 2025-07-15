@@ -101,12 +101,12 @@ export function toCountTokenRequest(
   // Ensure model name is in correct format for the API
   let modelName = req.model;
   const originalModel = modelName;
-  
+
   // If model doesn't start with models/, add it
   if (!modelName.startsWith('models/')) {
     modelName = 'models/' + modelName;
   }
-  
+
   // Map specific model names that might need correction
   if (modelName === 'models/gemini-1.5-flash') {
     modelName = 'models/gemini-1.5-flash-latest';
@@ -115,12 +115,12 @@ export function toCountTokenRequest(
   } else if (modelName === 'models/gemini-2.0-flash-exp') {
     modelName = 'models/gemini-2.0-flash-exp';
   }
-  
+
   console.log('[CONVERTER] CountTokens model conversion:', {
     original: originalModel,
     final: modelName,
   });
-  
+
   return {
     request: {
       model: modelName,

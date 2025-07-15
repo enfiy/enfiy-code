@@ -5,6 +5,7 @@ Enfiy Code includes telemetry functionality to collect usage data and performanc
 ## Overview
 
 Telemetry helps us:
+
 - Understand how features are used
 - Identify performance issues
 - Improve user experience
@@ -16,6 +17,7 @@ Telemetry helps us:
 ### What We Collect
 
 **Usage Metrics:**
+
 - Command usage frequency
 - Feature adoption rates
 - Session duration
@@ -23,6 +25,7 @@ Telemetry helps us:
 - Tool usage statistics
 
 **Performance Data:**
+
 - Response times
 - Error rates
 - Memory usage
@@ -30,12 +33,14 @@ Telemetry helps us:
 - Network latency
 
 **Configuration Data:**
+
 - Provider preferences (anonymized)
 - Theme selections
 - Feature flag states
 - Version information
 
 **Error Information:**
+
 - Stack traces (sanitized)
 - Error frequencies
 - Failure contexts
@@ -44,6 +49,7 @@ Telemetry helps us:
 ### What We Don't Collect
 
 **Personal Information:**
+
 - User content or messages
 - API keys or credentials
 - Personal files or data
@@ -51,6 +57,7 @@ Telemetry helps us:
 - IP addresses (beyond aggregated analytics)
 
 **Sensitive Data:**
+
 - Code content
 - File contents
 - Tool execution results
@@ -60,18 +67,21 @@ Telemetry helps us:
 ## Privacy and Security
 
 ### Data Anonymization
+
 - All user identifiers are hashed
 - Personally identifiable information is stripped
 - Location data is aggregated to region level
 - Timestamps are rounded to protect privacy
 
 ### Data Retention
+
 - Usage data: 24 months
 - Error data: 12 months
 - Performance data: 6 months
 - Aggregated analytics: Indefinite
 
 ### Data Protection
+
 - All data transmitted over HTTPS
 - Data stored in secure, encrypted databases
 - Access restricted to authorized personnel
@@ -80,6 +90,7 @@ Telemetry helps us:
 ## Telemetry Configuration
 
 ### Default Settings
+
 Telemetry is **enabled by default** with privacy-first settings:
 
 ```json
@@ -98,40 +109,47 @@ Telemetry is **enabled by default** with privacy-first settings:
 ### Telemetry Levels
 
 **Basic (Default):**
+
 - Usage frequency
 - Error rates
 - Performance metrics
 - Feature adoption
 
 **Detailed:**
+
 - Command sequences
 - Session patterns
 - Detailed error context
 - Performance profiling
 
 **Minimal:**
+
 - Critical errors only
 - Basic performance data
 - No usage tracking
 
 **Off:**
+
 - No data collection
 - Local error logging only
 
 ### Controlling Telemetry
 
 #### Via Settings UI
+
 ```bash
 /settings telemetry
 ```
 
 Interactive menu to:
+
 - Enable/disable telemetry
 - Change collection level
 - View current settings
 - Export collected data
 
 #### Via Configuration File
+
 Edit `~/.enfiy/settings.json`:
 
 ```json
@@ -145,6 +163,7 @@ Edit `~/.enfiy/settings.json`:
 ```
 
 #### Via Environment Variables
+
 ```bash
 # Disable all telemetry
 export ENFIY_TELEMETRY=false
@@ -157,6 +176,7 @@ export ENFIY_ERROR_REPORTING=false
 ```
 
 #### Via Command Line
+
 ```bash
 # Disable for single session
 enfiy --no-telemetry
@@ -171,6 +191,7 @@ enfiy --telemetry-status
 ## Data Types and Examples
 
 ### Usage Events
+
 ```json
 {
   "event": "command_executed",
@@ -183,6 +204,7 @@ enfiy --telemetry-status
 ```
 
 ### Performance Metrics
+
 ```json
 {
   "event": "response_time",
@@ -196,6 +218,7 @@ enfiy --telemetry-status
 ```
 
 ### Error Reports
+
 ```json
 {
   "event": "error_occurred",
@@ -211,6 +234,7 @@ enfiy --telemetry-status
 ## Local Analytics
 
 ### Viewing Your Data
+
 ```bash
 # Show telemetry summary
 enfiy telemetry show
@@ -223,12 +247,15 @@ enfiy telemetry stats --timeframe 7d
 ```
 
 ### Data Dashboard
+
 Access local analytics dashboard:
+
 ```bash
 enfiy telemetry dashboard
 ```
 
 Shows:
+
 - Command usage patterns
 - Performance trends
 - Error frequencies
@@ -237,12 +264,14 @@ Shows:
 ## Compliance and Regulations
 
 ### GDPR Compliance
+
 - Right to access your data
 - Right to data portability
 - Right to erasure
 - Lawful basis: Legitimate interest
 
 ### Data Subject Rights
+
 ```bash
 # Request your data
 enfiy telemetry export --complete
@@ -257,6 +286,7 @@ enfiy telemetry opt-out --permanent
 ## Developer Integration
 
 ### Custom Telemetry
+
 Extensions can integrate with telemetry:
 
 ```typescript
@@ -266,7 +296,7 @@ import { telemetry } from '@enfiy/core';
 telemetry.track('custom_tool_used', {
   tool_name: 'my_tool',
   execution_time: 500,
-  success: true
+  success: true,
 });
 
 // Track performance
@@ -277,11 +307,12 @@ timer.end();
 // Track errors
 telemetry.trackError('custom_error', error, {
   context: 'tool_execution',
-  tool_name: 'my_tool'
+  tool_name: 'my_tool',
 });
 ```
 
 ### Telemetry API
+
 ```typescript
 interface TelemetryService {
   track(event: string, properties?: any): void;
@@ -295,6 +326,7 @@ interface TelemetryService {
 ## Data Processing
 
 ### Aggregation Pipeline
+
 1. **Collection**: Raw events collected locally
 2. **Sanitization**: Remove sensitive information
 3. **Anonymization**: Hash identifiers
@@ -304,6 +336,7 @@ interface TelemetryService {
 7. **Insights**: Generate product insights
 
 ### Data Flow
+
 ```
 Local Events → Sanitization → Anonymization → Batching → Transmission → Analytics
 ```
@@ -311,6 +344,7 @@ Local Events → Sanitization → Anonymization → Batching → Transmission �
 ## Opt-Out Instructions
 
 ### Complete Opt-Out
+
 ```bash
 # Disable all telemetry
 enfiy telemetry disable --all
@@ -320,6 +354,7 @@ enfiy telemetry status
 ```
 
 ### Selective Opt-Out
+
 ```bash
 # Disable usage tracking only
 enfiy telemetry disable --usage
@@ -332,6 +367,7 @@ enfiy telemetry enable --performance-only
 ```
 
 ### Organizational Opt-Out
+
 For enterprise deployments:
 
 ```bash
@@ -345,6 +381,7 @@ echo '{"telemetry": {"enabled": false}}' > /etc/enfiy/settings.json
 ## Transparency Report
 
 ### Data Usage Summary
+
 - **Purpose**: Product improvement and bug fixing
 - **Recipients**: Development team only
 - **Location**: Secure cloud infrastructure
@@ -352,6 +389,7 @@ echo '{"telemetry": {"enabled": false}}' > /etc/enfiy/settings.json
 - **Third Parties**: None (data not shared)
 
 ### Your Rights
+
 - View collected data at any time
 - Export data in machine-readable format
 - Request data deletion
@@ -361,6 +399,7 @@ echo '{"telemetry": {"enabled": false}}' > /etc/enfiy/settings.json
 ## Contact Information
 
 For telemetry-related questions:
+
 - **Data Protection**: privacy@enfiy.com
 - **Technical Support**: support@enfiy.com
 - **Documentation**: [Privacy Policy](./tos-privacy.md)
@@ -370,6 +409,7 @@ For telemetry-related questions:
 ### Common Issues
 
 **Telemetry not working:**
+
 ```bash
 # Check telemetry status
 enfiy telemetry status
@@ -382,6 +422,7 @@ enfiy --debug --log-level debug
 ```
 
 **High data usage:**
+
 ```bash
 # Reduce telemetry level
 enfiy telemetry level minimal
@@ -391,6 +432,7 @@ enfiy telemetry usage --last-month
 ```
 
 **Configuration issues:**
+
 ```bash
 # Reset telemetry settings
 enfiy telemetry reset

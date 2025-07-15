@@ -7,7 +7,10 @@
  * Based on original work by Google LLC (2025)
  * Modified and extended by Hayate Esaki (2025)
  */
-export const DEFAULT_DIFF_OPTIONS: { context: number; ignoreWhitespace: boolean } = {
+export const DEFAULT_DIFF_OPTIONS: {
+  context: number;
+  ignoreWhitespace: boolean;
+} = {
   context: 3,
   ignoreWhitespace: true,
 };

@@ -55,7 +55,7 @@ export function useKeypress(
     let imeComposing = false;
     let lastJapaneseTime = 0;
     const IME_COMPOSITION_TIMEOUT = 200; // ms
-    
+
     const handleKeypress = (_: unknown, key: Key) => {
       // Debug Japanese IME input
       if (process.env['TEXTBUFFER_DEBUG'] === '1') {
@@ -65,17 +65,19 @@ export function useKeypress(
           ctrl: key.ctrl,
           meta: key.meta,
           length: key.sequence?.length,
-          charCodes: key.sequence ? Array.from(key.sequence).map(c => c.charCodeAt(0)) : [],
+          charCodes: key.sequence
+            ? Array.from(key.sequence).map((c) => c.charCodeAt(0))
+            : [],
           imeBuffer,
           imeComposing,
         });
       }
-      
+
       // Handle Japanese IME composition (but not during paste operations)
       if (!isPaste && key.sequence && key.sequence.length > 0) {
         const firstCharCode = key.sequence.charCodeAt(0);
         const currentTime = Date.now();
-        
+
         // Check if this is a Japanese/multi-byte character
         if (firstCharCode > 127 && !key.name && !key.ctrl && !key.meta) {
           if (process.env['TEXTBUFFER_DEBUG'] === '1') {
@@ -86,27 +88,36 @@ export function useKeypress(
               timeSinceLastChar: currentTime - lastJapaneseTime,
             });
           }
-          
+
           // If this is part of IME composition (characters coming in quick succession)
-          if (!imeComposing || (currentTime - lastJapaneseTime) < IME_COMPOSITION_TIMEOUT) {
+          if (
+            !imeComposing ||
+            currentTime - lastJapaneseTime < IME_COMPOSITION_TIMEOUT
+          ) {
             imeComposing = true;
             imeBuffer += key.sequence;
             lastJapaneseTime = currentTime;
-            
+
             if (process.env['TEXTBUFFER_DEBUG'] === '1') {
               console.log('[KEYPRESS] Accumulating in IME buffer:', {
                 newBuffer: imeBuffer,
                 addedChar: key.sequence,
               });
             }
-            
+
             // Set a timeout to flush the buffer if no more characters come
             setTimeout(() => {
-              if (imeComposing && (Date.now() - lastJapaneseTime) >= IME_COMPOSITION_TIMEOUT) {
+              if (
+                imeComposing &&
+                Date.now() - lastJapaneseTime >= IME_COMPOSITION_TIMEOUT
+              ) {
                 if (process.env['TEXTBUFFER_DEBUG'] === '1') {
-                  console.log('[KEYPRESS] IME composition timeout, flushing buffer:', imeBuffer);
+                  console.log(
+                    '[KEYPRESS] IME composition timeout, flushing buffer:',
+                    imeBuffer,
+                  );
                 }
-                
+
                 // Flush the accumulated IME buffer
                 onKeypressRef.current({
                   name: '',
@@ -116,12 +127,12 @@ export function useKeypress(
                   paste: false,
                   sequence: imeBuffer,
                 });
-                
+
                 imeBuffer = '';
                 imeComposing = false;
               }
             }, IME_COMPOSITION_TIMEOUT + 10);
-            
+
             return; // Don't process this character individually
           } else {
             // Composition ended, this is a new character sequence
@@ -136,7 +147,7 @@ export function useKeypress(
                 sequence: imeBuffer,
               });
             }
-            
+
             // Start new composition with this character
             imeBuffer = key.sequence;
             imeComposing = true;
@@ -147,9 +158,12 @@ export function useKeypress(
           // Non-Japanese character while IME was composing - flush the buffer first
           if (imeBuffer) {
             if (process.env['TEXTBUFFER_DEBUG'] === '1') {
-              console.log('[KEYPRESS] Non-Japanese char while composing, flushing buffer:', imeBuffer);
+              console.log(
+                '[KEYPRESS] Non-Japanese char while composing, flushing buffer:',
+                imeBuffer,
+              );
             }
-            
+
             onKeypressRef.current({
               name: '',
               ctrl: false,
@@ -158,13 +172,13 @@ export function useKeypress(
               paste: false,
               sequence: imeBuffer,
             });
-            
+
             imeBuffer = '';
             imeComposing = false;
           }
         }
       }
-      
+
       if (key.name === 'paste-start') {
         isPaste = true;
       } else if (key.name === 'paste-end') {
@@ -181,19 +195,25 @@ export function useKeypress(
         pasteBuffer = Buffer.alloc(0);
       } else {
         if (isPaste) {
-          pasteBuffer = Buffer.concat([pasteBuffer, Buffer.from(key.sequence, 'utf8')]);
+          pasteBuffer = Buffer.concat([
+            pasteBuffer,
+            Buffer.from(key.sequence, 'utf8'),
+          ]);
         } else {
           // Handle special keys
           if (key.name === 'return' && key.sequence === '\x1B\r') {
             key.meta = true;
           }
-          
+
           // If Enter is pressed while IME is composing, flush the buffer first
           if (key.name === 'return' && imeComposing && imeBuffer) {
             if (process.env['TEXTBUFFER_DEBUG'] === '1') {
-              console.log('[KEYPRESS] Enter pressed during IME composition, flushing buffer:', imeBuffer);
+              console.log(
+                '[KEYPRESS] Enter pressed during IME composition, flushing buffer:',
+                imeBuffer,
+              );
             }
-            
+
             // Flush IME buffer first
             onKeypressRef.current({
               name: '',
@@ -203,17 +223,17 @@ export function useKeypress(
               paste: false,
               sequence: imeBuffer,
             });
-            
+
             imeBuffer = '';
             imeComposing = false;
-            
+
             // Then process the Enter key
             setTimeout(() => {
               onKeypressRef.current({ ...key, paste: isPaste });
             }, 10);
             return;
           }
-          
+
           onKeypressRef.current({ ...key, paste: isPaste });
         }
       }
@@ -239,7 +259,7 @@ export function useKeypress(
         });
         pasteBuffer = Buffer.alloc(0);
       }
-      
+
       // If we are in the middle of IME composition, send what we have.
       if (imeComposing && imeBuffer) {
         if (process.env['TEXTBUFFER_DEBUG'] === '1') {

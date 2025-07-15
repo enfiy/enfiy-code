@@ -7,26 +7,31 @@ This guide covers how to configure API keys for various AI providers in Enfiy Co
 ### Cloud Providers
 
 #### OpenAI
+
 ```bash
 export OPENAI_API_KEY="sk-..."
 ```
 
 #### Anthropic
+
 ```bash
 export ANTHROPIC_API_KEY="sk-ant-api03-..."
 ```
 
 #### Google Gemini
+
 ```bash
 export GEMINI_API_KEY="AIza..."
 ```
 
 #### Mistral
+
 ```bash
 export MISTRAL_API_KEY="..."
 ```
 
 #### HuggingFace
+
 ```bash
 export HUGGINGFACE_API_KEY="hf_..."
 ```
@@ -34,6 +39,7 @@ export HUGGINGFACE_API_KEY="hf_..."
 ### Local Providers
 
 #### Ollama
+
 ```bash
 export OLLAMA_HOST="http://localhost:11434"
 ```

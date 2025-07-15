@@ -42,7 +42,7 @@ import { EditorSettingsDialog } from './components/EditorSettingsDialog.js';
 import { Colors } from './colors.js';
 import { Help } from './components/Help.js';
 import { loadHierarchicalEnfiyMemory } from '../config/config.js';
-import { LoadedSettings , SettingScope } from '../config/settings.js';
+import { LoadedSettings, SettingScope } from '../config/settings.js';
 import { Tips } from './components/Tips.js';
 import { useConsolePatcher } from './components/ConsolePatcher.js';
 import { DetailedMessagesDisplay } from './components/DetailedMessagesDisplay.js';
@@ -74,11 +74,11 @@ import { checkForUpdates } from './utils/updateCheck.js';
 import { OverflowProvider } from './contexts/OverflowContext.js';
 import { ShowMoreLines } from './components/ShowMoreLines.js';
 import { PrivacyNotice } from './privacy/PrivacyNotice.js';
-import { 
+import {
   ProviderSelectionDialog,
   ProviderSetupDialog,
   CloudAISetupDialog,
-  APISettingsDialog
+  APISettingsDialog,
 } from './components/LazyComponents.js';
 import { ProviderType, AuthType } from '@enfiy/core';
 
@@ -141,24 +141,28 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
   const _showMemoryUsage = config.getDebugMode() || config.getShowMemoryUsage();
   const [currentModel, setCurrentModel] = useState(() => {
     const settingsModel = settings.merged.selectedModel;
-    
+
     // If we have a valid settings model that differs from config, sync it immediately
-    if (settingsModel && 
-        settingsModel !== 'gemini-2.5-pro' && 
-        settingsModel !== 'llama3.2:8b' &&
-        settingsModel !== '' &&
-        settingsModel !== config.getModel()) {
+    if (
+      settingsModel &&
+      settingsModel !== 'gemini-2.5-pro' &&
+      settingsModel !== 'llama3.2:8b' &&
+      settingsModel !== '' &&
+      settingsModel !== config.getModel()
+    ) {
       config.setModel(settingsModel);
     }
-    
+
     // Start with empty if no proper model is configured
-    if (!settingsModel || 
-        settingsModel === 'gemini-2.5-pro' || 
-        settingsModel === 'llama3.2:8b' ||
-        settingsModel === '') {
+    if (
+      !settingsModel ||
+      settingsModel === 'gemini-2.5-pro' ||
+      settingsModel === 'llama3.2:8b' ||
+      settingsModel === ''
+    ) {
       return '';
     }
-    
+
     return settingsModel;
   });
   const [shellModeActive, setShellModeActive] = useState(false);
@@ -174,75 +178,77 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
   const ctrlDTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [constrainHeight, setConstrainHeight] = useState<boolean>(true);
   const [showPrivacyNotice, setShowPrivacyNotice] = useState<boolean>(false);
-  const [showProviderSelection, setShowProviderSelection] = useState<boolean>(false);
+  const [showProviderSelection, setShowProviderSelection] =
+    useState<boolean>(false);
   const [showProviderSetup, setShowProviderSetup] = useState<boolean>(false);
   const [showCloudAISetup, setShowCloudAISetup] = useState<boolean>(false);
   const [showAPISettings, setShowAPISettings] = useState<boolean>(false);
   const [setupProvider, setSetupProvider] = useState<ProviderType | null>(null);
   const [isManagingProvider, setIsManagingProvider] = useState<boolean>(false);
   const [isFirstRun, setIsFirstRun] = useState<boolean>(true);
-  const [preselectedProvider, setPreselectedProvider] = useState<ProviderType | null>(null);
+  const [preselectedProvider, setPreselectedProvider] =
+    useState<ProviderType | null>(null);
 
   const openPrivacyNotice = useCallback(() => {
     setShowPrivacyNotice(true);
   }, []);
 
-  const handleProviderSelect = useCallback((provider: ProviderType, model: string) => {
-    // Save the selected provider and model to config
-    const providerCategories: Record<ProviderType, string> = {
-      [ProviderType.OLLAMA]: t('localAI'),
-      [ProviderType.HUGGINGFACE]: t('localAI'),
-      [ProviderType.VLLM]: t('localAI'),
-      [ProviderType.ANTHROPIC]: t('cloudAI'),
-      [ProviderType.OPENAI]: t('cloudAI'),
-      [ProviderType.GEMINI]: t('cloudAI'),
-      [ProviderType.MISTRAL]: t('cloudAI'),
-    };
-    
-    const providerName = `${provider.toUpperCase()} (${providerCategories[provider] || t('cloudAI')})`;
-    
-    // Update the model in config and current state
-    config.setModel(model);
-    setCurrentModel(model);
-    
-    // Save to settings for persistence across sessions
-    settings.setValue(SettingScope.User, 'selectedProvider', provider);
-    settings.setValue(SettingScope.User, 'selectedModel', model);
-    
-    addItem(
-      {
-        type: MessageType.INFO,
-        text: `${t('setupComplete')} ${providerName} | Model: ${model}`,
-      },
-      Date.now(),
-    );
-    
-    addItem(
-      {
-        type: MessageType.INFO,
-        text: t('readyMessage'),
-      },
-      Date.now(),
-    );
-    
-    
-    // Add Japanese input notice if locale is Japanese
-    const locale = process.env.LANG || '';
-    if (locale.includes('ja_JP') || locale.includes('ja')) {
+  const handleProviderSelect = useCallback(
+    (provider: ProviderType, model: string) => {
+      // Save the selected provider and model to config
+      const providerCategories: Record<ProviderType, string> = {
+        [ProviderType.OLLAMA]: t('localAI'),
+        [ProviderType.HUGGINGFACE]: t('localAI'),
+        [ProviderType.VLLM]: t('localAI'),
+        [ProviderType.ANTHROPIC]: t('cloudAI'),
+        [ProviderType.OPENAI]: t('cloudAI'),
+        [ProviderType.GEMINI]: t('cloudAI'),
+        [ProviderType.MISTRAL]: t('cloudAI'),
+      };
+
+      const providerName = `${provider.toUpperCase()} (${providerCategories[provider] || t('cloudAI')})`;
+
+      // Update the model in config and current state
+      config.setModel(model);
+      setCurrentModel(model);
+
+      // Save to settings for persistence across sessions
+      settings.setValue(SettingScope.User, 'selectedProvider', provider);
+      settings.setValue(SettingScope.User, 'selectedModel', model);
+
       addItem(
         {
           type: MessageType.INFO,
-          text: '📝 Input Note: For complex text input, use Ctrl+X for external editor or copy & paste.',
+          text: `${t('setupComplete')} ${providerName} | Model: ${model}`,
         },
         Date.now(),
       );
-    }
-    
-    // Add Enfiy introduction message
-    addItem(
-      {
-        type: MessageType.ENFIY,
-        text: `${t('welcomeTitle')}
+
+      addItem(
+        {
+          type: MessageType.INFO,
+          text: t('readyMessage'),
+        },
+        Date.now(),
+      );
+
+      // Add Japanese input notice if locale is Japanese
+      const locale = process.env.LANG || '';
+      if (locale.includes('ja_JP') || locale.includes('ja')) {
+        addItem(
+          {
+            type: MessageType.INFO,
+            text: '📝 Input Note: For complex text input, use Ctrl+X for external editor or copy & paste.',
+          },
+          Date.now(),
+        );
+      }
+
+      // Add Enfiy introduction message
+      addItem(
+        {
+          type: MessageType.ENFIY,
+          text: `${t('welcomeTitle')}
 
 ${t('welcomeMessage')}
 
@@ -253,15 +259,17 @@ ${t('keyFeatures')}
 • ${t('featureSuggestions')}
 
 ${t('helpMessage')}`,
-        // model: currentModel,
-      },
-      Date.now(),
-    );
-    
-    setShowProviderSelection(false);
-    setPreselectedProvider(null); // Clear preselection
-    setIsFirstRun(false);
-  }, [addItem, config, setCurrentModel, settings]);
+          // model: currentModel,
+        },
+        Date.now(),
+      );
+
+      setShowProviderSelection(false);
+      setPreselectedProvider(null); // Clear preselection
+      setIsFirstRun(false);
+    },
+    [addItem, config, setCurrentModel, settings],
+  );
 
   const handleProviderSelectionCancel = useCallback(() => {
     setShowProviderSelection(false);
@@ -278,17 +286,27 @@ ${t('helpMessage')}`,
 
   const handleProviderSetupRequired = useCallback((provider: ProviderType) => {
     console.log('handleProviderSetupRequired called with provider:', provider);
-    const cloudProviders = [ProviderType.ANTHROPIC, ProviderType.OPENAI, ProviderType.GEMINI, ProviderType.MISTRAL, ProviderType.HUGGINGFACE];
-    
+    const cloudProviders = [
+      ProviderType.ANTHROPIC,
+      ProviderType.OPENAI,
+      ProviderType.GEMINI,
+      ProviderType.MISTRAL,
+      ProviderType.HUGGINGFACE,
+    ];
+
     setSetupProvider(provider);
     setShowProviderSelection(false);
     setIsManagingProvider(false);
-    
+
     if (cloudProviders.includes(provider)) {
-      console.log('Provider is cloud provider, setting showCloudAISetup to true');
+      console.log(
+        'Provider is cloud provider, setting showCloudAISetup to true',
+      );
       setShowCloudAISetup(true);
     } else {
-      console.log('Provider is local provider, setting showProviderSetup to true');
+      console.log(
+        'Provider is local provider, setting showProviderSetup to true',
+      );
       setShowProviderSetup(true);
     }
   }, []);
@@ -302,45 +320,55 @@ ${t('helpMessage')}`,
 
   const lastMessageRef = useRef<string>('');
   const lastMessageTimestamp = useRef<number>(0);
-  
-  const handleCloudAISetupComplete = useCallback((setupConfig: { type: ProviderType; apiKey: string; endpoint?: string }) => {
-    setShowCloudAISetup(false);
-    setSetupProvider(null);
-    
-    const wasManaging = isManagingProvider;
-    setIsManagingProvider(false);
-    
-    // 管理モードからの場合は、Settingsに戻る
-    if (wasManaging) {
-      setShowAPISettings(true);
-    } else {
-      // After API key configuration, show provider selection for model choice
-      setPreselectedProvider(setupConfig.type);
-      setShowProviderSelection(true);
-      
-      // Add success message only once with timestamp-based deduplication
-      const message = `${setupConfig.type.toUpperCase()} API key configured successfully. Please select a model.`;
-      const now = Date.now();
-      
-      // Only add message if it's different from the last one OR if enough time has passed (prevent rapid duplicates)
-      if (lastMessageRef.current !== message || (now - lastMessageTimestamp.current > 1000)) {
-        lastMessageRef.current = message;
-        lastMessageTimestamp.current = now;
-        addItem(
-          {
-            type: MessageType.INFO,
-            text: message,
-          },
-          now,
-        );
+
+  const handleCloudAISetupComplete = useCallback(
+    (setupConfig: {
+      type: ProviderType;
+      apiKey: string;
+      endpoint?: string;
+    }) => {
+      setShowCloudAISetup(false);
+      setSetupProvider(null);
+
+      const wasManaging = isManagingProvider;
+      setIsManagingProvider(false);
+
+      // 管理モードからの場合は、Settingsに戻る
+      if (wasManaging) {
+        setShowAPISettings(true);
+      } else {
+        // After API key configuration, show provider selection for model choice
+        setPreselectedProvider(setupConfig.type);
+        setShowProviderSelection(true);
+
+        // Add success message only once with timestamp-based deduplication
+        const message = `${setupConfig.type.toUpperCase()} API key configured successfully. Please select a model.`;
+        const now = Date.now();
+
+        // Only add message if it's different from the last one OR if enough time has passed (prevent rapid duplicates)
+        if (
+          lastMessageRef.current !== message ||
+          now - lastMessageTimestamp.current > 1000
+        ) {
+          lastMessageRef.current = message;
+          lastMessageTimestamp.current = now;
+          addItem(
+            {
+              type: MessageType.INFO,
+              text: message,
+            },
+            now,
+          );
+        }
       }
-    }
-  }, [addItem, isManagingProvider]);
+    },
+    [addItem, isManagingProvider],
+  );
 
   const handleCloudAISetupCancel = useCallback(() => {
     setShowCloudAISetup(false);
     setSetupProvider(null);
-    
+
     // 管理モードからの場合は、Settingsに戻る
     if (isManagingProvider) {
       setShowAPISettings(true);
@@ -361,166 +389,185 @@ ${t('helpMessage')}`,
     setShowProviderSelection(true);
   }, []);
 
-  const handleAPISettingsManageProvider = useCallback((provider: ProviderType) => {
-    setSetupProvider(provider);
-    setShowAPISettings(false);
-    setIsManagingProvider(true);
-    setShowCloudAISetup(true);
-  }, []);
+  const handleAPISettingsManageProvider = useCallback(
+    (provider: ProviderType) => {
+      setSetupProvider(provider);
+      setShowAPISettings(false);
+      setIsManagingProvider(true);
+      setShowCloudAISetup(true);
+    },
+    [],
+  );
 
-  const handleProviderSetupComplete = useCallback(async (providerConfig: LocalProviderSetupConfig) => {
-    console.log('Provider setup completing with config:', providerConfig);
-    
-    try {
-      // Store API key if provided
-      if (providerConfig.apiKey) {
-        storeApiKey(
-          providerConfig.type, 
-          providerConfig.apiKey, 
-          providerConfig.baseUrl,
-          'api-key'
-        );
-        
-        // Set proper auth type - Enfiy only uses API keys
-        const authType = AuthType.API_KEY;
-        settings.setValue(SettingScope.User, 'selectedAuthType', authType);
-        console.log('Saved auth type to settings:', authType);
-      }
-      
-      // Set the model in config and state
-      if (providerConfig.model) {
-        console.log('Setting model and provider:', providerConfig.model, providerConfig.type);
-        
-        // Update config
-        config.setModel(providerConfig.model);
-        setCurrentModel(providerConfig.model);
-        
-        // Save to settings for persistence
-        settings.setValue(SettingScope.User, 'selectedModel', providerConfig.model);
-        settings.setValue(SettingScope.User, 'selectedProvider', providerConfig.type);
-        
-        console.log('Saved model and provider to settings');
-        
-        // Refresh auth if needed
-        if (providerConfig.apiKey) {
-          try {
-            const authType = AuthType.API_KEY;
-            await config.refreshAuth(authType);
-            console.log('✅ Auth refreshed successfully');
-          } catch (error) {
-            console.error('❌ Failed to refresh auth:', error);
-            addItem(
-              {
-                type: MessageType.ERROR,
-                text: `❌ Failed to initialize ${typeof providerConfig.type === 'string' ? providerConfig.type.toUpperCase() : 'provider'}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-              },
-              Date.now(),
-            );
-            return;
-          }
-        }
-      }
-      
-      // Additional verification for Ollama
-      if (providerConfig.type === ProviderType.OLLAMA) {
-        try {
-          const response = await fetch('http://localhost:11434/api/tags', {
-            method: 'GET',
-            signal: AbortSignal.timeout(3000),
-          });
-          
-          if (!response.ok) {
-            addItem(
-              {
-                type: MessageType.ERROR,
-                text: '❌ Ollama is not running. Please start Ollama service first with: ollama serve',
-              },
-              Date.now(),
-            );
-            setShowProviderSetup(false);
-            setSetupProvider(null);
-            setShowProviderSelection(true);
-            return;
-          }
-          
-          const data = await response.json();
-          const models = data.models || [];
-          
-          if (models.length === 0) {
-            addItem(
-              {
-                type: MessageType.ERROR,
-                text: '❌ No models found. Please install a model first (e.g., ollama pull llama3.2:8b)',
-              },
-              Date.now(),
-            );
-            setShowProviderSetup(false);
-            setSetupProvider(null);
-            setShowProviderSelection(true);
-            return;
-          }
-          
-          // Check if the specific model exists
-          const modelExists = models.some((model: { name: string }) => model.name === providerConfig.model);
-          if (!modelExists) {
-            addItem(
-              {
-                type: MessageType.ERROR,
-                text: `❌ Model "${providerConfig.model}" not found. Available models: ${models.map((m: { name: string }) => m.name).join(', ')}`,
-              },
-              Date.now(),
-            );
-            setShowProviderSetup(false);
-            setSetupProvider(null);
-            setShowProviderSelection(true);
-            return;
-          }
-        } catch (error) {
-          addItem(
-            {
-              type: MessageType.ERROR,
-              text: `❌ Failed to connect to Ollama: ${error instanceof Error ? error.message : 'Connection failed'}. Please ensure Ollama is running.`,
-            },
-            Date.now(),
-          );
-          setShowProviderSetup(false);
-          setSetupProvider(null);
-          setShowProviderSelection(true);
-          return;
-        }
-      }
-      
-      addItem(
-        {
-          type: MessageType.INFO,
-          text: `✅ ${typeof providerConfig.type === 'string' ? providerConfig.type.toUpperCase() : 'Provider'} setup completed successfully! Using model: ${typeof providerConfig.model === 'string' ? providerConfig.model : 'default'}`,
-        },
-        Date.now(),
-      );
-      
-      // Reinitialize client for the new provider
+  const handleProviderSetupComplete = useCallback(
+    async (providerConfig: LocalProviderSetupConfig) => {
+      console.log('Provider setup completing with config:', providerConfig);
+
       try {
-        await config.reinitializeEnfiyClient();
-        console.log('✅ Client reinitialized for new provider');
+        // Store API key if provided
+        if (providerConfig.apiKey) {
+          storeApiKey(
+            providerConfig.type,
+            providerConfig.apiKey,
+            providerConfig.baseUrl,
+            'api-key',
+          );
+
+          // Set proper auth type - Enfiy only uses API keys
+          const authType = AuthType.API_KEY;
+          settings.setValue(SettingScope.User, 'selectedAuthType', authType);
+          console.log('Saved auth type to settings:', authType);
+        }
+
+        // Set the model in config and state
+        if (providerConfig.model) {
+          console.log(
+            'Setting model and provider:',
+            providerConfig.model,
+            providerConfig.type,
+          );
+
+          // Update config
+          config.setModel(providerConfig.model);
+          setCurrentModel(providerConfig.model);
+
+          // Save to settings for persistence
+          settings.setValue(
+            SettingScope.User,
+            'selectedModel',
+            providerConfig.model,
+          );
+          settings.setValue(
+            SettingScope.User,
+            'selectedProvider',
+            providerConfig.type,
+          );
+
+          console.log('Saved model and provider to settings');
+
+          // Refresh auth if needed
+          if (providerConfig.apiKey) {
+            try {
+              const authType = AuthType.API_KEY;
+              await config.refreshAuth(authType);
+              console.log('✅ Auth refreshed successfully');
+            } catch (error) {
+              console.error('❌ Failed to refresh auth:', error);
+              addItem(
+                {
+                  type: MessageType.ERROR,
+                  text: `❌ Failed to initialize ${typeof providerConfig.type === 'string' ? providerConfig.type.toUpperCase() : 'provider'}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                },
+                Date.now(),
+              );
+              return;
+            }
+          }
+        }
+
+        // Additional verification for Ollama
+        if (providerConfig.type === ProviderType.OLLAMA) {
+          try {
+            const response = await fetch('http://localhost:11434/api/tags', {
+              method: 'GET',
+              signal: AbortSignal.timeout(3000),
+            });
+
+            if (!response.ok) {
+              addItem(
+                {
+                  type: MessageType.ERROR,
+                  text: '❌ Ollama is not running. Please start Ollama service first with: ollama serve',
+                },
+                Date.now(),
+              );
+              setShowProviderSetup(false);
+              setSetupProvider(null);
+              setShowProviderSelection(true);
+              return;
+            }
+
+            const data = await response.json();
+            const models = data.models || [];
+
+            if (models.length === 0) {
+              addItem(
+                {
+                  type: MessageType.ERROR,
+                  text: '❌ No models found. Please install a model first (e.g., ollama pull llama3.2:8b)',
+                },
+                Date.now(),
+              );
+              setShowProviderSetup(false);
+              setSetupProvider(null);
+              setShowProviderSelection(true);
+              return;
+            }
+
+            // Check if the specific model exists
+            const modelExists = models.some(
+              (model: { name: string }) => model.name === providerConfig.model,
+            );
+            if (!modelExists) {
+              addItem(
+                {
+                  type: MessageType.ERROR,
+                  text: `❌ Model "${providerConfig.model}" not found. Available models: ${models.map((m: { name: string }) => m.name).join(', ')}`,
+                },
+                Date.now(),
+              );
+              setShowProviderSetup(false);
+              setSetupProvider(null);
+              setShowProviderSelection(true);
+              return;
+            }
+          } catch (error) {
+            addItem(
+              {
+                type: MessageType.ERROR,
+                text: `❌ Failed to connect to Ollama: ${error instanceof Error ? error.message : 'Connection failed'}. Please ensure Ollama is running.`,
+              },
+              Date.now(),
+            );
+            setShowProviderSetup(false);
+            setSetupProvider(null);
+            setShowProviderSelection(true);
+            return;
+          }
+        }
+
+        addItem(
+          {
+            type: MessageType.INFO,
+            text: `✅ ${typeof providerConfig.type === 'string' ? providerConfig.type.toUpperCase() : 'Provider'} setup completed successfully! Using model: ${typeof providerConfig.model === 'string' ? providerConfig.model : 'default'}`,
+          },
+          Date.now(),
+        );
+
+        // Reinitialize client for the new provider
+        try {
+          await config.reinitializeEnfiyClient();
+          console.log('✅ Client reinitialized for new provider');
+        } catch (error) {
+          console.error('❌ Failed to reinitialize client:', error);
+        }
+
+        setShowProviderSetup(false);
+        setSetupProvider(null);
+        setIsFirstRun(false);
       } catch (error) {
-        console.error('❌ Failed to reinitialize client:', error);
+        console.error('Error during provider setup:', error);
+        addItem(
+          {
+            type: MessageType.ERROR,
+            text: `❌ Failed to complete ${providerConfig.type.toUpperCase()} setup: ${error}`,
+          },
+          Date.now(),
+        );
       }
-      
-      setShowProviderSetup(false);
-      setSetupProvider(null);
-      setIsFirstRun(false);
-      
-    } catch (error) {
-      console.error('Error during provider setup:', error);
-      addItem(
-        {
-          type: MessageType.ERROR,
-          text: `❌ Failed to complete ${providerConfig.type.toUpperCase()} setup: ${error}`,
-        },
-        Date.now(),
-      );
-    }
-  }, [addItem, config, settings, setCurrentModel]);
+    },
+    [addItem, config, settings, setCurrentModel],
+  );
 
   const handleProviderSetupCancel = useCallback(() => {
     setShowProviderSetup(false);
@@ -543,42 +590,50 @@ ${t('helpMessage')}`,
         console.log('Skipping provider check - already in setup mode');
         return;
       }
-      
+
       // 設定ファイルまたは環境変数でプロバイダーが設定されているかチェック
       const _currentModel = config.getModel();
-      const hasValidProvider = settings.merged.selectedProvider && settings.merged.selectedProvider !== '';
-      const hasValidModel = settings.merged.selectedModel && settings.merged.selectedModel !== '';
-      
+      const hasValidProvider =
+        settings.merged.selectedProvider &&
+        settings.merged.selectedProvider !== '';
+      const hasValidModel =
+        settings.merged.selectedModel && settings.merged.selectedModel !== '';
+
       // Check if API key exists for the configured provider
       let hasApiKey = false;
       if (hasValidProvider && settings.merged.selectedProvider) {
-        const { hasStoredCredentials } = await import('../utils/secureStorage.js');
+        const { hasStoredCredentials } = await import(
+          '../utils/secureStorage.js'
+        );
         hasApiKey = hasStoredCredentials(settings.merged.selectedProvider);
-        
+
         // For local providers, API key is not required
         const localProviders = ['ollama', 'vllm', 'huggingface'];
-        if (localProviders.includes(settings.merged.selectedProvider.toLowerCase())) {
+        if (
+          localProviders.includes(
+            settings.merged.selectedProvider.toLowerCase(),
+          )
+        ) {
           hasApiKey = true;
         }
       }
-      
+
       // Only show provider selection if configuration is incomplete
       // Remove isFirstRun from the condition - rely on actual configuration state
       if (!hasValidProvider || !hasValidModel || !hasApiKey) {
-        
         // プロバイダー検出を実行
         try {
           const { getRecommendedProvider } = await import('@enfiy/core');
           const recommended = await getRecommendedProvider();
-          
-          console.log('Configuration check:', { 
-            hasValidProvider, 
-            hasValidModel, 
+
+          console.log('Configuration check:', {
+            hasValidProvider,
+            hasValidModel,
             hasApiKey,
             provider: settings.merged.selectedProvider,
-            model: settings.merged.selectedModel
+            model: settings.merged.selectedModel,
           });
-          
+
           // Only show provider detection message if not first run
           if (!isFirstRun) {
             addItem(
@@ -589,14 +644,13 @@ ${t('helpMessage')}`,
               Date.now(),
             );
           }
-          
+
           // 自動的にプロバイダー選択を表示（Settings画面やCloudAI設定画面が開いていない場合のみ）
           setTimeout(() => {
             if (!showAPISettings && !showCloudAISetup && !showProviderSetup) {
               setShowProviderSelection(true);
             }
           }, 500);
-          
         } catch (_error) {
           // Show provider selection even if detection fails（Settings画面やCloudAI設定画面が開いていない場合のみ）
           setTimeout(() => {
@@ -608,22 +662,39 @@ ${t('helpMessage')}`,
       } else {
         // Provider, model, and API key are all configured
         // Restore the last used model to the current state
-        if (settings.merged.selectedModel && settings.merged.selectedModel !== currentModel) {
-          console.log('Restoring last used model:', settings.merged.selectedModel);
+        if (
+          settings.merged.selectedModel &&
+          settings.merged.selectedModel !== currentModel
+        ) {
+          console.log(
+            'Restoring last used model:',
+            settings.merged.selectedModel,
+          );
           console.log('Config model before:', config.getModel());
           setCurrentModel(settings.merged.selectedModel);
           config.setModel(settings.merged.selectedModel);
           console.log('Config model after:', config.getModel());
         }
-        
+
         if (isFirstRun) {
           setIsFirstRun(false);
         }
       }
     };
-    
+
     checkProviderConfiguration();
-  }, [config, addItem, isFirstRun, showProviderSelection, showProviderSetup, showCloudAISetup, showAPISettings, settings.merged.selectedModel, settings.merged.selectedProvider, currentModel]);
+  }, [
+    config,
+    addItem,
+    isFirstRun,
+    showProviderSelection,
+    showProviderSetup,
+    showCloudAISetup,
+    showAPISettings,
+    settings.merged.selectedModel,
+    settings.merged.selectedProvider,
+    currentModel,
+  ]);
 
   const errorCount = useMemo(
     () => consoleMessages.filter((msg) => msg.type === 'error').length,
@@ -719,7 +790,7 @@ ${t('helpMessage')}`,
       // Don't override with default models unless they were explicitly set
       if (configModel !== currentModel) {
         // Model change detected
-        
+
         // Check settings for the actual selected model
         const settingsModel = settings.merged.selectedModel;
         if (settingsModel && settingsModel !== configModel) {
@@ -727,9 +798,12 @@ ${t('helpMessage')}`,
           setCurrentModel(settingsModel);
           return;
         }
-        
+
         // If it's a default model and we don't have a model set, don't show it
-        if ((configModel === 'gemini-2.5-pro' || configModel === 'llama3.2:8b') && !currentModel) {
+        if (
+          (configModel === 'gemini-2.5-pro' || configModel === 'llama3.2:8b') &&
+          !currentModel
+        ) {
           // Skipping default model override
           return;
         }

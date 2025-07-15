@@ -9,6 +9,7 @@ This guide covers comprehensive project development workflows using Enfiy Code's
 ## Starting a New Project
 
 ### 1. Project Initialization
+
 ```bash
 # Start Enfiy Code in your project directory
 cd my-new-project
@@ -21,6 +22,7 @@ enfiy
 ```
 
 ### 2. Technology Stack Selection
+
 ```bash
 > Help me choose between React and Vue for a dashboard application
 > What's the best state management solution for a React app with complex data flows?
@@ -28,6 +30,7 @@ enfiy
 ```
 
 ### 3. Initial Architecture
+
 ```bash
 > Design a folder structure for a full-stack TypeScript application
 > Create a database schema for a blog application with users, posts, and comments
@@ -37,6 +40,7 @@ enfiy
 ## Development Workflows
 
 ### Feature Development
+
 ```bash
 # 1. Planning
 > Analyze the requirements for a user authentication system
@@ -55,6 +59,7 @@ enfiy
 ```
 
 ### Code Quality Workflows
+
 ```bash
 # Code review and improvement
 > Review this component for React best practices
@@ -70,6 +75,7 @@ enfiy
 ## Specific Project Types
 
 ### React Applications
+
 ```bash
 # Component development
 > Create a reusable Button component with TypeScript props
@@ -88,6 +94,7 @@ enfiy
 ```
 
 ### Node.js APIs
+
 ```bash
 # API development
 > Create a RESTful API for a blog application
@@ -106,6 +113,7 @@ enfiy
 ```
 
 ### Full-Stack Applications
+
 ```bash
 # Integration workflows
 > Connect the React frontend to the Node.js API
@@ -121,6 +129,7 @@ enfiy
 ## Code Maintenance
 
 ### Bug Fixing
+
 ```bash
 # Systematic debugging
 > Help me debug this error: [paste error message]
@@ -134,6 +143,7 @@ enfiy
 ```
 
 ### Feature Updates
+
 ```bash
 # Existing feature enhancement
 > Add dark mode support to the existing theme system
@@ -147,6 +157,7 @@ enfiy
 ```
 
 ### Code Documentation
+
 ```bash
 # Documentation generation
 > Generate JSDoc comments for these utility functions
@@ -162,6 +173,7 @@ enfiy
 ## Advanced Workflows
 
 ### Performance Optimization
+
 ```bash
 # Frontend optimization
 > Analyze and optimize the bundle size
@@ -175,6 +187,7 @@ enfiy
 ```
 
 ### Testing Strategies
+
 ```bash
 # Comprehensive testing
 > Create a testing strategy for this application
@@ -188,6 +201,7 @@ enfiy
 ```
 
 ### Deployment and DevOps
+
 ```bash
 # Deployment setup
 > Create deployment scripts for a production environment
@@ -203,6 +217,7 @@ enfiy
 ## Best Practices
 
 ### Effective Communication with AI
+
 ```bash
 # Be specific about requirements
 > Create a responsive navbar with logo, navigation links, and user dropdown that works on mobile devices
@@ -216,6 +231,7 @@ enfiy
 ```
 
 ### Iterative Development
+
 ```bash
 # Start simple and iterate
 1. > Create a basic user registration form
@@ -226,6 +242,7 @@ enfiy
 ```
 
 ### Code Organization
+
 ```bash
 # Maintain clean architecture
 > Organize these utility functions into logical modules
@@ -236,12 +253,14 @@ enfiy
 ## Troubleshooting Development Issues
 
 ### Common Problems
+
 - **Build failures**: Ask AI to analyze build errors and suggest fixes
 - **Type errors**: Get help resolving TypeScript compilation issues
 - **Runtime errors**: Debug application crashes and unexpected behavior
 - **Performance issues**: Identify and resolve bottlenecks
 
 ### Getting Unstuck
+
 ```bash
 # When you're stuck
 > I'm not sure how to approach implementing real-time chat
@@ -257,6 +276,7 @@ enfiy
 ## Integration with Development Tools
 
 ### Version Control
+
 ```bash
 # Git workflow assistance
 > Help me write a good commit message for these authentication changes
@@ -265,6 +285,7 @@ enfiy
 ```
 
 ### Code Quality Tools
+
 ```bash
 # Linting and formatting
 > Fix all ESLint errors in this file
@@ -273,6 +294,7 @@ enfiy
 ```
 
 ### Development Environment
+
 ```bash
 # Environment setup
 > Configure VS Code settings for this TypeScript project
@@ -283,6 +305,7 @@ enfiy
 ## Project Templates and Starters
 
 ### Quick Project Setup
+
 ```bash
 # Generate complete project structures
 > Create a full-stack TypeScript project with React, Node.js, and PostgreSQL
@@ -291,6 +314,7 @@ enfiy
 ```
 
 ### Custom Templates
+
 ```bash
 # Create reusable patterns
 > Design a template for creating new React components

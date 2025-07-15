@@ -14,11 +14,7 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 import { parse } from 'shell-quote';
 import { MCPServerConfig } from '../config/config.js';
 import { DiscoveredMCPTool } from './mcp-tool.js';
-import {
-  CallableTool,
-  mcpToTool,
-  Schema,
-} from '@google/genai';
+import { CallableTool, mcpToTool, Schema } from '@google/genai';
 import { ToolRegistry } from './tool-registry.js';
 
 export const MCP_DEFAULT_TIMEOUT_MSEC = 10 * 60 * 1000; // default to 10 minutes
@@ -368,9 +364,9 @@ export function sanitizeParameters(schema?: Schema | Record<string, unknown>) {
   if (!schema) {
     return;
   }
-  
+
   const schemaObj = schema as Record<string, unknown>;
-  
+
   // Remove $schema and additionalProperties as they can cause issues with AI APIs
   if (schemaObj.$schema !== undefined) {
     delete schemaObj.$schema;
@@ -378,7 +374,7 @@ export function sanitizeParameters(schema?: Schema | Record<string, unknown>) {
   if (schemaObj.additionalProperties !== undefined) {
     delete schemaObj.additionalProperties;
   }
-  
+
   if (Array.isArray(schemaObj.anyOf)) {
     // Vertex AI gets confused if both anyOf and default are set.
     schemaObj.default = undefined;

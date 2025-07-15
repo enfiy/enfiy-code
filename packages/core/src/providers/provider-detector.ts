@@ -26,12 +26,12 @@ export async function detectLocalProviders(): Promise<DetectedProvider[]> {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
-    
+
     const response = await fetch('http://localhost:11434/api/tags', {
       method: 'GET',
       signal: controller.signal,
     });
-    
+
     clearTimeout(timeoutId);
     if (response.ok) {
       const data = await response.json();
@@ -40,14 +40,14 @@ export async function detectLocalProviders(): Promise<DetectedProvider[]> {
         type: ProviderType.OLLAMA,
         available: hasModels,
         defaultModel: hasModels ? 'llama3.2:8b' : undefined,
-        reason: hasModels ? 'Installed with models' : 'Installed but no models'
+        reason: hasModels ? 'Installed with models' : 'Installed but no models',
       });
     }
   } catch {
     providers.push({
       type: ProviderType.OLLAMA,
       available: false,
-      reason: 'Not installed'
+      reason: 'Not installed',
     });
   }
 
@@ -55,26 +55,26 @@ export async function detectLocalProviders(): Promise<DetectedProvider[]> {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
-    
+
     const response = await fetch('http://localhost:8000/v1/models', {
       method: 'GET',
       signal: controller.signal,
     });
-    
+
     clearTimeout(timeoutId);
     if (response.ok) {
       providers.push({
         type: ProviderType.VLLM,
         available: true,
         defaultModel: 'local-model',
-        reason: 'Running'
+        reason: 'Running',
       });
     }
   } catch {
     providers.push({
       type: ProviderType.VLLM,
       available: false,
-      reason: 'Not running'
+      reason: 'Not running',
     });
   }
 
@@ -92,7 +92,9 @@ export function detectCloudProviders(): DetectedProvider[] {
     type: ProviderType.OPENAI,
     available: !!process.env.OPENAI_API_KEY,
     defaultModel: 'gpt-4o-mini',
-    reason: process.env.OPENAI_API_KEY ? 'API key configured' : 'API key required'
+    reason: process.env.OPENAI_API_KEY
+      ? 'API key configured'
+      : 'API key required',
   });
 
   // Anthropic
@@ -100,7 +102,9 @@ export function detectCloudProviders(): DetectedProvider[] {
     type: ProviderType.ANTHROPIC,
     available: !!process.env.ANTHROPIC_API_KEY,
     defaultModel: 'claude-3-5-sonnet-20241022',
-    reason: process.env.ANTHROPIC_API_KEY ? 'API key configured' : 'API key required'
+    reason: process.env.ANTHROPIC_API_KEY
+      ? 'API key configured'
+      : 'API key required',
   });
 
   // Gemini
@@ -108,7 +112,10 @@ export function detectCloudProviders(): DetectedProvider[] {
     type: ProviderType.GEMINI,
     available: !!(process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY),
     defaultModel: 'gemini-2.0-flash-exp',
-    reason: (process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY) ? 'API key configured' : 'API key required'
+    reason:
+      process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY
+        ? 'API key configured'
+        : 'API key required',
   });
 
   return providers;
@@ -120,16 +127,16 @@ export function detectCloudProviders(): DetectedProvider[] {
 export async function getRecommendedProvider(): Promise<DetectedProvider> {
   // First check local providers
   const localProviders = await detectLocalProviders();
-  const availableLocal = localProviders.find(p => p.available);
-  
+  const availableLocal = localProviders.find((p) => p.available);
+
   if (availableLocal) {
     return availableLocal;
   }
 
   // If local is not available, check cloud providers
   const cloudProviders = detectCloudProviders();
-  const availableCloud = cloudProviders.find(p => p.available);
-  
+  const availableCloud = cloudProviders.find((p) => p.available);
+
   if (availableCloud) {
     return availableCloud;
   }
@@ -139,7 +146,7 @@ export async function getRecommendedProvider(): Promise<DetectedProvider> {
     type: ProviderType.OLLAMA,
     available: false,
     defaultModel: 'llama3.2:8b',
-    reason: 'Recommend installing Ollama'
+    reason: 'Recommend installing Ollama',
   };
 }
 
@@ -149,27 +156,27 @@ export async function getRecommendedProvider(): Promise<DetectedProvider> {
 export async function generateProviderReport(): Promise<string> {
   const localProviders = await detectLocalProviders();
   const cloudProviders = detectCloudProviders();
-  
+
   let report = '🔍 AI Provider Detection Results:\n\n';
-  
+
   report += '🏠 Local AI:\n';
   for (const provider of localProviders) {
     const status = provider.available ? '✅' : '❌';
     report += `  ${status} ${provider.type.toUpperCase()}: ${provider.reason}\n`;
   }
-  
+
   report += '\n☁️ Cloud AI:\n';
   for (const provider of cloudProviders) {
     const status = provider.available ? '✅' : '❌';
     report += `  ${status} ${provider.type.toUpperCase()}: ${provider.reason}\n`;
   }
-  
+
   const recommended = await getRecommendedProvider();
   report += `\n🎯 Recommended: ${recommended.type.toUpperCase()}`;
   if (recommended.defaultModel) {
     report += ` (${recommended.defaultModel})`;
   }
   report += `\n   Reason: ${recommended.reason}`;
-  
+
   return report;
 }

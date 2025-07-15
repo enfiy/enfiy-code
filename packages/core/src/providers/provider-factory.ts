@@ -23,7 +23,7 @@ export class ProviderFactory {
         return new OllamaProvider();
       case ProviderType.HUGGINGFACE:
         return new HuggingFaceProvider();
-      
+
       // Cloud Providers
       case ProviderType.GEMINI:
         return new GeminiProvider();
@@ -33,18 +33,20 @@ export class ProviderFactory {
         return new AnthropicProvider();
       case ProviderType.MISTRAL:
         return new MistralProvider();
-      
+
       default:
         throw new Error(`Unknown provider type: ${type}`);
     }
   }
 
-  static async detectAvailableProviders(): Promise<Array<{ type: ProviderType; name: string; available: boolean }>> {
+  static async detectAvailableProviders(): Promise<
+    Array<{ type: ProviderType; name: string; available: boolean }>
+  > {
     const providers = [
       // Local Providers
       { type: ProviderType.OLLAMA, name: 'Ollama (Local)' },
       { type: ProviderType.HUGGINGFACE, name: 'HuggingFace (Local)' },
-      
+
       // Cloud Providers
       { type: ProviderType.GEMINI, name: 'Google Gemini' },
       { type: ProviderType.OPENAI, name: 'OpenAI' },
@@ -56,19 +58,19 @@ export class ProviderFactory {
       providers.map(async (providerInfo) => {
         try {
           const provider = ProviderFactory.createProvider(providerInfo.type);
-          
+
           // For local providers, check if they're actually running
           if (provider.isLocalProvider()) {
             const available = await provider.isAvailable();
             return { ...providerInfo, available };
           }
-          
+
           // For cloud providers, assume they're available (auth will be checked later)
           return { ...providerInfo, available: true };
         } catch {
           return { ...providerInfo, available: false };
         }
-      })
+      }),
     );
 
     return results;
@@ -86,19 +88,23 @@ export class ProviderFactory {
 
   static async getPreferredProvider(): Promise<ProviderType> {
     const available = await ProviderFactory.detectAvailableProviders();
-    
+
     // Prefer local providers first
-    const ollamaProvider = available.find(p => p.type === ProviderType.OLLAMA);
+    const ollamaProvider = available.find(
+      (p) => p.type === ProviderType.OLLAMA,
+    );
     if (ollamaProvider?.available) {
       return ProviderType.OLLAMA;
     }
-    
+
     // Fall back to Gemini if available
-    const geminiProvider = available.find(p => p.type === ProviderType.GEMINI);
+    const geminiProvider = available.find(
+      (p) => p.type === ProviderType.GEMINI,
+    );
     if (geminiProvider?.available) {
       return ProviderType.GEMINI;
     }
-    
+
     // Default to OpenAI
     return ProviderType.OPENAI;
   }
@@ -128,10 +134,7 @@ export class ProviderFactory {
    * Get local provider types
    */
   static getLocalProviderTypes(): ProviderType[] {
-    return [
-      ProviderType.OLLAMA,
-      ProviderType.HUGGINGFACE,
-    ];
+    return [ProviderType.OLLAMA, ProviderType.HUGGINGFACE];
   }
 
   /**
@@ -174,7 +177,7 @@ export class ProviderFactory {
   }> {
     const implemented = this.isProviderImplemented(type);
     const isLocal = this.getLocalProviderTypes().includes(type);
-    
+
     if (!implemented) {
       return {
         type,

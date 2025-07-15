@@ -6,21 +6,23 @@
  */
 import { ProviderType } from './types.js';
 export interface ModelInfo {
-    id: string;
-    name: string;
-    provider: ProviderType;
-    category: 'local' | 'cloud';
-    description: string;
-    contextLength: number;
-    pricing?: {
-        input: number;
-        output: number;
-        unit: string;
-    };
-    capabilities: string[];
+  id: string;
+  name: string;
+  provider: ProviderType;
+  category: 'local' | 'cloud';
+  description: string;
+  contextLength: number;
+  pricing?: {
+    input: number;
+    output: number;
+    unit: string;
+  };
+  capabilities: string[];
 }
 export declare const MODEL_REGISTRY: Record<string, ModelInfo[]>;
-export declare function getModelsForProvider(providerType: ProviderType): ModelInfo[];
+export declare function getModelsForProvider(
+  providerType: ProviderType,
+): ModelInfo[];
 export declare function getAllModels(): ModelInfo[];
 export declare function getLocalModels(): ModelInfo[];
 export declare function getCloudModels(): ModelInfo[];

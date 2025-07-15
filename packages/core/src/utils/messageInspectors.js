@@ -5,8 +5,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 export function isFunctionResponse(content) {
-    return (content.role === 'user' &&
-        !!content.parts &&
-        content.parts.every((part) => !!part.functionResponse));
+  return (
+    content.role === 'user' &&
+    !!content.parts &&
+    content.parts.every((part) => !!part.functionResponse)
+  );
 }
 //# sourceMappingURL=messageInspectors.js.map

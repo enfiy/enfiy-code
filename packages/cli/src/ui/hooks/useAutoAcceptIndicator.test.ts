@@ -19,19 +19,16 @@ import {
 import { renderHook, act } from '@testing-library/react';
 import { useAutoAcceptIndicator } from './useAutoAcceptIndicator.js';
 
-import {
-  Config,
-  Config as ActualConfigType,
-  ApprovalMode,
-} from '@enfiy/core';
+import { Config, Config as ActualConfigType, ApprovalMode } from '@enfiy/core';
 import { useInput, type Key as InkKey } from 'ink';
 
 vi.mock('ink');
 
 vi.mock('@enfiy/core', async () => {
-  const actualServerModule = (await vi.importActual(
-    '@enfiy/core',
-  )) as Record<string, unknown>;
+  const actualServerModule = (await vi.importActual('@enfiy/core')) as Record<
+    string,
+    unknown
+  >;
   return {
     ...actualServerModule,
     Config: vi.fn(),

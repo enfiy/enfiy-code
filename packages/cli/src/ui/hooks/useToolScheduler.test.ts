@@ -680,8 +680,18 @@ describe('useReactToolScheduler', () => {
     const { result } = renderScheduler();
     const schedule = result.current[1];
     const requests: ToolCallRequestInfo[] = [
-      { callId: 'multi1', name: 'tool1', args: { p: 1 }, isClientInitiated: false },
-      { callId: 'multi2', name: 'tool2', args: { p: 2 }, isClientInitiated: false },
+      {
+        callId: 'multi1',
+        name: 'tool1',
+        args: { p: 1 },
+        isClientInitiated: false,
+      },
+      {
+        callId: 'multi2',
+        name: 'tool2',
+        args: { p: 2 },
+        isClientInitiated: false,
+      },
     ];
 
     act(() => {

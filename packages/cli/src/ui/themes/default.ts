@@ -150,5 +150,3 @@ export const DefaultDark: Theme = new Theme(
   },
   darkTheme,
 );
-
-

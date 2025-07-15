@@ -59,7 +59,7 @@ describe('oauth2', () => {
     delete process.env.WSL_INTEROP;
     delete process.env.container;
     delete process.env.DOCKER_CONTAINER;
-    
+
     // Set platform to non-linux to avoid WSL-specific code paths
     const originalPlatform = process.platform;
     Object.defineProperty(process, 'platform', { value: 'darwin' });
@@ -138,10 +138,14 @@ describe('oauth2', () => {
     });
     expect(mockSetCredentials).toHaveBeenCalledWith(mockTokens);
 
-    const tokenPath = path.join(tempHomeDir, '.enfiy', 'gemini_oauth_creds.json');
+    const tokenPath = path.join(
+      tempHomeDir,
+      '.enfiy',
+      'gemini_oauth_creds.json',
+    );
     const tokenData = JSON.parse(fs.readFileSync(tokenPath, 'utf-8'));
     expect(tokenData).toEqual(mockTokens);
-    
+
     // Restore original environment and platform
     process.env = originalEnv;
     Object.defineProperty(process, 'platform', { value: originalPlatform });

@@ -24,23 +24,28 @@ export const EnfiyPrivacyNotice = ({ onExit }: EnfiyPrivacyNoticeProps) => {
       </Text>
       <Newline />
       <Text>
-        🔒 <Text color={Colors.AccentGreen}>Your data stays private</Text> when using API key authentication.
-        All processing happens in your private work room environment.
+        🔒 <Text color={Colors.AccentGreen}>Your data stays private</Text> when
+        using API key authentication. All processing happens in your private
+        work room environment.
       </Text>
       <Newline />
       <Text>
-        ✓ <Text color={Colors.AccentBlue}>Local processing</Text> - Your code and conversations are processed locally
+        ✓ <Text color={Colors.AccentBlue}>Local processing</Text> - Your code
+        and conversations are processed locally
       </Text>
       <Text>
-        ✓ <Text color={Colors.AccentGreen}>No data sharing</Text> - We don&apos;t store or share your data
+        ✓ <Text color={Colors.AccentGreen}>No data sharing</Text> - We
+        don&apos;t store or share your data
       </Text>
       <Text>
-        ✓ <Text color={Colors.AccentYellow}>Full control</Text> - You control where your API requests go
+        ✓ <Text color={Colors.AccentYellow}>Full control</Text> - You control
+        where your API requests go
       </Text>
       <Newline />
       <Text>
-        When using cloud AI providers with API keys, your data is sent directly to the provider
-        according to their terms of service. Enfiy Code acts as a secure client.
+        When using cloud AI providers with API keys, your data is sent directly
+        to the provider according to their terms of service. Enfiy Code acts as
+        a secure client.
       </Text>
       <Newline />
       <Text color={Colors.Gray}>

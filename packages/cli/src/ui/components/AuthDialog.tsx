@@ -31,9 +31,7 @@ export function AuthDialog({
   const [errorMessage, setErrorMessage] = useState<string | null>(
     initialErrorMessage || null,
   );
-  const items = [
-    { label: 'API Key', value: AuthType.API_KEY },
-  ];
+  const items = [{ label: 'API Key', value: AuthType.API_KEY }];
 
   let initialAuthIndex = items.findIndex(
     (item) => item.value === settings.merged.selectedAuthType,

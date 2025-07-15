@@ -11,11 +11,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import { tmpdir } from 'os';
-import {
-  Config,
-  ConfigParameters,
-  ContentGeneratorConfig,
-} from '@enfiy/core';
+import { Config, ConfigParameters, ContentGeneratorConfig } from '@enfiy/core';
 
 const _TEST_CONTENT_GENERATOR_CONFIG: ContentGeneratorConfig = {
   apiKey: 'test-key',

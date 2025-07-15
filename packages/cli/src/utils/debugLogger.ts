@@ -19,17 +19,22 @@ class DebugLogger {
   private logs: DebugLogEntry[] = [];
   private maxLogs = 1000; // Keep last 1000 entries
 
-  log(category: string, level: 'info' | 'warn' | 'error' | 'debug', message: string, data?: unknown) {
+  log(
+    category: string,
+    level: 'info' | 'warn' | 'error' | 'debug',
+    message: string,
+    data?: unknown,
+  ) {
     const entry: DebugLogEntry = {
       timestamp: new Date().toISOString(),
       category,
       level,
       message,
-      data
+      data,
     };
 
     this.logs.push(entry);
-    
+
     // Keep only recent logs
     if (this.logs.length > this.maxLogs) {
       this.logs = this.logs.slice(-this.maxLogs);
@@ -70,15 +75,15 @@ class DebugLogger {
 
   getLogs(category?: string, level?: string): DebugLogEntry[] {
     let filteredLogs = this.logs;
-    
+
     if (category) {
-      filteredLogs = filteredLogs.filter(log => log.category === category);
+      filteredLogs = filteredLogs.filter((log) => log.category === category);
     }
-    
+
     if (level) {
-      filteredLogs = filteredLogs.filter(log => log.level === level);
+      filteredLogs = filteredLogs.filter((log) => log.level === level);
     }
-    
+
     return filteredLogs;
   }
 

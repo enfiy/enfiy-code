@@ -56,7 +56,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
   const [justNavigatedHistory, setJustNavigatedHistory] = useState(false);
 
   const isSlashCommandText = isSlashCommand(buffer.text);
-  
+
   const completion = useCompletion(
     buffer.text,
     config.getTargetDir(),
@@ -387,9 +387,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
         paddingX={1}
         marginTop={0}
       >
-        <Text
-          color={shellModeActive ? Colors.AccentYellow : Colors.AccentBlue}
-        >
+        <Text color={shellModeActive ? Colors.AccentYellow : Colors.AccentBlue}>
           {shellModeActive ? '! ' : '> '}
         </Text>
         <Box flexGrow={1} flexDirection="column">
@@ -405,8 +403,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
           ) : (
             linesToRender.map((lineText, visualIdxInRenderedSet) => {
               const cursorVisualRow = cursorVisualRowAbsolute - scrollVisualRow;
-              
-              
+
               let display = cpSlice(lineText, 0, inputWidth);
               const currentVisualWidth = stringWidth(display);
               if (currentVisualWidth < inputWidth) {

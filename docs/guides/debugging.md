@@ -9,6 +9,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ## General Debugging Approach
 
 ### 1. Gather Information
+
 ```bash
 # Start with error details
 > Help me debug this error: TypeError: Cannot read property 'length' of undefined at line 45
@@ -19,6 +20,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 ### 2. Analyze the Problem
+
 ```bash
 # Get AI analysis
 > What could cause this error in a React component?
@@ -27,6 +29,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 ### 3. Generate Solutions
+
 ```bash
 # Request specific fixes
 > Add null checks to prevent this undefined error
@@ -39,6 +42,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ### Runtime Errors
 
 #### Undefined/Null Reference Errors
+
 ```bash
 # Provide the error and context
 > Error: Cannot read property 'map' of undefined
@@ -50,6 +54,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 #### Type Errors
+
 ```bash
 # TypeScript compilation errors
 > TS2339: Property 'username' does not exist on type 'User'
@@ -63,6 +68,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ### Performance Issues
 
 #### Slow Rendering
+
 ```bash
 # React performance problems
 > This component re-renders too frequently, causing performance issues
@@ -71,6 +77,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 #### Memory Leaks
+
 ```bash
 # Memory management issues
 > This page's memory usage keeps increasing
@@ -81,6 +88,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ### API and Network Issues
 
 #### Failed API Calls
+
 ```bash
 # Network debugging
 > API calls are failing with 500 errors
@@ -89,6 +97,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 #### CORS Issues
+
 ```bash
 # Cross-origin problems
 > Getting CORS errors when calling the API from the frontend
@@ -99,6 +108,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ### Database Issues
 
 #### Query Problems
+
 ```bash
 # SQL debugging
 > This database query is returning unexpected results
@@ -107,6 +117,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 #### Connection Issues
+
 ```bash
 # Database connectivity
 > Database connection is timing out
@@ -119,6 +130,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ### React Applications
 
 #### Component Issues
+
 ```bash
 # State management problems
 > State updates are not triggering re-renders
@@ -132,6 +144,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 #### Rendering Problems
+
 ```bash
 # Display issues
 > Component is not rendering the updated data
@@ -142,6 +155,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ### Node.js Applications
 
 #### Server Errors
+
 ```bash
 # Express.js debugging
 > Server is crashing with unhandled promise rejection
@@ -150,6 +164,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 #### Asynchronous Issues
+
 ```bash
 # Promise and async/await problems
 > Async function is not waiting for the database operation
@@ -160,6 +175,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ### Database Debugging
 
 #### ORM Issues
+
 ```bash
 # Prisma/Sequelize problems
 > ORM query is generating inefficient SQL
@@ -170,6 +186,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ## Advanced Debugging Techniques
 
 ### Step-by-Step Analysis
+
 ```bash
 # Trace execution flow
 > Walk through this function step by step and identify where it fails
@@ -178,6 +195,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 ### Root Cause Analysis
+
 ```bash
 # Deep investigation
 > What are all the possible causes of this intermittent error?
@@ -186,6 +204,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 ### Debugging Tools Integration
+
 ```bash
 # Browser DevTools
 > Help me interpret this console error stack trace
@@ -201,6 +220,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ## Error Prevention
 
 ### Defensive Programming
+
 ```bash
 # Add safeguards
 > Add input validation to prevent invalid data
@@ -209,6 +229,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 ### Testing for Edge Cases
+
 ```bash
 # Comprehensive testing
 > Write tests that cover error scenarios
@@ -219,6 +240,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ## Debugging Workflows
 
 ### Systematic Problem Solving
+
 1. **Reproduce** the issue consistently
 2. **Isolate** the problem to specific code areas
 3. **Analyze** the code and data flow
@@ -227,6 +249,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 6. **Verify** the fix works completely
 
 ### Example Debugging Session
+
 ```bash
 # Step 1: Report the problem
 > Users can't login - getting "Invalid credentials" error even with correct passwords
@@ -253,6 +276,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ## Common Debugging Patterns
 
 ### Error Boundaries and Fallbacks
+
 ```bash
 # React error handling
 > Add error boundaries to catch component errors
@@ -261,6 +285,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 ### Logging and Monitoring
+
 ```bash
 # Observability
 > Add structured logging throughout the application
@@ -269,6 +294,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 ### Environment Differences
+
 ```bash
 # Development vs Production
 > Debug why this works in development but fails in production
@@ -279,6 +305,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ## When to Ask for Help
 
 ### Complex Issues
+
 ```bash
 # Multi-layered problems
 > This issue involves React state, API calls, and database queries
@@ -287,6 +314,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 ### Performance Debugging
+
 ```bash
 # Optimization challenges
 > Profile this application to identify performance bottlenecks
@@ -295,6 +323,7 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ```
 
 ### Security Issues
+
 ```bash
 # Security vulnerabilities
 > Check this code for potential security vulnerabilities
@@ -305,22 +334,26 @@ Debugging with AI assistance can dramatically speed up problem resolution. This 
 ## Tips for Effective Debugging with AI
 
 ### Provide Context
+
 - Include error messages and stack traces
 - Describe what you expected vs. what happened
 - Mention recent changes that might be related
 - Share relevant code snippets
 
 ### Be Specific
+
 - Ask for specific debugging steps
 - Request targeted code analysis
 - Specify the type of solution you need
 
 ### Iterate and Learn
+
 - Test suggested solutions incrementally
 - Ask for explanations of the root causes
 - Request prevention strategies for similar issues
 
 ### Follow Up
+
 - Report back on solution effectiveness
 - Ask for alternative approaches if needed
 - Request additional safeguards or improvements

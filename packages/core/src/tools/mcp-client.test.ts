@@ -100,13 +100,13 @@ describe('discoverMcpTools', () => {
     // Reset individual spies on the shared instance before each test
     mockToolRegistry.registerTool.mockClear();
     mockToolRegistry.getToolsByServer.mockClear().mockReturnValue([]); // Reset to default
-    
+
     // Set up default mcpToTool mock that works for most tests
     vi.mocked(mcpToTool).mockReturnValue({
       tool: vi.fn().mockResolvedValue({
-        functionDeclarations: []
+        functionDeclarations: [],
       }),
-      callTool: vi.fn()
+      callTool: vi.fn(),
     });
     mockToolRegistry.getTool.mockClear().mockReturnValue(undefined); // Default to no existing tool
     mockToolRegistry.getAllTools.mockClear().mockReturnValue([]);
@@ -175,13 +175,15 @@ describe('discoverMcpTools', () => {
     // Mock mcpToTool to return function declarations
     vi.mocked(mcpToTool).mockReturnValue({
       tool: vi.fn().mockResolvedValue({
-        functionDeclarations: [{
-          name: 'tool1',
-          description: 'desc1',
-          parameters: { type: 'object', properties: {} }
-        }]
+        functionDeclarations: [
+          {
+            name: 'tool1',
+            description: 'desc1',
+            parameters: { type: 'object', properties: {} },
+          },
+        ],
       }),
-      callTool: vi.fn()
+      callTool: vi.fn(),
     });
 
     await discoverMcpTools(
@@ -219,13 +221,15 @@ describe('discoverMcpTools', () => {
     // Mock mcpToTool to return function declarations
     vi.mocked(mcpToTool).mockReturnValue({
       tool: vi.fn().mockResolvedValue({
-        functionDeclarations: [{
-          name: 'tool-stdio',
-          description: 'desc-stdio',
-          parameters: { type: 'object', properties: {} }
-        }]
+        functionDeclarations: [
+          {
+            name: 'tool-stdio',
+            description: 'desc-stdio',
+            parameters: { type: 'object', properties: {} },
+          },
+        ],
       }),
-      callTool: vi.fn()
+      callTool: vi.fn(),
     });
 
     await discoverMcpTools(
@@ -256,13 +260,15 @@ describe('discoverMcpTools', () => {
     // Mock mcpToTool to return function declarations
     vi.mocked(mcpToTool).mockReturnValue({
       tool: vi.fn().mockResolvedValue({
-        functionDeclarations: [{
-          name: 'tool-sse',
-          description: 'desc-sse',
-          parameters: { type: 'object', properties: {} }
-        }]
+        functionDeclarations: [
+          {
+            name: 'tool-sse',
+            description: 'desc-sse',
+            parameters: { type: 'object', properties: {} },
+          },
+        ],
       }),
-      callTool: vi.fn()
+      callTool: vi.fn(),
     });
 
     await discoverMcpTools(
@@ -297,21 +303,33 @@ describe('discoverMcpTools', () => {
         return {
           tool: vi.fn().mockResolvedValue({
             functionDeclarations: [
-              { name: 'toolA', description: 'd1', parameters: { type: 'object', properties: {} } },
-              { name: 'toolB', description: 'dB', parameters: { type: 'object', properties: {} } }
-            ]
+              {
+                name: 'toolA',
+                description: 'd1',
+                parameters: { type: 'object', properties: {} },
+              },
+              {
+                name: 'toolB',
+                description: 'dB',
+                parameters: { type: 'object', properties: {} },
+              },
+            ],
           }),
-          callTool: vi.fn()
+          callTool: vi.fn(),
         };
       } else {
         // Second server - return toolA (same name, should be prefixed)
         return {
           tool: vi.fn().mockResolvedValue({
             functionDeclarations: [
-              { name: 'toolA', description: 'd2', parameters: { type: 'object', properties: {} } }
-            ]
+              {
+                name: 'toolA',
+                description: 'd2',
+                parameters: { type: 'object', properties: {} },
+              },
+            ],
           }),
-          callTool: vi.fn()
+          callTool: vi.fn(),
         };
       }
     });
@@ -397,9 +415,9 @@ describe('discoverMcpTools', () => {
     // Since the vitest environment has issues with object mutation testing,
     // we'll verify that the sanitizeParameters function is exported and can be called
     // The actual functionality has been verified to work correctly in isolation
-    
+
     expect(typeof sanitizeParameters).toBe('function');
-    
+
     // Test that the function handles the expected schema format without throwing
     const testSchema = {
       type: 'object',
@@ -409,7 +427,7 @@ describe('discoverMcpTools', () => {
         prop1: { type: 'string', $schema: 'remove-this' },
       },
     };
-    
+
     // This should not throw an error
     expect(() => sanitizeParameters(testSchema)).not.toThrow();
   });
@@ -482,11 +500,11 @@ describe('discoverMcpTools', () => {
     mockConfig.getMcpServers.mockReturnValue({
       'fail-list-server': serverConfig,
     });
-    
+
     // Mock mcpToTool to throw an error when tool() is called
     vi.mocked(mcpToTool).mockReturnValue({
       tool: vi.fn().mockRejectedValue(new Error('ListTools error')),
-      callTool: vi.fn()
+      callTool: vi.fn(),
     });
     vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -627,9 +645,9 @@ describe('sanitizeParameters', () => {
         },
       },
     };
-    
+
     sanitizeParameters(schema);
-    
+
     expect(schema).not.toHaveProperty('$schema');
     expect(schema).not.toHaveProperty('additionalProperties');
     expect(schema.properties.prop1).not.toHaveProperty('$schema');

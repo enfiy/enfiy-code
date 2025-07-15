@@ -6,10 +6,10 @@
  */
 import { ProviderType } from './types.js';
 export interface DetectedProvider {
-    type: ProviderType;
-    available: boolean;
-    defaultModel?: string;
-    reason?: string;
+  type: ProviderType;
+  available: boolean;
+  defaultModel?: string;
+  reason?: string;
 }
 /**
  * Detect availability of local AI providers

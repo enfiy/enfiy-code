@@ -37,9 +37,7 @@ export const ContextSummaryDisplay: React.FC<ContextSummaryDisplayProps> = ({
     }
     const allNamesTheSame = new Set(contextFileNames).size < 2;
     const name = allNamesTheSame ? contextFileNames[0] : 'context';
-    return `${enfiyMdFileCount} ${name} file${
-      enfiyMdFileCount > 1 ? 's' : ''
-    }`;
+    return `${enfiyMdFileCount} ${name} file${enfiyMdFileCount > 1 ? 's' : ''}`;
   })();
 
   const mcpText =

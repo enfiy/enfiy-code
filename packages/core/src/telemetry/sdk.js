@@ -11,24 +11,26 @@ diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
 let sdk;
 let telemetryInitialized = false;
 export function isTelemetrySdkInitialized() {
-    return telemetryInitialized;
+  return telemetryInitialized;
 }
 export function initializeTelemetry(config) {
-    if (telemetryInitialized || !config.getTelemetryEnabled()) {
-        return;
-    }
-    // Temporarily disable telemetry initialization due to dependency conflicts
-    console.warn('Telemetry is temporarily disabled due to OpenTelemetry dependency conflicts');
-    telemetryInitialized = true;
+  if (telemetryInitialized || !config.getTelemetryEnabled()) {
     return;
-    /*
+  }
+  // Temporarily disable telemetry initialization due to dependency conflicts
+  console.warn(
+    'Telemetry is temporarily disabled due to OpenTelemetry dependency conflicts',
+  );
+  telemetryInitialized = true;
+  return;
+  /*
     const resource = new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: SERVICE_NAME,
       [SemanticResourceAttributes.SERVICE_VERSION]: process.version,
       'session.id': config.getSessionId(),
     });
     */
-    /*
+  /*
     const otlpEndpoint = config.getTelemetryOtlpEndpoint();
     const grpcParsedEndpoint = parseGrpcEndpoint(otlpEndpoint);
     const useOtlp = !!grpcParsedEndpoint;
@@ -80,21 +82,19 @@ export function initializeTelemetry(config) {
     */
 }
 export async function shutdownTelemetry() {
-    if (!telemetryInitialized) {
-        return;
+  if (!telemetryInitialized) {
+    return;
+  }
+  try {
+    ClearcutLogger.getInstance()?.shutdown();
+    if (sdk) {
+      await sdk.shutdown();
+      console.log('OpenTelemetry SDK shut down successfully.');
     }
-    try {
-        ClearcutLogger.getInstance()?.shutdown();
-        if (sdk) {
-            await sdk.shutdown();
-            console.log('OpenTelemetry SDK shut down successfully.');
-        }
-    }
-    catch (error) {
-        console.error('Error shutting down SDK:', error);
-    }
-    finally {
-        telemetryInitialized = false;
-    }
+  } catch (error) {
+    console.error('Error shutting down SDK:', error);
+  } finally {
+    telemetryInitialized = false;
+  }
 }
 //# sourceMappingURL=sdk.js.map

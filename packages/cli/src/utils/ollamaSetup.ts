@@ -93,7 +93,7 @@ export async function checkOllamaInstallation(): Promise<OllamaInstallationStatu
     status.version = stdout.trim();
   } catch {
     status.isInstalled = false;
-    status.recommendedModels = RECOMMENDED_MODELS.map(model => ({
+    status.recommendedModels = RECOMMENDED_MODELS.map((model) => ({
       ...model,
       isInstalled: false,
     }));
@@ -110,14 +110,15 @@ export async function checkOllamaInstallation(): Promise<OllamaInstallationStatu
     if (response.ok) {
       status.isRunning = true;
       const data = await response.json();
-      status.installedModels = data.models?.map((m: {name: string}) => m.name) || [];
+      status.installedModels =
+        data.models?.map((m: { name: string }) => m.name) || [];
     }
   } catch {
     status.isRunning = false;
   }
 
   // 推奨モデルの情報を更新
-  status.recommendedModels = RECOMMENDED_MODELS.map(model => ({
+  status.recommendedModels = RECOMMENDED_MODELS.map((model) => ({
     ...model,
     isInstalled: status.installedModels.includes(model.name),
   }));
@@ -130,7 +131,7 @@ export async function checkOllamaInstallation(): Promise<OllamaInstallationStatu
  */
 export function getOllamaInstallInstructions(): string {
   const currentPlatform = platform();
-  
+
   switch (currentPlatform) {
     case 'darwin': // macOS
       return `macOSにOllamaをインストールする方法:
@@ -198,24 +199,24 @@ export function getOllamaInstallInstructions(): string {
 export async function startOllamaService(): Promise<boolean> {
   try {
     const currentPlatform = platform();
-    
+
     if (currentPlatform === 'linux') {
       await execAsync('sudo systemctl start ollama');
     } else {
       // macOS, Windows, その他の場合は ollama serve を実行
       // バックグラウンドで実行するために非同期で開始
       exec('ollama serve');
-      
+
       // 少し待機してサービスが開始されるのを待つ
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
     }
-    
+
     // サービスが開始されたかチェック
     const response = await fetch('http://localhost:11434/api/tags', {
       method: 'GET',
       signal: AbortSignal.timeout(5000),
     });
-    
+
     return response.ok;
   } catch {
     return false;
@@ -227,7 +228,7 @@ export async function startOllamaService(): Promise<boolean> {
  */
 export async function installOllamaModel(
   modelName: string,
-  onProgress?: (progress: ModelInstallProgress) => void
+  onProgress?: (progress: ModelInstallProgress) => void,
 ): Promise<boolean> {
   try {
     onProgress?.({
@@ -236,8 +237,10 @@ export async function installOllamaModel(
       progress: 0,
     });
 
-    const { stdout: _stdout, stderr } = await execAsync(`ollama pull ${modelName}`);
-    
+    const { stdout: _stdout, stderr } = await execAsync(
+      `ollama pull ${modelName}`,
+    );
+
     if (stderr && !stderr.includes('success')) {
       onProgress?.({
         model: modelName,
@@ -277,7 +280,7 @@ export async function getInstalledModels(): Promise<string[]> {
     if (!response.ok) return [];
 
     const data = await response.json();
-    return data.models?.map((m: {name: string}) => m.name) || [];
+    return data.models?.map((m: { name: string }) => m.name) || [];
   } catch {
     return [];
   }
@@ -286,7 +289,9 @@ export async function getInstalledModels(): Promise<string[]> {
 /**
  * モデルをアンインストール
  */
-export async function uninstallOllamaModel(modelName: string): Promise<boolean> {
+export async function uninstallOllamaModel(
+  modelName: string,
+): Promise<boolean> {
   try {
     await execAsync(`ollama rm ${modelName}`);
     return true;
@@ -303,10 +308,12 @@ export async function optimizeOllamaConfig(): Promise<void> {
     // メモリ使用量やその他の設定を最適化する場合の処理
     // 現在は基本的な確認のみ
     const status = await checkOllamaInstallation();
-    
+
     if (status.isRunning && status.installedModels.length === 0) {
       // モデルがインストールされていない場合、推奨モデルのインストールを提案
-      console.log('推奨モデル llama3.2:8b をインストールすることをお勧めします');
+      console.log(
+        '推奨モデル llama3.2:8b をインストールすることをお勧めします',
+      );
     }
   } catch (error) {
     console.warn('Ollama設定の最適化中にエラーが発生しました:', error);

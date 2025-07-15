@@ -22,12 +22,7 @@ const HF_TOKEN_URL = 'https://huggingface.co/oauth/token';
 // ⚠️  WARNING: This client ID needs to be registered with HuggingFace
 // 🔧 TODO: Register proper Enfiy Code OAuth application with HuggingFace
 const HF_CLIENT_ID = process.env.HF_CLIENT_ID || 'enfiy-code';
-const HF_OAUTH_SCOPES = [
-  'openid',
-  'profile',
-  'inference-api',
-  'read-repos'
-];
+const HF_OAUTH_SCOPES = ['openid', 'profile', 'inference-api', 'read-repos'];
 
 const ENFIY_DIR = '.enfiy';
 const HF_CREDENTIAL_FILENAME = 'hf_oauth_creds.json';
@@ -59,28 +54,34 @@ export async function getHuggingFaceOAuthClient(): Promise<HFOAuthResponse> {
   const isWSL = process.env.WSL_DISTRO_NAME || process.env.WSL_INTEROP;
   const isLinux = process.platform === 'linux';
   const isDocker = process.env.container || process.env.DOCKER_CONTAINER;
-  
+
   console.log('\n🤗 HuggingFace authentication required');
   console.log('Opening browser for HuggingFace account authentication...');
   console.log('');
-  
+
   if (isWSL || isLinux || isDocker) {
     console.log('🌐 Remote/containerized environment detected');
-    console.log('If browser doesn\'t open automatically, copy this URL to your browser:');
+    console.log(
+      "If browser doesn't open automatically, copy this URL to your browser:",
+    );
     console.log('');
     console.log(`🔗 ${webLogin.authUrl}`);
     console.log('');
   }
-  
+
   try {
     console.log('Attempting to open URL with open package:', webLogin.authUrl);
-    
+
     if (isWSL) {
       console.log('🔧 WSL detected - trying Windows browser commands...');
       try {
         const { spawn } = await import('child_process');
         // Try PowerShell to open browser from WSL
-        const result = spawn('powershell.exe', ['Start-Process', `'${webLogin.authUrl}'`], { stdio: 'inherit' });
+        const result = spawn(
+          'powershell.exe',
+          ['Start-Process', `'${webLogin.authUrl}'`],
+          { stdio: 'inherit' },
+        );
         result.on('error', (err) => {
           console.log('PowerShell browser command failed:', err.message);
           throw err;
@@ -90,7 +91,9 @@ export async function getHuggingFaceOAuthClient(): Promise<HFOAuthResponse> {
         console.log('WSL PowerShell browser failed, trying wslview...');
         try {
           const { spawn } = await import('child_process');
-          const result = spawn('wslview', [webLogin.authUrl], { stdio: 'inherit' });
+          const result = spawn('wslview', [webLogin.authUrl], {
+            stdio: 'inherit',
+          });
           result.on('error', (err) => {
             console.log('wslview command failed:', err.message);
             throw err;
@@ -111,7 +114,7 @@ export async function getHuggingFaceOAuthClient(): Promise<HFOAuthResponse> {
     console.log('');
     console.log(`🔗 ${webLogin.authUrl}`);
     console.log('');
-    
+
     if (isWSL) {
       console.log('💡 WSL/Linux Tips:');
       console.log(`• wslview "${webLogin.authUrl}"`);
@@ -120,13 +123,15 @@ export async function getHuggingFaceOAuthClient(): Promise<HFOAuthResponse> {
       console.log('');
     }
   }
-  
+
   console.log('⏳ Waiting for authentication in browser...');
   console.log('   Please complete the login process in your browser window');
 
   const response = await webLogin.loginCompletePromise;
-  
-  console.log('✅ HuggingFace authentication successful! Credentials cached for future use.');
+
+  console.log(
+    '✅ HuggingFace authentication successful! Credentials cached for future use.',
+  );
 
   // Cache the credentials
   await cacheHFCredentials(response);
@@ -152,91 +157,107 @@ async function authWithHFWeb(): Promise<HFWebLogin> {
     scope: HF_OAUTH_SCOPES.join(' '),
     code_challenge: codeChallenge,
     code_challenge_method: 'S256',
-    state
+    state,
   });
 
   const authUrl = `${HF_OAUTH_BASE_URL}?${authParams.toString()}`;
 
-  const loginCompletePromise = new Promise<HFOAuthResponse>((resolve, reject) => {
-    const server = http.createServer(async (req, res) => {
-      try {
-        const parsedUrl = new url.URL(req.url!, `http://localhost:${port}`);
-        
-        if (parsedUrl.pathname !== '/callback') {
-          res.writeHead(404);
-          res.end('Not found');
-          return;
-        }
-
-        const code = parsedUrl.searchParams.get('code');
-        const returnedState = parsedUrl.searchParams.get('state');
-        const error = parsedUrl.searchParams.get('error');
-
-        if (error) {
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h1>Authentication Failed</h1><p>You can close this window.</p></body></html>');
-          reject(new Error(`HuggingFace OAuth error: ${error}`));
-          server.close();
-          return;
-        }
-
-        if (returnedState !== state) {
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h1>Authentication Failed</h1><p>State mismatch. You can close this window.</p></body></html>');
-          reject(new Error('State mismatch. Possible CSRF attack'));
-          server.close();
-          return;
-        }
-
-        if (!code) {
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h1>Authentication Failed</h1><p>No authorization code received. You can close this window.</p></body></html>');
-          reject(new Error('No authorization code received'));
-          server.close();
-          return;
-        }
-
-        // Exchange code for token
+  const loginCompletePromise = new Promise<HFOAuthResponse>(
+    (resolve, reject) => {
+      const server = http.createServer(async (req, res) => {
         try {
-          const tokenResponse = await exchangeCodeForToken(code, redirectUri, codeVerifier);
-          
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h1>🤗 Authentication Successful!</h1><p>You can close this window and return to Enfiy Code.</p></body></html>');
-          
-          resolve(tokenResponse);
-        } catch (tokenError) {
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h1>Authentication Failed</h1><p>Failed to exchange code for token. You can close this window.</p></body></html>');
-          reject(tokenError);
+          const parsedUrl = new url.URL(req.url!, `http://localhost:${port}`);
+
+          if (parsedUrl.pathname !== '/callback') {
+            res.writeHead(404);
+            res.end('Not found');
+            return;
+          }
+
+          const code = parsedUrl.searchParams.get('code');
+          const returnedState = parsedUrl.searchParams.get('state');
+          const error = parsedUrl.searchParams.get('error');
+
+          if (error) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(
+              '<html><body><h1>Authentication Failed</h1><p>You can close this window.</p></body></html>',
+            );
+            reject(new Error(`HuggingFace OAuth error: ${error}`));
+            server.close();
+            return;
+          }
+
+          if (returnedState !== state) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(
+              '<html><body><h1>Authentication Failed</h1><p>State mismatch. You can close this window.</p></body></html>',
+            );
+            reject(new Error('State mismatch. Possible CSRF attack'));
+            server.close();
+            return;
+          }
+
+          if (!code) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(
+              '<html><body><h1>Authentication Failed</h1><p>No authorization code received. You can close this window.</p></body></html>',
+            );
+            reject(new Error('No authorization code received'));
+            server.close();
+            return;
+          }
+
+          // Exchange code for token
+          try {
+            const tokenResponse = await exchangeCodeForToken(
+              code,
+              redirectUri,
+              codeVerifier,
+            );
+
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(
+              '<html><body><h1>🤗 Authentication Successful!</h1><p>You can close this window and return to Enfiy Code.</p></body></html>',
+            );
+
+            resolve(tokenResponse);
+          } catch (tokenError) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(
+              '<html><body><h1>Authentication Failed</h1><p>Failed to exchange code for token. You can close this window.</p></body></html>',
+            );
+            reject(tokenError);
+          }
+
+          server.close();
+        } catch (_error) {
+          reject(_error);
+          server.close();
         }
-        
-        server.close();
-      } catch (_error) {
-        reject(_error);
-        server.close();
-      }
-    });
-    
-    server.listen(port);
-  });
+      });
+
+      server.listen(port);
+    },
+  );
 
   return {
     authUrl,
-    loginCompletePromise
+    loginCompletePromise,
   };
 }
 
 async function exchangeCodeForToken(
   code: string,
   redirectUri: string,
-  codeVerifier: string
+  codeVerifier: string,
 ): Promise<HFOAuthResponse> {
   const tokenParams = new URLSearchParams({
     grant_type: 'authorization_code',
     code,
     redirect_uri: redirectUri,
     client_id: HF_CLIENT_ID,
-    code_verifier: codeVerifier
+    code_verifier: codeVerifier,
   });
 
   const response = await fetch(HF_TOKEN_URL, {
@@ -244,7 +265,7 @@ async function exchangeCodeForToken(
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: tokenParams.toString()
+    body: tokenParams.toString(),
   });
 
   if (!response.ok) {
@@ -252,7 +273,7 @@ async function exchangeCodeForToken(
     throw new Error(`Token exchange failed: ${response.status} ${errorText}`);
   }
 
-  const tokenData = await response.json() as HFOAuthResponse;
+  const tokenData = (await response.json()) as HFOAuthResponse;
   return tokenData;
 }
 
@@ -282,9 +303,9 @@ async function loadCachedHFCredentials(): Promise<HFOAuthResponse | null> {
     const credPath = getHFCachedCredentialPath();
     const credsData = await fs.readFile(credPath, 'utf-8');
     const creds = JSON.parse(credsData) as HFOAuthResponse;
-    
+
     // TODO: Validate token expiry and refresh if needed
-    
+
     return creds;
   } catch {
     return null;
@@ -294,7 +315,7 @@ async function loadCachedHFCredentials(): Promise<HFOAuthResponse | null> {
 async function cacheHFCredentials(credentials: HFOAuthResponse) {
   const filePath = getHFCachedCredentialPath();
   await fs.mkdir(path.dirname(filePath), { recursive: true });
-  
+
   const credString = JSON.stringify(credentials, null, 2);
   await fs.writeFile(filePath, credString);
 }

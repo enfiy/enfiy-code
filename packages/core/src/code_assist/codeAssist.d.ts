@@ -6,4 +6,7 @@
  */
 import { AuthType, ContentGenerator } from '../core/contentGenerator.js';
 import { HttpOptions } from './server.js';
-export declare function createCodeAssistContentGenerator(httpOptions: HttpOptions, authType: AuthType): Promise<ContentGenerator>;
+export declare function createCodeAssistContentGenerator(
+  httpOptions: HttpOptions,
+  authType: AuthType,
+): Promise<ContentGenerator>;

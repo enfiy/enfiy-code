@@ -6,8 +6,8 @@
  */
 export type EditorType = 'vscode' | 'windsurf' | 'cursor' | 'vim' | 'zed';
 interface DiffCommand {
-    command: string;
-    args: string[];
+  command: string;
+  args: string[];
 }
 export declare function checkHasEditorType(editor: EditorType): boolean;
 export declare function allowEditorTypeInSandbox(editor: EditorType): boolean;
@@ -19,11 +19,19 @@ export declare function isEditorAvailable(editor: string | undefined): boolean;
 /**
  * Get the diff command for a specific editor.
  */
-export declare function getDiffCommand(oldPath: string, newPath: string, editor: EditorType): DiffCommand | null;
+export declare function getDiffCommand(
+  oldPath: string,
+  newPath: string,
+  editor: EditorType,
+): DiffCommand | null;
 /**
  * Opens a diff tool to compare two files.
  * Terminal-based editors by default blocks parent process until the editor exits.
  * GUI-based editors requires args such as "--wait" to block parent process.
  */
-export declare function openDiff(oldPath: string, newPath: string, editor: EditorType): Promise<void>;
+export declare function openDiff(
+  oldPath: string,
+  newPath: string,
+  editor: EditorType,
+): Promise<void>;
 export {};

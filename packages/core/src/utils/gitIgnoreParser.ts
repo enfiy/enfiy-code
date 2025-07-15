@@ -34,7 +34,7 @@ export class GitIgnoreParser implements GitIgnoreFilter {
     this.addPatterns(['.git']);
 
     const patternFiles = ['.gitignore', path.join('.git', 'info', 'exclude')];
-    await Promise.all(patternFiles.map(pf => this.loadPatternsAsync(pf)));
+    await Promise.all(patternFiles.map((pf) => this.loadPatternsAsync(pf)));
   }
 
   loadGitRepoPatterns(): void {

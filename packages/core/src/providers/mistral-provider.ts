@@ -9,7 +9,12 @@
  */
 import { BaseProvider } from './base-provider.js';
 import { ProviderConfig, ProviderType } from './types.js';
-import { Content, GenerateContentResponse, GenerateContentConfig, FinishReason } from '@google/genai';
+import {
+  Content,
+  GenerateContentResponse,
+  GenerateContentConfig,
+  FinishReason,
+} from '@google/genai';
 
 interface MistralMessage {
   role: 'system' | 'user' | 'assistant';
@@ -56,7 +61,7 @@ export class MistralProvider extends BaseProvider {
       if (!this.apiKey) {
         return false;
       }
-      
+
       // Test with models list endpoint
       const response = await this.makeApiRequest('/models');
       return response.ok;
@@ -73,10 +78,15 @@ export class MistralProvider extends BaseProvider {
       }
 
       const data = await response.json();
-      return data.data
-        ?.map((model: { id: string }) => model.id)
-        ?.filter((id: string) => id.startsWith('mistral') || id.startsWith('codestral'))
-        ?.sort() || this.getRecommendedModels();
+      return (
+        data.data
+          ?.map((model: { id: string }) => model.id)
+          ?.filter(
+            (id: string) =>
+              id.startsWith('mistral') || id.startsWith('codestral'),
+          )
+          ?.sort() || this.getRecommendedModels()
+      );
     } catch {
       return this.getRecommendedModels();
     }
@@ -93,31 +103,43 @@ export class MistralProvider extends BaseProvider {
   }
 
   private convertToMistralMessages(contents: Content[]): MistralMessage[] {
-    return contents.map(content => {
-      const textParts = content.parts?.filter(part => 'text' in part) || [];
-      const text = textParts.map(part => (part as { text: string }).text).join('\n');
-      
+    return contents.map((content) => {
+      const textParts = content.parts?.filter((part) => 'text' in part) || [];
+      const text = textParts
+        .map((part) => (part as { text: string }).text)
+        .join('\n');
+
       return {
-        role: content.role === 'model' ? 'assistant' : content.role as 'system' | 'user' | 'assistant',
+        role:
+          content.role === 'model'
+            ? 'assistant'
+            : (content.role as 'system' | 'user' | 'assistant'),
         content: text,
       };
     });
   }
 
-  protected convertToStandardResponse(response: MistralResponse): GenerateContentResponse {
+  protected convertToStandardResponse(
+    response: MistralResponse,
+  ): GenerateContentResponse {
     const choice = response.choices[0];
     const content = choice?.message?.content || '';
-    
+
     const standardResponse = {
-      candidates: [{
-        content: {
-          role: 'model',
-          parts: [{ text: content }],
+      candidates: [
+        {
+          content: {
+            role: 'model',
+            parts: [{ text: content }],
+          },
+          finishReason:
+            choice?.finish_reason === 'stop'
+              ? FinishReason.STOP
+              : FinishReason.OTHER,
+          index: 0,
+          safetyRatings: [],
         },
-        finishReason: choice?.finish_reason === 'stop' ? FinishReason.STOP : FinishReason.OTHER,
-        index: 0,
-        safetyRatings: [],
-      }],
+      ],
       usageMetadata: {
         promptTokenCount: response.usage.prompt_tokens,
         candidatesTokenCount: response.usage.completion_tokens,
@@ -134,7 +156,10 @@ export class MistralProvider extends BaseProvider {
     return standardResponse as unknown as GenerateContentResponse;
   }
 
-  private async makeApiRequest(endpoint: string, options?: RequestInit): Promise<Response> {
+  private async makeApiRequest(
+    endpoint: string,
+    options?: RequestInit,
+  ): Promise<Response> {
     if (!this.apiKey) {
       throw new Error('Mistral API key not available');
     }
@@ -143,7 +168,7 @@ export class MistralProvider extends BaseProvider {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
+        Authorization: `Bearer ${this.apiKey}`,
         ...options?.headers,
       },
     });
@@ -157,13 +182,20 @@ export class MistralProvider extends BaseProvider {
     config?: GenerateContentConfig;
   }): Promise<GenerateContentResponse> {
     const messages = this.convertToMistralMessages(params.contents);
-    
+
     // Handle system instruction
     if (params.config?.systemInstruction) {
-      const systemText = typeof params.config.systemInstruction === 'string' 
-        ? params.config.systemInstruction 
-        : (params.config.systemInstruction as { parts?: Array<{ text: string }> }).parts?.map((p) => p.text).join('\n') || '';
-      
+      const systemText =
+        typeof params.config.systemInstruction === 'string'
+          ? params.config.systemInstruction
+          : (
+              params.config.systemInstruction as {
+                parts?: Array<{ text: string }>;
+              }
+            ).parts
+              ?.map((p) => p.text)
+              .join('\n') || '';
+
       messages.unshift({
         role: 'system',
         content: systemText,
@@ -171,8 +203,8 @@ export class MistralProvider extends BaseProvider {
     }
 
     const modelName = params.model.replace(/^models\//, '');
-    const finalModel = this.getRecommendedModels().includes(modelName) 
-      ? modelName 
+    const finalModel = this.getRecommendedModels().includes(modelName)
+      ? modelName
       : 'mistral-large-latest';
 
     const requestBody = {
@@ -192,7 +224,9 @@ export class MistralProvider extends BaseProvider {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`Mistral API Error: ${errorData.message || response.statusText}`);
+        throw new Error(
+          `Mistral API Error: ${errorData.message || response.statusText}`,
+        );
       }
 
       const data: MistralResponse = await response.json();
@@ -208,13 +242,20 @@ export class MistralProvider extends BaseProvider {
     config?: GenerateContentConfig;
   }): Promise<AsyncGenerator<GenerateContentResponse>> {
     const messages = this.convertToMistralMessages(params.contents);
-    
+
     // Handle system instruction
     if (params.config?.systemInstruction) {
-      const systemText = typeof params.config.systemInstruction === 'string' 
-        ? params.config.systemInstruction 
-        : (params.config.systemInstruction as { parts?: Array<{ text: string }> }).parts?.map((p) => p.text).join('\n') || '';
-      
+      const systemText =
+        typeof params.config.systemInstruction === 'string'
+          ? params.config.systemInstruction
+          : (
+              params.config.systemInstruction as {
+                parts?: Array<{ text: string }>;
+              }
+            ).parts
+              ?.map((p) => p.text)
+              .join('\n') || '';
+
       messages.unshift({
         role: 'system',
         content: systemText,
@@ -222,8 +263,8 @@ export class MistralProvider extends BaseProvider {
     }
 
     const modelName = params.model.replace(/^models\//, '');
-    const finalModel = this.getRecommendedModels().includes(modelName) 
-      ? modelName 
+    const finalModel = this.getRecommendedModels().includes(modelName)
+      ? modelName
       : 'mistral-large-latest';
 
     const requestBody = {
@@ -242,13 +283,17 @@ export class MistralProvider extends BaseProvider {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(`Mistral API Error: ${errorData.message || response.statusText}`);
+      throw new Error(
+        `Mistral API Error: ${errorData.message || response.statusText}`,
+      );
     }
 
     return this.createStreamGenerator(response);
   }
 
-  private async *createStreamGenerator(response: Response): AsyncGenerator<GenerateContentResponse> {
+  private async *createStreamGenerator(
+    response: Response,
+  ): AsyncGenerator<GenerateContentResponse> {
     if (!response.body) {
       throw new Error('No response body for streaming');
     }
@@ -275,22 +320,25 @@ export class MistralProvider extends BaseProvider {
             try {
               const parsed = JSON.parse(data);
               const delta = parsed.choices?.[0]?.delta?.content;
-              
+
               if (delta) {
                 accumulatedContent += delta;
 
                 const streamResponse = {
-                  candidates: [{
-                    content: {
-                      role: 'model',
-                      parts: [{ text: accumulatedContent }],
+                  candidates: [
+                    {
+                      content: {
+                        role: 'model',
+                        parts: [{ text: accumulatedContent }],
+                      },
+                      finishReason:
+                        parsed.choices?.[0]?.finish_reason === 'stop'
+                          ? FinishReason.STOP
+                          : FinishReason.OTHER,
+                      index: 0,
+                      safetyRatings: [],
                     },
-                    finishReason: parsed.choices?.[0]?.finish_reason === 'stop' 
-                      ? FinishReason.STOP 
-                      : FinishReason.OTHER,
-                    index: 0,
-                    safetyRatings: [],
-                  }],
+                  ],
                   usageMetadata: {
                     promptTokenCount: 0,
                     candidatesTokenCount: 0,

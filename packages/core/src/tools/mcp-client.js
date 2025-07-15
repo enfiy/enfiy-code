@@ -10,31 +10,31 @@ import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { parse } from 'shell-quote';
 import { DiscoveredMCPTool } from './mcp-tool.js';
-import { mcpToTool, } from '@google/genai';
+import { mcpToTool } from '@google/genai';
 export const MCP_DEFAULT_TIMEOUT_MSEC = 10 * 60 * 1000; // default to 10 minutes
 /**
  * Enum representing the connection status of an MCP server
  */
 export let MCPServerStatus;
 (function (MCPServerStatus) {
-    /** Server is disconnected or experiencing errors */
-    MCPServerStatus["DISCONNECTED"] = "disconnected";
-    /** Server is in the process of connecting */
-    MCPServerStatus["CONNECTING"] = "connecting";
-    /** Server is connected and ready to use */
-    MCPServerStatus["CONNECTED"] = "connected";
+  /** Server is disconnected or experiencing errors */
+  MCPServerStatus['DISCONNECTED'] = 'disconnected';
+  /** Server is in the process of connecting */
+  MCPServerStatus['CONNECTING'] = 'connecting';
+  /** Server is connected and ready to use */
+  MCPServerStatus['CONNECTED'] = 'connected';
 })(MCPServerStatus || (MCPServerStatus = {}));
 /**
  * Enum representing the overall MCP discovery state
  */
 export let MCPDiscoveryState;
 (function (MCPDiscoveryState) {
-    /** Discovery has not started yet */
-    MCPDiscoveryState["NOT_STARTED"] = "not_started";
-    /** Discovery is currently in progress */
-    MCPDiscoveryState["IN_PROGRESS"] = "in_progress";
-    /** Discovery has completed (with or without errors) */
-    MCPDiscoveryState["COMPLETED"] = "completed";
+  /** Discovery has not started yet */
+  MCPDiscoveryState['NOT_STARTED'] = 'not_started';
+  /** Discovery is currently in progress */
+  MCPDiscoveryState['IN_PROGRESS'] = 'in_progress';
+  /** Discovery has completed (with or without errors) */
+  MCPDiscoveryState['COMPLETED'] = 'completed';
 })(MCPDiscoveryState || (MCPDiscoveryState = {}));
 /**
  * Map to track the status of each MCP server within the core package
@@ -49,242 +49,282 @@ const statusChangeListeners = [];
  * Add a listener for MCP server status changes
  */
 export function addMCPStatusChangeListener(listener) {
-    statusChangeListeners.push(listener);
+  statusChangeListeners.push(listener);
 }
 /**
  * Remove a listener for MCP server status changes
  */
 export function removeMCPStatusChangeListener(listener) {
-    const index = statusChangeListeners.indexOf(listener);
-    if (index !== -1) {
-        statusChangeListeners.splice(index, 1);
-    }
+  const index = statusChangeListeners.indexOf(listener);
+  if (index !== -1) {
+    statusChangeListeners.splice(index, 1);
+  }
 }
 /**
  * Update the status of an MCP server
  */
 function updateMCPServerStatus(serverName, status) {
-    mcpServerStatusesInternal.set(serverName, status);
-    // Notify all listeners
-    for (const listener of statusChangeListeners) {
-        listener(serverName, status);
-    }
+  mcpServerStatusesInternal.set(serverName, status);
+  // Notify all listeners
+  for (const listener of statusChangeListeners) {
+    listener(serverName, status);
+  }
 }
 /**
  * Get the current status of an MCP server
  */
 export function getMCPServerStatus(serverName) {
-    return (mcpServerStatusesInternal.get(serverName) || MCPServerStatus.DISCONNECTED);
+  return (
+    mcpServerStatusesInternal.get(serverName) || MCPServerStatus.DISCONNECTED
+  );
 }
 /**
  * Get all MCP server statuses
  */
 export function getAllMCPServerStatuses() {
-    return new Map(mcpServerStatusesInternal);
+  return new Map(mcpServerStatusesInternal);
 }
 /**
  * Get the current MCP discovery state
  */
 export function getMCPDiscoveryState() {
-    return mcpDiscoveryState;
+  return mcpDiscoveryState;
 }
-export async function discoverMcpTools(mcpServers, mcpServerCommand, toolRegistry) {
-    // Set discovery state to in progress
-    mcpDiscoveryState = MCPDiscoveryState.IN_PROGRESS;
-    try {
-        if (mcpServerCommand) {
-            const cmd = mcpServerCommand;
-            const args = parse(cmd, process.env);
-            if (args.some((arg) => typeof arg !== 'string')) {
-                throw new Error('failed to parse mcpServerCommand: ' + cmd);
-            }
-            // use generic server name 'mcp'
-            mcpServers['mcp'] = {
-                command: args[0],
-                args: args.slice(1),
-            };
-        }
-        const discoveryPromises = Object.entries(mcpServers).map(([mcpServerName, mcpServerConfig]) => connectAndDiscover(mcpServerName, mcpServerConfig, toolRegistry));
-        await Promise.all(discoveryPromises);
-        // Mark discovery as completed
-        mcpDiscoveryState = MCPDiscoveryState.COMPLETED;
+export async function discoverMcpTools(
+  mcpServers,
+  mcpServerCommand,
+  toolRegistry,
+) {
+  // Set discovery state to in progress
+  mcpDiscoveryState = MCPDiscoveryState.IN_PROGRESS;
+  try {
+    if (mcpServerCommand) {
+      const cmd = mcpServerCommand;
+      const args = parse(cmd, process.env);
+      if (args.some((arg) => typeof arg !== 'string')) {
+        throw new Error('failed to parse mcpServerCommand: ' + cmd);
+      }
+      // use generic server name 'mcp'
+      mcpServers['mcp'] = {
+        command: args[0],
+        args: args.slice(1),
+      };
     }
-    catch (error) {
-        // Still mark as completed even with errors
-        mcpDiscoveryState = MCPDiscoveryState.COMPLETED;
-        throw error;
-    }
+    const discoveryPromises = Object.entries(mcpServers).map(
+      ([mcpServerName, mcpServerConfig]) =>
+        connectAndDiscover(mcpServerName, mcpServerConfig, toolRegistry),
+    );
+    await Promise.all(discoveryPromises);
+    // Mark discovery as completed
+    mcpDiscoveryState = MCPDiscoveryState.COMPLETED;
+  } catch (error) {
+    // Still mark as completed even with errors
+    mcpDiscoveryState = MCPDiscoveryState.COMPLETED;
+    throw error;
+  }
 }
-async function connectAndDiscover(mcpServerName, mcpServerConfig, toolRegistry) {
-    // Initialize the server status as connecting
-    updateMCPServerStatus(mcpServerName, MCPServerStatus.CONNECTING);
-    let transport;
-    if (mcpServerConfig.httpUrl) {
-        transport = new StreamableHTTPClientTransport(new URL(mcpServerConfig.httpUrl));
-    }
-    else if (mcpServerConfig.url) {
-        transport = new SSEClientTransport(new URL(mcpServerConfig.url));
-    }
-    else if (mcpServerConfig.command) {
-        transport = new StdioClientTransport({
-            command: mcpServerConfig.command,
-            args: mcpServerConfig.args || [],
-            env: {
-                ...process.env,
-                ...(mcpServerConfig.env || {}),
-            },
-            cwd: mcpServerConfig.cwd,
-            stderr: 'pipe',
-        });
-    }
-    else {
-        console.error(`MCP server '${mcpServerName}' has invalid configuration: missing httpUrl (for Streamable HTTP), url (for SSE), and command (for stdio). Skipping.`);
-        // Update status to disconnected
-        updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
-        return;
-    }
-    const mcpClient = new Client({
-        name: 'enfiy-cli-mcp-client',
-        version: '0.0.1',
+async function connectAndDiscover(
+  mcpServerName,
+  mcpServerConfig,
+  toolRegistry,
+) {
+  // Initialize the server status as connecting
+  updateMCPServerStatus(mcpServerName, MCPServerStatus.CONNECTING);
+  let transport;
+  if (mcpServerConfig.httpUrl) {
+    transport = new StreamableHTTPClientTransport(
+      new URL(mcpServerConfig.httpUrl),
+    );
+  } else if (mcpServerConfig.url) {
+    transport = new SSEClientTransport(new URL(mcpServerConfig.url));
+  } else if (mcpServerConfig.command) {
+    transport = new StdioClientTransport({
+      command: mcpServerConfig.command,
+      args: mcpServerConfig.args || [],
+      env: {
+        ...process.env,
+        ...(mcpServerConfig.env || {}),
+      },
+      cwd: mcpServerConfig.cwd,
+      stderr: 'pipe',
     });
-    // patch Client.callTool to use request timeout as genai McpCallTool.callTool does not do it
-    // TODO: remove this hack once GenAI SDK does callTool with request options
-    if ('callTool' in mcpClient) {
-        const origCallTool = mcpClient.callTool.bind(mcpClient);
-        mcpClient.callTool = function (params, resultSchema, options) {
-            return origCallTool(params, resultSchema, {
-                ...options,
-                timeout: mcpServerConfig.timeout ?? MCP_DEFAULT_TIMEOUT_MSEC,
-            });
-        };
-    }
-    try {
-        await mcpClient.connect(transport, {
-            timeout: mcpServerConfig.timeout ?? MCP_DEFAULT_TIMEOUT_MSEC,
-        });
-        // Connection successful
-        updateMCPServerStatus(mcpServerName, MCPServerStatus.CONNECTED);
-    }
-    catch (error) {
-        // Create a safe config object that excludes sensitive information
-        const safeConfig = {
-            command: mcpServerConfig.command,
-            url: mcpServerConfig.url,
-            cwd: mcpServerConfig.cwd,
-            timeout: mcpServerConfig.timeout,
-            trust: mcpServerConfig.trust,
-            // Exclude args and env which may contain sensitive data
-        };
-        let errorString = `failed to start or connect to MCP server '${mcpServerName}' ` +
-            `${JSON.stringify(safeConfig)}; \n${error}`;
-        if (process.env.SANDBOX) {
-            errorString += `\nMake sure it is available in the sandbox`;
-        }
-        console.error(errorString);
-        // Update status to disconnected
-        updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
-        return;
-    }
-    mcpClient.onerror = (error) => {
-        console.error(`MCP ERROR (${mcpServerName}):`, error.toString());
-        // Update status to disconnected on error
-        updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
+  } else {
+    console.error(
+      `MCP server '${mcpServerName}' has invalid configuration: missing httpUrl (for Streamable HTTP), url (for SSE), and command (for stdio). Skipping.`,
+    );
+    // Update status to disconnected
+    updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
+    return;
+  }
+  const mcpClient = new Client({
+    name: 'enfiy-cli-mcp-client',
+    version: '0.0.1',
+  });
+  // patch Client.callTool to use request timeout as genai McpCallTool.callTool does not do it
+  // TODO: remove this hack once GenAI SDK does callTool with request options
+  if ('callTool' in mcpClient) {
+    const origCallTool = mcpClient.callTool.bind(mcpClient);
+    mcpClient.callTool = function (params, resultSchema, options) {
+      return origCallTool(params, resultSchema, {
+        ...options,
+        timeout: mcpServerConfig.timeout ?? MCP_DEFAULT_TIMEOUT_MSEC,
+      });
     };
-    if (transport instanceof StdioClientTransport && transport.stderr) {
-        transport.stderr.on('data', (data) => {
-            const stderrStr = data.toString();
-            // Filter out verbose INFO logs from some MCP servers
-            if (!stderrStr.includes('] INFO')) {
-                console.debug(`MCP STDERR (${mcpServerName}):`, stderrStr);
-            }
-        });
+  }
+  try {
+    await mcpClient.connect(transport, {
+      timeout: mcpServerConfig.timeout ?? MCP_DEFAULT_TIMEOUT_MSEC,
+    });
+    // Connection successful
+    updateMCPServerStatus(mcpServerName, MCPServerStatus.CONNECTED);
+  } catch (error) {
+    // Create a safe config object that excludes sensitive information
+    const safeConfig = {
+      command: mcpServerConfig.command,
+      url: mcpServerConfig.url,
+      cwd: mcpServerConfig.cwd,
+      timeout: mcpServerConfig.timeout,
+      trust: mcpServerConfig.trust,
+      // Exclude args and env which may contain sensitive data
+    };
+    let errorString =
+      `failed to start or connect to MCP server '${mcpServerName}' ` +
+      `${JSON.stringify(safeConfig)}; \n${error}`;
+    if (process.env.SANDBOX) {
+      errorString += `\nMake sure it is available in the sandbox`;
     }
-    try {
-        const mcpCallableTool = mcpToTool(mcpClient);
-        const discoveredToolFunctions = await mcpCallableTool.tool();
-        if (!discoveredToolFunctions ||
-            !Array.isArray(discoveredToolFunctions.functionDeclarations)) {
-            console.error(`MCP server '${mcpServerName}' did not return valid tool function declarations. Skipping.`);
-            if (transport instanceof StdioClientTransport ||
-                transport instanceof SSEClientTransport ||
-                transport instanceof StreamableHTTPClientTransport) {
-                await transport.close();
-            }
-            // Update status to disconnected
-            updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
-            return;
-        }
-        for (const funcDecl of discoveredToolFunctions.functionDeclarations) {
-            if (!funcDecl.name) {
-                console.warn(`Discovered a function declaration without a name from MCP server '${mcpServerName}'. Skipping.`);
-                continue;
-            }
-            let toolNameForModel = funcDecl.name;
-            // Replace invalid characters (based on 400 error message from Gemini API) with underscores
-            toolNameForModel = toolNameForModel.replace(/[^a-zA-Z0-9_.-]/g, '_');
-            const existingTool = toolRegistry.getTool(toolNameForModel);
-            if (existingTool) {
-                toolNameForModel = mcpServerName + '__' + toolNameForModel;
-            }
-            // If longer than 63 characters, replace middle with '___'
-            // (Gemini API says max length 64, but actual limit seems to be 63)
-            if (toolNameForModel.length > 63) {
-                toolNameForModel =
-                    toolNameForModel.slice(0, 28) + '___' + toolNameForModel.slice(-32);
-            }
-            sanitizeParameters(funcDecl.parameters);
-            // Ensure parameters is a valid JSON schema object, default to empty if not.
-            const parameterSchema = funcDecl.parameters && typeof funcDecl.parameters === 'object'
-                ? { ...funcDecl.parameters }
-                : { type: 'object', properties: {} };
-            toolRegistry.registerTool(new DiscoveredMCPTool(mcpCallableTool, mcpServerName, toolNameForModel, funcDecl.description ?? '', parameterSchema, funcDecl.name, mcpServerConfig.timeout ?? MCP_DEFAULT_TIMEOUT_MSEC, mcpServerConfig.trust));
-        }
+    console.error(errorString);
+    // Update status to disconnected
+    updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
+    return;
+  }
+  mcpClient.onerror = (error) => {
+    console.error(`MCP ERROR (${mcpServerName}):`, error.toString());
+    // Update status to disconnected on error
+    updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
+  };
+  if (transport instanceof StdioClientTransport && transport.stderr) {
+    transport.stderr.on('data', (data) => {
+      const stderrStr = data.toString();
+      // Filter out verbose INFO logs from some MCP servers
+      if (!stderrStr.includes('] INFO')) {
+        console.debug(`MCP STDERR (${mcpServerName}):`, stderrStr);
+      }
+    });
+  }
+  try {
+    const mcpCallableTool = mcpToTool(mcpClient);
+    const discoveredToolFunctions = await mcpCallableTool.tool();
+    if (
+      !discoveredToolFunctions ||
+      !Array.isArray(discoveredToolFunctions.functionDeclarations)
+    ) {
+      console.error(
+        `MCP server '${mcpServerName}' did not return valid tool function declarations. Skipping.`,
+      );
+      if (
+        transport instanceof StdioClientTransport ||
+        transport instanceof SSEClientTransport ||
+        transport instanceof StreamableHTTPClientTransport
+      ) {
+        await transport.close();
+      }
+      // Update status to disconnected
+      updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
+      return;
     }
-    catch (error) {
-        console.error(`Failed to list or register tools for MCP server '${mcpServerName}': ${error}`);
-        // Ensure transport is cleaned up on error too
-        if (transport instanceof StdioClientTransport ||
-            transport instanceof SSEClientTransport ||
-            transport instanceof StreamableHTTPClientTransport) {
-            await transport.close();
-        }
-        // Update status to disconnected
-        updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
+    for (const funcDecl of discoveredToolFunctions.functionDeclarations) {
+      if (!funcDecl.name) {
+        console.warn(
+          `Discovered a function declaration without a name from MCP server '${mcpServerName}'. Skipping.`,
+        );
+        continue;
+      }
+      let toolNameForModel = funcDecl.name;
+      // Replace invalid characters (based on 400 error message from Gemini API) with underscores
+      toolNameForModel = toolNameForModel.replace(/[^a-zA-Z0-9_.-]/g, '_');
+      const existingTool = toolRegistry.getTool(toolNameForModel);
+      if (existingTool) {
+        toolNameForModel = mcpServerName + '__' + toolNameForModel;
+      }
+      // If longer than 63 characters, replace middle with '___'
+      // (Gemini API says max length 64, but actual limit seems to be 63)
+      if (toolNameForModel.length > 63) {
+        toolNameForModel =
+          toolNameForModel.slice(0, 28) + '___' + toolNameForModel.slice(-32);
+      }
+      sanitizeParameters(funcDecl.parameters);
+      // Ensure parameters is a valid JSON schema object, default to empty if not.
+      const parameterSchema =
+        funcDecl.parameters && typeof funcDecl.parameters === 'object'
+          ? { ...funcDecl.parameters }
+          : { type: 'object', properties: {} };
+      toolRegistry.registerTool(
+        new DiscoveredMCPTool(
+          mcpCallableTool,
+          mcpServerName,
+          toolNameForModel,
+          funcDecl.description ?? '',
+          parameterSchema,
+          funcDecl.name,
+          mcpServerConfig.timeout ?? MCP_DEFAULT_TIMEOUT_MSEC,
+          mcpServerConfig.trust,
+        ),
+      );
     }
-    // If no tools were registered from this MCP server, the following 'if' block
-    // will close the connection. This is done to conserve resources and prevent
-    // an orphaned connection to a server that isn't providing any usable
-    // functionality. Connections to servers that did provide tools are kept
-    // open, as those tools will require the connection to function.
-    if (toolRegistry.getToolsByServer(mcpServerName).length === 0) {
-        console.log(`No tools registered from MCP server '${mcpServerName}'. Closing connection.`);
-        if (transport instanceof StdioClientTransport ||
-            transport instanceof SSEClientTransport ||
-            transport instanceof StreamableHTTPClientTransport) {
-            await transport.close();
-            // Update status to disconnected
-            updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
-        }
+  } catch (error) {
+    console.error(
+      `Failed to list or register tools for MCP server '${mcpServerName}': ${error}`,
+    );
+    // Ensure transport is cleaned up on error too
+    if (
+      transport instanceof StdioClientTransport ||
+      transport instanceof SSEClientTransport ||
+      transport instanceof StreamableHTTPClientTransport
+    ) {
+      await transport.close();
     }
+    // Update status to disconnected
+    updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
+  }
+  // If no tools were registered from this MCP server, the following 'if' block
+  // will close the connection. This is done to conserve resources and prevent
+  // an orphaned connection to a server that isn't providing any usable
+  // functionality. Connections to servers that did provide tools are kept
+  // open, as those tools will require the connection to function.
+  if (toolRegistry.getToolsByServer(mcpServerName).length === 0) {
+    console.log(
+      `No tools registered from MCP server '${mcpServerName}'. Closing connection.`,
+    );
+    if (
+      transport instanceof StdioClientTransport ||
+      transport instanceof SSEClientTransport ||
+      transport instanceof StreamableHTTPClientTransport
+    ) {
+      await transport.close();
+      // Update status to disconnected
+      updateMCPServerStatus(mcpServerName, MCPServerStatus.DISCONNECTED);
+    }
+  }
 }
 export function sanitizeParameters(schema) {
-    if (!schema) {
-        return;
+  if (!schema) {
+    return;
+  }
+  if (schema.anyOf) {
+    // Vertex AI gets confused if both anyOf and default are set.
+    schema.default = undefined;
+    for (const item of schema.anyOf) {
+      sanitizeParameters(item);
     }
-    if (schema.anyOf) {
-        // Vertex AI gets confused if both anyOf and default are set.
-        schema.default = undefined;
-        for (const item of schema.anyOf) {
-            sanitizeParameters(item);
-        }
+  }
+  if (schema.items) {
+    sanitizeParameters(schema.items);
+  }
+  if (schema.properties) {
+    for (const item of Object.values(schema.properties)) {
+      sanitizeParameters(item);
     }
-    if (schema.items) {
-        sanitizeParameters(schema.items);
-    }
-    if (schema.properties) {
-        for (const item of Object.values(schema.properties)) {
-            sanitizeParameters(item);
-        }
-    }
+  }
 }
 //# sourceMappingURL=mcp-client.js.map

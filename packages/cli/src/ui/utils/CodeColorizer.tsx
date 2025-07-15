@@ -114,16 +114,20 @@ function LazyCodeColorizer({
   availableHeight?: number;
   maxWidth?: number;
 }) {
-  const [highlighter, setHighlighter] = React.useState<ReturnType<typeof createLowlight> | null>(null);
+  const [highlighter, setHighlighter] = React.useState<ReturnType<
+    typeof createLowlight
+  > | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    getLowlight().then(hl => {
-      setHighlighter(hl);
-      setIsLoading(false);
-    }).catch(() => {
-      setIsLoading(false);
-    });
+    getLowlight()
+      .then((hl) => {
+        setHighlighter(hl);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   if (isLoading || !highlighter) {
@@ -131,10 +135,20 @@ function LazyCodeColorizer({
     return renderPlainText(code, availableHeight, maxWidth);
   }
 
-  return renderHighlightedCode(code, language, highlighter, availableHeight, maxWidth);
+  return renderHighlightedCode(
+    code,
+    language,
+    highlighter,
+    availableHeight,
+    maxWidth,
+  );
 }
 
-function renderPlainText(code: string, availableHeight?: number, maxWidth?: number): React.ReactNode {
+function renderPlainText(
+  code: string,
+  availableHeight?: number,
+  maxWidth?: number,
+): React.ReactNode {
   const activeTheme = themeManager.getActiveTheme();
   const lines = code.replace(/\n$/, '').split('\n');
   const padWidth = String(lines.length).length;

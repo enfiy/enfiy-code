@@ -50,8 +50,10 @@ const LOCAL_SERVER_OPTIONS: LocalServerOption[] = [
     displayName: 'Text Generation Inference (TGI)',
     description: 'HuggingFaceの公式推論サーバー（推奨）',
     requirements: ['Docker'],
-    installCommand: 'docker pull ghcr.io/huggingface/text-generation-inference:latest',
-    startCommand: 'docker run -p 8080:80 -v $PWD/data:/data ghcr.io/huggingface/text-generation-inference:latest --model-id microsoft/DialoGPT-medium',
+    installCommand:
+      'docker pull ghcr.io/huggingface/text-generation-inference:latest',
+    startCommand:
+      'docker run -p 8080:80 -v $PWD/data:/data ghcr.io/huggingface/text-generation-inference:latest --model-id microsoft/DialoGPT-medium',
     defaultPort: 8080,
     memoryRequirement: '4GB以上',
     difficulty: 'easy',
@@ -62,7 +64,8 @@ const LOCAL_SERVER_OPTIONS: LocalServerOption[] = [
     description: '高速な推論が可能なサーバー',
     requirements: ['Python 3.8+', 'CUDA（GPU使用時）'],
     installCommand: 'pip install vllm',
-    startCommand: 'python -m vllm.entrypoints.openai.api_server --model microsoft/DialoGPT-medium --port 8000',
+    startCommand:
+      'python -m vllm.entrypoints.openai.api_server --model microsoft/DialoGPT-medium --port 8000',
     defaultPort: 8000,
     memoryRequirement: '8GB以上',
     difficulty: 'medium',
@@ -102,11 +105,7 @@ const SETUP_METHODS: HFSetupMethod[] = [
       'CLI設定でAPIキーを入力',
       'モデルを選択して使用開始',
     ],
-    pros: [
-      'セットアップが簡単',
-      '豊富なモデルが利用可能',
-      'インフラ管理不要',
-    ],
+    pros: ['セットアップが簡単', '豊富なモデルが利用可能', 'インフラ管理不要'],
     cons: [
       'インターネット接続が必要',
       '使用量に応じて課金',
@@ -147,16 +146,8 @@ const SETUP_METHODS: HFSetupMethod[] = [
       'エンドポイントURLを取得',
       'CLI設定でエンドポイントURLを指定',
     ],
-    pros: [
-      '高い安定性',
-      'カスタマイズ可能',
-      '専用リソース',
-    ],
-    cons: [
-      '月額料金が発生',
-      'セットアップが複雑',
-      '最低利用料金あり',
-    ],
+    pros: ['高い安定性', 'カスタマイズ可能', '専用リソース'],
+    cons: ['月額料金が発生', 'セットアップが複雑', '最低利用料金あり'],
   },
 ];
 
@@ -206,7 +197,7 @@ export async function checkHuggingFaceSetup(): Promise<HuggingFaceSetupStatus> {
         method: 'GET',
         signal: AbortSignal.timeout(2000),
       });
-      
+
       if (response.ok) {
         status.localServerAvailable = true;
         status.localServerUrl = `http://localhost:${port}`;
@@ -344,21 +335,24 @@ export function _getDockerSetupInstructions(): string {
 /**
  * Text Generation Inference (TGI) サーバーを開始
  */
-export async function startTGIServer(modelId: string = 'microsoft/DialoGPT-medium', port: number = 8080): Promise<boolean> {
+export async function startTGIServer(
+  modelId: string = 'microsoft/DialoGPT-medium',
+  port: number = 8080,
+): Promise<boolean> {
   try {
     const command = `docker run -d -p ${port}:80 -v $PWD/data:/data ghcr.io/huggingface/text-generation-inference:latest --model-id ${modelId}`;
-    
+
     await execAsync(command);
-    
+
     // サーバーが起動するまで待機
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+
     // ヘルスチェック
     const response = await fetch(`http://localhost:${port}/health`, {
       method: 'GET',
       signal: AbortSignal.timeout(5000),
     });
-    
+
     return response.ok;
   } catch {
     return false;
@@ -368,22 +362,25 @@ export async function startTGIServer(modelId: string = 'microsoft/DialoGPT-mediu
 /**
  * vLLM サーバーを開始
  */
-export async function startVLLMServer(modelId: string = 'microsoft/DialoGPT-medium', port: number = 8000): Promise<boolean> {
+export async function startVLLMServer(
+  modelId: string = 'microsoft/DialoGPT-medium',
+  port: number = 8000,
+): Promise<boolean> {
   try {
     const command = `python -m vllm.entrypoints.openai.api_server --model ${modelId} --port ${port}`;
-    
+
     // バックグラウンドで実行
     exec(command);
-    
+
     // サーバーが起動するまで待機
-    await new Promise(resolve => setTimeout(resolve, 15000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 15000));
+
     // ヘルスチェック
     const response = await fetch(`http://localhost:${port}/health`, {
       method: 'GET',
       signal: AbortSignal.timeout(5000),
     });
-    
+
     return response.ok;
   } catch {
     return false;

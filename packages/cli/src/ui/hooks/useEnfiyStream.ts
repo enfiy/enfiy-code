@@ -357,7 +357,11 @@ export const useEnfiyStream = (
           } as Omit<HistoryItem, 'id'>,
           userMessageTimestamp,
         );
-        setPendingHistoryItem({ type: 'enfiy_content', text: afterText, model: currentModel });
+        setPendingHistoryItem({
+          type: 'enfiy_content',
+          text: afterText,
+          model: currentModel,
+        });
         newEnfiyMessageBuffer = afterText;
       }
       return newEnfiyMessageBuffer;
@@ -508,81 +512,91 @@ export const useEnfiyStream = (
         const userMessageTimestamp = Date.now();
         setShowHelp(false);
 
-      abortControllerRef.current = new AbortController();
-      const abortSignal = abortControllerRef.current.signal;
-      turnCancelledRef.current = false;
+        abortControllerRef.current = new AbortController();
+        const abortSignal = abortControllerRef.current.signal;
+        turnCancelledRef.current = false;
 
-      const { queryToSend, shouldProceed } = await prepareQueryForEnfiy(
-        query,
-        userMessageTimestamp,
-        abortSignal,
-      );
-
-      if (!shouldProceed || queryToSend === null) {
-        return;
-      }
-
-      if (!options?.isContinuation) {
-        startNewTurn();
-      }
-
-      setIsResponding(true);
-      setInitError(null);
-
-      try {
-        // Check if enfiyClient is properly initialized
-        if (!enfiyClient || typeof enfiyClient.sendMessageStream !== 'function') {
-          throw new Error('AI client not properly initialized. Please check your provider configuration and try again.');
-        }
-        
-        const stream = enfiyClient.sendMessageStream(queryToSend, abortSignal);
-        
-        const processingStatus = await processEnfiyStreamEvents(
-          stream,
+        const { queryToSend, shouldProceed } = await prepareQueryForEnfiy(
+          query,
           userMessageTimestamp,
           abortSignal,
         );
 
-        if (processingStatus === StreamProcessingStatus.UserCancelled) {
+        if (!shouldProceed || queryToSend === null) {
           return;
         }
 
-        if (pendingHistoryItemRef.current) {
-          addItem(pendingHistoryItemRef.current, userMessageTimestamp);
-          setPendingHistoryItem(null);
+        if (!options?.isContinuation) {
+          startNewTurn();
         }
-      } catch (error: unknown) {
-        if (error instanceof UnauthorizedError) {
-          onAuthError();
-        } else if (!isNodeError(error) || error.name !== 'AbortError') {
-          const errorMessage = getErrorMessage(error) || 'Unknown error';
-          
-          // Handle specific API errors gracefully
-          if (errorMessage.includes('Requested entity was not found') || 
-              errorMessage.includes('404')) {
-            addItem(
-              {
-                type: MessageType.ERROR,
-                text: '❌ API Error: Please check your API key configuration.\n\nUse `/provider` command to reconfigure your AI provider with a valid API key.',
-              },
-              userMessageTimestamp,
-            );
-          } else {
-            addItem(
-              {
-                type: MessageType.ERROR,
-                text: parseAndFormatApiError(
-                  errorMessage,
-                  config.getContentGeneratorConfig()?.authType,
-                ),
-              },
-              userMessageTimestamp,
+
+        setIsResponding(true);
+        setInitError(null);
+
+        try {
+          // Check if enfiyClient is properly initialized
+          if (
+            !enfiyClient ||
+            typeof enfiyClient.sendMessageStream !== 'function'
+          ) {
+            throw new Error(
+              'AI client not properly initialized. Please check your provider configuration and try again.',
             );
           }
+
+          const stream = enfiyClient.sendMessageStream(
+            queryToSend,
+            abortSignal,
+          );
+
+          const processingStatus = await processEnfiyStreamEvents(
+            stream,
+            userMessageTimestamp,
+            abortSignal,
+          );
+
+          if (processingStatus === StreamProcessingStatus.UserCancelled) {
+            return;
+          }
+
+          if (pendingHistoryItemRef.current) {
+            addItem(pendingHistoryItemRef.current, userMessageTimestamp);
+            setPendingHistoryItem(null);
+          }
+        } catch (error: unknown) {
+          if (error instanceof UnauthorizedError) {
+            onAuthError();
+          } else if (!isNodeError(error) || error.name !== 'AbortError') {
+            const errorMessage = getErrorMessage(error) || 'Unknown error';
+
+            // Handle specific API errors gracefully
+            if (
+              errorMessage.includes('Requested entity was not found') ||
+              errorMessage.includes('404')
+            ) {
+              addItem(
+                {
+                  type: MessageType.ERROR,
+                  text: '❌ API Error: Please check your API key configuration.\n\nUse `/provider` command to reconfigure your AI provider with a valid API key.',
+                },
+                userMessageTimestamp,
+              );
+            } else {
+              addItem(
+                {
+                  type: MessageType.ERROR,
+                  text: parseAndFormatApiError(
+                    errorMessage,
+                    config.getContentGeneratorConfig()?.authType,
+                  ),
+                },
+                userMessageTimestamp,
+              );
+            }
+          }
+        } finally {
+          setIsResponding(false);
         }
-      } finally {
-        setIsResponding(false);
-      }
       } catch (outerError) {
         setIsResponding(false);
         // Try to show error in UI instead of crashing

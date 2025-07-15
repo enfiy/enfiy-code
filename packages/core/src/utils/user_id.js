@@ -13,19 +13,19 @@ const homeDir = os.homedir() ?? '';
 const geminiDir = path.join(homeDir, GEMINI_DIR);
 const userIdFile = path.join(geminiDir, 'user_id');
 function ensureGeminiDirExists() {
-    if (!fs.existsSync(geminiDir)) {
-        fs.mkdirSync(geminiDir, { recursive: true });
-    }
+  if (!fs.existsSync(geminiDir)) {
+    fs.mkdirSync(geminiDir, { recursive: true });
+  }
 }
 function readUserIdFromFile() {
-    if (fs.existsSync(userIdFile)) {
-        const userId = fs.readFileSync(userIdFile, 'utf-8').trim();
-        return userId || null;
-    }
-    return null;
+  if (fs.existsSync(userIdFile)) {
+    const userId = fs.readFileSync(userIdFile, 'utf-8').trim();
+    return userId || null;
+  }
+  return null;
 }
 function writeUserIdToFile(userId) {
-    fs.writeFileSync(userIdFile, userId, 'utf-8');
+  fs.writeFileSync(userIdFile, userId, 'utf-8');
 }
 /**
  * Retrieves the persistent user ID from a file, creating it if it doesn't exist.
@@ -33,19 +33,21 @@ function writeUserIdToFile(userId) {
  * @returns A UUID string for the user.
  */
 export function getPersistentUserId() {
-    try {
-        ensureGeminiDirExists();
-        let userId = readUserIdFromFile();
-        if (!userId) {
-            userId = randomUUID();
-            writeUserIdToFile(userId);
-        }
-        return userId;
+  try {
+    ensureGeminiDirExists();
+    let userId = readUserIdFromFile();
+    if (!userId) {
+      userId = randomUUID();
+      writeUserIdToFile(userId);
     }
-    catch (error) {
-        console.error('Error accessing persistent user ID file, generating ephemeral ID:', error);
-        // Generate a secure ephemeral ID instead of hardcoded value
-        return randomUUID();
-    }
+    return userId;
+  } catch (error) {
+    console.error(
+      'Error accessing persistent user ID file, generating ephemeral ID:',
+      error,
+    );
+    // Generate a secure ephemeral ID instead of hardcoded value
+    return randomUUID();
+  }
 }
 //# sourceMappingURL=user_id.js.map

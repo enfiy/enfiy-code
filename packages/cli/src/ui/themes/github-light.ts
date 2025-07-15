@@ -147,5 +147,3 @@ export const GitHubLight: Theme = new Theme(
   },
   githubLightColors,
 );
-
-

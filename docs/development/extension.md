@@ -5,6 +5,7 @@ Enfiy Code provides a powerful extension system that allows you to add custom fu
 ## Overview
 
 The extension system supports:
+
 - **Custom Tools**: Add new functionality accessible to AI models
 - **Provider Extensions**: Integrate additional AI providers
 - **Command Extensions**: Create new slash commands
@@ -14,6 +15,7 @@ The extension system supports:
 ## Types of Extensions
 
 ### Tool Extensions
+
 Custom tools that AI models can use to perform actions.
 
 ```typescript
@@ -23,14 +25,14 @@ import { Tool } from '@enfiy/core';
 export class DatabaseTool implements Tool {
   name = 'query_database';
   description = 'Execute SQL queries on the database';
-  
+
   parameters = {
     type: 'object',
     properties: {
       query: { type: 'string', description: 'SQL query to execute' },
-      database: { type: 'string', description: 'Database name' }
+      database: { type: 'string', description: 'Database name' },
     },
-    required: ['query']
+    required: ['query'],
   };
 
   async execute(params: { query: string; database?: string }) {
@@ -42,6 +44,7 @@ export class DatabaseTool implements Tool {
 ```
 
 ### Provider Extensions
+
 Add support for new AI providers.
 
 ```typescript
@@ -60,7 +63,7 @@ export class CustomProvider implements ContentGenerator {
   async generateContentStream(request: GenerateContentParameters) {
     // Streaming implementation
     const stream = await this.streamCustomAPI(request);
-    yield* this.processStream(stream);
+    yield * this.processStream(stream);
   }
 
   async listModels(): Promise<string[]> {
@@ -70,6 +73,7 @@ export class CustomProvider implements ContentGenerator {
 ```
 
 ### Command Extensions
+
 Create new slash commands for the CLI.
 
 ```typescript
@@ -79,11 +83,11 @@ import { Command } from '@enfiy/cli';
 export class CustomCommand implements Command {
   name = 'analyze';
   description = 'Analyze code quality';
-  
+
   async execute(args: string[], context: CommandContext) {
     const files = await this.getProjectFiles();
     const analysis = await this.analyzeCode(files);
-    
+
     context.output(`Analysis complete: ${analysis.score}/100`);
     return analysis;
   }
@@ -93,6 +97,7 @@ export class CustomCommand implements Command {
 ## Creating Extensions
 
 ### Project Structure
+
 ```
 my-enfiy-extension/
 ├── package.json
@@ -108,24 +113,20 @@ my-enfiy-extension/
 ```
 
 ### Extension Configuration
+
 ```javascript
 // enfiy.config.js
 module.exports = {
   name: 'my-extension',
   version: '1.0.0',
-  tools: [
-    './src/tools/myTool.js'
-  ],
-  providers: [
-    './src/providers/myProvider.js'
-  ],
-  commands: [
-    './src/commands/myCommand.js'
-  ]
+  tools: ['./src/tools/myTool.js'],
+  providers: ['./src/providers/myProvider.js'],
+  commands: ['./src/commands/myCommand.js'],
 };
 ```
 
 ### Package.json Setup
+
 ```json
 {
   "name": "enfiy-extension-example",
@@ -146,6 +147,7 @@ module.exports = {
 ## Tool Development
 
 ### Tool Interface
+
 ```typescript
 interface Tool {
   name: string;
@@ -156,6 +158,7 @@ interface Tool {
 ```
 
 ### Tool Context
+
 ```typescript
 interface ToolContext {
   workingDirectory: string;
@@ -169,61 +172,69 @@ interface ToolContext {
 ### Example Tools
 
 **File Analysis Tool:**
+
 ```typescript
 export class FileAnalysisTool implements Tool {
   name = 'analyze_file';
   description = 'Analyze file complexity and quality';
-  
+
   parameters = {
     type: 'object',
     properties: {
       filePath: { type: 'string' },
-      language: { type: 'string', enum: ['typescript', 'javascript', 'python'] }
+      language: {
+        type: 'string',
+        enum: ['typescript', 'javascript', 'python'],
+      },
     },
-    required: ['filePath']
+    required: ['filePath'],
   };
 
-  async execute(params: { filePath: string; language?: string }, context: ToolContext) {
+  async execute(
+    params: { filePath: string; language?: string },
+    context: ToolContext,
+  ) {
     const content = await context.fileSystem.readFile(params.filePath);
     const analysis = this.analyzeCode(content, params.language);
-    
+
     return {
       complexity: analysis.complexity,
       issues: analysis.issues,
-      suggestions: analysis.suggestions
+      suggestions: analysis.suggestions,
     };
   }
 }
 ```
 
 **API Integration Tool:**
+
 ```typescript
 export class APITool implements Tool {
   name = 'call_api';
   description = 'Make HTTP API calls';
-  
+
   parameters = {
     type: 'object',
     properties: {
       url: { type: 'string', format: 'uri' },
       method: { type: 'string', enum: ['GET', 'POST', 'PUT', 'DELETE'] },
       headers: { type: 'object' },
-      body: { type: 'string' }
+      body: { type: 'string' },
     },
-    required: ['url']
+    required: ['url'],
   };
 
   async execute(params: any) {
     const response = await fetch(params.url, {
       method: params.method || 'GET',
       headers: params.headers,
-      body: params.body
+      body: params.body,
     });
-    
+
     return {
       status: response.status,
       headers: Object.fromEntries(response.headers),
-      body: await response.text()
+      body: await response.text(),
     };
   }
 }
@@ -232,16 +243,22 @@ export class APITool implements Tool {
 ## Provider Development
 
 ### Provider Interface
+
 ```typescript
 interface ContentGenerator {
-  generateContent(request: GenerateContentParameters): Promise<GenerateContentResponse>;
-  generateContentStream(request: GenerateContentParameters): AsyncGenerator<GenerateContentResponse>;
+  generateContent(
+    request: GenerateContentParameters,
+  ): Promise<GenerateContentResponse>;
+  generateContentStream(
+    request: GenerateContentParameters,
+  ): AsyncGenerator<GenerateContentResponse>;
   listModels(): Promise<string[]>;
   supportsStreaming: boolean;
 }
 ```
 
 ### Custom Provider Example
+
 ```typescript
 export class LocalLLMProvider implements ContentGenerator {
   supportsStreaming = true;
@@ -255,17 +272,17 @@ export class LocalLLMProvider implements ContentGenerator {
     const response = await fetch(`${this.endpoint}/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request)
+      body: JSON.stringify(request),
     });
-    
+
     return response.json();
   }
 
-  async* generateContentStream(request: GenerateContentParameters) {
+  async *generateContentStream(request: GenerateContentParameters) {
     const response = await fetch(`${this.endpoint}/stream`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request)
+      body: JSON.stringify(request),
     });
 
     const reader = response.body?.getReader();
@@ -274,7 +291,7 @@ export class LocalLLMProvider implements ContentGenerator {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      
+
       const chunk = new TextDecoder().decode(value);
       yield { parts: [{ text: chunk }] };
     }
@@ -291,6 +308,7 @@ export class LocalLLMProvider implements ContentGenerator {
 ## Installation and Management
 
 ### Installing Extensions
+
 ```bash
 # Install from npm
 npm install -g enfiy-extension-example
@@ -303,6 +321,7 @@ enfiy extension install https://github.com/user/enfiy-extension.git
 ```
 
 ### Managing Extensions
+
 ```bash
 # List installed extensions
 enfiy extension list
@@ -319,6 +338,7 @@ enfiy extension remove my-extension
 ```
 
 ### Extension Registry
+
 ```bash
 # Search extensions
 enfiy extension search database
@@ -333,6 +353,7 @@ enfiy extension publish
 ## MCP Integration
 
 ### MCP Server Connection
+
 ```typescript
 // Connect to MCP server
 import { MCPClient } from '@enfiy/core';
@@ -340,7 +361,7 @@ import { MCPClient } from '@enfiy/core';
 const mcpClient = new MCPClient();
 await mcpClient.connect('stdio', {
   command: 'python',
-  args: ['-m', 'my_mcp_server']
+  args: ['-m', 'my_mcp_server'],
 });
 
 // List available tools
@@ -351,17 +372,24 @@ const result = await mcpClient.callTool('server_tool', { param: 'value' });
 ```
 
 ### MCP Tool Wrapper
+
 ```typescript
 export class MCPToolWrapper implements Tool {
   constructor(
     private mcpClient: MCPClient,
     private toolName: string,
-    private toolInfo: any
+    private toolInfo: any,
   ) {}
 
-  get name() { return this.toolName; }
-  get description() { return this.toolInfo.description; }
-  get parameters() { return this.toolInfo.inputSchema; }
+  get name() {
+    return this.toolName;
+  }
+  get description() {
+    return this.toolInfo.description;
+  }
+  get parameters() {
+    return this.toolInfo.inputSchema;
+  }
 
   async execute(parameters: any) {
     return await this.mcpClient.callTool(this.toolName, parameters);
@@ -372,18 +400,21 @@ export class MCPToolWrapper implements Tool {
 ## Best Practices
 
 ### Security
+
 - Validate all input parameters
 - Sanitize file paths and system commands
 - Use least privilege principles
 - Avoid exposing sensitive data
 
 ### Performance
+
 - Implement async operations properly
 - Use streaming for large responses
 - Cache expensive operations
 - Handle timeouts gracefully
 
 ### Error Handling
+
 ```typescript
 export class RobustTool implements Tool {
   async execute(parameters: any, context: ToolContext) {
@@ -392,11 +423,11 @@ export class RobustTool implements Tool {
       return await this.performOperation(parameters);
     } catch (error) {
       context.logger.error('Tool execution failed', { error, parameters });
-      
+
       if (error instanceof ValidationError) {
         throw new ToolError('Invalid parameters', { cause: error });
       }
-      
+
       throw new ToolError('Operation failed', { cause: error });
     }
   }
@@ -404,6 +435,7 @@ export class RobustTool implements Tool {
 ```
 
 ### Testing Extensions
+
 ```typescript
 // Test setup
 import { createMockToolContext } from '@enfiy/core/testing';
@@ -427,12 +459,14 @@ describe('MyTool', () => {
 ## Publishing Extensions
 
 ### Preparation
+
 1. Write comprehensive documentation
 2. Add unit tests
 3. Follow naming conventions
 4. Include examples and tutorials
 
 ### Publishing Process
+
 ```bash
 # Build extension
 npm run build
@@ -448,6 +482,7 @@ enfiy extension register my-extension
 ```
 
 ### Extension Metadata
+
 ```json
 {
   "enfiy": {

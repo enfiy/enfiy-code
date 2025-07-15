@@ -30,9 +30,8 @@ if (!process.cwd().includes('packages')) {
 }
 
 // build typescript files with optimization flags
-const tscCommand = process.env.NODE_ENV === 'production' 
-  ? 'tsc --build --force' 
-  : 'tsc --build';
+const tscCommand =
+  process.env.NODE_ENV === 'production' ? 'tsc --build --force' : 'tsc --build';
 
 execSync(tscCommand, { stdio: 'inherit' });
 

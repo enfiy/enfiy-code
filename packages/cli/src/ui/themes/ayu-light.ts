@@ -137,5 +137,3 @@ export const AyuLight: Theme = new Theme(
   },
   ayuLightColors,
 );
-
-

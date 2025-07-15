@@ -18,7 +18,10 @@ const TRUNCATION_INDICATOR = '...';
 const DEFAULT_IGNORED_FOLDERS = new Set(['node_modules', '.git', 'dist']);
 
 // Cache for folder structure to avoid repeated calculations
-const folderStructureCache = new Map<string, { structure: string; timestamp: number }>();
+const folderStructureCache = new Map<
+  string,
+  { structure: string; timestamp: number }
+>();
 const CACHE_DURATION = 30000; // 30 seconds
 
 // --- Interfaces ---
@@ -363,14 +366,14 @@ export async function getFolderStructureCached(
   const cacheKey = `${directory}:${JSON.stringify(options || {})}`;
   const cached = folderStructureCache.get(cacheKey);
   const now = Date.now();
-  
-  if (cached && (now - cached.timestamp) < CACHE_DURATION) {
+
+  if (cached && now - cached.timestamp < CACHE_DURATION) {
     return cached.structure;
   }
-  
+
   const structure = await getFolderStructure(directory, options);
   folderStructureCache.set(cacheKey, { structure, timestamp: now });
-  
+
   // Clean up old cache entries
   if (folderStructureCache.size > 50) {
     const cutoff = now - CACHE_DURATION;
@@ -380,6 +383,6 @@ export async function getFolderStructureCached(
       }
     }
   }
-  
+
   return structure;
 }

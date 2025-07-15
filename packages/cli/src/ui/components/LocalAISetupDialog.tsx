@@ -44,7 +44,7 @@ interface LocalAIConfig {
   setupMethod: 'local' | 'cloud' | 'custom';
 }
 
-type SetupStep = 
+type SetupStep =
   | 'ollama-check'
   | 'ollama-install'
   | 'ollama-start'
@@ -66,21 +66,27 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
   terminalWidth,
 }) => {
   const [step, setStep] = useState<SetupStep>(
-    provider === ProviderType.OLLAMA ? 'ollama-check' : 'hf-check'
+    provider === ProviderType.OLLAMA ? 'ollama-check' : 'hf-check',
   );
-  const [setupMethod, setSetupMethod] = useState<'local' | 'cloud' | 'custom'>('local');
+  const [setupMethod, setSetupMethod] = useState<'local' | 'cloud' | 'custom'>(
+    'local',
+  );
   const [_currentInput, _setCurrentInput] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
-  
+
   // Ollama関連の状態
-  const [ollamaStatus, setOllamaStatus] = useState<OllamaInstallationStatus | null>(null);
-  const [modelInstallProgress, setModelInstallProgress] = useState<ModelInstallProgress | null>(null);
-  
+  const [ollamaStatus, setOllamaStatus] =
+    useState<OllamaInstallationStatus | null>(null);
+  const [modelInstallProgress, setModelInstallProgress] =
+    useState<ModelInstallProgress | null>(null);
+
   // HuggingFace関連の状態
   const [hfStatus, setHfStatus] = useState<HuggingFaceSetupStatus | null>(null);
   const [_apiKey, _setApiKey] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
-  const [selectedHFMethod, setSelectedHFMethod] = useState<'tgi' | 'vllm' | 'ollama' | null>(null);
+  const [selectedHFMethod, setSelectedHFMethod] = useState<
+    'tgi' | 'vllm' | 'ollama' | null
+  >(null);
 
   // プロバイダー別の初期チェック
   useEffect(() => {
@@ -117,12 +123,12 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
 
   const getAvailableModels = useCallback(() => {
     if (provider === ProviderType.OLLAMA && ollamaStatus) {
-      return ollamaStatus.installedModels.length > 0 
-        ? ollamaStatus.installedModels 
-        : ollamaStatus.recommendedModels.map(m => m.name);
+      return ollamaStatus.installedModels.length > 0
+        ? ollamaStatus.installedModels
+        : ollamaStatus.recommendedModels.map((m) => m.name);
     }
     if (provider === ProviderType.HUGGINGFACE) {
-      return getRecommendedHFModels().map(m => m.name);
+      return getRecommendedHFModels().map((m) => m.name);
     }
     return [];
   }, [provider, ollamaStatus]);
@@ -140,7 +146,6 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
 
   const handleEnterKey = useCallback(async () => {
     switch (step) {
-
       case 'ollama-install':
         // Ollamaインストール画面から戻る
         onCancel();
@@ -159,13 +164,16 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
         break;
 
       case 'ollama-models':
-        if (ollamaStatus && highlightedIndex < ollamaStatus.recommendedModels.length) {
+        if (
+          ollamaStatus &&
+          highlightedIndex < ollamaStatus.recommendedModels.length
+        ) {
           const model = ollamaStatus.recommendedModels[highlightedIndex];
           if (!model.isInstalled) {
             setStep('installation-progress');
             const success = await installOllamaModel(
               model.name,
-              setModelInstallProgress
+              setModelInstallProgress,
             );
             if (success) {
               setSelectedModel(model.name);
@@ -224,70 +232,99 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
           endpoint: setupMethod === 'local' ? getLocalEndpoint() : undefined,
         });
         break;
-      
+
       default:
         // No action needed for other steps
         break;
     }
-  }, [step, highlightedIndex, ollamaStatus, selectedModel, onCancel, onComplete, provider, setupMethod, getAvailableModels, getLocalEndpoint, _apiKey]);
+  }, [
+    step,
+    highlightedIndex,
+    ollamaStatus,
+    selectedModel,
+    onCancel,
+    onComplete,
+    provider,
+    setupMethod,
+    getAvailableModels,
+    getLocalEndpoint,
+    _apiKey,
+  ]);
 
-  const handleInput = useCallback((input: string, key: Record<string, boolean>) => {
-    if (key.escape || (key.ctrl && input === 'c')) {
-      onCancel();
-      return;
-    }
+  const handleInput = useCallback(
+    (input: string, key: Record<string, boolean>) => {
+      if (key.escape || (key.ctrl && input === 'c')) {
+        onCancel();
+        return;
+      }
 
-    // 矢印キーナビゲーション
-    if (key.upArrow) {
-      setHighlightedIndex(prev => Math.max(0, prev - 1));
-      return;
-    }
+      // 矢印キーナビゲーション
+      if (key.upArrow) {
+        setHighlightedIndex((prev) => Math.max(0, prev - 1));
+        return;
+      }
 
-    if (key.downArrow) {
-      let maxIndex = 0;
-      if (step === 'ollama-models') maxIndex = ollamaStatus?.recommendedModels.length || 0;
-      else if (step === 'hf-method-selection') maxIndex = 2; // TGI, vLLM, Ollama
-      else if (step === 'model-selection') maxIndex = getAvailableModels().length - 1;
-      
-      setHighlightedIndex(prev => Math.min(maxIndex, prev + 1));
-      return;
-    }
+      if (key.downArrow) {
+        let maxIndex = 0;
+        if (step === 'ollama-models')
+          maxIndex = ollamaStatus?.recommendedModels.length || 0;
+        else if (step === 'hf-method-selection')
+          maxIndex = 2; // TGI, vLLM, Ollama
+        else if (step === 'model-selection')
+          maxIndex = getAvailableModels().length - 1;
 
+        setHighlightedIndex((prev) => Math.min(maxIndex, prev + 1));
+        return;
+      }
 
-    // Enterキー処理
-    if (key.return) {
-      handleEnterKey();
-    }
-  }, [step, ollamaStatus, onCancel, getAvailableModels, handleEnterKey]);
+      // Enterキー処理
+      if (key.return) {
+        handleEnterKey();
+      }
+    },
+    [step, ollamaStatus, onCancel, getAvailableModels, handleEnterKey],
+  );
 
   useInput(handleInput);
-
 
   const renderContent = () => {
     const width = Math.min(terminalWidth - 4, 80);
 
     switch (step) {
-
       case 'ollama-install':
         return (
           <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentRed}>Ollamaがインストールされていません</Text>
+            <Text bold color={Colors.AccentRed}>
+              Ollamaがインストールされていません
+            </Text>
             <Text> </Text>
             <Text>{getOllamaInstallInstructions()}</Text>
             <Text> </Text>
-            <Text color={Colors.AccentYellow}>インストール完了後、Enterキーを押して続行してください</Text>
+            <Text color={Colors.AccentYellow}>
+              インストール完了後、Enterキーを押して続行してください
+            </Text>
           </Box>
         );
 
       case 'ollama-start':
         return (
           <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentYellow}>Ollamaが実行されていません</Text>
+            <Text bold color={Colors.AccentYellow}>
+              Ollamaが実行されていません
+            </Text>
             <Text> </Text>
-            <Text color={highlightedIndex === 0 ? Colors.AccentGreen : Colors.Foreground}>
+            <Text
+              color={
+                highlightedIndex === 0 ? Colors.AccentGreen : Colors.Foreground
+              }
+            >
               {highlightedIndex === 0 ? '▶ ' : '  '}Ollamaサービスを開始
             </Text>
-            <Text color={highlightedIndex === 1 ? Colors.AccentGreen : Colors.Foreground}>
+            <Text
+              color={
+                highlightedIndex === 1 ? Colors.AccentGreen : Colors.Foreground
+              }
+            >
               {highlightedIndex === 1 ? '▶ ' : '  '}キャンセル
             </Text>
           </Box>
@@ -296,49 +333,81 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
       case 'ollama-models':
         return (
           <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentBlue}>推奨モデルを選択してください</Text>
+            <Text bold color={Colors.AccentBlue}>
+              推奨モデルを選択してください
+            </Text>
             <Text> </Text>
             {ollamaStatus?.recommendedModels.map((model, index) => (
               <Box key={model.name} flexDirection="column">
-                <Text color={highlightedIndex === index ? Colors.AccentGreen : Colors.Foreground}>
+                <Text
+                  color={
+                    highlightedIndex === index
+                      ? Colors.AccentGreen
+                      : Colors.Foreground
+                  }
+                >
                   {highlightedIndex === index ? '▶ ' : '  '}
-                  {model.displayName} ({model.size})
-                  {model.isInstalled && ' ✓'}
+                  {model.displayName} ({model.size}){model.isInstalled && ' ✓'}
                 </Text>
-                <Text color={Colors.Gray}>    {model.description}</Text>
+                <Text color={Colors.Gray}> {model.description}</Text>
               </Box>
             ))}
           </Box>
         );
 
-
-
       case 'hf-method-selection':
         return (
           <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentBlue}>Select HuggingFace Setup Method</Text>
-            <Text> </Text>
-            <Text color={highlightedIndex === 0 ? Colors.AccentGreen : Colors.Foreground}>
-              {highlightedIndex === 0 ? '▶ ' : '  '}Text Generation Inference (Recommended)
+            <Text bold color={Colors.AccentBlue}>
+              Select HuggingFace Setup Method
             </Text>
-            <Text color={Colors.Gray}>    Docker-based, easy setup, official HuggingFace server</Text>
             <Text> </Text>
-            <Text color={highlightedIndex === 1 ? Colors.AccentGreen : Colors.Foreground}>
+            <Text
+              color={
+                highlightedIndex === 0 ? Colors.AccentGreen : Colors.Foreground
+              }
+            >
+              {highlightedIndex === 0 ? '▶ ' : '  '}Text Generation Inference
+              (Recommended)
+            </Text>
+            <Text color={Colors.Gray}>
+              {' '}
+              Docker-based, easy setup, official HuggingFace server
+            </Text>
+            <Text> </Text>
+            <Text
+              color={
+                highlightedIndex === 1 ? Colors.AccentGreen : Colors.Foreground
+              }
+            >
               {highlightedIndex === 1 ? '▶ ' : '  '}vLLM Server
             </Text>
-            <Text color={Colors.Gray}>    Fast inference, requires Python setup</Text>
-            <Text> </Text>
-            <Text color={highlightedIndex === 2 ? Colors.AccentGreen : Colors.Foreground}>
-              {highlightedIndex === 2 ? '▶ ' : '  '}Ollama with HuggingFace Models
+            <Text color={Colors.Gray}>
+              {' '}
+              Fast inference, requires Python setup
             </Text>
-            <Text color={Colors.Gray}>    Use existing Ollama to run HuggingFace models</Text>
+            <Text> </Text>
+            <Text
+              color={
+                highlightedIndex === 2 ? Colors.AccentGreen : Colors.Foreground
+              }
+            >
+              {highlightedIndex === 2 ? '▶ ' : '  '}Ollama with HuggingFace
+              Models
+            </Text>
+            <Text color={Colors.Gray}>
+              {' '}
+              Use existing Ollama to run HuggingFace models
+            </Text>
           </Box>
         );
 
       case 'hf-tgi-setup':
         return (
           <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentBlue}>Text Generation Inference Setup</Text>
+            <Text bold color={Colors.AccentBlue}>
+              Text Generation Inference Setup
+            </Text>
             <Text> </Text>
             <Text bold>Prerequisites:</Text>
             <Text>• Docker Desktop installed</Text>
@@ -346,24 +415,37 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
             <Text> </Text>
             <Text bold>Installation Steps:</Text>
             <Text>1. Install Docker Desktop:</Text>
-            <Text>   Visit: https://www.docker.com/products/docker-desktop</Text>
+            <Text> Visit: https://www.docker.com/products/docker-desktop</Text>
             <Text> </Text>
             <Text>2. Open terminal and run:</Text>
-            <Text color={Colors.AccentYellow}>   docker run -p 8080:80 -v $PWD/data:/data \</Text>
-            <Text color={Colors.AccentYellow}>   ghcr.io/huggingface/text-generation-inference:latest \</Text>
-            <Text color={Colors.AccentYellow}>   --model-id microsoft/DialoGPT-medium</Text>
+            <Text color={Colors.AccentYellow}>
+              {' '}
+              docker run -p 8080:80 -v $PWD/data:/data \
+            </Text>
+            <Text color={Colors.AccentYellow}>
+              {' '}
+              ghcr.io/huggingface/text-generation-inference:latest \
+            </Text>
+            <Text color={Colors.AccentYellow}>
+              {' '}
+              --model-id microsoft/DialoGPT-medium
+            </Text>
             <Text> </Text>
             <Text>3. Wait for model download and server start</Text>
             <Text>4. Server will be available at: http://localhost:8080</Text>
             <Text> </Text>
-            <Text color={Colors.AccentGreen}>Press Enter to continue once server is running</Text>
+            <Text color={Colors.AccentGreen}>
+              Press Enter to continue once server is running
+            </Text>
           </Box>
         );
 
       case 'hf-vllm-setup':
         return (
           <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentBlue}>vLLM Server Setup</Text>
+            <Text bold color={Colors.AccentBlue}>
+              vLLM Server Setup
+            </Text>
             <Text> </Text>
             <Text bold>Prerequisites:</Text>
             <Text>• Python 3.8+ installed</Text>
@@ -372,23 +454,33 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
             <Text> </Text>
             <Text bold>Installation Steps:</Text>
             <Text>1. Install vLLM:</Text>
-            <Text color={Colors.AccentYellow}>   pip install vllm</Text>
+            <Text color={Colors.AccentYellow}> pip install vllm</Text>
             <Text> </Text>
             <Text>2. Start vLLM server:</Text>
-            <Text color={Colors.AccentYellow}>   python -m vllm.entrypoints.openai.api_server \</Text>
-            <Text color={Colors.AccentYellow}>   --model microsoft/DialoGPT-medium --port 8000</Text>
+            <Text color={Colors.AccentYellow}>
+              {' '}
+              python -m vllm.entrypoints.openai.api_server \
+            </Text>
+            <Text color={Colors.AccentYellow}>
+              {' '}
+              --model microsoft/DialoGPT-medium --port 8000
+            </Text>
             <Text> </Text>
             <Text>3. Wait for model download and server start</Text>
             <Text>4. Server will be available at: http://localhost:8000</Text>
             <Text> </Text>
-            <Text color={Colors.AccentGreen}>Press Enter to continue once server is running</Text>
+            <Text color={Colors.AccentGreen}>
+              Press Enter to continue once server is running
+            </Text>
           </Box>
         );
 
       case 'hf-ollama-setup':
         return (
           <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentBlue}>Ollama + HuggingFace Setup</Text>
+            <Text bold color={Colors.AccentBlue}>
+              Ollama + HuggingFace Setup
+            </Text>
             <Text> </Text>
             <Text bold>Prerequisites:</Text>
             <Text>• Ollama installed and running</Text>
@@ -396,39 +488,58 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
             <Text> </Text>
             <Text bold>Installation Steps:</Text>
             <Text>1. Ensure Ollama is running:</Text>
-            <Text color={Colors.AccentYellow}>   ollama serve</Text>
+            <Text color={Colors.AccentYellow}> ollama serve</Text>
             <Text> </Text>
             <Text>2. Pull HuggingFace model through Ollama:</Text>
-            <Text color={Colors.AccentYellow}>   ollama pull huggingface/CodeBERTa-small-v1</Text>
+            <Text color={Colors.AccentYellow}>
+              {' '}
+              ollama pull huggingface/CodeBERTa-small-v1
+            </Text>
             <Text> </Text>
             <Text>3. Server will be available at: http://localhost:11434</Text>
             <Text> </Text>
-            <Text color={Colors.AccentGreen}>Press Enter to continue once model is downloaded</Text>
+            <Text color={Colors.AccentGreen}>
+              Press Enter to continue once model is downloaded
+            </Text>
           </Box>
         );
 
       case 'hf-server-start':
         return (
           <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentYellow}>Server Status Check</Text>
+            <Text bold color={Colors.AccentYellow}>
+              Server Status Check
+            </Text>
             <Text> </Text>
             <Text>Selected method: {selectedHFMethod?.toUpperCase()}</Text>
             <Text> </Text>
-            <Text color={highlightedIndex === 0 ? Colors.AccentGreen : Colors.Foreground}>
+            <Text
+              color={
+                highlightedIndex === 0 ? Colors.AccentGreen : Colors.Foreground
+              }
+            >
               {highlightedIndex === 0 ? '▶ ' : '  '}Continue to Model Selection
             </Text>
-            <Text color={highlightedIndex === 1 ? Colors.AccentGreen : Colors.Foreground}>
+            <Text
+              color={
+                highlightedIndex === 1 ? Colors.AccentGreen : Colors.Foreground
+              }
+            >
               {highlightedIndex === 1 ? '▶ ' : '  '}Cancel Setup
             </Text>
             <Text> </Text>
-            <Text color={Colors.Gray}>Make sure your server is running before continuing</Text>
+            <Text color={Colors.Gray}>
+              Make sure your server is running before continuing
+            </Text>
           </Box>
         );
 
       case 'installation-progress':
         return (
           <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentBlue}>モデルをインストール中...</Text>
+            <Text bold color={Colors.AccentBlue}>
+              モデルをインストール中...
+            </Text>
             <Text> </Text>
             {modelInstallProgress && (
               <>
@@ -438,7 +549,9 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
                   <Text>進行状況: {modelInstallProgress.progress}%</Text>
                 )}
                 {modelInstallProgress.error && (
-                  <Text color={Colors.AccentRed}>エラー: {modelInstallProgress.error}</Text>
+                  <Text color={Colors.AccentRed}>
+                    エラー: {modelInstallProgress.error}
+                  </Text>
                 )}
               </>
             )}
@@ -448,14 +561,22 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
       case 'complete':
         return (
           <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentGreen}>セットアップ完了！</Text>
+            <Text bold color={Colors.AccentGreen}>
+              セットアップ完了！
+            </Text>
             <Text> </Text>
             <Text>プロバイダー: {provider}</Text>
-            <Text>方法: {setupMethod === 'local' ? 'ローカル実行' : 'クラウドAPI'}</Text>
+            <Text>
+              方法: {setupMethod === 'local' ? 'ローカル実行' : 'クラウドAPI'}
+            </Text>
             <Text>モデル: {selectedModel}</Text>
-            {setupMethod === 'local' && <Text>エンドポイント: {getLocalEndpoint()}</Text>}
+            {setupMethod === 'local' && (
+              <Text>エンドポイント: {getLocalEndpoint()}</Text>
+            )}
             <Text> </Text>
-            <Text color={Colors.AccentYellow}>Enterキーを押して設定を保存してください</Text>
+            <Text color={Colors.AccentYellow}>
+              Enterキーを押して設定を保存してください
+            </Text>
           </Box>
         );
 

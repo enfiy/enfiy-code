@@ -6,7 +6,7 @@
  */
 import { OAuth2Client } from 'google-auth-library';
 export declare class ProjectIdRequiredError extends Error {
-    constructor();
+  constructor();
 }
 /**
  *

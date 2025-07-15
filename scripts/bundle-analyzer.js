@@ -17,15 +17,15 @@ const MAX_BUNDLE_SIZE = 2 * 1024 * 1024; // 2MB threshold for CLI tools
 
 function analyzeBundleSize() {
   const bundlePath = path.join(projectRoot, 'bundle');
-  
+
   if (!fs.existsSync(bundlePath)) {
     console.error('Bundle directory not found. Run build first.');
     process.exit(1);
   }
 
   const files = fs.readdirSync(bundlePath);
-  const jsFiles = files.filter(f => f.endsWith('.js') && !f.includes('.map'));
-  
+  const jsFiles = files.filter((f) => f.endsWith('.js') && !f.includes('.map'));
+
   if (jsFiles.length === 0) {
     console.error('No JS files found in bundle directory.');
     process.exit(1);
@@ -34,18 +34,18 @@ function analyzeBundleSize() {
   let totalSize = 0;
   const filesSizes = {};
 
-  jsFiles.forEach(file => {
+  jsFiles.forEach((file) => {
     const filePath = path.join(bundlePath, file);
     const stats = fs.statSync(filePath);
     const sizeInMB = (stats.size / 1024 / 1024).toFixed(2);
-    
+
     filesSizes[file] = {
       size: stats.size,
-      sizeFormatted: `${sizeInMB}MB`
+      sizeFormatted: `${sizeInMB}MB`,
     };
-    
+
     totalSize += stats.size;
-    
+
     console.log(`📦 ${file}: ${sizeInMB}MB`);
   });
 
@@ -67,7 +67,7 @@ function analyzeBundleSize() {
     timestamp: new Date().toISOString(),
     totalSize,
     totalSizeFormatted: `${totalSizeInMB}MB`,
-    files: filesSizes
+    files: filesSizes,
   };
 
   history.push(currentEntry);
@@ -85,11 +85,13 @@ function analyzeBundleSize() {
     const previousEntry = history[history.length - 2];
     const sizeDiff = totalSize - previousEntry.totalSize;
     const diffMB = (sizeDiff / 1024 / 1024).toFixed(2);
-    
+
     if (sizeDiff > 0) {
       console.log(`📈 Size increased by ${diffMB}MB from previous build`);
     } else if (sizeDiff < 0) {
-      console.log(`📉 Size decreased by ${Math.abs(diffMB)}MB from previous build`);
+      console.log(
+        `📉 Size decreased by ${Math.abs(diffMB)}MB from previous build`,
+      );
     } else {
       console.log(`➡️  Size unchanged from previous build`);
     }
@@ -97,16 +99,20 @@ function analyzeBundleSize() {
 
   // Size warnings
   if (totalSize > MAX_BUNDLE_SIZE) {
-    console.warn(`\n⚠️  Bundle size (${totalSizeInMB}MB) exceeds recommended limit (${(MAX_BUNDLE_SIZE / 1024 / 1024).toFixed(1)}MB)`);
-    
+    console.warn(
+      `\n⚠️  Bundle size (${totalSizeInMB}MB) exceeds recommended limit (${(MAX_BUNDLE_SIZE / 1024 / 1024).toFixed(1)}MB)`,
+    );
+
     console.log('\n💡 Optimization suggestions:');
     console.log('   - Enable more aggressive tree shaking');
     console.log('   - Move heavy dependencies to external');
     console.log('   - Implement dynamic imports for large components');
     console.log('   - Consider code splitting');
-    
+
     if (totalSize > MAX_BUNDLE_SIZE * 2) {
-      console.error(`\n❌ Bundle size is critically large! Consider major refactoring.`);
+      console.error(
+        `\n❌ Bundle size is critically large! Consider major refactoring.`,
+      );
       process.exit(1);
     }
   } else {
@@ -125,7 +131,7 @@ function analyzeBundleSize() {
     totalSize,
     totalSizeFormatted: `${totalSizeInMB}MB`,
     files: filesSizes,
-    withinLimits: totalSize <= MAX_BUNDLE_SIZE
+    withinLimits: totalSize <= MAX_BUNDLE_SIZE,
   };
 }
 
@@ -134,7 +140,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   try {
     const result = analyzeBundleSize();
     console.log('\n📋 Analysis complete!');
-    
+
     if (!result.withinLimits) {
       process.exit(1);
     }

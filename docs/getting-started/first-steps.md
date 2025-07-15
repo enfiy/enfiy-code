@@ -39,6 +39,7 @@ Your preferences are automatically saved to `~/.enfiy/config.json`.
 ### Basic Interactions
 
 #### Ask Questions
+
 ```
 > What does this function do?
 > How can I optimize this code?
@@ -46,6 +47,7 @@ Your preferences are automatically saved to `~/.enfiy/config.json`.
 ```
 
 #### Request Code Changes
+
 ```
 > Add error handling to the login function
 > Refactor this component to use hooks
@@ -53,6 +55,7 @@ Your preferences are automatically saved to `~/.enfiy/config.json`.
 ```
 
 #### File Operations
+
 ```
 > Read the package.json file
 > Create a new React component called UserProfile
@@ -62,6 +65,7 @@ Your preferences are automatically saved to `~/.enfiy/config.json`.
 ## Working with Files
 
 ### Direct File References
+
 ```
 > Review the code in src/components/Header.tsx
 > What's wrong with the function in utils/helpers.js?
@@ -69,6 +73,7 @@ Your preferences are automatically saved to `~/.enfiy/config.json`.
 ```
 
 ### Project-Wide Operations
+
 ```
 > Find all TODO comments in this project
 > List all React components
@@ -78,6 +83,7 @@ Your preferences are automatically saved to `~/.enfiy/config.json`.
 ## Using AI Providers
 
 ### Switching Providers
+
 ```bash
 /provider
 # Follow the interactive menu to select:
@@ -87,13 +93,16 @@ Your preferences are automatically saved to `~/.enfiy/config.json`.
 ```
 
 ### Local vs Cloud
+
 - **Cloud providers**: More powerful but require API keys
 - **Local providers**: Privacy-focused but require local setup
 
 ## Advanced Features
 
 ### MCP Integration
+
 Connect external tools and services:
+
 ```bash
 /mcp connect filesystem-server
 /mcp connect database-server
@@ -101,6 +110,7 @@ Connect external tools and services:
 ```
 
 ### Shell Integration
+
 ```
 > Run the test suite
 > Install the axios package
@@ -108,6 +118,7 @@ Connect external tools and services:
 ```
 
 ### Multi-File Operations
+
 ```
 > Refactor all components to use the new theme system
 > Add logging to all API endpoints
@@ -117,6 +128,7 @@ Connect external tools and services:
 ## Configuration
 
 ### Settings File Location
+
 ```
 ~/.enfiy/
 ├── config.json          # Main configuration
@@ -125,6 +137,7 @@ Connect external tools and services:
 ```
 
 ### Key Settings
+
 ```bash
 /settings show            # View current settings
 /settings theme dark      # Change theme
@@ -134,6 +147,7 @@ Connect external tools and services:
 ## Tips for Effective Use
 
 ### Be Specific
+
 ```
 # Good
 > Add TypeScript interfaces for the User and Post models in types.ts
@@ -143,12 +157,14 @@ Connect external tools and services:
 ```
 
 ### Use Context
+
 ```
 > Looking at the current authentication flow, add password validation
 > Based on the existing API structure, create an endpoint for user profiles
 ```
 
 ### Iterate and Refine
+
 ```
 > Create a login form
 > Add validation to the login form
@@ -159,6 +175,7 @@ Connect external tools and services:
 ## Common Workflows
 
 ### Starting a New Project
+
 ```
 1. > Create a new React TypeScript project structure
 2. > Set up ESLint and Prettier configuration
@@ -167,6 +184,7 @@ Connect external tools and services:
 ```
 
 ### Code Review
+
 ```
 1. > Review this file for potential security issues
 2. > Check for performance bottlenecks in the API handlers
@@ -175,6 +193,7 @@ Connect external tools and services:
 ```
 
 ### Debugging
+
 ```
 1. > Help me debug this error: [paste error message]
 2. > What could cause this API call to fail?

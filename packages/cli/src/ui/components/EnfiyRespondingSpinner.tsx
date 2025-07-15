@@ -18,9 +18,10 @@ interface EnfiyRespondingSpinnerProps {
   spinnerType?: Parameters<typeof Spinner>[0]['type'];
 }
 
-export const EnfiyRespondingSpinner: React.FC<
-  EnfiyRespondingSpinnerProps
-> = ({ nonRespondingDisplay, spinnerType = 'dots' }) => {
+export const EnfiyRespondingSpinner: React.FC<EnfiyRespondingSpinnerProps> = ({
+  nonRespondingDisplay,
+  spinnerType = 'dots',
+}) => {
   const streamingState = useStreamingContext();
 
   if (streamingState === StreamingState.Responding) {

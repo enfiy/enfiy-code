@@ -167,4 +167,3 @@ export const DefaultOrange: Theme = new Theme(
   },
   orangeTheme,
 );
-

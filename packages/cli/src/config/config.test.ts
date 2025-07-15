@@ -33,9 +33,8 @@ vi.mock('read-package-up', () => ({
 }));
 
 vi.mock('@enfiy/core', async () => {
-  const actualServer = await vi.importActual<typeof ServerConfig>(
-    '@enfiy/core',
-  );
+  const actualServer =
+    await vi.importActual<typeof ServerConfig>('@enfiy/core');
   return {
     ...actualServer,
     loadEnvironment: vi.fn(),

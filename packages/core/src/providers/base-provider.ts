@@ -8,7 +8,11 @@
  * Modified and extended by Hayate Esaki (2025)
  */
 import { Provider, ProviderConfig, ProviderType } from './types.js';
-import { Content, GenerateContentResponse, GenerateContentConfig } from '@google/genai';
+import {
+  Content,
+  GenerateContentResponse,
+  GenerateContentConfig,
+} from '@google/genai';
 import { CodeBlockConverter } from '../utils/codeBlockConverter.js';
 
 /**
@@ -18,7 +22,7 @@ import { CodeBlockConverter } from '../utils/codeBlockConverter.js';
 export abstract class BaseProvider implements Provider {
   abstract readonly type: ProviderType;
   abstract readonly name: string;
-  
+
   protected config?: ProviderConfig;
   protected isInitialized = false;
 
@@ -31,7 +35,9 @@ export abstract class BaseProvider implements Provider {
   /**
    * Subclasses must implement their specific initialization logic
    */
-  protected abstract performInitialization(config: ProviderConfig): Promise<void>;
+  protected abstract performInitialization(
+    config: ProviderConfig,
+  ): Promise<void>;
 
   /**
    * Check if provider is available (e.g., service is running, API is accessible)
@@ -106,10 +112,7 @@ export abstract class BaseProvider implements Provider {
    * Check if this is a local provider
    */
   isLocalProvider(): boolean {
-    const localProviders = [
-      ProviderType.OLLAMA,
-      ProviderType.HUGGINGFACE,
-    ];
+    const localProviders = [ProviderType.OLLAMA, ProviderType.HUGGINGFACE];
     return localProviders.includes(this.type);
   }
 
@@ -156,7 +159,9 @@ export abstract class BaseProvider implements Provider {
   /**
    * Convert standard response to provider format
    */
-  protected convertToStandardResponse(response: unknown): GenerateContentResponse {
+  protected convertToStandardResponse(
+    response: unknown,
+  ): GenerateContentResponse {
     // Default implementation - subclasses should override for proper type safety
     return response as GenerateContentResponse;
   }
@@ -175,7 +180,11 @@ export abstract class BaseProvider implements Provider {
 
     if (error && typeof error === 'object' && error !== null) {
       const errorObj = error as Record<string, unknown>;
-      const message = errorObj.message || errorObj.error || errorObj.detail || 'Unknown error';
+      const message =
+        errorObj.message ||
+        errorObj.error ||
+        errorObj.detail ||
+        'Unknown error';
       return new Error(`${this.name} API Error: ${message}`);
     }
 
@@ -198,13 +207,20 @@ export abstract class BaseProvider implements Provider {
     }
 
     const instructions: Record<string, string> = {
-      [ProviderType.OPENAI]: 'Get your API key from https://platform.openai.com/api-keys',
-      [ProviderType.ANTHROPIC]: 'Get your API key from https://console.anthropic.com/',
-      [ProviderType.GEMINI]: 'Get your API key from https://makersuite.google.com/app/apikey',
-      [ProviderType.MISTRAL]: 'Get your API key from https://console.mistral.ai/',
+      [ProviderType.OPENAI]:
+        'Get your API key from https://platform.openai.com/api-keys',
+      [ProviderType.ANTHROPIC]:
+        'Get your API key from https://console.anthropic.com/',
+      [ProviderType.GEMINI]:
+        'Get your API key from https://makersuite.google.com/app/apikey',
+      [ProviderType.MISTRAL]:
+        'Get your API key from https://console.mistral.ai/',
     };
 
-    return instructions[this.type] || `Get your API key from ${this.name}'s developer portal.`;
+    return (
+      instructions[this.type] ||
+      `Get your API key from ${this.name}'s developer portal.`
+    );
   }
 
   /**
@@ -273,7 +289,10 @@ export abstract class BaseProvider implements Provider {
    * Common utility: Convert raw text to markdown code blocks
    * Can be used by any provider to improve code block detection
    */
-  protected convertToMarkdownCodeBlocks(text: string, hints?: { fileName?: string; extension?: string }): string {
+  protected convertToMarkdownCodeBlocks(
+    text: string,
+    hints?: { fileName?: string; extension?: string },
+  ): string {
     const result = CodeBlockConverter.convertToMarkdown(text, hints);
     return result.convertedText;
   }

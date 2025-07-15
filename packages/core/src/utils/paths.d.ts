@@ -4,7 +4,7 @@
  * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
-export declare const GEMINI_DIR = ".gemini";
+export declare const GEMINI_DIR = '.gemini';
 /**
  * Replaces the home directory with a tilde.
  * @param path - The path to tildeify.
@@ -25,7 +25,10 @@ export declare function shortenPath(filePath: string, maxLen?: number): string;
  * @param rootDirectory The absolute path of the directory to make the target path relative to.
  * @returns The relative path from rootDirectory to targetPath.
  */
-export declare function makeRelative(targetPath: string, rootDirectory: string): string;
+export declare function makeRelative(
+  targetPath: string,
+  rootDirectory: string,
+): string;
 /**
  * Escapes spaces in a file path.
  */

@@ -220,11 +220,7 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({ text }) => {
     if (match.index > lastIndex) {
       const plainText = text.slice(lastIndex, match.index);
       // Debug logging removed
-      nodes.push(
-        <Text key={`t-${lastIndex}`}>
-          {plainText}
-        </Text>,
-      );
+      nodes.push(<Text key={`t-${lastIndex}`}>{plainText}</Text>);
     }
 
     const fullMatch = match[0];

@@ -83,22 +83,18 @@ if (!argv.s) {
 console.log('packing @enfiy/cli ...');
 const cliPackageDir = join('packages', 'cli');
 rmSync(join(cliPackageDir, 'dist', 'enfiy-cli-*.tgz'), { force: true });
-execSync(
-  `npm pack -w @enfiy/cli --pack-destination ./packages/cli/dist`,
-  {
-    stdio: 'ignore',
-  },
-);
+execSync(`npm pack -w @enfiy/cli --pack-destination ./packages/cli/dist`, {
+  stdio: 'ignore',
+});
 
 console.log('packing @enfiy/core ...');
 const corePackageDir = join('packages', 'core');
 rmSync(join(corePackageDir, 'dist', 'enfiy-core-*.tgz'), {
   force: true,
 });
-execSync(
-  `npm pack -w @enfiy/core --pack-destination ./packages/core/dist`,
-  { stdio: 'ignore' },
-);
+execSync(`npm pack -w @enfiy/core --pack-destination ./packages/core/dist`, {
+  stdio: 'ignore',
+});
 
 const packageVersion = JSON.parse(
   readFileSync(join(process.cwd(), 'package.json'), 'utf-8'),

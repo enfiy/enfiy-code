@@ -17,16 +17,18 @@ export function useOptimizedBundle() {
   // Preload commonly used themes
   useEffect(() => {
     const commonThemes = ['default', 'github-dark', 'github-light'];
-    commonThemes.forEach(theme => {
+    commonThemes.forEach((theme) => {
       preloadTheme(theme);
     });
   }, []);
 
   // Preload user's preferred language
   useEffect(() => {
-    const userLang = (process.env.LANG || 'en').split('_')[0] as SupportedLanguage;
+    const userLang = (process.env.LANG || 'en').split(
+      '_',
+    )[0] as SupportedLanguage;
     preloadLanguagePack(userLang);
-    
+
     // Also preload English as fallback
     if (userLang !== 'en') {
       preloadLanguagePack('en');
@@ -38,7 +40,9 @@ export function useOptimizedBundle() {
     try {
       return await getTheme(themeName);
     } catch (_error) {
-      console.warn(`Failed to load theme ${themeName}, falling back to default`);
+      console.warn(
+        `Failed to load theme ${themeName}, falling back to default`,
+      );
       return await getTheme('default');
     }
   }, []);
@@ -48,7 +52,9 @@ export function useOptimizedBundle() {
     try {
       return await getLanguagePack(language);
     } catch (_error) {
-      console.warn(`Failed to load language ${language}, falling back to English`);
+      console.warn(
+        `Failed to load language ${language}, falling back to English`,
+      );
       return await getLanguagePack('en');
     }
   }, []);
@@ -71,9 +77,10 @@ export function useMemoryOptimization() {
   const optimizeMemory = useCallback(() => {
     // Clear unused resources
     cleanup();
-    
+
     // Suggest memory optimization
-    if (process.memoryUsage().heapUsed > 100 * 1024 * 1024) { // 100MB threshold
+    if (process.memoryUsage().heapUsed > 100 * 1024 * 1024) {
+      // 100MB threshold
       console.warn('Memory usage high, consider restarting the application');
     }
   }, [cleanup]);

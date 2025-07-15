@@ -55,7 +55,7 @@ export class ModelManager {
         { model: 'claude-3-haiku', condition: 'rate_limit', priority: 2 },
         { model: 'gpt-3.5-turbo', condition: 'rate_limit', priority: 3 },
         { model: 'ollama:llama3.1', condition: 'unavailable', priority: 4 },
-      ]
+      ],
     };
   }
 
@@ -72,7 +72,7 @@ export class ModelManager {
         capabilities: ['code', 'reasoning', 'vision'],
         costTier: 'high',
         contextLength: 2000000,
-        isAvailable: true
+        isAvailable: true,
       },
       {
         name: 'gemini-1.5-flash',
@@ -81,7 +81,7 @@ export class ModelManager {
         capabilities: ['code', 'reasoning'],
         costTier: 'low',
         contextLength: 1000000,
-        isAvailable: true
+        isAvailable: true,
       },
       {
         name: 'claude-3.5-sonnet',
@@ -90,7 +90,7 @@ export class ModelManager {
         capabilities: ['code', 'reasoning', 'analysis'],
         costTier: 'medium',
         contextLength: 200000,
-        isAvailable: true
+        isAvailable: true,
       },
       {
         name: 'gpt-4',
@@ -99,7 +99,7 @@ export class ModelManager {
         capabilities: ['code', 'reasoning', 'vision'],
         costTier: 'high',
         contextLength: 128000,
-        isAvailable: true
+        isAvailable: true,
       },
       {
         name: 'mistral-large-24.02',
@@ -108,7 +108,7 @@ export class ModelManager {
         capabilities: ['code', 'reasoning', 'multilingual'],
         costTier: 'high',
         contextLength: 32000,
-        isAvailable: true
+        isAvailable: true,
       },
       {
         name: 'mistral-small-24.02',
@@ -117,8 +117,8 @@ export class ModelManager {
         capabilities: ['code', 'reasoning'],
         costTier: 'low',
         contextLength: 32000,
-        isAvailable: true
-      }
+        isAvailable: true,
+      },
     ];
   }
 
@@ -132,19 +132,22 @@ export class ModelManager {
     const usage: ModelUsage = {
       used: Math.floor(Math.random() * 1000),
       limit: 1000,
-      resetTime: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+      resetTime: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
     };
 
     this.modelUsageCache.set(modelName, usage);
     return usage;
   }
 
-  async shouldSwitchModel(modelName: string, error?: unknown): Promise<string | null> {
+  async shouldSwitchModel(
+    modelName: string,
+    error?: unknown,
+  ): Promise<string | null> {
     if (!this.fallbackConfig) return null;
 
     const lastSwitch = this.lastSwitchTime.get(modelName) || 0;
     const now = Date.now();
-    
+
     // Respect cooldown period
     if (now - lastSwitch < this.SWITCH_COOLDOWN) {
       return null;
@@ -155,7 +158,12 @@ export class ModelManager {
     const usagePercent = usage.limit > 0 ? (usage.used / usage.limit) * 100 : 0;
 
     // Determine switch condition
-    let condition: 'rate_limit' | 'error' | 'unavailable' | 'usage_limit' | null = null;
+    let condition:
+      | 'rate_limit'
+      | 'error'
+      | 'unavailable'
+      | 'usage_limit'
+      | null = null;
 
     if (error) {
       const errorObj = error as { status?: number; message?: string }; // Type assertion for error object
@@ -174,13 +182,16 @@ export class ModelManager {
 
     // Find best fallback model
     const fallbacks = this.fallbackConfig.fallbacks
-      .filter(f => f.condition === condition)
+      .filter((f) => f.condition === condition)
       .sort((a, b) => a.priority - b.priority);
 
     for (const fallback of fallbacks) {
       const fallbackUsage = await this.getModelUsage(fallback.model);
-      const fallbackPercent = fallbackUsage.limit > 0 ? (fallbackUsage.used / fallbackUsage.limit) * 100 : 0;
-      
+      const fallbackPercent =
+        fallbackUsage.limit > 0
+          ? (fallbackUsage.used / fallbackUsage.limit) * 100
+          : 0;
+
       // Check if fallback model is available and not at limit
       if (fallbackPercent < 90) {
         this.lastSwitchTime.set(modelName, now);
@@ -198,15 +209,15 @@ export class ModelManager {
 
       // Check if model is available
       const models = await this.getAvailableModels();
-      const targetModel = models.find(m => m.name === modelName);
-      
+      const targetModel = models.find((m) => m.name === modelName);
+
       if (!targetModel || !targetModel.isAvailable) {
         return false;
       }
 
       // Switch model
       this.config.setModel(modelName);
-      
+
       // Clear usage cache for the new model
       this.modelUsageCache.delete(modelName);
 
@@ -217,13 +228,20 @@ export class ModelManager {
     }
   }
 
-  setFallbackOrder(primary: string, fallbacks: Array<{ model: string; condition: string; priority: number; }>): void {
+  setFallbackOrder(
+    primary: string,
+    fallbacks: Array<{ model: string; condition: string; priority: number }>,
+  ): void {
     this.fallbackConfig = {
       primary,
-      fallbacks: fallbacks.map(f => ({
+      fallbacks: fallbacks.map((f) => ({
         ...f,
-        condition: f.condition as 'rate_limit' | 'error' | 'unavailable' | 'usage_limit'
-      }))
+        condition: f.condition as
+          | 'rate_limit'
+          | 'error'
+          | 'unavailable'
+          | 'usage_limit',
+      })),
     };
   }
 
@@ -231,18 +249,24 @@ export class ModelManager {
     return this.fallbackConfig;
   }
 
-  async handleModelError(modelName: string, error: unknown): Promise<string | null> {
+  async handleModelError(
+    modelName: string,
+    error: unknown,
+  ): Promise<string | null> {
     const fallbackModel = await this.shouldSwitchModel(modelName, error);
-    
+
     if (fallbackModel) {
       const switched = await this.switchToModel(fallbackModel);
       if (switched) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        console.log(`🔄 Auto-switched from ${modelName} to ${fallbackModel} due to: ${errorMessage}`);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        console.log(
+          `🔄 Auto-switched from ${modelName} to ${fallbackModel} due to: ${errorMessage}`,
+        );
         return fallbackModel;
       }
     }
-    
+
     return null;
   }
 

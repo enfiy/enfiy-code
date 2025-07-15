@@ -51,7 +51,7 @@ function isWordChar(ch: string | undefined): boolean {
 function stripUnsafeCharacters(str: string): string {
   // First strip ANSI escape codes, then remove control characters
   const withoutAnsi = stripAnsi(str);
-  
+
   // Only remove control characters that could break terminal rendering
   return Array.from(withoutAnsi)
     .filter((char) => {
@@ -61,7 +61,8 @@ function stripUnsafeCharacters(str: string): string {
       }
       // Only filter out DEL (127) and control characters < 32
       // BUT preserve tab (9), newline (10), and carriage return (13)
-      const isControlChar = code === 127 || (code < 32 && code !== 9 && code !== 10 && code !== 13);
+      const isControlChar =
+        code === 127 || (code < 32 && code !== 9 && code !== 10 && code !== 13);
       return !isControlChar;
     })
     .join('');
@@ -459,7 +460,7 @@ export function useTextBuffer({
       [cursorRow, cursorCol],
       viewport.width,
     );
-    
+
     // Debug logging for Japanese text
     if (lines[0] && lines[0].length > 0 && lines[0].charCodeAt(0) > 127) {
       console.log('[VISUAL_LAYOUT] Calculating visual layout:', {
@@ -469,7 +470,7 @@ export function useTextBuffer({
         visualCursor: layout.visualCursor,
       });
     }
-    
+
     setVisualLines(layout.visualLines);
     setVisualCursor(layout.visualCursor);
     setLogicalToVisualMap(layout.logicalToVisualMap);
@@ -526,7 +527,7 @@ export function useTextBuffer({
         cursor: [cursorRow, cursorCol],
       });
     }
-    
+
     if (onChange) {
       onChange(text);
     }
@@ -634,29 +635,35 @@ export function useTextBuffer({
       for (const op of expandedOps) {
         if (op.type === 'insert') {
           const originalPayload = op.payload;
-          const normalizedPayload = op.payload.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+          const normalizedPayload = op.payload
+            .replace(/\r\n/g, '\n')
+            .replace(/\r/g, '\n');
           const str = stripUnsafeCharacters(normalizedPayload);
-          
+
           // Debug for mixed character operations
-          const hasMixedChars = originalPayload.length > 1 && 
-            originalPayload.split('').some(c => c.charCodeAt(0) > 127) && 
-            originalPayload.split('').some(c => c.charCodeAt(0) <= 127);
-          
-          if (hasMixedChars || (originalPayload.length > 0 && originalPayload.charCodeAt(0) > 127)) {
+          const hasMixedChars =
+            originalPayload.length > 1 &&
+            originalPayload.split('').some((c) => c.charCodeAt(0) > 127) &&
+            originalPayload.split('').some((c) => c.charCodeAt(0) <= 127);
+
+          if (
+            hasMixedChars ||
+            (originalPayload.length > 0 && originalPayload.charCodeAt(0) > 127)
+          ) {
             console.log('[APPLY_OPS] Processing insert operation:', {
               originalPayload,
               normalizedPayload,
               strippedPayload: str,
               hasMixedChars,
-              payloadDetails: Array.from(originalPayload).map(c => ({
+              payloadDetails: Array.from(originalPayload).map((c) => ({
                 char: c,
                 code: c.charCodeAt(0),
-                isAscii: c.charCodeAt(0) <= 127
+                isAscii: c.charCodeAt(0) <= 127,
               })),
               beforeText: newLines.join('\n'),
             });
           }
-          
+
           const parts = str.split('\n');
           const lineContent = currentLine(newCursorRow);
           const before = cpSlice(lineContent, 0, newCursorCol);
@@ -678,7 +685,7 @@ export function useTextBuffer({
             const resultLine = before + parts[0] + after;
             newLines[newCursorRow] = resultLine;
             newCursorCol = cpLen(before) + cpLen(parts[0]);
-            
+
             // Debug logging for Japanese text insertion
             if (parts[0].length > 0 && parts[0].charCodeAt(0) > 127) {
               console.log('[APPLY_OPS] Inserted Japanese text:', {
@@ -699,7 +706,7 @@ export function useTextBuffer({
             cursor: [newCursorRow, newCursorCol],
             currentText: newLines.join('\n'),
           });
-          
+
           if (newCursorCol === 0 && newCursorRow === 0) {
             console.log('[APPLY_OPS] Backspace at beginning, skipping');
             continue;
@@ -710,14 +717,18 @@ export function useTextBuffer({
             console.log('[APPLY_OPS] Backspace within line:', {
               lineContent,
               cursorCol: newCursorCol,
-              charToDelete: cpSlice(lineContent, newCursorCol - 1, newCursorCol),
+              charToDelete: cpSlice(
+                lineContent,
+                newCursorCol - 1,
+                newCursorCol,
+              ),
             });
-            
+
             newLines[newCursorRow] =
               cpSlice(lineContent, 0, newCursorCol - 1) +
               cpSlice(lineContent, newCursorCol);
             newCursorCol--;
-            
+
             console.log('[APPLY_OPS] After backspace within line:', {
               newLineContent: newLines[newCursorRow],
               newCursor: [newCursorRow, newCursorCol],
@@ -726,18 +737,21 @@ export function useTextBuffer({
             const prevLineContent = currentLine(newCursorRow - 1);
             const currentLineContentVal = currentLine(newCursorRow);
             const newCol = cpLen(prevLineContent);
-            console.log('[APPLY_OPS] Backspace at line beginning, merging lines:', {
-              prevLine: prevLineContent,
-              currentLine: currentLineContentVal,
-              mergedLine: prevLineContent + currentLineContentVal,
-            });
-            
+            console.log(
+              '[APPLY_OPS] Backspace at line beginning, merging lines:',
+              {
+                prevLine: prevLineContent,
+                currentLine: currentLineContentVal,
+                mergedLine: prevLineContent + currentLineContentVal,
+              },
+            );
+
             newLines[newCursorRow - 1] =
               prevLineContent + currentLineContentVal;
             newLines.splice(newCursorRow, 1);
             newCursorRow--;
             newCursorCol = newCol;
-            
+
             console.log('[APPLY_OPS] After line merge:', {
               newCursor: [newCursorRow, newCursorCol],
               newLines,
@@ -747,7 +761,11 @@ export function useTextBuffer({
       }
 
       // Debug logging before state update
-      if (expandedOps.some(op => op.type === 'insert' && op.payload.charCodeAt(0) > 127)) {
+      if (
+        expandedOps.some(
+          (op) => op.type === 'insert' && op.payload.charCodeAt(0) > 127,
+        )
+      ) {
         console.log('[APPLY_OPS] Before state update:', {
           oldLines: lines,
           newLines,
@@ -755,7 +773,7 @@ export function useTextBuffer({
           newText: newLines.join('\n'),
         });
       }
-      
+
       // Single batch update for optimal performance
       setLines(newLines);
       setCursorRow(newCursorRow);
@@ -772,16 +790,17 @@ export function useTextBuffer({
         return;
       }
       dbg('insert', { ch, beforeCursor: [cursorRow, cursorCol] });
-      
+
       // Clean the input while preserving all printable characters
       ch = stripUnsafeCharacters(ch);
 
       // Check for drag and drop of file paths
       // Only consider it a file path if it looks like a path (contains / or \)
       // This prevents Japanese IME input from being treated as file paths
-      const looksLikePath = ch.includes('/') || ch.includes('\\') || ch.includes('~');
+      const looksLikePath =
+        ch.includes('/') || ch.includes('\\') || ch.includes('~');
       const minLengthToInferAsDragDrop = 3;
-      
+
       if (ch.length >= minLengthToInferAsDragDrop && looksLikePath) {
         // Possible drag and drop of a file path.
         let potentialPath = ch;
@@ -799,10 +818,10 @@ export function useTextBuffer({
           ch = `@${potentialPath}`;
         }
       }
-      
+
       // Direct insertion for optimal performance
       applyOperations([{ type: 'insert', payload: ch }]);
-      
+
       // Debug logging after insertion
       if (ch.length > 0 && ch.charCodeAt(0) > 127) {
         console.log('[INSERT] After insertion:', {
@@ -825,13 +844,13 @@ export function useTextBuffer({
       beforeText: lines.join('\n'),
       canDelete: !(cursorCol === 0 && cursorRow === 0),
     });
-    
+
     dbg('backspace', { beforeCursor: [cursorRow, cursorCol] });
     if (cursorCol === 0 && cursorRow === 0) {
       console.log('[BACKSPACE] At beginning, cannot delete');
       return;
     }
-    
+
     console.log('[BACKSPACE] Calling applyOperations with backspace');
     applyOperations([{ type: 'backspace' }]);
   }, [applyOperations, cursorRow, cursorCol, lines]);
@@ -873,7 +892,7 @@ export function useTextBuffer({
   const setText = useCallback(
     (newText: string): void => {
       dbg('setText', { text: newText });
-      
+
       // Debug logging for setText calls - track stack trace for Japanese input issues
       if (newText.length > 0 && newText.charCodeAt(0) > 127) {
         console.log('[SET_TEXT] Japanese text being set:', {
@@ -881,13 +900,17 @@ export function useTextBuffer({
           currentText: text,
           stack: new Error().stack?.split('\n').slice(1, 4).join('\n'),
         });
-      } else if (newText === '' && text.length > 0 && text.charCodeAt(0) > 127) {
+      } else if (
+        newText === '' &&
+        text.length > 0 &&
+        text.charCodeAt(0) > 127
+      ) {
         console.log('[SET_TEXT] Japanese text being CLEARED:', {
           previousText: text,
           stack: new Error().stack?.split('\n').slice(1, 4).join('\n'),
         });
       }
-      
+
       pushUndo();
       const newContentLines = newText.replace(/\r\n?/g, '\n').split('\n');
       setLines(newContentLines.length === 0 ? [''] : newContentLines);
@@ -1430,8 +1453,7 @@ export function useTextBuffer({
           afterText: text,
           newCursor: [cursorRow, cursorCol],
         });
-      }
-      else if (key.name === 'delete' || (key.ctrl && key.name === 'd')) del();
+      } else if (key.name === 'delete' || (key.ctrl && key.name === 'd')) del();
       else if (input && !key.ctrl && !key.meta) {
         if (DEBUG) {
           console.log('[HANDLE_INPUT] Raw input received:', {
@@ -1453,7 +1475,9 @@ export function useTextBuffer({
           console.log('[HANDLE_INPUT] Paste event detected:', {
             input,
             inputLength: input.length,
-            containsJapanese: input.split('').some(c => c.charCodeAt(0) > 127),
+            containsJapanese: input
+              .split('')
+              .some((c) => c.charCodeAt(0) > 127),
             beforeText: text,
           });
           insert(input);
@@ -1463,10 +1487,10 @@ export function useTextBuffer({
           });
         } else {
           // For regular key presses, filter out control characters.
-          const isControlChar = input.length === 1 && (
-            input.charCodeAt(0) < 32 || input.charCodeAt(0) === 127
-          );
-          
+          const isControlChar =
+            input.length === 1 &&
+            (input.charCodeAt(0) < 32 || input.charCodeAt(0) === 127);
+
           if (!isControlChar) {
             // Debug logging for Japanese input
             if (input.charCodeAt(0) > 127) {

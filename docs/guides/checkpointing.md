@@ -5,6 +5,7 @@ Enfiy Code provides checkpointing functionality to save and restore chat session
 ## Overview
 
 Checkpointing enables you to:
+
 - Save current chat session state
 - Restore previous conversations
 - Share conversation contexts
@@ -14,32 +15,38 @@ Checkpointing enables you to:
 ## Basic Usage
 
 ### Creating a Checkpoint
+
 ```bash
 /checkpoint save my-session
 ```
 
 This saves the current conversation, including:
+
 - Message history
 - Tool call results
 - Provider settings
 - Session context
 
 ### Loading a Checkpoint
+
 ```bash
 /checkpoint load my-session
 ```
 
 This restores:
+
 - Previous conversation state
 - Message history
 - Context and memory
 
 ### Listing Checkpoints
+
 ```bash
 /checkpoint list
 ```
 
 Shows all available checkpoints with:
+
 - Checkpoint names
 - Creation dates
 - Message counts
@@ -48,6 +55,7 @@ Shows all available checkpoints with:
 ## Advanced Features
 
 ### Automatic Checkpointing
+
 Enable automatic checkpointing for important sessions:
 
 ```bash
@@ -55,12 +63,14 @@ Enable automatic checkpointing for important sessions:
 ```
 
 Auto-save triggers:
+
 - Every 10 messages
 - Before provider changes
 - Before major operations
 - On session end
 
 ### Checkpoint Metadata
+
 Add descriptions and tags:
 
 ```bash
@@ -68,6 +78,7 @@ Add descriptions and tags:
 ```
 
 ### Checkpoint Filtering
+
 Find specific checkpoints:
 
 ```bash
@@ -79,11 +90,14 @@ Find specific checkpoints:
 ## Storage Locations
 
 ### Default Storage
+
 Checkpoints are stored in:
+
 - **Linux/macOS**: `~/.enfiy/checkpoints/`
 - **Windows**: `%USERPROFILE%\.enfiy\checkpoints\`
 
 ### Custom Storage
+
 Configure custom checkpoint directory:
 
 ```bash
@@ -91,6 +105,7 @@ export ENFIY_CHECKPOINT_DIR="/path/to/checkpoints"
 ```
 
 Or in settings.json:
+
 ```json
 {
   "checkpointDirectory": "/custom/path/checkpoints"
@@ -129,22 +144,26 @@ Checkpoints are stored as JSON files with the following structure:
 ## Checkpoint Management
 
 ### Deleting Checkpoints
+
 ```bash
 /checkpoint delete my-session
 ```
 
 ### Renaming Checkpoints
+
 ```bash
 /checkpoint rename old-name new-name
 ```
 
 ### Exporting Checkpoints
+
 ```bash
 /checkpoint export my-session --format json
 /checkpoint export my-session --format markdown --output report.md
 ```
 
 ### Importing Checkpoints
+
 ```bash
 /checkpoint import /path/to/checkpoint.json
 ```
@@ -152,17 +171,20 @@ Checkpoints are stored as JSON files with the following structure:
 ## Sharing Checkpoints
 
 ### Export for Sharing
+
 ```bash
 /checkpoint export my-session --sanitize --output shared-session.json
 ```
 
 The `--sanitize` flag removes:
+
 - API keys
 - Personal information
 - Sensitive file paths
 - Private data
 
 ### Team Collaboration
+
 Store checkpoints in shared locations:
 
 ```bash
@@ -176,6 +198,7 @@ export ENFIY_TEAM_CHECKPOINTS="/shared/team/checkpoints"
 ## Security and Privacy
 
 ### Encryption
+
 Checkpoints can be encrypted for sensitive sessions:
 
 ```bash
@@ -185,6 +208,7 @@ Checkpoints can be encrypted for sensitive sessions:
 Enter encryption password when prompted.
 
 ### Data Sanitization
+
 Remove sensitive information before sharing:
 
 ```bash
@@ -192,6 +216,7 @@ Remove sensitive information before sharing:
 ```
 
 ### Access Control
+
 Set checkpoint permissions:
 
 ```bash
@@ -201,6 +226,7 @@ chmod 600 ~/.enfiy/checkpoints/*.json  # Owner read/write only
 ## Configuration
 
 ### Settings
+
 Configure checkpointing behavior in settings.json:
 
 ```json
@@ -217,6 +243,7 @@ Configure checkpointing behavior in settings.json:
 ```
 
 ### Environment Variables
+
 ```bash
 # Storage location
 export ENFIY_CHECKPOINT_DIR="/custom/checkpoints"
@@ -233,6 +260,7 @@ export ENFIY_CHECKPOINT_COMPRESS=true
 ### Common Issues
 
 **Checkpoint not found:**
+
 ```bash
 # List all checkpoints
 /checkpoint list
@@ -242,6 +270,7 @@ ls ~/.enfiy/checkpoints/
 ```
 
 **Corrupted checkpoint:**
+
 ```bash
 # Validate checkpoint
 /checkpoint validate my-session
@@ -251,6 +280,7 @@ ls ~/.enfiy/checkpoints/
 ```
 
 **Large checkpoint files:**
+
 ```bash
 # Enable compression
 /checkpoint compress my-session
@@ -262,6 +292,7 @@ ls ~/.enfiy/checkpoints/
 ### Recovery
 
 **Restore from backup:**
+
 ```bash
 # List backup checkpoints
 /checkpoint list --backup
@@ -271,6 +302,7 @@ ls ~/.enfiy/checkpoints/
 ```
 
 **Manual recovery:**
+
 ```bash
 # Check file integrity
 file ~/.enfiy/checkpoints/my-session.json
@@ -282,12 +314,14 @@ jq '.' ~/.enfiy/checkpoints/my-session.json
 ## Best Practices
 
 ### Naming Conventions
-- Use descriptive names: `code-review-2024-01` 
+
+- Use descriptive names: `code-review-2024-01`
 - Include dates for time-sensitive work
 - Use tags for categorization
 - Avoid spaces and special characters
 
 ### Regular Maintenance
+
 ```bash
 # Clean old checkpoints monthly
 /checkpoint cleanup --older-than 30d
@@ -300,6 +334,7 @@ jq '.' ~/.enfiy/checkpoints/my-session.json
 ```
 
 ### Workflow Integration
+
 ```bash
 # Start new project
 /checkpoint save project-start --auto-save
@@ -314,6 +349,7 @@ jq '.' ~/.enfiy/checkpoints/my-session.json
 ## API Reference
 
 ### Checkpoint Commands
+
 - `/checkpoint save <name>` - Save current session
 - `/checkpoint load <name>` - Load saved session
 - `/checkpoint list` - List all checkpoints
@@ -322,6 +358,7 @@ jq '.' ~/.enfiy/checkpoints/my-session.json
 - `/checkpoint import <file>` - Import checkpoint
 
 ### Options
+
 - `--description` - Add description
 - `--tags` - Add tags
 - `--encrypt` - Encrypt checkpoint

@@ -19,7 +19,8 @@ export const DEFAULT_GEMINI_EMBEDDING_MODEL = 'gemini-embedding-001';
 export const DEFAULT_OPENAI_MODEL = 'gpt-4o';
 export const DEFAULT_ANTHROPIC_MODEL = 'claude-3-5-sonnet-20241022';
 export const DEFAULT_MISTRAL_MODEL = 'mistral-large-24.11';
-export const DEFAULT_HUGGINGFACE_MODEL = 'meta-llama/Meta-Llama-3.1-8B-Instruct';
+export const DEFAULT_HUGGINGFACE_MODEL =
+  'meta-llama/Meta-Llama-3.1-8B-Instruct';
 
 // Enfiy equivalents for backward compatibility
 export const DEFAULT_ENFIY_FLASH_MODEL = DEFAULT_GEMINI_FLASH_MODEL;

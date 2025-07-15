@@ -73,8 +73,7 @@ interface MockServerConfig {
 
 // Mock @enfiy/core and its Config class
 vi.mock('@enfiy/core', async (importOriginal) => {
-  const actualCore =
-    await importOriginal<typeof import('@enfiy/core')>();
+  const actualCore = await importOriginal<typeof import('@enfiy/core')>();
   const ConfigClassMock = vi
     .fn()
     .mockImplementation((optionsPassedToConstructor) => {
@@ -211,7 +210,7 @@ describe('App UI', () => {
       cwd: '/tmp',
       model: 'model',
     }) as unknown as MockServerConfig;
-    
+
     // Set up getProjectRoot mock separately
     mockConfig.getProjectRoot.mockReturnValue('/test/project/root');
 

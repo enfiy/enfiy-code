@@ -5,6 +5,7 @@ Model Context Protocol (MCP) allows Enfiy Code to connect with external tools an
 ## Overview
 
 MCP servers extend Enfiy Code's capabilities by providing:
+
 - Database connections
 - API integrations
 - File system access
@@ -14,32 +15,38 @@ MCP servers extend Enfiy Code's capabilities by providing:
 ## Commands
 
 ### List MCP Servers
+
 ```bash
 /mcp list
 ```
 
 ### Install Server
+
 ```bash
 /mcp install <server-name>
 ```
 
 ### Start/Stop Servers
+
 ```bash
 /mcp start <server-name>
 /mcp stop <server-name>
 ```
 
 ### Configure Server
+
 ```bash
 /mcp config <server-name>
 ```
 
 ### Check Status
+
 ```bash
 /mcp status
 ```
 
 ### Tool Descriptions
+
 ```bash
 /mcp desc     # Enable descriptions
 /mcp nodesc   # Disable descriptions
@@ -48,21 +55,25 @@ MCP servers extend Enfiy Code's capabilities by providing:
 ## Popular MCP Servers
 
 ### File System
+
 - Read/write files
 - Directory operations
 - File search capabilities
 
 ### Git
+
 - Repository operations
 - Commit history
 - Branch management
 
 ### Database
+
 - SQL queries
 - Schema management
 - Data manipulation
 
 ### Web Search
+
 - Search engines integration
 - Content fetching
 - API access
@@ -100,11 +111,13 @@ MCP servers communicate via JSON-RPC protocol. Basic structure:
 ## Troubleshooting
 
 ### Server Won't Start
+
 - Check port availability
 - Verify dependencies installed
 - Review server logs
 
 ### Connection Issues
+
 - Confirm server is running
 - Check firewall settings
 - Verify configuration

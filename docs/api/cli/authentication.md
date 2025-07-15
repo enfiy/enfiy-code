@@ -5,18 +5,21 @@ Enfiy Code supports multiple AI providers, each with their own authentication me
 ## Supported Providers
 
 ### OpenAI (ChatGPT)
+
 1. **API Key Authentication:**
    - Obtain your API key from [OpenAI Platform](https://platform.openai.com/api-keys)
    - Set up during initial configuration or use `/provider` command
    - Supported models: GPT-4, GPT-3.5, GPT-4 Turbo, etc.
 
 ### Anthropic Claude
+
 1. **API Key Authentication:**
    - Obtain your API key from [Anthropic Console](https://console.anthropic.com/)
    - Set up during initial configuration or use `/provider` command
    - Supported models: Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Haiku
 
 ### Google Gemini
+
 1. **API Key Authentication:**
    - Obtain your API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
    - Set up during initial configuration or use `/provider` command
@@ -29,12 +32,14 @@ Enfiy Code supports multiple AI providers, each with their own authentication me
    - Note: Browser must be able to communicate with the machine running Enfiy Code
 
 ### Mistral AI
+
 1. **API Key Authentication:**
    - Obtain your API key from [Mistral AI Platform](https://console.mistral.ai/)
    - Set up during initial configuration or use `/provider` command
    - Supported models: Mistral Large, Mistral Medium, Mistral Small
 
 ### Local Models (Ollama)
+
 1. **Local Installation:**
    - Install [Ollama](https://ollama.ai/) on your system
    - No API key required - runs completely local
@@ -42,6 +47,7 @@ Enfiy Code supports multiple AI providers, each with their own authentication me
    - Enfiy Code will guide you through model installation
 
 ### HuggingFace (Experimental)
+
 1. **Local Deployment:**
    - Set up local inference servers (TGI, vLLM, or Ollama)
    - No API key required for local deployment
@@ -65,6 +71,7 @@ You can switch between providers or add new ones using the `/provider` command:
 ```
 
 This opens the provider selection interface where you can:
+
 - Switch to a different provider
 - Add new provider configurations
 - Manage existing API keys

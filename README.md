@@ -3,7 +3,7 @@
 
 # Enfiy Code
 
-### *Universal AI Coding Agent for you*
+### _Universal AI Coding Agent for you_
 
 <img src="https://skillicons.dev/icons?i=npm,nodejs,typescript,windows,linux,apple" />
 
@@ -16,11 +16,13 @@
 Ensure you have [Node.js v20 or higher](https://nodejs.org/en/download) installed.
 
 **Option 1: Run without installing (Recommended for first-time users)**
+
 ```bash
 npx @enfiy/enfiy-code
 ```
 
 **Option 2: Install globally (Recommended for regular use)**
+
 ```bash
 npm install -g @enfiy/enfiy-code
 enfiy
@@ -115,6 +117,7 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 For production use, you may want to set up custom OAuth applications:
 
 #### Google Gemini OAuth
+
 ```bash
 # Set custom Google OAuth credentials (optional)
 export ENFIY_GOOGLE_OAUTH_CLIENT_ID="your-client-id.apps.googleusercontent.com"
@@ -122,6 +125,7 @@ export ENFIY_GOOGLE_OAUTH_CLIENT_SECRET="your-client-secret"
 ```
 
 **To create your own Google OAuth client:**
+
 1. Visit [Google Cloud Console](https://console.developers.google.com/auth/clients)
 2. Create new OAuth 2.0 Client ID
 3. Select "Desktop application"
@@ -129,6 +133,7 @@ export ENFIY_GOOGLE_OAUTH_CLIENT_SECRET="your-client-secret"
 5. Use the credentials in environment variables above
 
 #### HuggingFace OAuth
+
 ```bash
 # Set custom HuggingFace OAuth client ID (optional)
 export HF_CLIENT_ID="your-huggingface-app-id"
@@ -141,23 +146,28 @@ export HF_CLIENT_ID="your-huggingface-app-id"
 Enfiy Code supports various command-line options to customize your experience:
 
 ### Basic Options
+
 - `-m, --model <model>` - Specify AI model to use
 - `-p, --prompt <text>` - Start with an initial prompt
 
 ### Workflow Options
+
 - `-y, --auto` - Automatically approve all AI actions
 - `-a, --all-files` - Include all project files in context
 - `-c, --checkpointing` - Enable file edit checkpointing
 
 ### Development Options
+
 - `-d, --debug` - Enable debug mode with verbose logging
 - `--show-memory-usage` - Display memory usage in status bar
 
 ### Sandbox Options
+
 - `-s, --sandbox` - Run in isolated sandbox environment
 - `--sandbox-image <image>` - Use custom sandbox container image
 
 ### Examples
+
 ```bash
 # Start interactive mode
 enfiy
@@ -180,7 +190,7 @@ enfiy --debug
 Once Enfiy Code is running, use these commands to interact with the AI:
 
 - `/provider` - Select AI provider and model
-- `/mcp` - Connect to MCP servers for enhanced capabilities  
+- `/mcp` - Connect to MCP servers for enhanced capabilities
 - `/tool` - Access specialized tools and integrations
 - `/help` - Show available commands and usage information
 - `/bug` - Report bugs or issues to the development team
@@ -189,6 +199,7 @@ Once Enfiy Code is running, use these commands to interact with the AI:
 ## Usage Examples
 
 ### Basic Usage
+
 ```bash
 # Start Enfiy Code
 enfiy
@@ -203,6 +214,7 @@ enfiy
 ```
 
 ### Project Development
+
 ```bash
 # Start a new project
 cd my-project/
@@ -213,6 +225,7 @@ enfiy
 ```
 
 ### Code Analysis
+
 ```bash
 # Analyze existing codebase
 enfiy
@@ -222,6 +235,7 @@ enfiy
 ```
 
 ### Automation Tasks
+
 ```bash
 # Automate development workflows
 enfiy
@@ -233,27 +247,32 @@ enfiy
 ## Documentation
 
 ### Getting Started
+
 - **[Quick Start Guide](./docs/getting-started/README.md)** – Get up and running in minutes
 - **[Installation](./docs/getting-started/installation.md)** – Detailed installation instructions
 - **[First Steps](./docs/getting-started/first-steps.md)** – Essential commands and workflows
 - **[API Configuration](./docs/getting-started/api-configuration.md)** – Set up AI provider authentication
 
 ### User Guides
+
 - **[All Guides](./docs/guides/README.md)** – Complete guide collection
 - **[MCP Integration](./docs/guides/mcp-integration.md)** – Connect external tools and services
 - **[Checkpointing](./docs/guides/checkpointing.md)** – Save and restore conversation sessions
 
 ### API Reference
+
 - **[API Documentation](./docs/api/README.md)** – Technical reference
 - **[CLI Commands](./docs/api/cli/commands.md)** – Complete command reference
 - **[Tools Reference](./docs/api/tools/README.md)** – Built-in tools and capabilities
 
 ### Development
+
 - **[Development Guide](./docs/development/README.md)** – Contributing and development setup
 - **[Architecture](./docs/development/architecture.md)** – System design and components
 - **[Extensions](./docs/development/extension.md)** – Creating custom extensions
 
 ### Security
+
 - **[Security Overview](./docs/security/README.md)** – Security policies and best practices
 - **[Privacy Policy](./docs/security/privacy-policy.md)** – Data handling and privacy rights
 - **[Telemetry](./docs/security/telemetry.md)** – Data collection and opt-out options
@@ -261,6 +280,7 @@ enfiy
 ## Development
 
 ### Prerequisites for Development
+
 - Node.js v20 or higher
 - npm or yarn package manager
 - Git
@@ -268,27 +288,34 @@ enfiy
 ### Setting Up Development Environment
 
 1. **Clone the repository**
+
 ```bash
 git clone https://github.com/enfiy-ecosystem/enfiy-code.git
 cd enfiy-code
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
+
 This will install all required packages listed in `package.json`.
 
 3. **Build the project**
+
 ```bash
 npm run build
 ```
+
 This compiles TypeScript and prepares the application for execution.
 
 4. **Start the development version**
+
 ```bash
 npm start
 ```
+
 This launches Enfiy Code in development mode.
 
 ### Development Commands

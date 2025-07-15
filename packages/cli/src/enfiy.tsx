@@ -83,13 +83,15 @@ export async function main() {
   // Handle setup commands early
   const args = process.argv;
   if (args.length > 2 && args[2] === 'setup') {
-    const { setupLocalAI, displaySetupHelp } = await import('./commands/setupLocalAI.js');
-    
+    const { setupLocalAI, displaySetupHelp } = await import(
+      './commands/setupLocalAI.js'
+    );
+
     if (args.length === 3 || args.includes('--help') || args.includes('-h')) {
       displaySetupHelp();
       return;
     }
-    
+
     const provider = args[3] as 'ollama' | 'huggingface' | 'all';
     const options = {
       provider,
@@ -99,7 +101,7 @@ export async function main() {
       interactive: args.includes('--interactive'),
       model: args.find((arg, index) => args[index - 1] === '--model'),
     };
-    
+
     await setupLocalAI(options);
     return;
   }
@@ -128,11 +130,7 @@ export async function main() {
 
   // set default fallback to api key authentication
   if (!settings.merged.selectedAuthType) {
-    settings.setValue(
-      SettingScope.User,
-      'selectedAuthType',
-      AuthType.API_KEY,
-    );
+    settings.setValue(SettingScope.User, 'selectedAuthType', AuthType.API_KEY);
   }
 
   setMaxSizedBoxDebugging(config.getDebugMode());
@@ -194,7 +192,7 @@ export async function main() {
   // Render UI, passing necessary config values. Check that there is no command line question.
   if (process.stdin.isTTY && input?.length === 0) {
     setWindowTitle(basename(workspaceRoot), settings);
-    
+
     // Initialize auth if a valid auth type is selected
     if (settings.merged.selectedAuthType) {
       try {
@@ -206,7 +204,7 @@ export async function main() {
         console.debug('Initial auth setup will be handled by UI:', error);
       }
     }
-    
+
     render(
       <React.StrictMode>
         <AppWrapper
@@ -271,27 +269,35 @@ process.on('unhandledRejection', (reason, _promise) => {
   if (reason && typeof reason === 'object' && 'message' in reason) {
     const message = (reason as Error).message || '';
     console.error('🚨 Error detected:', message);
-    
-    if (message.includes('Requested entity was not found') || 
-        message.includes('404') || 
-        message.includes('API key') ||
-        message.includes('Unauthorized') ||
-        message.includes('Failed to initialize AI provider') ||
-        message.includes('Invalid API key format')) {
+
+    if (
+      message.includes('Requested entity was not found') ||
+      message.includes('404') ||
+      message.includes('API key') ||
+      message.includes('Unauthorized') ||
+      message.includes('Failed to initialize AI provider') ||
+      message.includes('Invalid API key format')
+    ) {
       console.error('⚠️  Authentication/Provider error detected.');
-      console.error('💡 Please check your API key in .env file or use /provider command.');
-      console.error('📝 Expected format: AIzaSy... (39 characters) for Gemini or provider-specific format');
+      console.error(
+        '💡 Please check your API key in .env file or use /provider command.',
+      );
+      console.error(
+        '📝 Expected format: AIzaSy... (39 characters) for Gemini or provider-specific format',
+      );
       return; // Don't exit for auth errors
     }
-    
+
     if (message.includes('Could not load the default credentials')) {
       console.error('⚠️  Google Cloud authentication error detected.');
       console.error('💡 Enfiy Code uses API keys, not Google Cloud auth.');
-      console.error('📝 Please set your provider API key in .env file (e.g., GEMINI_API_KEY, OLLAMA_HOST).');
+      console.error(
+        '📝 Please set your provider API key in .env file (e.g., GEMINI_API_KEY, OLLAMA_HOST).',
+      );
       return; // Don't exit for this error
     }
   }
-  
+
   // Log other unexpected unhandled rejections as critical errors
   console.error('=========================================');
   console.error('CRITICAL: Unhandled Promise Rejection!');
@@ -301,7 +307,9 @@ process.on('unhandledRejection', (reason, _promise) => {
   if (!(reason instanceof Error)) {
     console.error(reason);
   }
-  console.error('💡 If this persists, please check your .env file and API key configuration.');
+  console.error(
+    '💡 If this persists, please check your .env file and API key configuration.',
+  );
   // Exit for genuinely unhandled errors
   process.exit(1);
 });
@@ -317,7 +325,7 @@ async function loadNonInteractiveConfig(
     // File operations (EditTool, WriteFileTool) should be allowed with confirmation dialogs
     const existingExcludeTools = settings.merged.excludeTools || [];
     const interactiveTools = [
-      ShellTool.Name,  // Only shell commands are truly dangerous in non-interactive mode
+      ShellTool.Name, // Only shell commands are truly dangerous in non-interactive mode
     ];
 
     const newExcludeTools = [
@@ -347,9 +355,7 @@ async function validateNonInterActiveAuth(
 ) {
   // For Enfiy Code, if no auth type is selected, prompt user to configure provider
   if (!selectedAuthType) {
-    console.error(
-      'Please set up an AI provider using the /provider command',
-    );
+    console.error('Please set up an AI provider using the /provider command');
     process.exit(1);
   }
 

@@ -5,11 +5,13 @@ Thank you for your interest in contributing to this project! Please follow these
 ## Development Environment Setup
 
 ### Prerequisites
+
 - Node.js (version X.X.X or higher)
 - Git
 - [Additional required tools]
 
 ### Setup Instructions
+
 ```bash
 # Clone the repository
 git clone https://github.com/enfiy/enfiy-code.git
@@ -25,10 +27,12 @@ npm run dev
 ## Development Workflow
 
 ### 1. Check Issues
+
 - Before starting any new feature or fix, check for related issues
 - If no issue exists, create a new issue to discuss the proposed changes
 
 ### 2. Create a Branch
+
 ```bash
 # Get latest changes from main branch
 git checkout main
@@ -41,12 +45,15 @@ git checkout -b fix/[fix-description]
 ```
 
 ### 3. Development Work
+
 - Focus on one feature or fix per branch
 - Write clear, concise commit messages
 - Test your changes thoroughly
 
 ### 4. Commit Guidelines
+
 Follow conventional commit format:
+
 ```bash
 # Feature
 git commit -m "feat: add user authentication system"
@@ -62,6 +69,7 @@ git commit -m "refactor: optimize database queries"
 ```
 
 ### 5. Push Changes
+
 ```bash
 # Push your branch to remote
 git push origin feature/[feature-name]
@@ -72,6 +80,7 @@ claude-code git push
 ```
 
 ### 6. Create Pull Request
+
 - Open a Pull Request against the `main` branch
 - Provide a clear title and description
 - Reference related issues using `#issue-number`
@@ -80,12 +89,14 @@ claude-code git push
 ## Code Standards
 
 ### Code Style
+
 - Follow the existing code style and conventions
 - Use meaningful variable and function names
 - Include comments for complex logic
 - Maintain consistent indentation
 
 ### Testing
+
 ```bash
 # Run all tests
 npm test
@@ -101,6 +112,7 @@ npm run lint:fix
 ```
 
 ### Documentation
+
 - Update documentation for any API changes
 - Include JSDoc comments for functions and classes
 - Update README.md if necessary
@@ -108,6 +120,7 @@ npm run lint:fix
 ## Pull Request Process
 
 ### Before Submitting
+
 - [ ] Code follows project style guidelines
 - [ ] Tests are passing
 - [ ] Documentation is updated
@@ -115,27 +128,33 @@ npm run lint:fix
 - [ ] Branch is up to date with main
 
 ### Review Process
+
 1. Automated tests will run on your PR
 2. Code review by maintainers
 3. Address any requested changes
 4. Approval and merge
 
 ### PR Template
+
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Tests pass locally
 - [ ] Added tests for new functionality
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review completed
 - [ ] Documentation updated
@@ -164,7 +183,9 @@ claude-code docs
 ## Issue Reporting
 
 ### Bug Reports
+
 Include the following information:
+
 - Operating system and version
 - Node.js version
 - Steps to reproduce
@@ -172,6 +193,7 @@ Include the following information:
 - Error messages or screenshots
 
 ### Feature Requests
+
 - Clear description of the feature
 - Use cases and benefits
 - Potential implementation approach
@@ -180,11 +202,13 @@ Include the following information:
 ## Communication
 
 ### Channels
+
 - GitHub Issues for bug reports and feature requests
 - GitHub Discussions for general questions
 - [Additional communication channels]
 
 ### Guidelines
+
 - Be respectful and constructive
 - Search existing issues before creating new ones
 - Provide clear and detailed information
@@ -193,12 +217,15 @@ Include the following information:
 ## Release Process
 
 ### Version Numbering
+
 This project follows [Semantic Versioning](https://semver.org/):
+
 - MAJOR version for incompatible API changes
 - MINOR version for new functionality
 - PATCH version for bug fixes
 
 ### Release Checklist
+
 - [ ] All tests passing
 - [ ] Documentation updated
 - [ ] Version number updated
@@ -208,11 +235,13 @@ This project follows [Semantic Versioning](https://semver.org/):
 ## Security
 
 ### Reporting Security Issues
+
 - **Do not** open public issues for security vulnerabilities
 - Email security concerns to [security@example.com]
 - Include detailed information about the vulnerability
 
 ### Security Best Practices
+
 - Keep dependencies updated
 - Follow secure coding practices
 - Validate all inputs
@@ -221,11 +250,13 @@ This project follows [Semantic Versioning](https://semver.org/):
 ## Getting Help
 
 ### Resources
+
 - [Project Documentation](link-to-docs)
 - [API Reference](link-to-api-docs)
 - [Community Guidelines](link-to-community-guidelines)
 
 ### Support
+
 - Check existing issues and documentation first
 - Create an issue with detailed information
 - Be patient and respectful when seeking help
@@ -237,6 +268,7 @@ By contributing to this project, you agree that your contributions will be licen
 ## Recognition
 
 Contributors are recognized in:
+
 - CONTRIBUTORS.md file
 - Release notes
 - Project README

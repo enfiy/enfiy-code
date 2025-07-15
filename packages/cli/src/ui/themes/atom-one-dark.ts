@@ -145,5 +145,3 @@ export const AtomOneDark: Theme = new Theme(
   },
   atomOneDarkColors,
 );
-
-

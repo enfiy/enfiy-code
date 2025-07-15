@@ -19,7 +19,7 @@ export interface TranslationKeys {
   featureShellCommands: string;
   featureSuggestions: string;
   helpMessage: string;
-  
+
   // Provider selection
   providerSelectionTitle: string;
   selectCategoryPrompt: string;
@@ -29,7 +29,7 @@ export interface TranslationKeys {
   cloudAI: string;
   localAIDescription: string;
   cloudAIDescription: string;
-  
+
   // Tips and navigation
   tipsTitle: string;
   tipProvider: string;
@@ -40,13 +40,13 @@ export interface TranslationKeys {
   tipMcp: string;
   tipTool: string;
   tipBug: string;
-  
+
   // Navigation
   navMove: string;
   navSelect: string;
   navBack: string;
   navCancel: string;
-  
+
   // Status messages
   setupComplete: string;
   readyMessage: string;
@@ -59,45 +59,49 @@ export interface TranslationKeys {
 export const translations: Record<SupportedLanguage, TranslationKeys> = {
   en: {
     welcomeTitle: '🚀 **Welcome to Enfiy Code!**',
-    welcomeMessage: 'I am Enfiy\'s development assistant, designed to support AI-driven software development.',
+    welcomeMessage:
+      "I am Enfiy's development assistant, designed to support AI-driven software development.",
     keyFeatures: '**Key Features:**',
     featureFileOps: '📝 Read, edit, and create files',
     featureCodeSearch: '🔍 Search and analyze code',
     featureShellCommands: '🛠️ Execute shell commands',
     featureSuggestions: '💡 Provide development suggestions and code review',
-    helpMessage: 'Feel free to ask if there\'s anything I can help you with!',
-    
+    helpMessage: "Feel free to ask if there's anything I can help you with!",
+
     providerSelectionTitle: 'AI Provider & Model Selection',
     selectCategoryPrompt: 'Select the desired AI category:',
     selectProviderPrompt: 'Select an AI provider:',
     selectModelPrompt: 'Select a model:',
     localAI: 'Local AI',
     cloudAI: 'Cloud AI',
-    localAIDescription: 'Run AI models on your machine (private, fast, no API fees)',
-    cloudAIDescription: 'Use cloud-based AI services (most powerful, API fees apply)',
-    
+    localAIDescription:
+      'Run AI models on your machine (private, fast, no API fees)',
+    cloudAIDescription:
+      'Use cloud-based AI services (most powerful, API fees apply)',
+
     tipsTitle: 'Enfiy Code - Your Universal AI Coding Agent',
     tipProvider: '/provider - Select AI provider and model',
-    tipGeneral: 'Code with confidence, create without limits, command with ease',
+    tipGeneral:
+      'Code with confidence, create without limits, command with ease',
     tipSpecific: 'Be specific for better results',
     tipMemory: 'Customize interactions with ENFIY.md file',
     tipHelp: '/help - Show available commands',
     tipMcp: '/mcp - Connect to MCP servers for enhanced capabilities',
     tipTool: '/tool - Access specialized tools and integrations',
     tipBug: '/bug - Report bugs or issues',
-    
+
     navMove: '↑↓ Move',
     navSelect: 'Enter Select',
     navBack: '← Back',
     navCancel: 'Esc Cancel',
-    
+
     setupComplete: '✓ In use:',
     readyMessage: 'Ready! Enter questions or commands. /help for help',
     providerDetected: 'Recommended AI:',
     noModelsAvailable: 'No models available for',
     installModels: 'Install models: ollama pull <model>',
-    checkApiKey: 'Please check your API key.'
-  }
+    checkApiKey: 'Please check your API key.',
+  },
 };
 
 // Current language state
@@ -108,7 +112,7 @@ export function detectLanguage(): SupportedLanguage {
   if (currentLanguage) {
     return currentLanguage;
   }
-  
+
   // Default to English
   currentLanguage = 'en';
   return currentLanguage;
@@ -128,12 +132,12 @@ export function setCurrentLanguage(lang: SupportedLanguage): void {
 export function t(key: keyof TranslationKeys): string {
   const lang = getCurrentLanguage();
   const langTranslations = translations[lang];
-  
+
   if (!langTranslations) {
     // Fallback to English if language not found
     return translations.en[key] || key;
   }
-  
+
   return langTranslations[key] || key;
 }
 

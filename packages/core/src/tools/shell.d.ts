@@ -7,18 +7,25 @@
 import { Config } from '../config/config.js';
 import { BaseTool, ToolResult, ToolCallConfirmationDetails } from './tools.js';
 export interface ShellToolParams {
-    command: string;
-    description?: string;
-    directory?: string;
+  command: string;
+  description?: string;
+  directory?: string;
 }
 export declare class ShellTool extends BaseTool<ShellToolParams, ToolResult> {
-    private readonly config;
-    static Name: string;
-    private whitelist;
-    constructor(config: Config);
-    getDescription(params: ShellToolParams): string;
-    getCommandRoot(command: string): string | undefined;
-    validateToolParams(params: ShellToolParams): string | null;
-    shouldConfirmExecute(params: ShellToolParams, _abortSignal: AbortSignal): Promise<ToolCallConfirmationDetails | false>;
-    execute(params: ShellToolParams, abortSignal: AbortSignal, updateOutput?: (chunk: string) => void): Promise<ToolResult>;
+  private readonly config;
+  static Name: string;
+  private whitelist;
+  constructor(config: Config);
+  getDescription(params: ShellToolParams): string;
+  getCommandRoot(command: string): string | undefined;
+  validateToolParams(params: ShellToolParams): string | null;
+  shouldConfirmExecute(
+    params: ShellToolParams,
+    _abortSignal: AbortSignal,
+  ): Promise<ToolCallConfirmationDetails | false>;
+  execute(
+    params: ShellToolParams,
+    abortSignal: AbortSignal,
+    updateOutput?: (chunk: string) => void,
+  ): Promise<ToolResult>;
 }

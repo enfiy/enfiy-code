@@ -15,9 +15,8 @@ import { GenerateContentResponse, Part, FunctionCall } from '@google/genai';
 
 // Mock dependencies
 vi.mock('@enfiy/core', async () => {
-  const actualCore = await vi.importActual<
-    typeof import('@enfiy/core')
-  >('@enfiy/core');
+  const actualCore =
+    await vi.importActual<typeof import('@enfiy/core')>('@enfiy/core');
   return {
     ...actualCore,
     EnfiyClient: vi.fn(),

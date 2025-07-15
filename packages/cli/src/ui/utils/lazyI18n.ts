@@ -10,15 +10,22 @@
 import type { SupportedLanguage, TranslationKeys } from './i18n.js';
 
 // Lazy load language packs
-const languageLoaders = new Map<SupportedLanguage, () => Promise<TranslationKeys>>();
+const languageLoaders = new Map<
+  SupportedLanguage,
+  () => Promise<TranslationKeys>
+>();
 
 // Language loader registry
-languageLoaders.set('en', () => import('./i18n.js').then(m => m.translations.en));
+languageLoaders.set('en', () =>
+  import('./i18n.js').then((m) => m.translations.en),
+);
 
 // Language cache
 const languageCache = new Map<SupportedLanguage, TranslationKeys>();
 
-export async function getLanguagePack(language: SupportedLanguage): Promise<TranslationKeys> {
+export async function getLanguagePack(
+  language: SupportedLanguage,
+): Promise<TranslationKeys> {
   // Check cache first
   if (languageCache.has(language)) {
     return languageCache.get(language)!;
@@ -42,11 +49,13 @@ export async function getLanguagePack(language: SupportedLanguage): Promise<Tran
 export function preloadLanguagePack(language: SupportedLanguage): void {
   const loader = languageLoaders.get(language);
   if (loader && !languageCache.has(language)) {
-    loader().then(pack => {
-      languageCache.set(language, pack);
-    }).catch(() => {
-      // Ignore preload errors
-    });
+    loader()
+      .then((pack) => {
+        languageCache.set(language, pack);
+      })
+      .catch(() => {
+        // Ignore preload errors
+      });
   }
 }
 

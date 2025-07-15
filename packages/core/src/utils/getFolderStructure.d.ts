@@ -7,16 +7,16 @@
 import { FileDiscoveryService } from '../services/fileDiscoveryService.js';
 /** Options for customizing folder structure retrieval. */
 interface FolderStructureOptions {
-    /** Maximum number of files and folders combined to display. Defaults to 200. */
-    maxItems?: number;
-    /** Set of folder names to ignore completely. Case-sensitive. */
-    ignoredFolders?: Set<string>;
-    /** Optional regex to filter included files by name. */
-    fileIncludePattern?: RegExp;
-    /** For filtering files. */
-    fileService?: FileDiscoveryService;
-    /** Whether to use .gitignore patterns. */
-    respectGitIgnore?: boolean;
+  /** Maximum number of files and folders combined to display. Defaults to 200. */
+  maxItems?: number;
+  /** Set of folder names to ignore completely. Case-sensitive. */
+  ignoredFolders?: Set<string>;
+  /** Optional regex to filter included files by name. */
+  fileIncludePattern?: RegExp;
+  /** For filtering files. */
+  fileService?: FileDiscoveryService;
+  /** Whether to use .gitignore patterns. */
+  respectGitIgnore?: boolean;
 }
 /**
  * Generates a string representation of a directory's structure,
@@ -27,9 +27,15 @@ interface FolderStructureOptions {
  * @param options Optional configuration settings.
  * @returns A promise resolving to the formatted folder structure string.
  */
-export declare function getFolderStructure(directory: string, options?: FolderStructureOptions): Promise<string>;
+export declare function getFolderStructure(
+  directory: string,
+  options?: FolderStructureOptions,
+): Promise<string>;
 /**
  * Cached version of getFolderStructure to improve performance for repeated calls
  */
-export declare function getFolderStructureCached(directory: string, options?: FolderStructureOptions): Promise<string>;
+export declare function getFolderStructureCached(
+  directory: string,
+  options?: FolderStructureOptions,
+): Promise<string>;
 export {};

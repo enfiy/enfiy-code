@@ -217,25 +217,37 @@ export const useSlashCommandProcessor = (
         description: 'show debug information and logs',
         action: (_mainCommand, subCommand, _args) => {
           let debugInfo = '';
-          
+
           if (subCommand === 'clear') {
             debugLogger.clear();
             debugInfo = 'Debug logs cleared.';
           } else if (subCommand === 'export') {
             const logs = debugLogger.exportLogs();
             debugInfo = `Debug logs exported:\n\`\`\`json\n${logs}\n\`\`\``;
-          } else if (subCommand && ['api-validation', 'ui-interaction', 'validation-flow'].includes(subCommand)) {
+          } else if (
+            subCommand &&
+            ['api-validation', 'ui-interaction', 'validation-flow'].includes(
+              subCommand,
+            )
+          ) {
             const logs = debugLogger.getLogs(subCommand);
-            debugInfo = `Debug logs for category "${subCommand}":\n\n${logs.map(log => 
-              `[${log.timestamp}] [${log.level.toUpperCase()}] ${log.message}${log.data ? '\nData: ' + JSON.stringify(log.data, null, 2) : ''}`
-            ).join('\n\n')}`;
+            debugInfo = `Debug logs for category "${subCommand}":\n\n${logs
+              .map(
+                (log) =>
+                  `[${log.timestamp}] [${log.level.toUpperCase()}] ${log.message}${log.data ? '\nData: ' + JSON.stringify(log.data, null, 2) : ''}`,
+              )
+              .join('\n\n')}`;
           } else {
             const recentLogs = debugLogger.getRecentLogs(20);
-            debugInfo = `Recent debug logs (last 20):\n\n${recentLogs.map(log => 
-              `[${log.timestamp}] [${log.category}] [${log.level.toUpperCase()}] ${log.message}${log.data ? '\nData: ' + JSON.stringify(log.data, null, 2) : ''}`
-            ).join('\n\n')}`;
-            
-            debugInfo += '\n\nUsage:\n- `/debug` - Show recent logs\n- `/debug api-validation` - Show API validation logs\n- `/debug ui-interaction` - Show UI interaction logs\n- `/debug validation-flow` - Show validation flow logs\n- `/debug clear` - Clear all logs\n- `/debug export` - Export all logs as JSON';
+            debugInfo = `Recent debug logs (last 20):\n\n${recentLogs
+              .map(
+                (log) =>
+                  `[${log.timestamp}] [${log.category}] [${log.level.toUpperCase()}] ${log.message}${log.data ? '\nData: ' + JSON.stringify(log.data, null, 2) : ''}`,
+              )
+              .join('\n\n')}`;
+
+            debugInfo +=
+              '\n\nUsage:\n- `/debug` - Show recent logs\n- `/debug api-validation` - Show API validation logs\n- `/debug ui-interaction` - Show UI interaction logs\n- `/debug validation-flow` - Show validation flow logs\n- `/debug clear` - Clear all logs\n- `/debug export` - Export all logs as JSON';
           }
 
           addMessage({
@@ -937,7 +949,8 @@ export const useSlashCommandProcessor = (
       },
       {
         name: 'model',
-        description: 'manage model selection and usage limits. Usage: /model [list|switch|status|order|auto]',
+        description:
+          'manage model selection and usage limits. Usage: /model [list|switch|status|order|auto]',
         action: async (_mainCommand, subCommand, args) => {
           if (!config) {
             addMessage({
@@ -950,27 +963,34 @@ export const useSlashCommandProcessor = (
 
           const modelManager = new ModelManager(config);
           const currentModel = config.getModel() || 'Unknown';
-          
+
           switch (subCommand) {
             case 'list': {
               // Display available models with usage limits and status
               const availableModels = await modelManager.getAvailableModels();
               let message = 'Available Models:\n\n';
-              
+
               for (const model of availableModels) {
                 const usage = await modelManager.getModelUsage(model.name);
                 const isActive = model.name === currentModel;
-                const statusIcon = isActive ? '🔵' : (model.isAvailable ? '⚪' : '🔴');
-                const usagePercent = usage.limit > 0 ? Math.round((usage.used / usage.limit) * 100) : 0;
-                
+                const statusIcon = isActive
+                  ? '🔵'
+                  : model.isAvailable
+                    ? '⚪'
+                    : '🔴';
+                const usagePercent =
+                  usage.limit > 0
+                    ? Math.round((usage.used / usage.limit) * 100)
+                    : 0;
+
                 message += `${statusIcon} \u001b[1m${model.name}\u001b[0m`;
                 if (isActive) message += ' (current)';
                 if (!model.isAvailable) message += ' (unavailable)';
                 message += '\n';
-                
+
                 message += `    \u001b[32m${model.description}\u001b[0m\n`;
                 message += `    Provider: \u001b[36m${model.provider}\u001b[0m | Cost: \u001b[33m${model.costTier}\u001b[0m\n`;
-                
+
                 if (usage.limit > 0) {
                   message += `    Usage: ${usage.used}/${usage.limit} (${usagePercent}%)`;
                   if (usagePercent >= 90) {
@@ -983,7 +1003,7 @@ export const useSlashCommandProcessor = (
                 }
                 message += '\n\n';
               }
-              
+
               addMessage({
                 type: MessageType.INFO,
                 content: message,
@@ -991,7 +1011,7 @@ export const useSlashCommandProcessor = (
               });
               return;
             }
-              
+
             case 'switch': {
               if (!args?.trim()) {
                 addMessage({
@@ -1001,10 +1021,10 @@ export const useSlashCommandProcessor = (
                 });
                 return;
               }
-              
+
               const targetModel = args.trim();
               const switched = await modelManager.switchToModel(targetModel);
-              
+
               if (switched) {
                 addMessage({
                   type: MessageType.INFO,
@@ -1020,37 +1040,44 @@ export const useSlashCommandProcessor = (
               }
               return;
             }
-              
+
             case 'status': {
               const usage = await modelManager.getModelUsage(currentModel);
-              const usagePercent = usage.limit > 0 ? Math.round((usage.used / usage.limit) * 100) : 0;
-              
+              const usagePercent =
+                usage.limit > 0
+                  ? Math.round((usage.used / usage.limit) * 100)
+                  : 0;
+
               let statusMessage = `Current Model: \u001b[1m${currentModel}\u001b[0m\n\n`;
-              
+
               if (usage.limit > 0) {
                 statusMessage += `Usage: ${usage.used}/${usage.limit} requests (${usagePercent}%)\n`;
-                
+
                 if (usage.resetTime) {
                   statusMessage += `Reset time: ${usage.resetTime.toLocaleString()}\n`;
                 }
-                
+
                 if (usagePercent >= 90) {
-                  statusMessage += '\u001b[31m⚠️ Model nearly exhausted - consider switching\u001b[0m\n';
+                  statusMessage +=
+                    '\u001b[31m⚠️ Model nearly exhausted - consider switching\u001b[0m\n';
                 } else if (usagePercent >= 70) {
-                  statusMessage += '\u001b[33m⚠️ High usage - monitor carefully\u001b[0m\n';
+                  statusMessage +=
+                    '\u001b[33m⚠️ High usage - monitor carefully\u001b[0m\n';
                 } else {
-                  statusMessage += '\u001b[32m✅ Usage within normal limits\u001b[0m\n';
+                  statusMessage +=
+                    '\u001b[32m✅ Usage within normal limits\u001b[0m\n';
                 }
               } else {
                 statusMessage += 'Usage: Unlimited\n';
               }
-              
+
               // Show fallback suggestion if needed
-              const fallbackModel = await modelManager.shouldSwitchModel(currentModel);
+              const fallbackModel =
+                await modelManager.shouldSwitchModel(currentModel);
               if (fallbackModel) {
                 statusMessage += `\n\u001b[33m💡 Suggestion: Consider switching to ${fallbackModel}\u001b[0m\n`;
               }
-              
+
               addMessage({
                 type: MessageType.INFO,
                 content: statusMessage,
@@ -1058,7 +1085,7 @@ export const useSlashCommandProcessor = (
               });
               return;
             }
-              
+
             case 'order': {
               const fallbackConfig = modelManager.getFallbackOrder();
               if (!fallbackConfig) {
@@ -1069,10 +1096,10 @@ export const useSlashCommandProcessor = (
                 });
                 return;
               }
-              
+
               let orderMessage = 'Model Fallback Order:\n\n';
               orderMessage += `Primary: \u001b[1m${fallbackConfig.primary}\u001b[0m\n\n`;
-              
+
               if (fallbackConfig.fallbacks.length > 0) {
                 orderMessage += 'Fallbacks:\n';
                 fallbackConfig.fallbacks
@@ -1082,9 +1109,10 @@ export const useSlashCommandProcessor = (
                     orderMessage += ` (${fallback.condition})\n`;
                   });
               }
-              
-              orderMessage += '\nUse: /model switch <model_name> to change primary model';
-              
+
+              orderMessage +=
+                '\nUse: /model switch <model_name> to change primary model';
+
               addMessage({
                 type: MessageType.INFO,
                 content: orderMessage,
@@ -1099,7 +1127,8 @@ export const useSlashCommandProcessor = (
                 // Enable auto-switching (this would be saved to settings)
                 addMessage({
                   type: MessageType.INFO,
-                  content: '✅ Automatic model switching enabled. Models will switch automatically on errors or limits.',
+                  content:
+                    '✅ Automatic model switching enabled. Models will switch automatically on errors or limits.',
                   timestamp: new Date(),
                 });
               } else if (autoArgs === 'off' || autoArgs === 'disable') {
@@ -1111,20 +1140,24 @@ export const useSlashCommandProcessor = (
               } else {
                 addMessage({
                   type: MessageType.INFO,
-                  content: 'Automatic Model Switching Status:\n\n✅ Enabled\n\nFallback triggers:\n- Rate limits (429 errors)\n- Server errors (5xx)\n- Usage limit reached (>95%)\n\nUse: /model auto [on|off] to toggle',
+                  content:
+                    'Automatic Model Switching Status:\n\n✅ Enabled\n\nFallback triggers:\n- Rate limits (429 errors)\n- Server errors (5xx)\n- Usage limit reached (>95%)\n\nUse: /model auto [on|off] to toggle',
                   timestamp: new Date(),
                 });
               }
               return;
             }
-              
+
             case undefined: {
               // Show current model and quick status
               const quickUsage = await modelManager.getModelUsage(currentModel);
-              const quickPercent = quickUsage.limit > 0 ? Math.round((quickUsage.used / quickUsage.limit) * 100) : 0;
-              
+              const quickPercent =
+                quickUsage.limit > 0
+                  ? Math.round((quickUsage.used / quickUsage.limit) * 100)
+                  : 0;
+
               let quickMessage = `Current Model: \u001b[1m${currentModel}\u001b[0m\n`;
-              
+
               if (quickUsage.limit > 0) {
                 quickMessage += `Usage: ${quickUsage.used}/${quickUsage.limit} (${quickPercent}%)`;
                 if (quickPercent >= 90) {
@@ -1135,9 +1168,10 @@ export const useSlashCommandProcessor = (
               } else {
                 quickMessage += 'Usage: Unlimited';
               }
-              
-              quickMessage += '\n\nCommands: list, switch <name>, status, order, auto [on|off]';
-              
+
+              quickMessage +=
+                '\n\nCommands: list, switch <name>, status, order, auto [on|off]';
+
               addMessage({
                 type: MessageType.INFO,
                 content: quickMessage,
@@ -1145,7 +1179,7 @@ export const useSlashCommandProcessor = (
               });
               return;
             }
-              
+
             default:
               addMessage({
                 type: MessageType.ERROR,
@@ -1161,16 +1195,18 @@ export const useSlashCommandProcessor = (
         description: 'run project scripts. Usage: /run [script_name]',
         action: async (_mainCommand, _subCommand, args) => {
           const script = args?.trim();
-          
+
           // Read package.json to get available scripts
           const fs = await import('fs/promises');
           const path = await import('path');
-          
+
           try {
             const packageJsonPath = path.join(process.cwd(), 'package.json');
-            const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'));
+            const packageJson = JSON.parse(
+              await fs.readFile(packageJsonPath, 'utf8'),
+            );
             const scripts = packageJson.scripts || {};
-            
+
             if (!script) {
               // List available scripts
               const scriptNames = Object.keys(scripts);
@@ -1182,13 +1218,13 @@ export const useSlashCommandProcessor = (
                 });
                 return;
               }
-              
+
               let message = 'Available scripts:\n\n';
               for (const [name, command] of Object.entries(scripts)) {
                 message += `\u001b[36m${name}\u001b[0m: \u001b[32m${command}\u001b[0m\n`;
               }
               message += '\nUsage: /run <script_name>';
-              
+
               addMessage({
                 type: MessageType.INFO,
                 content: message,
@@ -1196,7 +1232,7 @@ export const useSlashCommandProcessor = (
               });
               return;
             }
-            
+
             if (!scripts[script]) {
               addMessage({
                 type: MessageType.ERROR,
@@ -1205,24 +1241,24 @@ export const useSlashCommandProcessor = (
               });
               return;
             }
-            
+
             addMessage({
               type: MessageType.INFO,
               content: `Running script: ${script}`,
               timestamp: new Date(),
             });
-            
+
             // Return tool schedule for shell execution
             return {
               shouldScheduleTool: true,
               toolName: 'run_shell_command',
               toolArgs: { command: `npm run ${script}` },
             };
-            
           } catch (_error) {
             addMessage({
               type: MessageType.ERROR,
-              content: 'Could not read package.json. Make sure you are in a Node.js project.',
+              content:
+                'Could not read package.json. Make sure you are in a Node.js project.',
               timestamp: new Date(),
             });
           }
@@ -1233,22 +1269,27 @@ export const useSlashCommandProcessor = (
         description: 'run tests. Usage: /test [pattern]',
         action: async (_mainCommand, _subCommand, args) => {
           const pattern = args?.trim();
-          
+
           // Detect test framework
           const fs = await import('fs/promises');
           const path = await import('path');
-          
+
           try {
             const packageJsonPath = path.join(process.cwd(), 'package.json');
-            const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'));
+            const packageJson = JSON.parse(
+              await fs.readFile(packageJsonPath, 'utf8'),
+            );
             const scripts = packageJson.scripts || {};
             const devDeps = packageJson.devDependencies || {};
             const deps = packageJson.dependencies || {};
-            
+
             let testCommand = '';
-            
+
             // Determine test command
-            if (scripts.test && scripts.test !== 'echo "Error: no test specified" && exit 1') {
+            if (
+              scripts.test &&
+              scripts.test !== 'echo "Error: no test specified" && exit 1'
+            ) {
               testCommand = 'npm test';
             } else if (devDeps.jest || deps.jest) {
               testCommand = 'npx jest';
@@ -1259,28 +1300,28 @@ export const useSlashCommandProcessor = (
             } else {
               addMessage({
                 type: MessageType.ERROR,
-                content: 'No test framework detected. Please set up tests in package.json scripts.',
+                content:
+                  'No test framework detected. Please set up tests in package.json scripts.',
                 timestamp: new Date(),
               });
               return;
             }
-            
+
             if (pattern) {
               testCommand += ` ${pattern}`;
             }
-            
+
             addMessage({
               type: MessageType.INFO,
               content: `Running tests: ${testCommand}`,
               timestamp: new Date(),
             });
-            
+
             return {
               shouldScheduleTool: true,
               toolName: 'run_shell_command',
               toolArgs: { command: testCommand },
             };
-            
           } catch (_error) {
             addMessage({
               type: MessageType.ERROR,
@@ -1296,14 +1337,16 @@ export const useSlashCommandProcessor = (
         action: async (_mainCommand, _subCommand, _args) => {
           const fs = await import('fs/promises');
           const path = await import('path');
-          
+
           try {
             const packageJsonPath = path.join(process.cwd(), 'package.json');
-            const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'));
+            const packageJson = JSON.parse(
+              await fs.readFile(packageJsonPath, 'utf8'),
+            );
             const scripts = packageJson.scripts || {};
-            
+
             let buildCommand = '';
-            
+
             if (scripts.build) {
               buildCommand = 'npm run build';
             } else if (scripts.compile) {
@@ -1311,24 +1354,24 @@ export const useSlashCommandProcessor = (
             } else {
               addMessage({
                 type: MessageType.ERROR,
-                content: 'No build script found in package.json. Please add a "build" script.',
+                content:
+                  'No build script found in package.json. Please add a "build" script.',
                 timestamp: new Date(),
               });
               return;
             }
-            
+
             addMessage({
               type: MessageType.INFO,
               content: `Building project: ${buildCommand}`,
               timestamp: new Date(),
             });
-            
+
             return {
               shouldScheduleTool: true,
               toolName: 'run_shell_command',
               toolArgs: { command: buildCommand },
             };
-            
           } catch (_error) {
             addMessage({
               type: MessageType.ERROR,
@@ -1343,43 +1386,48 @@ export const useSlashCommandProcessor = (
         description: 'run linting. Usage: /lint [--fix]',
         action: async (_mainCommand, _subCommand, args) => {
           const shouldFix = args?.includes('--fix');
-          
+
           const fs = await import('fs/promises');
           const path = await import('path');
-          
+
           try {
             const packageJsonPath = path.join(process.cwd(), 'package.json');
-            const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'));
+            const packageJson = JSON.parse(
+              await fs.readFile(packageJsonPath, 'utf8'),
+            );
             const scripts = packageJson.scripts || {};
             const devDeps = packageJson.devDependencies || {};
-            
+
             let lintCommand = '';
-            
+
             if (scripts.lint) {
-              lintCommand = shouldFix && scripts['lint:fix'] ? 'npm run lint:fix' : 'npm run lint';
+              lintCommand =
+                shouldFix && scripts['lint:fix']
+                  ? 'npm run lint:fix'
+                  : 'npm run lint';
             } else if (devDeps.eslint) {
               lintCommand = shouldFix ? 'npx eslint . --fix' : 'npx eslint .';
             } else {
               addMessage({
                 type: MessageType.ERROR,
-                content: 'No linting configured. Please set up ESLint or add lint scripts to package.json.',
+                content:
+                  'No linting configured. Please set up ESLint or add lint scripts to package.json.',
                 timestamp: new Date(),
               });
               return;
             }
-            
+
             addMessage({
               type: MessageType.INFO,
               content: `Running linter: ${lintCommand}`,
               timestamp: new Date(),
             });
-            
+
             return {
               shouldScheduleTool: true,
               toolName: 'run_shell_command',
               toolArgs: { command: lintCommand },
             };
-            
           } catch (_error) {
             addMessage({
               type: MessageType.ERROR,
@@ -1446,17 +1494,17 @@ export const useSlashCommandProcessor = (
         action: async (_mainCommand, _subCommand, args) => {
           const file = args?.trim();
           let command = 'git diff --color=always';
-          
+
           if (file) {
             command += ` ${file}`;
           }
-          
+
           addMessage({
             type: MessageType.INFO,
             content: `Showing git diff${file ? ` for ${file}` : ''}...`,
             timestamp: new Date(),
           });
-          
+
           return {
             shouldScheduleTool: true,
             toolName: 'run_shell_command',
@@ -1469,22 +1517,23 @@ export const useSlashCommandProcessor = (
         description: 'create git commit. Usage: /commit [message]',
         action: async (_mainCommand, _subCommand, args) => {
           const message = args?.trim();
-          
+
           if (!message) {
             addMessage({
               type: MessageType.ERROR,
-              content: 'Please provide a commit message.\nUsage: /commit <message>',
+              content:
+                'Please provide a commit message.\nUsage: /commit <message>',
               timestamp: new Date(),
             });
             return;
           }
-          
+
           addMessage({
             type: MessageType.INFO,
             content: `Creating commit with message: "${message}"`,
             timestamp: new Date(),
           });
-          
+
           return {
             shouldScheduleTool: true,
             toolName: 'run_shell_command',
@@ -1494,35 +1543,37 @@ export const useSlashCommandProcessor = (
       },
       {
         name: 'push',
-        description: 'push to GitHub with optional co-author. Usage: /push [branch] [--co-author]',
+        description:
+          'push to GitHub with optional co-author. Usage: /push [branch] [--co-author]',
         action: async (_mainCommand, _subCommand, args) => {
           const argParts = args?.trim().split(' ') || [];
           const branch = argParts[0] || '';
-          const coAuthor = argParts.includes('--co-author') || argParts.includes('--enfiy');
-          
+          const coAuthor =
+            argParts.includes('--co-author') || argParts.includes('--enfiy');
+
           let command = 'git push';
-          
+
           if (branch) {
             command += ` origin ${branch}`;
           }
-          
+
           if (coAuthor) {
             addMessage({
               type: MessageType.INFO,
               content: '🤖 Adding Enfiy AI as co-author to the last commit...',
               timestamp: new Date(),
             });
-            
+
             const coAuthorCommand = `git commit --amend --no-edit --trailer "Co-authored-by: Enfiy AI <enfiy@github.com>"`;
             command = `${coAuthorCommand} && ${command}`;
           }
-          
+
           addMessage({
             type: MessageType.INFO,
             content: `🚀 Pushing to GitHub${branch ? ` (branch: ${branch})` : ''}${coAuthor ? ' with Enfiy AI co-authorship' : ''}...`,
             timestamp: new Date(),
           });
-          
+
           return {
             shouldScheduleTool: true,
             toolName: 'run_shell_command',
@@ -1536,22 +1587,25 @@ export const useSlashCommandProcessor = (
         action: async (_mainCommand, _subCommand, args) => {
           const argParts = args?.trim().split(' ') || [];
           const isDraft = argParts.includes('--draft');
-          const title = argParts.filter(part => !part.startsWith('--')).join(' ') || 'Pull Request';
-          
+          const title =
+            argParts.filter((part) => !part.startsWith('--')).join(' ') ||
+            'Pull Request';
+
           let command = 'gh pr create --title "' + title + '"';
-          
+
           if (isDraft) {
             command += ' --draft';
           }
-          
-          command += ' --body "🤖 Created with Enfiy AI\\n\\nCo-authored-by: Enfiy AI <enfiy@github.com>"';
-          
+
+          command +=
+            ' --body "🤖 Created with Enfiy AI\\n\\nCo-authored-by: Enfiy AI <enfiy@github.com>"';
+
           addMessage({
             type: MessageType.INFO,
             content: `📝 Creating GitHub pull request: "${title}"${isDraft ? ' (draft)' : ''}...`,
             timestamp: new Date(),
           });
-          
+
           return {
             shouldScheduleTool: true,
             toolName: 'run_shell_command',
@@ -1571,15 +1625,15 @@ export const useSlashCommandProcessor = (
             });
             return;
           }
-          
+
           const filePath = args.trim();
-          
+
           addMessage({
             type: MessageType.INFO,
             content: `Analyzing and explaining: ${filePath}`,
             timestamp: new Date(),
           });
-          
+
           // Return tool to read and analyze the file
           return {
             shouldScheduleTool: true,
@@ -1590,7 +1644,8 @@ export const useSlashCommandProcessor = (
       },
       {
         name: 'optimize',
-        description: 'suggest performance optimizations. Usage: /optimize <file>',
+        description:
+          'suggest performance optimizations. Usage: /optimize <file>',
         action: async (_mainCommand, _subCommand, args) => {
           if (!args?.trim()) {
             addMessage({
@@ -1600,15 +1655,15 @@ export const useSlashCommandProcessor = (
             });
             return;
           }
-          
+
           const filePath = args.trim();
-          
+
           addMessage({
             type: MessageType.INFO,
             content: `Analyzing performance optimization opportunities for: ${filePath}`,
             timestamp: new Date(),
           });
-          
+
           return {
             shouldScheduleTool: true,
             toolName: 'read_file',
@@ -1621,19 +1676,19 @@ export const useSlashCommandProcessor = (
         description: 'perform code review analysis',
         action: async (_mainCommand, _subCommand, args) => {
           const target = args?.trim() || '.';
-          
+
           addMessage({
             type: MessageType.INFO,
             content: `Performing code review analysis for: ${target}`,
             timestamp: new Date(),
           });
-          
+
           // Get recent changes for review
           return {
             shouldScheduleTool: true,
             toolName: 'run_shell_command',
-            toolArgs: { 
-              command: 'git diff --name-only HEAD~1 HEAD | head -10'
+            toolArgs: {
+              command: 'git diff --name-only HEAD~1 HEAD | head -10',
             },
           };
         },
@@ -1647,27 +1702,32 @@ export const useSlashCommandProcessor = (
             content: 'Analyzing project structure...',
             timestamp: new Date(),
           });
-          
+
           const fs = await import('fs/promises');
           const path = await import('path');
-          
+
           try {
             // Check for common project files and structure
             const projectRoot = process.cwd();
             const files = await fs.readdir(projectRoot);
-            
+
             let analysis = 'Project Analysis:\n\n';
-            
+
             // Detect project type
             const hasPackageJson = files.includes('package.json');
             const hasCargoToml = files.includes('Cargo.toml');
             const hasPyprojectToml = files.includes('pyproject.toml');
             const hasRequirementsTxt = files.includes('requirements.txt');
             const hasGemfile = files.includes('Gemfile');
-            
+
             if (hasPackageJson) {
               analysis += '📦 Node.js/JavaScript project detected\n';
-              const packageJson = JSON.parse(await fs.readFile(path.join(projectRoot, 'package.json'), 'utf8'));
+              const packageJson = JSON.parse(
+                await fs.readFile(
+                  path.join(projectRoot, 'package.json'),
+                  'utf8',
+                ),
+              );
               analysis += `   Package: ${packageJson.name || 'unnamed'}\n`;
               analysis += `   Version: ${packageJson.version || 'unknown'}\n`;
               if (packageJson.dependencies) {
@@ -1685,9 +1745,9 @@ export const useSlashCommandProcessor = (
             } else {
               analysis += '❓ Unknown project type\n';
             }
-            
+
             analysis += '\n';
-            
+
             // Directory structure
             const directories = files.filter(async (file) => {
               try {
@@ -1697,18 +1757,22 @@ export const useSlashCommandProcessor = (
                 return false;
               }
             });
-            
+
             analysis += `📁 Top-level directories: ${directories.length}\n`;
             analysis += `📄 Top-level files: ${files.length - directories.length}\n\n`;
-            
+
             // Git status
             analysis += `Git Information:
 `;
-            
+
             // Execute git commands and format output
             try {
-              const { stdout: gitBranchOutput } = await execAsync('git branch --show-current 2>/dev/null');
-              const { stdout: gitLogOutput } = await execAsync('git log --oneline -3 2>/dev/null');
+              const { stdout: gitBranchOutput } = await execAsync(
+                'git branch --show-current 2>/dev/null',
+              );
+              const { stdout: gitLogOutput } = await execAsync(
+                'git log --oneline -3 2>/dev/null',
+              );
 
               const branchName = gitBranchOutput.trim() || 'N/A';
               interface GitCommit {
@@ -1716,38 +1780,46 @@ export const useSlashCommandProcessor = (
                 message: string;
               }
 
-              const commits = gitLogOutput.trim().split('\n').filter((line: string) => line.trim() !== '').map((line: string) => {
-                const match = line.match(/^([0-9a-f]+) (.+)$/);
-                return match ? { hash: match[1], message: match[2] } : null;
-              }).filter((commit): commit is GitCommit => commit !== null);
+              const commits = gitLogOutput
+                .trim()
+                .split('\n')
+                .filter((line: string) => line.trim() !== '')
+                .map((line: string) => {
+                  const match = line.match(/^([0-9a-f]+) (.+)$/);
+                  return match ? { hash: match[1], message: match[2] } : null;
+                })
+                .filter((commit): commit is GitCommit => commit !== null);
 
               let gitInfo = '\n';
-              gitInfo += '| Key           | Value                                   |\n';
-              gitInfo += '|:--------------|:----------------------------------------|\n';
+              gitInfo +=
+                '| Key           | Value                                   |\n';
+              gitInfo +=
+                '|:--------------|:----------------------------------------|\n';
               gitInfo += `| Branch        | ${branchName.padEnd(39)} |\n`;
-              gitInfo += '| Recent Commits|                                         |\n';
+              gitInfo +=
+                '| Recent Commits|                                         |\n';
               if (commits.length > 0) {
                 commits.forEach((commit: GitCommit) => {
                   gitInfo += `| ${commit.hash.substring(0, 7)}     | ${commit.message.padEnd(39)} |\n`;
                 });
               } else {
-                gitInfo += '|               | No recent commits found.                |\n';
+                gitInfo +=
+                  '|               | No recent commits found.                |\n';
               }
               analysis += gitInfo;
-
             } catch (gitError: unknown) {
-              const errorMessage = gitError instanceof Error ? gitError.message : String(gitError);
+              const errorMessage =
+                gitError instanceof Error ? gitError.message : String(gitError);
               analysis += `Error getting Git info: ${errorMessage}\n`;
             }
-            
+
             addMessage({
               type: MessageType.INFO,
               content: analysis,
               timestamp: new Date(),
             });
-            
+
             return; // No tool to schedule, as we handled it directly
-            
           } catch (_error) {
             addMessage({
               type: MessageType.ERROR,
@@ -1762,19 +1834,21 @@ export const useSlashCommandProcessor = (
         description: 'analyze and update project dependencies',
         action: async (_mainCommand, _subCommand, args) => {
           const shouldUpdate = args?.includes('--update');
-          
+
           addMessage({
             type: MessageType.INFO,
             content: 'Analyzing dependencies...',
             timestamp: new Date(),
           });
-          
+
           // Check for outdated packages
           return {
             shouldScheduleTool: true,
             toolName: 'run_shell_command',
-            toolArgs: { 
-              command: shouldUpdate ? 'npm update && npm outdated' : 'npm outdated'
+            toolArgs: {
+              command: shouldUpdate
+                ? 'npm update && npm outdated'
+                : 'npm outdated',
             },
           };
         },
@@ -1784,18 +1858,18 @@ export const useSlashCommandProcessor = (
         description: 'visualize project structure',
         action: async (_mainCommand, _subCommand, args) => {
           const depth = args?.trim() ? parseInt(args.trim(), 10) : 3;
-          
+
           addMessage({
             type: MessageType.INFO,
             content: `Showing project structure (depth: ${depth})...`,
             timestamp: new Date(),
           });
-          
+
           return {
             shouldScheduleTool: true,
             toolName: 'run_shell_command',
-            toolArgs: { 
-              command: `find . -type d -name node_modules -prune -o -type d -name .git -prune -o -type f -print | head -50 | sort`
+            toolArgs: {
+              command: `find . -type d -name node_modules -prune -o -type d -name .git -prune -o -type f -print | head -50 | sort`,
             },
           };
         },
@@ -1806,29 +1880,31 @@ export const useSlashCommandProcessor = (
         description: 'toggle private work room (security)',
         action: (_mainCommand, subCommand, _args) => {
           const currentSandbox = process.env.SANDBOX || 'none';
-          
+
           if (subCommand === 'on' || subCommand === 'enable') {
             addMessage({
               type: MessageType.INFO,
-              content: 'Isolated environment will be enabled on next restart.\nRun with: SANDBOX=isolated pnpm start',
+              content:
+                'Isolated environment will be enabled on next restart.\nRun with: SANDBOX=isolated pnpm start',
               timestamp: new Date(),
             });
           } else if (subCommand === 'off' || subCommand === 'disable') {
             addMessage({
               type: MessageType.INFO,
-              content: 'Isolated environment will be disabled on next restart.\nRun without SANDBOX environment variable.',
+              content:
+                'Isolated environment will be disabled on next restart.\nRun without SANDBOX environment variable.',
               timestamp: new Date(),
             });
           } else {
             // Show current status
             let status = 'disabled';
             let recommendation = 'Enable with: /isolation on';
-            
+
             if (currentSandbox !== 'none' && currentSandbox) {
               status = `enabled (${currentSandbox})`;
               recommendation = 'Disable with: /isolation off';
             }
-            
+
             addMessage({
               type: MessageType.INFO,
               content: `Isolated Environment Status: ${status}\n\nIsolated environments provide enhanced security by restricting file system access and network operations.\n\n${recommendation}`,
