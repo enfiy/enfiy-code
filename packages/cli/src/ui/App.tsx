@@ -1313,7 +1313,7 @@ ${t('helpMessage')}`,
                 constrainHeight ? availableTerminalHeight : undefined
               }
               terminalWidth={mainAreaWidth}
-              inputWidth={inputWidth}
+              _inputWidth={inputWidth}
               preselectedProvider={preselectedProvider ?? undefined}
             />
           ) : showAPISettings ? (

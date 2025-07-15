@@ -206,7 +206,6 @@ describe('App UI', () => {
       sessionId: 'test-session-id',
       cwd: '/tmp',
       model: 'model',
-      projectRoot: '/test/project/root', // Add projectRoot to constructor
     }) as unknown as MockServerConfig;
 
     // Ensure the getShowMemoryUsage mock function is specifically set up if not covered by constructor mock

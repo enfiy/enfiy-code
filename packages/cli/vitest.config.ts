@@ -33,8 +33,6 @@ export default defineConfig({
     testTimeout: 30000,
     // Clear mocks between tests
     clearMocks: true,
-    // Reset modules between tests
-    resetMocks: true,
     // Restore all mocks after each test
     restoreMocks: true,
     // Additional configuration for stability

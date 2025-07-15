@@ -14,7 +14,7 @@ if (typeof global !== 'undefined' && typeof EventTarget !== 'undefined') {
   const originalRemoveEventListener = EventTarget.prototype.removeEventListener;
   
   // Track event listeners for cleanup
-  const eventListeners = new WeakMap<EventTarget, Set<{
+  const eventListeners = new Map<EventTarget, Set<{
     type: string;
     listener: EventListenerOrEventListenerObject;
     options?: boolean | AddEventListenerOptions;
