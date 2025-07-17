@@ -52,7 +52,7 @@ if (typeof global !== 'undefined' && typeof EventTarget !== 'undefined') {
   };
 
   // Cleanup function for tests
-  (global as any).cleanupEventListeners = () => {
+  (global as unknown as { cleanupEventListeners: () => void }).cleanupEventListeners = () => {
     for (const [target, listeners] of eventListeners) {
       for (const { type, listener, options } of listeners) {
         try {

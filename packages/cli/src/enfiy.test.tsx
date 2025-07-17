@@ -70,7 +70,7 @@ describe('gemini.tsx main function', () => {
     .spyOn(process, 'exit')
     .mockImplementation((code) => {
       throw new MockProcessExitError(code);
-    }) as any;
+    }) as unknown as typeof process.exit;
 
   beforeEach(() => {
     loadSettingsMock = vi.mocked(loadSettings);
