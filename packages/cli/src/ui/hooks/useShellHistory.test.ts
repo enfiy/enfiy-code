@@ -5,7 +5,7 @@
  */
 
 // SKIP ALL TESTS - CI stability issues
-import.meta.hot?.decline?.();
+// This file is excluded in vitest.config.ts
 
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useShellHistory } from './useShellHistory.js';
