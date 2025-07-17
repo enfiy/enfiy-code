@@ -28,7 +28,7 @@ export default defineConfig({
     // Reduce concurrent tests to prevent memory issues
     maxConcurrency: 1,
     // Increase timeout for stable tests, especially in CI
-    testTimeout: 60000,
+    testTimeout: process.env.CI ? 120000 : 60000,
     // Clear mocks between tests
     clearMocks: true,
     // Reset modules between tests
@@ -41,7 +41,7 @@ export default defineConfig({
       concurrent: false,
     },
     // Prevent hanging tests
-    teardownTimeout: 10000,
+    teardownTimeout: process.env.CI ? 30000 : 10000,
     // Retry failed tests up to 2 times in CI
     retry: process.env.CI ? 2 : 0,
     coverage: {

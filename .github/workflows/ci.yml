@@ -41,6 +41,8 @@ jobs:
         run: npm run lint:ci
 
       - name: Build project
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: npm run build
 
       - name: Run type check
@@ -89,6 +91,9 @@ jobs:
         run: npm ci # Install fresh dependencies using the downloaded package-lock.json
 
       - name: Run tests and generate reports
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+          CI: true
         run: NO_COLOR=true npm run test:ci
 
       - name: Publish Test Report (for non-forks)
