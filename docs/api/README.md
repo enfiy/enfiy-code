@@ -159,10 +159,10 @@ interface AIProvider {
 
 ### Operating Systems
 
-- ✅ Linux (all distributions)
-- ✅ macOS (Intel and Apple Silicon)
-- ✅ Windows 10/11
-- ✅ WSL2
+- [SUPPORTED] Linux (all distributions)
+- [SUPPORTED] macOS (Intel and Apple Silicon)
+- [SUPPORTED] Windows 10/11
+- [SUPPORTED] WSL2
 
 ### Terminal Compatibility
 

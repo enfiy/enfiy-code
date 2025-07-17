@@ -155,13 +155,13 @@ esbuild
       // Size warnings - adjusted for CLI tools
       if (totalSize > 2 * 1024 * 1024) {
         // 2MB threshold for CLI
-        console.warn('⚠️  Bundle size is larger than 2MB');
+        console.warn('WARNING: Bundle size is larger than 2MB');
         if (totalSize > 4 * 1024 * 1024) {
           // 4MB critical threshold
-          console.warn('❌ Bundle size is critically large (>4MB)');
+          console.warn('ERROR: Bundle size is critically large (>4MB)');
         }
       } else {
-        console.log('✅ Bundle size is optimized for CLI tool');
+        console.log('Bundle size is optimized for CLI tool');
       }
     }
   })

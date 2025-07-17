@@ -416,16 +416,16 @@ export const useSlashCommandProcessor = (
             let statusText = '';
             switch (status) {
               case MCPServerStatus.CONNECTED:
-                statusIndicator = '🟢';
+                statusIndicator = '●';
                 statusText = 'Ready';
                 break;
               case MCPServerStatus.CONNECTING:
-                statusIndicator = '🔄';
+                statusIndicator = '○';
                 statusText = 'Starting... (first startup may take longer)';
                 break;
               case MCPServerStatus.DISCONNECTED:
               default:
-                statusIndicator = '🔴';
+                statusIndicator = '●';
                 statusText = 'Disconnected';
                 break;
             }
@@ -971,10 +971,10 @@ export const useSlashCommandProcessor = (
                 const usage = await modelManager.getModelUsage(model.name);
                 const isActive = model.name === currentModel;
                 const statusIcon = isActive
-                  ? '🔵'
+                  ? '[ACTIVE]'
                   : model.isAvailable
-                    ? '⚪'
-                    : '🔴';
+                    ? '[AVAILABLE]'
+                    : '[UNAVAILABLE]';
                 const usagePercent =
                   usage.limit > 0
                     ? Math.round((usage.used / usage.limit) * 100)
@@ -991,9 +991,9 @@ export const useSlashCommandProcessor = (
                 if (usage.limit > 0) {
                   message += `    Usage: ${usage.used}/${usage.limit} (${usagePercent}%)`;
                   if (usagePercent >= 90) {
-                    message += ' \u001b[31m⚠️ Nearly exhausted\u001b[0m';
+                    message += ' \u001b[31m[WARNING] Nearly exhausted\u001b[0m';
                   } else if (usagePercent >= 70) {
-                    message += ' \u001b[33m⚠️ High usage\u001b[0m';
+                    message += ' \u001b[33m[WARNING] High usage\u001b[0m';
                   }
                 } else {
                   message += '    Usage: Unlimited';
@@ -1025,13 +1025,13 @@ export const useSlashCommandProcessor = (
               if (switched) {
                 addMessage({
                   type: MessageType.INFO,
-                  content: `✅ Model switched to: \u001b[1m${targetModel}\u001b[0m`,
+                  content: `[SUCCESS] Model switched to: \u001b[1m${targetModel}\u001b[0m`,
                   timestamp: new Date(),
                 });
               } else {
                 addMessage({
                   type: MessageType.ERROR,
-                  content: `❌ Failed to switch to model: ${targetModel}`,
+                  content: `[ERROR] Failed to switch to model: ${targetModel}`,
                   timestamp: new Date(),
                 });
               }
@@ -1056,13 +1056,13 @@ export const useSlashCommandProcessor = (
 
                 if (usagePercent >= 90) {
                   statusMessage +=
-                    '\u001b[31m⚠️ Model nearly exhausted - consider switching\u001b[0m\n';
+                    '\u001b[31m[WARNING] Model nearly exhausted - consider switching\u001b[0m\n';
                 } else if (usagePercent >= 70) {
                   statusMessage +=
-                    '\u001b[33m⚠️ High usage - monitor carefully\u001b[0m\n';
+                    '\u001b[33m[WARNING] High usage - monitor carefully\u001b[0m\n';
                 } else {
                   statusMessage +=
-                    '\u001b[32m✅ Usage within normal limits\u001b[0m\n';
+                    '\u001b[32m[OK] Usage within normal limits\u001b[0m\n';
                 }
               } else {
                 statusMessage += 'Usage: Unlimited\n';
@@ -1072,7 +1072,7 @@ export const useSlashCommandProcessor = (
               const fallbackModel =
                 await modelManager.shouldSwitchModel(currentModel);
               if (fallbackModel) {
-                statusMessage += `\n\u001b[33m💡 Suggestion: Consider switching to ${fallbackModel}\u001b[0m\n`;
+                statusMessage += `\n\u001b[33m[SUGGESTION] Consider switching to ${fallbackModel}\u001b[0m\n`;
               }
 
               addMessage({
@@ -1125,20 +1125,20 @@ export const useSlashCommandProcessor = (
                 addMessage({
                   type: MessageType.INFO,
                   content:
-                    '✅ Automatic model switching enabled. Models will switch automatically on errors or limits.',
+                    '[ENABLED] Automatic model switching enabled. Models will switch automatically on errors or limits.',
                   timestamp: new Date(),
                 });
               } else if (autoArgs === 'off' || autoArgs === 'disable') {
                 addMessage({
                   type: MessageType.INFO,
-                  content: '❌ Automatic model switching disabled.',
+                  content: '[DISABLED] Automatic model switching disabled.',
                   timestamp: new Date(),
                 });
               } else {
                 addMessage({
                   type: MessageType.INFO,
                   content:
-                    'Automatic Model Switching Status:\n\n✅ Enabled\n\nFallback triggers:\n- Rate limits (429 errors)\n- Server errors (5xx)\n- Usage limit reached (>95%)\n\nUse: /model auto [on|off] to toggle',
+                    'Automatic Model Switching Status:\n\n[ENABLED] Enabled\n\nFallback triggers:\n- Rate limits (429 errors)\n- Server errors (5xx)\n- Usage limit reached (>95%)\n\nUse: /model auto [on|off] to toggle',
                   timestamp: new Date(),
                 });
               }
@@ -1158,9 +1158,9 @@ export const useSlashCommandProcessor = (
               if (quickUsage.limit > 0) {
                 quickMessage += `Usage: ${quickUsage.used}/${quickUsage.limit} (${quickPercent}%)`;
                 if (quickPercent >= 90) {
-                  quickMessage += ' \u001b[31m⚠️\u001b[0m';
+                  quickMessage += ' \u001b[31m[WARNING]\u001b[0m';
                 } else if (quickPercent >= 70) {
-                  quickMessage += ' \u001b[33m⚠️\u001b[0m';
+                  quickMessage += ' \u001b[33m[WARNING]\u001b[0m';
                 }
               } else {
                 quickMessage += 'Usage: Unlimited';
@@ -1557,7 +1557,7 @@ export const useSlashCommandProcessor = (
           if (coAuthor) {
             addMessage({
               type: MessageType.INFO,
-              content: '🤖 Adding Enfiy AI as co-author to the last commit...',
+              content: '[ENFIY] Adding Enfiy AI as co-author to the last commit...',
               timestamp: new Date(),
             });
 
@@ -1567,7 +1567,7 @@ export const useSlashCommandProcessor = (
 
           addMessage({
             type: MessageType.INFO,
-            content: `🚀 Pushing to GitHub${branch ? ` (branch: ${branch})` : ''}${coAuthor ? ' with Enfiy AI co-authorship' : ''}...`,
+            content: `[PUSH] Pushing to GitHub${branch ? ` (branch: ${branch})` : ''}${coAuthor ? ' with Enfiy AI co-authorship' : ''}...`,
             timestamp: new Date(),
           });
 
@@ -1595,11 +1595,11 @@ export const useSlashCommandProcessor = (
           }
 
           command +=
-            ' --body "🤖 Created with Enfiy AI\\n\\nCo-authored-by: Enfiy AI <enfiy@github.com>"';
+            ' --body "[ENFIY] Created with Enfiy AI\\n\\nCo-authored-by: Enfiy AI <enfiy@github.com>"';
 
           addMessage({
             type: MessageType.INFO,
-            content: `📝 Creating GitHub pull request: "${title}"${isDraft ? ' (draft)' : ''}...`,
+            content: `[PR] Creating GitHub pull request: "${title}"${isDraft ? ' (draft)' : ''}...`,
             timestamp: new Date(),
           });
 
@@ -1718,7 +1718,7 @@ export const useSlashCommandProcessor = (
             const hasGemfile = files.includes('Gemfile');
 
             if (hasPackageJson) {
-              analysis += '📦 Node.js/JavaScript project detected\n';
+              analysis += '[PROJECT] Node.js/JavaScript project detected\n';
               const packageJson = JSON.parse(
                 await fs.readFile(
                   path.join(projectRoot, 'package.json'),
@@ -1734,13 +1734,13 @@ export const useSlashCommandProcessor = (
                 analysis += `   Dev Dependencies: ${Object.keys(packageJson.devDependencies).length}\n`;
               }
             } else if (hasCargoToml) {
-              analysis += '🦀 Rust project detected\n';
+              analysis += '[PROJECT] Rust project detected\n';
             } else if (hasPyprojectToml || hasRequirementsTxt) {
-              analysis += '🐍 Python project detected\n';
+              analysis += '[PROJECT] Python project detected\n';
             } else if (hasGemfile) {
-              analysis += '💎 Ruby project detected\n';
+              analysis += '[PROJECT] Ruby project detected\n';
             } else {
-              analysis += '❓ Unknown project type\n';
+              analysis += '[PROJECT] Unknown project type\n';
             }
 
             analysis += '\n';
@@ -1755,8 +1755,8 @@ export const useSlashCommandProcessor = (
               }
             });
 
-            analysis += `📁 Top-level directories: ${directories.length}\n`;
-            analysis += `📄 Top-level files: ${files.length - directories.length}\n\n`;
+            analysis += `[INFO] Top-level directories: ${directories.length}\n`;
+            analysis += `[INFO] Top-level files: ${files.length - directories.length}\n\n`;
 
             // Git status
             analysis += `Git Information:

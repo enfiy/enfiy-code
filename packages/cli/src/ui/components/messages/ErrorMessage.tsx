@@ -13,7 +13,7 @@ interface ErrorMessageProps {
 }
 
 export const ErrorMessage: React.FC<ErrorMessageProps> = ({ text }) => {
-  const prefix = '✕ ';
+  const prefix = 'x ';
   const prefixWidth = prefix.length;
 
   return (

@@ -25,7 +25,7 @@ export async function getHuggingFaceOAuthClient() {
   // Check for cached credentials first
   const cachedCreds = await loadCachedHFCredentials();
   if (cachedCreds) {
-    console.log('✅ Using cached HuggingFace credentials');
+    console.log('Using cached HuggingFace credentials');
     return cachedCreds;
   }
   // Start OAuth flow
@@ -33,22 +33,22 @@ export async function getHuggingFaceOAuthClient() {
   const isWSL = process.env.WSL_DISTRO_NAME || process.env.WSL_INTEROP;
   const isLinux = process.platform === 'linux';
   const isDocker = process.env.container || process.env.DOCKER_CONTAINER;
-  console.log('\n🤗 HuggingFace authentication required');
+  console.log('\nHuggingFace authentication required');
   console.log('Opening browser for HuggingFace account authentication...');
   console.log('');
   if (isWSL || isLinux || isDocker) {
-    console.log('🌐 Remote/containerized environment detected');
+    console.log('Remote/containerized environment detected');
     console.log(
       "If browser doesn't open automatically, copy this URL to your browser:",
     );
     console.log('');
-    console.log(`🔗 ${webLogin.authUrl}`);
+    console.log(`${webLogin.authUrl}`);
     console.log('');
   }
   try {
     console.log('Attempting to open URL with open package:', webLogin.authUrl);
     if (isWSL) {
-      console.log('🔧 WSL detected - trying Windows browser commands...');
+      console.log('WSL detected - trying Windows browser commands...');
       try {
         const { spawn } = await import('child_process');
         // Try PowerShell to open browser from WSL
@@ -61,7 +61,7 @@ export async function getHuggingFaceOAuthClient() {
           console.log('PowerShell browser command failed:', err.message);
           throw err;
         });
-        console.log('✅ Browser opened successfully via PowerShell');
+        console.log('Browser opened successfully via PowerShell');
       } catch (_wslError) {
         console.log('WSL PowerShell browser failed, trying wslview...');
         try {
@@ -73,7 +73,7 @@ export async function getHuggingFaceOAuthClient() {
             console.log('wslview command failed:', err.message);
             throw err;
           });
-          console.log('✅ Browser opened successfully via wslview');
+          console.log('Browser opened successfully via wslview');
         } catch (_wslviewError) {
           console.log('wslview failed, falling back to open package...');
           await open(webLogin.authUrl);
@@ -82,26 +82,26 @@ export async function getHuggingFaceOAuthClient() {
     } else {
       await open(webLogin.authUrl);
     }
-    console.log('✅ Browser opened successfully');
+    console.log('Browser opened successfully');
   } catch (_error) {
-    console.log('⚠️ Failed to open browser automatically');
+    console.log('WARNING: Failed to open browser automatically');
     console.log('Please manually copy and paste this URL into your browser:');
     console.log('');
-    console.log(`🔗 ${webLogin.authUrl}`);
+    console.log(`${webLogin.authUrl}`);
     console.log('');
     if (isWSL) {
-      console.log('💡 WSL/Linux Tips:');
+      console.log('WSL/Linux Tips:');
       console.log(`• wslview "${webLogin.authUrl}"`);
       console.log(`• cmd.exe /c start "${webLogin.authUrl}"`);
       console.log('• Or copy URL to Windows browser');
       console.log('');
     }
   }
-  console.log('⏳ Waiting for authentication in browser...');
+  console.log('Waiting for authentication in browser...');
   console.log('   Please complete the login process in your browser window');
   const response = await webLogin.loginCompletePromise;
   console.log(
-    '✅ HuggingFace authentication successful! Credentials cached for future use.',
+    'HuggingFace authentication successful! Credentials cached for future use.',
   );
   // Cache the credentials
   await cacheHFCredentials(response);
@@ -175,7 +175,7 @@ async function authWithHFWeb() {
           );
           res.writeHead(200, { 'Content-Type': 'text/html' });
           res.end(
-            '<html><body><h1>🤗 Authentication Successful!</h1><p>You can close this window and return to Enfiy Code.</p></body></html>',
+            '<html><body><h1>Authentication Successful!</h1><p>You can close this window and return to Enfiy Code.</p></body></html>',
           );
           resolve(tokenResponse);
         } catch (tokenError) {

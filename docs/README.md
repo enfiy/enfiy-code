@@ -8,17 +8,17 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 
 ### Key Features
 
-- 🤖 **Multi-Provider AI Support** – OpenAI, Anthropic, Google, Mistral, Ollama, and more
-- 🛠️ **Rich Tool Ecosystem** – File operations, shell integration, web browsing, MCP servers
-- 🎨 **Customizable Interface** – Multiple themes and configuration options
-- 🔒 **Privacy-Focused** – Local processing options and encrypted credential storage
-- 🚀 **Developer-Friendly** – Extensible architecture and comprehensive APIs
+- **Multi-Provider AI Support** – OpenAI, Anthropic, Google, Mistral, Ollama, and more
+- **Rich Tool Ecosystem** – File operations, shell integration, web browsing, MCP servers
+- **Customizable Interface** – Multiple themes and configuration options
+- **Privacy-Focused** – Local processing options and encrypted credential storage
+- **Developer-Friendly** – Extensible architecture and comprehensive APIs
 
 ## Getting Started
 
 New to Enfiy Code? Start here:
 
-### 📚 [Getting Started](./getting-started/README.md)
+### [Getting Started](./getting-started/README.md)
 
 Essential information to get up and running quickly.
 
@@ -29,7 +29,7 @@ Essential information to get up and running quickly.
 
 ## Documentation Sections
 
-### 🎯 [User Guides](./guides/README.md)
+### [User Guides](./guides/README.md)
 
 Step-by-step guides for common workflows and advanced features.
 
@@ -37,7 +37,7 @@ Step-by-step guides for common workflows and advanced features.
 - **[Checkpointing](./guides/checkpointing.md)** – Save conversation sessions
 - Project workflows, debugging guides, and more
 
-### 🔧 [API Reference](./api/README.md)
+### [API Reference](./api/README.md)
 
 Technical documentation for developers and power users.
 
@@ -45,7 +45,7 @@ Technical documentation for developers and power users.
 - **[Core System](./api/core/README.md)** – Architecture and internal APIs
 - **[Tools Reference](./api/tools/README.md)** – Built-in tools and capabilities
 
-### 🛠️ [Development](./development/README.md)
+### [Development](./development/README.md)
 
 Information for contributors and extension developers.
 
@@ -54,7 +54,7 @@ Information for contributors and extension developers.
 - **[Extension Development](./development/extension.md)** – Create custom extensions
 - **[Deployment Guide](./development/deployment.md)** – Production deployment
 
-### 🔒 [Security](./security/README.md)
+### [Security](./security/README.md)
 
 Security policies, privacy information, and best practices.
 
@@ -62,7 +62,7 @@ Security policies, privacy information, and best practices.
 - **[Security Best Practices](./security/README.md#security-best-practices)** – Usage recommendations
 - **[Telemetry](./security/telemetry.md)** – Data collection and opt-out
 
-### 🚨 [Troubleshooting](./troubleshooting/README.md)
+### [Troubleshooting](./troubleshooting/README.md)
 
 Solutions for common issues and problems.
 

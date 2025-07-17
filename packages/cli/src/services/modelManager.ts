@@ -258,7 +258,7 @@ export class ModelManager {
         const errorMessage =
           error instanceof Error ? error.message : String(error);
         console.log(
-          `🔄 Auto-switched from ${modelName} to ${fallbackModel} due to: ${errorMessage}`,
+          `Auto-switched from ${modelName} to ${fallbackModel} due to: ${errorMessage}`,
         );
         return fallbackModel;
       }

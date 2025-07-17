@@ -133,7 +133,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
       if (key.return) {
         if (step === 'method' && isCloudProvider) {
           if (highlightedIndex === 0) {
-            console.log('🔧 Setting authMethod to api-key and step to api-key');
+            console.log('Setting authMethod to api-key and step to api-key');
             setAuthMethod('api-key');
             setStep('api-key');
           } else if (highlightedIndex === 1) {
@@ -401,7 +401,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
         <Box flexDirection="column">
           <Box marginBottom={1}>
             <Text color={Colors.AccentYellow}>
-              🚀 {providerInfo.name} Setup Required
+              {providerInfo.name} Setup Required
             </Text>
           </Box>
 
@@ -414,7 +414,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
 
           <Box marginBottom={1}>
             <Text color={Colors.Gray}>
-              ⏱️ Setup time: {providerInfo.installTime || '~5 minutes'}
+                Setup time: {providerInfo.installTime || '~5 minutes'}
             </Text>
           </Box>
 
@@ -429,7 +429,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
               }
               bold={highlightedIndex === 0}
             >
-              {highlightedIndex === 0 ? '> ' : '  '}📦 I&apos;ll install{' '}
+              {highlightedIndex === 0 ? '> ' : '  '}I&apos;ll install{' '}
               {providerInfo.name} now ({providerInfo.installTime})
             </Text>
             <Box paddingLeft={3} marginTop={0}>
@@ -446,7 +446,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
               }
               bold={highlightedIndex === 1}
             >
-              {highlightedIndex === 1 ? '> ' : '  '}☁️ Try cloud AI instead (~1
+              {highlightedIndex === 1 ? '> ' : '  '}Try cloud AI instead (~1
               minute)
             </Text>
             <Box paddingLeft={3} marginTop={0}>
@@ -468,7 +468,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
           {highlightedIndex === 0 && (
             <Box paddingLeft={1} marginTop={1} flexDirection="column">
               <Text color={Colors.AccentBlue} bold>
-                📋 What happens next:
+                What happens next:
               </Text>
               <Text color={Colors.Gray}>
                 1. You&apos;ll see detailed installation steps
@@ -494,7 +494,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
         <Box flexDirection="column">
           <Box marginBottom={1}>
             <Text color={Colors.AccentBlue} bold>
-              📦 {providerInfo.name} Installation Guide
+              {providerInfo.name} Installation Guide
             </Text>
           </Box>
 
@@ -553,7 +553,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
               }
               bold={highlightedIndex === 0}
             >
-              {highlightedIndex === 0 ? '> ' : '  '}✅ I&apos;ve completed the
+              {highlightedIndex === 0 ? '> ' : '  '}I&apos;ve completed the
               installation - Check now
             </Text>
           </Box>
@@ -579,7 +579,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
           {/* Show warning if cloud provider without API key */}
           {isCloudProvider && authMethod === 'api-key' && !apiKey ? (
             <Box marginBottom={1}>
-              <Text color={Colors.AccentRed}>⚠️ API Key Required!</Text>
+              <Text color={Colors.AccentRed}>API Key Required!</Text>
               <Box marginTop={1}>
                 <Text color={Colors.Gray}>
                   Please go back and enter your {providerInfo.name} API key to

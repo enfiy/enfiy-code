@@ -194,7 +194,7 @@ export async function loadCliConfig(
     );
     loadApiKeysIntoEnvironment();
   } catch (error) {
-    console.error('❌ Could not load API keys from secure storage:', error);
+    console.error('Could not load API keys from secure storage:', error);
   }
 
   const argv = await parseArguments();

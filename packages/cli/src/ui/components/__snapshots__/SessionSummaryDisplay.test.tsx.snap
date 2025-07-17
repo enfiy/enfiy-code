@@ -20,7 +20,7 @@ exports[`<SessionSummaryDisplay /> > renders correctly with given stats and dura
 │  API Duration                                           50.2s  │
 │  Total Duration                                    1h 23m 45s  │
 │                                                                │
-│               Thank you for using Enfiy Code! 🧡               │
+│               Thank you for using Enfiy Code!                  │
 │                                                                │
 ╰────────────────────────────────────────────────────────────────╯"
 `;
@@ -43,7 +43,7 @@ exports[`<SessionSummaryDisplay /> > renders zero state correctly 1`] = `
 │  API Duration                                              0s  │
 │  Total Duration                                            0s  │
 │                                                                │
-│               Thank you for using Enfiy Code! 🧡               │
+│               Thank you for using Enfiy Code!                  │
 │                                                                │
 ╰────────────────────────────────────────────────────────────────╯"
 `;

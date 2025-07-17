@@ -237,7 +237,7 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
         addItem(
           {
             type: MessageType.INFO,
-            text: '📝 Input Note: For complex text input, use Ctrl+X for external editor or copy & paste.',
+            text: 'Input Note: For complex text input, use Ctrl+X for external editor or copy & paste.',
           },
           Date.now(),
         );
@@ -475,13 +475,13 @@ ${t('helpMessage')}`,
             try {
               const authType = AuthType.API_KEY;
               await config.refreshAuth(authType);
-              console.log('✅ Auth refreshed successfully');
+              console.log('Auth refreshed successfully');
             } catch (error) {
-              console.error('❌ Failed to refresh auth:', error);
+              console.error('Failed to refresh auth:', error);
               addItem(
                 {
                   type: MessageType.ERROR,
-                  text: `❌ Failed to initialize ${typeof providerConfig.type === 'string' ? providerConfig.type.toUpperCase() : 'provider'}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                  text: `Failed to initialize ${typeof providerConfig.type === 'string' ? providerConfig.type.toUpperCase() : 'provider'}: ${error instanceof Error ? error.message : 'Unknown error'}`,
                 },
                 Date.now(),
               );
@@ -502,7 +502,7 @@ ${t('helpMessage')}`,
               addItem(
                 {
                   type: MessageType.ERROR,
-                  text: '❌ Ollama is not running. Please start Ollama service first with: ollama serve',
+                  text: 'Error: Ollama is not running. Please start Ollama service first with: ollama serve',
                 },
                 Date.now(),
               );
@@ -519,7 +519,7 @@ ${t('helpMessage')}`,
               addItem(
                 {
                   type: MessageType.ERROR,
-                  text: '❌ No models found. Please install a model first (e.g., ollama pull llama3.2:8b)',
+                  text: 'Error: No models found. Please install a model first (e.g., ollama pull llama3.2:8b)',
                 },
                 Date.now(),
               );
@@ -537,7 +537,7 @@ ${t('helpMessage')}`,
               addItem(
                 {
                   type: MessageType.ERROR,
-                  text: `❌ Model "${providerConfig.model}" not found. Available models: ${models.map((m: { name: string }) => m.name).join(', ')}`,
+                  text: `Error: Model "${providerConfig.model}" not found. Available models: ${models.map((m: { name: string }) => m.name).join(', ')}`,
                 },
                 Date.now(),
               );
@@ -550,7 +550,7 @@ ${t('helpMessage')}`,
             addItem(
               {
                 type: MessageType.ERROR,
-                text: `❌ Failed to connect to Ollama: ${error instanceof Error ? error.message : 'Connection failed'}. Please ensure Ollama is running.`,
+                text: `Error: Failed to connect to Ollama: ${error instanceof Error ? error.message : 'Connection failed'}. Please ensure Ollama is running.`,
               },
               Date.now(),
             );
@@ -564,7 +564,7 @@ ${t('helpMessage')}`,
         addItem(
           {
             type: MessageType.INFO,
-            text: `✅ ${typeof providerConfig.type === 'string' ? providerConfig.type.toUpperCase() : 'Provider'} setup completed successfully! Using model: ${typeof providerConfig.model === 'string' ? providerConfig.model : 'default'}`,
+            text: `${typeof providerConfig.type === 'string' ? providerConfig.type.toUpperCase() : 'Provider'} setup completed successfully! Using model: ${typeof providerConfig.model === 'string' ? providerConfig.model : 'default'}`,
           },
           Date.now(),
         );
@@ -572,9 +572,9 @@ ${t('helpMessage')}`,
         // Reinitialize client for the new provider
         try {
           await config.reinitializeEnfiyClient();
-          console.log('✅ Client reinitialized for new provider');
+          console.log('Client reinitialized for new provider');
         } catch (error) {
-          console.error('❌ Failed to reinitialize client:', error);
+          console.error('Failed to reinitialize client:', error);
         }
 
         setShowProviderSetup(false);
@@ -585,7 +585,7 @@ ${t('helpMessage')}`,
         addItem(
           {
             type: MessageType.ERROR,
-            text: `❌ Failed to complete ${providerConfig.type.toUpperCase()} setup: ${error}`,
+            text: `Failed to complete ${providerConfig.type.toUpperCase()} setup: ${error}`,
           },
           Date.now(),
         );
@@ -854,10 +854,10 @@ ${t('helpMessage')}`,
       addItem(
         {
           type: MessageType.INFO,
-          text: `⚡ Slow response times detected. Automatically switching from ${currentModel} to ${fallbackModel} for faster responses for the remainder of this session.
-⚡ To avoid this you can either upgrade to Standard tier. See: https://goo.gle/set-up-gemini-code-assist
-⚡ Or you can utilize a Gemini API Key. See: https://goo.gle/enfiy-cli-docs-auth#gemini-api-key
-⚡ You can switch authentication methods by typing /auth`,
+          text: `Notice: Slow response times detected. Automatically switching from ${currentModel} to ${fallbackModel} for faster responses for the remainder of this session.
+To avoid this you can either upgrade to Standard tier. See: https://goo.gle/set-up-gemini-code-assist
+Or you can utilize a Gemini API Key. See: https://goo.gle/enfiy-cli-docs-auth#gemini-api-key
+You can switch authentication methods by typing /auth`,
         },
         Date.now(),
       );

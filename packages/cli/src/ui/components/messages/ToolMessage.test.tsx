@@ -71,19 +71,19 @@ describe('<ToolMessage />', () => {
       StreamingState.Idle,
     );
     const output = lastFrame();
-    expect(output).toContain('✔'); // Success indicator
+    expect(output).toContain('✓'); // Success indicator
     expect(output).toContain('test-tool');
     expect(output).toContain('A tool for testing');
     expect(output).toContain('MockMarkdown:Test result');
   });
 
   describe('ToolStatusIndicator rendering', () => {
-    it('shows ✔ for Success status', () => {
+    it('shows ✓ for Success status', () => {
       const { lastFrame } = renderWithContext(
         <ToolMessage {...baseProps} status={ToolCallStatus.Success} />,
         StreamingState.Idle,
       );
-      expect(lastFrame()).toContain('✔');
+      expect(lastFrame()).toContain('✓');
     });
 
     it('shows o for Pending status', () => {
@@ -123,9 +123,9 @@ describe('<ToolMessage />', () => {
         <ToolMessage {...baseProps} status={ToolCallStatus.Executing} />,
         StreamingState.Idle,
       );
-      expect(lastFrame()).toContain('⊷');
+      expect(lastFrame()).toContain('.');
       expect(lastFrame()).not.toContain('MockRespondingSpinner');
-      expect(lastFrame()).not.toContain('✔');
+      expect(lastFrame()).not.toContain('✓');
     });
 
     it('shows paused spiner for Executing status when streamingState is WaitingForConfirmation', () => {
@@ -133,9 +133,9 @@ describe('<ToolMessage />', () => {
         <ToolMessage {...baseProps} status={ToolCallStatus.Executing} />,
         StreamingState.WaitingForConfirmation,
       );
-      expect(lastFrame()).toContain('⊷');
+      expect(lastFrame()).toContain('.');
       expect(lastFrame()).not.toContain('MockRespondingSpinner');
-      expect(lastFrame()).not.toContain('✔');
+      expect(lastFrame()).not.toContain('✓');
     });
 
     it('shows MockRespondingSpinner for Executing status when streamingState is Responding', () => {
@@ -144,7 +144,7 @@ describe('<ToolMessage />', () => {
         StreamingState.Responding, // Simulate app still responding
       );
       expect(lastFrame()).toContain('MockRespondingSpinner');
-      expect(lastFrame()).not.toContain('✔');
+      expect(lastFrame()).not.toContain('✓');
     });
   });
 
@@ -167,7 +167,7 @@ describe('<ToolMessage />', () => {
       StreamingState.Idle,
     );
     // Check for trailing indicator or specific color if applicable (Colors are not easily testable here)
-    expect(highEmphasisFrame()).toContain('←'); // Trailing indicator for high emphasis
+    expect(highEmphasisFrame()).toContain('&lt;-'); // Trailing indicator for high emphasis
 
     const { lastFrame: lowEmphasisFrame } = renderWithContext(
       <ToolMessage {...baseProps} emphasis="low" />,
@@ -176,6 +176,6 @@ describe('<ToolMessage />', () => {
     // For low emphasis, the name and description might be dimmed (check for dimColor if possible)
     // This is harder to assert directly in text output without color checks.
     // We can at least ensure it doesn't have the high emphasis indicator.
-    expect(lowEmphasisFrame()).not.toContain('←');
+    expect(lowEmphasisFrame()).not.toContain('&lt;-');
   });
 });

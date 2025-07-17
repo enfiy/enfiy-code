@@ -267,7 +267,7 @@ export class OllamaProvider extends BaseProvider {
     const toolCalls = this.parseTextBasedToolCalls(data.response);
     if (toolCalls.length > 0) {
       console.log(
-        '🎯 [Ollama] Non-streaming tool calls processed:',
+        '[OLLAMA] Non-streaming tool calls processed:',
         toolCalls.length,
       );
     }
@@ -382,7 +382,7 @@ export class OllamaProvider extends BaseProvider {
                 );
                 if (toolCalls.length > 0) {
                   console.log(
-                    '🎯 [Ollama] Final tool calls processed:',
+                    '[OLLAMA] Final tool calls processed:',
                     toolCalls.length,
                   );
                 }
@@ -486,14 +486,14 @@ export class OllamaProvider extends BaseProvider {
     ) {
       const suggestions = this.getSuggestedModels(originalError);
       return (
-        `❌ Model not found. Please ensure the model is installed and available.\n\n` +
+        `[ERROR] Model not found. Please ensure the model is installed and available.\n\n` +
         `To check available models: ollama list\n` +
         `To install a model: ollama pull <model-name>\n` +
-        `\n💡 Recommended models for coding:\n` +
-        `  • qwen2.5-coder:32b (Specialized coding model)\n` +
-        `  • llama3.2:8b (General purpose)\n` +
-        `  • deepseek-coder-v2:16b (Code generation)\n` +
-        `  • qwen2.5:7b (Fast and efficient)\n\n` +
+        `\n[RECOMMENDED] Recommended models for coding:\n` +
+        `  - qwen2.5-coder:32b (Specialized coding model)\n` +
+        `  - llama3.2:8b (General purpose)\n` +
+        `  - deepseek-coder-v2:16b (Code generation)\n` +
+        `  - qwen2.5:7b (Fast and efficient)\n\n` +
         (suggestions.length > 0
           ? `Did you mean: ${suggestions.join(', ')}?\n\n`
           : '') +
@@ -502,7 +502,7 @@ export class OllamaProvider extends BaseProvider {
     }
 
     return (
-      `❌ Ollama endpoint not found. Please check if Ollama is running and accessible.\n\n` +
+      `[ERROR] Ollama endpoint not found. Please check if Ollama is running and accessible.\n\n` +
       `To start Ollama: ollama serve\n` +
       `Default endpoint: http://localhost:11434\n\n` +
       `Original error: ${originalError}`

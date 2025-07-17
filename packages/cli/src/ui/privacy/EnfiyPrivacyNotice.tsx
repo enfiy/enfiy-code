@@ -25,21 +25,21 @@ export const EnfiyPrivacyNotice = ({ onExit }: EnfiyPrivacyNoticeProps) => {
       </Text>
       <Newline />
       <Text>
-        🔒 <Text color={Colors.AccentGreen}>Your data stays private</Text> when
+        <Text color={Colors.AccentGreen}>Your data stays private</Text> when
         using API key authentication. All processing happens in your private
         work room environment.
       </Text>
       <Newline />
       <Text>
-        ✓ <Text color={Colors.AccentBlue}>Local processing</Text> - Your code
+        <Text color={Colors.AccentBlue}>Local processing</Text> - Your code
         and conversations are processed locally
       </Text>
       <Text>
-        ✓ <Text color={Colors.AccentGreen}>No data sharing</Text> - We
+        <Text color={Colors.AccentGreen}>No data sharing</Text> - We
         don&apos;t store or share your data
       </Text>
       <Text>
-        ✓ <Text color={Colors.AccentYellow}>Full control</Text> - You control
+        <Text color={Colors.AccentYellow}>Full control</Text> - You control
         where your API requests go
       </Text>
       <Newline />

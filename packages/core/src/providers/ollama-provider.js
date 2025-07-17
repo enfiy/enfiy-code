@@ -663,7 +663,7 @@ print("${baseName}")`;
       originalError.toLowerCase().includes('not found')
     ) {
       return (
-        `❌ Model not found. Please ensure the model is installed and available.\n\n` +
+        `ERROR: Model not found. Please ensure the model is installed and available.\n\n` +
         `To check available models: ollama list\n` +
         `To install a model: ollama pull <model-name>\n` +
         `Common models: llama3.2:8b, llama3.2:1b, codellama\n\n` +
@@ -671,7 +671,7 @@ print("${baseName}")`;
       );
     }
     return (
-      `❌ Ollama endpoint not found. Please check if Ollama is running and accessible.\n\n` +
+      `ERROR: Ollama endpoint not found. Please check if Ollama is running and accessible.\n\n` +
       `To start Ollama: ollama serve\n` +
       `Default endpoint: http://localhost:11434\n\n` +
       `Original error: ${originalError}`

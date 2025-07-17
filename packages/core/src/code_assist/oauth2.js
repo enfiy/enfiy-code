@@ -49,28 +49,28 @@ export async function getOauthClient() {
   const isWSL = process.env.WSL_DISTRO_NAME || process.env.WSL_INTEROP;
   const isLinux = process.platform === 'linux';
   const isDocker = process.env.container || process.env.DOCKER_CONTAINER;
-  console.log('\n🔐 Enfiy Code - Gemini authentication required');
+  console.log('\nEnfiy Code - Gemini authentication required');
   console.log('Opening browser for Google account authentication...');
   console.log(
-    '⚠️  Note: OAuth consent screen may show "Google Cloud Code" or "gemini"',
+    'WARNING: OAuth consent screen may show "Google Cloud Code" or "gemini"',
   );
   console.log(
     '    This is temporary - working on Enfiy Code specific OAuth registration',
   );
   console.log('');
   if (isWSL || isLinux || isDocker) {
-    console.log('🌐 Remote/containerized environment detected');
+    console.log('Remote/containerized environment detected');
     console.log(
       "If browser doesn't open automatically, copy this URL to your browser:",
     );
     console.log('');
-    console.log(`🔗 ${webLogin.authUrl}`);
+    console.log(`${webLogin.authUrl}`);
     console.log('');
   }
   try {
     console.log('Attempting to open URL with open package:', webLogin.authUrl);
     if (isWSL) {
-      console.log('🔧 WSL detected - trying Windows browser commands...');
+      console.log('WSL detected - trying Windows browser commands...');
       try {
         const { spawn } = await import('child_process');
         // Try PowerShell to open browser from WSL
@@ -83,7 +83,7 @@ export async function getOauthClient() {
           console.log('PowerShell browser command failed:', err.message);
           throw err;
         });
-        console.log('✅ Browser opened successfully via PowerShell');
+        console.log('Browser opened successfully via PowerShell');
       } catch (_wslError) {
         console.log('WSL PowerShell browser failed, trying wslview...');
         try {
@@ -95,7 +95,7 @@ export async function getOauthClient() {
             console.log('wslview command failed:', err.message);
             throw err;
           });
-          console.log('✅ Browser opened successfully via wslview');
+          console.log('Browser opened successfully via wslview');
         } catch (_wslviewError) {
           console.log('wslview failed, falling back to open package...');
           await open(webLogin.authUrl);
@@ -104,27 +104,27 @@ export async function getOauthClient() {
     } else {
       await open(webLogin.authUrl);
     }
-    console.log('✅ Browser opened successfully');
+    console.log('Browser opened successfully');
   } catch (error) {
-    console.log('⚠️ Failed to open browser automatically');
+    console.log('WARNING: Failed to open browser automatically');
     console.error('Browser open error:', error);
     console.log('Please manually copy and paste this URL into your browser:');
     console.log('');
-    console.log(`🔗 ${webLogin.authUrl}`);
+    console.log(`${webLogin.authUrl}`);
     console.log('');
     if (isWSL) {
-      console.log('💡 WSL/Linux Tips:');
+      console.log('WSL/Linux Tips:');
       console.log(`• wslview "${webLogin.authUrl}"`);
       console.log(`• cmd.exe /c start "${webLogin.authUrl}"`);
       console.log('• Or copy URL to Windows browser');
       console.log('');
     }
   }
-  console.log('⏳ Waiting for authentication in browser...');
+  console.log('Waiting for authentication in browser...');
   console.log('   Please complete the login process in your browser window');
   await webLogin.loginCompletePromise;
   console.log(
-    '✅ Authentication successful! Credentials cached for future use.',
+    'Authentication successful! Credentials cached for future use.',
   );
   return client;
 }

@@ -7,7 +7,7 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 
-// 🔥 InkネイティブなフェニックスカラーASCII art
+// InkネイティブなフェニックスカラーASCII art
 export const EnfiyAsciiArt: React.FC = () => (
   <Box flexDirection="column" alignItems="flex-start">
     <Text>

@@ -26,15 +26,15 @@ main().catch((error: unknown) => {
     errorMessage.includes('Unauthorized') ||
     errorMessage.includes('Invalid auth method selected')
   ) {
-    console.error('⚠️  Configuration Error:', errorMessage);
+    console.error('Configuration Error:', errorMessage);
     console.error(
-      '💡 Please run the CLI and use /provider command to set up your AI provider.',
+      'Please run the CLI and use /provider command to set up your AI provider.',
     );
     return; // Don't exit, let the interactive UI handle this
   }
 
   // For truly critical errors that prevent startup
-  console.error('❌ Critical Error:', errorMessage);
+  console.error('Critical Error:', errorMessage);
   if (error instanceof Error && error.stack) {
     console.error(error.stack);
   }

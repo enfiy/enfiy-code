@@ -154,22 +154,22 @@ export async function generateProviderReport(): Promise<string> {
   const localProviders = await detectLocalProviders();
   const cloudProviders = detectCloudProviders();
 
-  let report = '🔍 AI Provider Detection Results:\n\n';
+  let report = '[DETECTION] AI Provider Detection Results:\n\n';
 
-  report += '🏠 Local AI:\n';
+  report += '[LOCAL] Local AI:\n';
   for (const provider of localProviders) {
-    const status = provider.available ? '✅' : '❌';
+    const status = provider.available ? '[OK]' : '[FAIL]';
     report += `  ${status} ${provider.type.toUpperCase()}: ${provider.reason}\n`;
   }
 
-  report += '\n☁️ Cloud AI:\n';
+  report += '\n[CLOUD] Cloud AI:\n';
   for (const provider of cloudProviders) {
-    const status = provider.available ? '✅' : '❌';
+    const status = provider.available ? '[OK]' : '[FAIL]';
     report += `  ${status} ${provider.type.toUpperCase()}: ${provider.reason}\n`;
   }
 
   const recommended = await getRecommendedProvider();
-  report += `\n🎯 Recommended: ${recommended.type.toUpperCase()}`;
+  report += `\n[RECOMMENDED] ${recommended.type.toUpperCase()}`;
   if (recommended.defaultModel) {
     report += ` (${recommended.defaultModel})`;
   }

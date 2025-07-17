@@ -87,7 +87,7 @@ describe('useTextBuffer', () => {
       const { result } = renderHook(() =>
         useTextBuffer({
           initialText: 'The quick brown fox jumps over the lazy dog.',
-          initialCursorOffset: 2, // After '好'
+          initialCursorOffset: 2, // After 'e'
           viewport: { width: 15, height: 4 },
           isValidPath: () => false,
         }),

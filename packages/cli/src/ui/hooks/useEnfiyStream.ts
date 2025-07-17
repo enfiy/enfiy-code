@@ -574,7 +574,7 @@ export const useEnfiyStream = (
               addItem(
                 {
                   type: MessageType.ERROR,
-                  text: '❌ API Error: Please check your API key configuration.\n\nUse `/provider` command to reconfigure your AI provider with a valid API key.',
+                  text: 'API Error: Please check your API key configuration.\n\nUse `/provider` command to reconfigure your AI provider with a valid API key.',
                 },
                 userMessageTimestamp,
               );
@@ -601,7 +601,7 @@ export const useEnfiyStream = (
           addItem(
             {
               type: MessageType.ERROR,
-              text: `💥 Fatal error occurred: ${(outerError as Error)?.message || 'Unknown error'}\n\nPlease check your configuration and try again.`,
+              text: `Fatal error occurred: ${(outerError as Error)?.message || 'Unknown error'}\n\nPlease check your configuration and try again.`,
             },
             Date.now(),
           );

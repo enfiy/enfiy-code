@@ -94,7 +94,7 @@ export class MultiProviderClient {
 
     // For unknown models, default to Ollama with a helpful message
     console.log(
-      `⚠️  Unknown model type: ${model}, defaulting to Ollama (local AI)`,
+      `[WARNING] Unknown model type: ${model}, defaulting to Ollama (local AI)`,
     );
 
     // Default to Ollama for local-first approach
@@ -190,7 +190,7 @@ export class MultiProviderClient {
       await this.provider.initialize(providerConfig);
       this.currentProviderType = providerType;
     } catch (error) {
-      console.error(`❌ Failed to initialize ${providerType} provider:`, error);
+      console.error(`[ERROR] Failed to initialize ${providerType} provider:`, error);
 
       // Better error message for missing API keys
       if (

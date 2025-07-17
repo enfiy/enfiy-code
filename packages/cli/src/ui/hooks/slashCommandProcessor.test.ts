@@ -946,20 +946,20 @@ describe('useSlashCommandProcessor', () => {
       const message = mockAddItem.mock.calls[1][0].text;
       // Server 1 - Connected
       expect(message).toContain(
-        '🟢 \u001b[1mserver1\u001b[0m - Ready (2 tools)',
+        '\\u001b[1mserver1\\u001b[0m - Ready (2 tools)',
       );
       expect(message).toContain('\u001b[36mserver1_tool1\u001b[0m');
       expect(message).toContain('\u001b[36mserver1_tool2\u001b[0m');
 
       // Server 2 - Connected
       expect(message).toContain(
-        '🟢 \u001b[1mserver2\u001b[0m - Ready (1 tools)',
+        '\\u001b[1mserver2\\u001b[0m - Ready (1 tools)',
       );
       expect(message).toContain('\u001b[36mserver2_tool1\u001b[0m');
 
       // Server 3 - Disconnected
       expect(message).toContain(
-        '🔴 \u001b[1mserver3\u001b[0m - Disconnected (1 tools cached)',
+        '\\u001b[1mserver3\\u001b[0m - Disconnected (1 tools cached)',
       );
       expect(message).toContain('\u001b[36mserver3_tool1\u001b[0m');
 
@@ -1092,11 +1092,11 @@ describe('useSlashCommandProcessor', () => {
       // Check that the message contains details about both servers and their tools
       const message = mockAddItem.mock.calls[1][0].text;
       expect(message).toContain(
-        '🟢 \u001b[1mserver1\u001b[0m - Ready (1 tools)',
+        '\\u001b[1mserver1\\u001b[0m - Ready (1 tools)',
       );
       expect(message).toContain('\u001b[36mserver1_tool1\u001b[0m');
       expect(message).toContain(
-        '🔴 \u001b[1mserver2\u001b[0m - Disconnected (0 tools cached)',
+        '\\u001b[1mserver2\\u001b[0m - Disconnected (0 tools cached)',
       );
       expect(message).toContain('No tools available');
 
@@ -1150,7 +1150,7 @@ describe('useSlashCommandProcessor', () => {
 
       // Check that startup indicator is shown
       expect(message).toContain(
-        '⏳ MCP servers are starting up (1 initializing)...',
+        'MCP servers are starting up (1 initializing)...',
       );
       expect(message).toContain(
         'Note: First startup may take longer. Tool availability will update automatically.',
@@ -1158,10 +1158,10 @@ describe('useSlashCommandProcessor', () => {
 
       // Check server statuses
       expect(message).toContain(
-        '🟢 \u001b[1mserver1\u001b[0m - Ready (1 tools)',
+        '\\u001b[1mserver1\\u001b[0m - Ready (1 tools)',
       );
       expect(message).toContain(
-        '🔄 \u001b[1mserver2\u001b[0m - Starting... (first startup may take longer) (tools will appear when ready)',
+        '\\u001b[1mserver2\\u001b[0m - Starting... (first startup may take longer) (tools will appear when ready)',
       );
 
       expect(commandResult).toBe(true);

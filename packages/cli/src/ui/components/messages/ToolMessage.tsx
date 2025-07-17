@@ -121,10 +121,10 @@ const ToolStatusIndicator: React.FC<ToolStatusIndicatorProps> = ({
       <Text color={Colors.AccentGreen}>o</Text>
     )}
     {status === ToolCallStatus.Executing && (
-      <EnfiyRespondingSpinner spinnerType="toggle" nonRespondingDisplay={'⊷'} />
+      <EnfiyRespondingSpinner spinnerType="toggle" nonRespondingDisplay={'.'} />
     )}
     {status === ToolCallStatus.Success && (
-      <Text color={Colors.AccentGreen}>✔</Text>
+      <Text color={Colors.AccentGreen}>✓</Text>
     )}
     {status === ToolCallStatus.Confirming && (
       <Text color={Colors.AccentYellow}>?</Text>
@@ -186,6 +186,6 @@ const ToolInfo: React.FC<ToolInfo> = ({
 const TrailingIndicator: React.FC = () => (
   <Text color={Colors.Foreground} wrap="truncate">
     {' '}
-    ←
+    &lt;-
   </Text>
 );

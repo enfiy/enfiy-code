@@ -1,49 +1,5 @@
 [
   {
-    "timestamp": "2025-07-15T11:38:13.199Z",
-    "totalSize": 1759454,
-    "totalSizeFormatted": "1.68MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1759454,
-        "sizeFormatted": "1.68MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T11:41:04.634Z",
-    "totalSize": 1759460,
-    "totalSizeFormatted": "1.68MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1759460,
-        "sizeFormatted": "1.68MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T11:44:24.631Z",
-    "totalSize": 1759589,
-    "totalSizeFormatted": "1.68MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1759589,
-        "sizeFormatted": "1.68MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T11:48:03.666Z",
-    "totalSize": 1759719,
-    "totalSizeFormatted": "1.68MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1759719,
-        "sizeFormatted": "1.68MB"
-      }
-    }
-  },
-  {
     "timestamp": "2025-07-15T11:52:25.347Z",
     "totalSize": 1760145,
     "totalSizeFormatted": "1.68MB",
@@ -545,6 +501,50 @@
     "files": {
       "enfiy.js": {
         "size": 806761,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-16T06:10:27.906Z",
+    "totalSize": 806773,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 806773,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-17T08:50:50.228Z",
+    "totalSize": 806746,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 806746,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-17T08:52:42.876Z",
+    "totalSize": 806760,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 806760,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-17T09:01:46.558Z",
+    "totalSize": 806762,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 806762,
         "sizeFormatted": "0.77MB"
       }
     }

@@ -342,7 +342,7 @@ export class EnfiyClient {
         // Check if response starts with HTML (common Ollama error)
         if (text.trim().startsWith('<')) {
           console.warn(
-            '🔥 [generateJson] Received HTML response instead of JSON:',
+            '[ERROR] [generateJson] Received HTML response instead of JSON:',
             text.substring(0, 200),
           );
           throw new Error(

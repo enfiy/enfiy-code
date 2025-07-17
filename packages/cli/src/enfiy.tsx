@@ -171,8 +171,8 @@ export async function main() {
           }
           await config.refreshAuth(settings.merged.selectedAuthType);
         } catch (err) {
-          console.error('⚠️  Authentication Error:', err);
-          console.error('💡 Please reconfigure your authentication settings.');
+          console.error('Authentication Error:', err);
+          console.error('Please reconfigure your authentication settings.');
           // Don't exit here - let sandbox continue
         }
       }
@@ -257,11 +257,11 @@ function setWindowTitle(title: string, settings: LoadedSettings) {
 
 // --- Global Error Handlers ---
 process.on('uncaughtException', (error) => {
-  console.error('🚨 UNCAUGHT EXCEPTION - PREVENTING CRASH:');
+  console.error('UNCAUGHT EXCEPTION - PREVENTING CRASH:');
   console.error('Error name:', error.name);
   console.error('Error message:', error.message);
   console.error('Error stack:', error.stack);
-  console.error('💡 Process would normally exit here, but continuing...');
+  console.error('Process would normally exit here, but continuing...');
   // Don't exit - try to continue
 });
 

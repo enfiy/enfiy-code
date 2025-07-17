@@ -307,7 +307,7 @@ export function storeApiKey(
     throw new Error('API key is too long');
   }
 
-  console.log('🔧 Storing API key for', provider, {
+  console.log('Storing API key for', provider, {
     originalLength: apiKey.length,
     cleanedLength: cleanedApiKey.length,
     hasControlChars: apiKey !== cleanedApiKey,

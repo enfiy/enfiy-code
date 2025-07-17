@@ -345,7 +345,7 @@ Enfiy Code is licensed under the [Apache 2.0 License](./LICENSE).
     Thank you for using Enfiy Code!
   </p>
   <p style="color: #6b7280; font-size: 0.9em;">
-    Built with ❤️ by the Enfiy Community
+    Built with love by the Enfiy Community
   </p>
   <br>
 </div>

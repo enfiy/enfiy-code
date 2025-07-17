@@ -36,7 +36,7 @@ export async function setupLocalAI(
 ): Promise<void> {
   const { provider, install, start, model, check, interactive } = options;
 
-  console.log('🤖 ローカルAI セットアップユーティリティ\n');
+  console.log('ローカルAI セットアップユーティリティ\n');
 
   if (provider === 'ollama' || provider === 'all') {
     await setupOllama({ install, start, model, check, interactive });
@@ -57,7 +57,7 @@ async function setupOllama(options: {
   check?: boolean;
   interactive?: boolean;
 }): Promise<void> {
-  console.log('🦙 Ollama セットアップ\n');
+  console.log('Ollama セットアップ\n');
 
   const status = await checkOllamaInstallation();
 
@@ -67,31 +67,31 @@ async function setupOllama(options: {
   }
 
   if (!status.isInstalled) {
-    console.log('❌ Ollamaがインストールされていません\n');
+    console.log('Ollamaがインストールされていません\n');
     console.log(getOllamaInstallInstructions());
 
     if (options.interactive) {
       console.log(
-        '\n⏳ インストール完了後、再度このコマンドを実行してください',
+        '\nインストール完了後、再度このコマンドを実行してください',
       );
     }
     return;
   }
 
-  console.log('✅ Ollama インストール済み');
+  console.log('Ollama インストール済み');
   if (status.version) {
-    console.log(`📦 バージョン: ${status.version}`);
+    console.log(`バージョン: ${status.version}`);
   }
 
   if (!status.isRunning) {
-    console.log('⚠️  Ollamaが実行されていません');
+    console.log('Ollamaが実行されていません');
 
     if (options.start || options.interactive) {
-      console.log('🚀 Ollamaサービスを開始中...');
+      console.log('Ollamaサービスを開始中...');
       const started = await startOllamaService();
 
       if (started) {
-        console.log('✅ Ollamaサービスが開始されました');
+        console.log('Ollamaサービスが開始されました');
         // ステータスを再確認
         const newStatus = await checkOllamaInstallation();
         if (newStatus.isRunning) {
@@ -99,7 +99,7 @@ async function setupOllama(options: {
           status.installedModels = newStatus.installedModels;
         }
       } else {
-        console.log('❌ Ollamaサービスの開始に失敗しました');
+        console.log('Ollamaサービスの開始に失敗しました');
         console.log('手動で開始してください: ollama serve');
         return;
       }
@@ -108,12 +108,12 @@ async function setupOllama(options: {
       return;
     }
   } else {
-    console.log('✅ Ollama 実行中');
+    console.log('Ollama 実行中');
   }
 
   // インストール済みモデルを表示
   console.log(
-    `\n📚 インストール済みモデル: ${status.installedModels.length}個`,
+    `\nインストール済みモデル: ${status.installedModels.length}個`,
   );
   if (status.installedModels.length > 0) {
     status.installedModels.forEach((modelName) => {
@@ -124,26 +124,26 @@ async function setupOllama(options: {
   // モデルのインストール
   if (options.model) {
     if (!status.installedModels.includes(options.model)) {
-      console.log(`\n⬇️  モデル ${options.model} をインストール中...`);
+      console.log(`\nモデル ${options.model} をインストール中...`);
       const success = await installOllamaModel(options.model, (progress) => {
         if (progress.status === 'downloading') {
           process.stdout.write(`\r進行状況: ${progress.progress || 0}%`);
         } else if (progress.status === 'completed') {
-          console.log('\n✅ インストール完了');
+          console.log('\nインストール完了');
         } else if (progress.status === 'error') {
-          console.log(`\n❌ エラー: ${progress.error}`);
+          console.log(`\nエラー: ${progress.error}`);
         }
       });
 
       if (!success) {
-        console.log('❌ モデルのインストールに失敗しました');
+        console.log('モデルのインストールに失敗しました');
         return;
       }
     } else {
-      console.log(`✅ モデル ${options.model} は既にインストール済みです`);
+      console.log(`モデル ${options.model} は既にインストール済みです`);
     }
   } else if (status.installedModels.length === 0) {
-    console.log('\n💡 推奨: 最初のモデルをインストールしてください');
+    console.log('\n推奨: 最初のモデルをインストールしてください');
     console.log('例: enfiy setup ollama --model llama3.2:3b');
 
     status.recommendedModels.forEach((model) => {
@@ -151,7 +151,7 @@ async function setupOllama(options: {
     });
   }
 
-  console.log('\n🎉 Ollama セットアップ完了！');
+  console.log('\nOllama セットアップ完了！');
 }
 
 /**
@@ -161,7 +161,7 @@ async function setupHuggingFace(options: {
   check?: boolean;
   interactive?: boolean;
 }): Promise<void> {
-  console.log('🤗 HuggingFace セットアップ\n');
+  console.log('HuggingFace セットアップ\n');
 
   const status = await checkHuggingFaceSetup();
 
@@ -170,35 +170,35 @@ async function setupHuggingFace(options: {
     return;
   }
 
-  console.log('📋 HuggingFace セットアップオプション:\n');
+  console.log('HuggingFace セットアップオプション:\n');
 
-  console.log('1️⃣ クラウドAPI（推奨）:');
+  console.log('1. クラウドAPI（推奨）:');
   console.log('   • https://huggingface.co/settings/tokens でAPIキーを取得');
   console.log('   • CLI設定でAPIキーを入力');
   console.log('   • 豊富なモデルが即座に利用可能');
 
-  console.log('\n2️⃣ ローカル実行:');
+  console.log('\n2. ローカル実行:');
   console.log('   • Python環境またはDockerが必要');
   console.log('   • プライベート・高速・オフライン利用可能');
 
   if (!status.pythonInstalled) {
-    console.log('\n⚠️  Python環境が検出されませんでした');
+    console.log('\nPython環境が検出されませんでした');
     console.log(_getPythonSetupInstructions());
   } else {
-    console.log('\n✅ Python環境: 利用可能');
+    console.log('\nPython環境: 利用可能');
 
     if (!status.transformersInstalled) {
-      console.log('⚠️  Transformersライブラリが未インストール');
+      console.log('Transformersライブラリが未インストール');
       console.log('インストール: pip install transformers torch');
     } else {
-      console.log('✅ Transformers: インストール済み');
+      console.log('Transformers: インストール済み');
     }
   }
 
   if (status.localServerAvailable) {
-    console.log(`✅ ローカルサーバー: ${status.localServerUrl} で実行中`);
+    console.log(`ローカルサーバー: ${status.localServerUrl} で実行中`);
   } else {
-    console.log('⚠️  ローカル推論サーバーが検出されませんでした');
+    console.log('ローカル推論サーバーが検出されませんでした');
     console.log('\nローカルサーバーのセットアップオプション:');
     status.recommendedServers.forEach((server) => {
       console.log(`\n• ${server.displayName} (${server.difficulty})`);
@@ -208,7 +208,7 @@ async function setupHuggingFace(options: {
     });
   }
 
-  console.log('\n🎉 HuggingFace セットアップガイド完了！');
+  console.log('\nHuggingFace セットアップガイド完了！');
   console.log('CLI設定で詳細なセットアップを行えます');
 }
 
@@ -227,17 +227,17 @@ function displayOllamaStatus(status: {
     isInstalled: boolean;
   }>;
 }): void {
-  console.log('🦙 Ollama ステータス\n');
+  console.log('Ollama ステータス\n');
 
   console.log(
-    `インストール状況: ${status.isInstalled ? '✅ インストール済み' : '❌ 未インストール'}`,
+    `インストール状況: ${status.isInstalled ? 'インストール済み' : '未インストール'}`,
   );
 
   if (status.version) {
     console.log(`バージョン: ${status.version}`);
   }
 
-  console.log(`サービス状況: ${status.isRunning ? '✅ 実行中' : '❌ 停止中'}`);
+  console.log(`サービス状況: ${status.isRunning ? '実行中' : '停止中'}`);
 
   console.log(`インストール済みモデル: ${status.installedModels.length}個`);
   if (status.installedModels.length > 0) {
@@ -255,7 +255,7 @@ function displayOllamaStatus(status: {
         description: string;
         isInstalled: boolean;
       }) => {
-        const icon = model.isInstalled ? '✅' : '⬇️';
+        const icon = model.isInstalled ? '[インストール済み]' : '[未インストール]';
         console.log(
           `  ${icon} ${model.name} (${model.size}) - ${model.description}`,
         );
@@ -278,16 +278,16 @@ function displayHuggingFaceStatus(status: {
     installCommand: string;
   }>;
 }): void {
-  console.log('🤗 HuggingFace ステータス\n');
+  console.log('HuggingFace ステータス\n');
 
   console.log(
-    `Python環境: ${status.pythonInstalled ? '✅ 利用可能' : '❌ 未インストール'}`,
+    `Python環境: ${status.pythonInstalled ? '利用可能' : '未インストール'}`,
   );
   console.log(
-    `Transformers: ${status.transformersInstalled ? '✅ インストール済み' : '❌ 未インストール'}`,
+    `Transformers: ${status.transformersInstalled ? 'インストール済み' : '未インストール'}`,
   );
   console.log(
-    `ローカルサーバー: ${status.localServerAvailable ? `✅ ${status.localServerUrl}` : '❌ 検出されず'}`,
+    `ローカルサーバー: ${status.localServerAvailable ? `利用可能 ${status.localServerUrl}` : '検出されず'}`,
   );
 
   if (status.recommendedServers.length > 0) {
@@ -309,8 +309,8 @@ function displayHuggingFaceStatus(status: {
   console.log('\n推奨モデル:');
   models.forEach((model) => {
     const compatibility = model.localCompatible
-      ? '🏠 ローカル対応'
-      : '☁️ クラウドのみ';
+      ? 'ローカル対応'
+      : 'クラウドのみ';
     console.log(`  • ${model.displayName} (${model.size}) - ${compatibility}`);
     console.log(`    ${model.description}`);
   });
@@ -320,7 +320,7 @@ function displayHuggingFaceStatus(status: {
  * セットアップコマンドのヘルプ表示
  */
 export function displaySetupHelp(): void {
-  console.log('🤖 ローカルAI セットアップコマンド\n');
+  console.log('ローカルAI セットアップコマンド\n');
 
   console.log('使用法:');
   console.log('  enfiy setup <provider> [options]\n');

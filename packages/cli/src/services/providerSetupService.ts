@@ -150,31 +150,31 @@ export class ProviderSetupService {
         return {
           name: 'Ollama',
           description: 'Local AI models - Private, fast, works offline',
-          icon: '🏠',
+          icon: '',
         };
       case ProviderType.GEMINI:
         return {
           name: 'Google Gemini',
           description: 'Cloud AI - Powerful, latest models',
-          icon: '☁️',
+          icon: '',
         };
       case ProviderType.OPENAI:
         return {
           name: 'OpenAI',
           description: 'Cloud AI - GPT models',
-          icon: '🤖',
+          icon: '',
         };
       case ProviderType.ANTHROPIC:
         return {
           name: 'Anthropic Claude',
           description: 'Cloud AI - Claude models',
-          icon: '🧠',
+          icon: '',
         };
       default:
         return {
           name: 'Custom',
           description: 'Custom AI provider',
-          icon: '⚙️',
+          icon: '',
         };
     }
   }

@@ -127,19 +127,19 @@ export async function getRecommendedProvider() {
 export async function generateProviderReport() {
   const localProviders = await detectLocalProviders();
   const cloudProviders = detectCloudProviders();
-  let report = '🔍 AI プロバイダー検出結果:\n\n';
-  report += '🏠 ローカルAI:\n';
+  let report = 'AI プロバイダー検出結果:\n\n';
+  report += 'ローカルAI:\n';
   for (const provider of localProviders) {
-    const status = provider.available ? '✅' : '❌';
+    const status = provider.available ? '[OK]' : '[NG]';
     report += `  ${status} ${provider.type.toUpperCase()}: ${provider.reason}\n`;
   }
-  report += '\n☁️ クラウドAI:\n';
+  report += '\nクラウドAI:\n';
   for (const provider of cloudProviders) {
-    const status = provider.available ? '✅' : '❌';
+    const status = provider.available ? '[OK]' : '[NG]';
     report += `  ${status} ${provider.type.toUpperCase()}: ${provider.reason}\n`;
   }
   const recommended = await getRecommendedProvider();
-  report += `\n🎯 推奨: ${recommended.type.toUpperCase()}`;
+  report += `\n推奨: ${recommended.type.toUpperCase()}`;
   if (recommended.defaultModel) {
     report += ` (${recommended.defaultModel})`;
   }

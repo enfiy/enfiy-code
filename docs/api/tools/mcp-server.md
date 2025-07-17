@@ -304,17 +304,17 @@ This displays:
 ```
 MCP Servers Status:
 
-📡 pythonTools (CONNECTED)
+[CONNECTED] pythonTools
   Command: python -m my_mcp_server --port 8080
   Working Directory: ./mcp-servers/python
   Timeout: 15000ms
   Tools: calculate_sum, file_analyzer, data_processor
 
-🔌 nodeServer (DISCONNECTED)
+[DISCONNECTED] nodeServer
   Command: node dist/server.js --verbose
   Error: Connection refused
 
-🐳 dockerizedServer (CONNECTED)
+[CONNECTED] dockerizedServer
   Command: docker run -i --rm -e API_KEY my-mcp-server:latest
   Tools: docker__deploy, docker__status
 

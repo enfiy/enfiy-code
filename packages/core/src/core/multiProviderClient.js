@@ -41,7 +41,7 @@ export class MultiProviderClient {
       return ProviderType.HUGGINGFACE;
     } else {
       // Default to Gemini for unknown models
-      console.log(`⚠️  Unknown model type: ${model}, defaulting to Gemini`);
+      console.log(`WARNING: Unknown model type: ${model}, defaulting to Gemini`);
       return ProviderType.GEMINI;
     }
   }
@@ -124,7 +124,7 @@ export class MultiProviderClient {
       await this.provider.initialize(providerConfig);
       this.currentProviderType = providerType;
     } catch (error) {
-      console.error(`❌ Failed to initialize ${providerType} provider:`, error);
+      console.error(`ERROR: Failed to initialize ${providerType} provider:`, error);
       // Better error message for missing API keys
       if (
         error instanceof Error &&

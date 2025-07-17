@@ -141,7 +141,7 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
     return (
       <Box flexDirection="column" padding={1}>
         <Text color={Colors.AccentBlue}>
-          🔍 Detecting available AI providers...
+          Detecting available AI providers...
         </Text>
       </Box>
     );
@@ -150,7 +150,7 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
   if (error) {
     return (
       <Box flexDirection="column" padding={1}>
-        <Text color={Colors.AccentRed}>❌ Error: {error}</Text>
+        <Text color={Colors.AccentRed}>Error: {error}</Text>
         <Text color={Colors.Comment}>
           Press any key to continue with default settings
         </Text>
@@ -161,7 +161,7 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
   return (
     <Box flexDirection="column" padding={1}>
       <Text color={Colors.AccentBlue} bold>
-        🤖 Select AI Provider
+        Select AI Provider
       </Text>
       <Text color={Colors.Comment}>
         Use ↑/↓ to navigate, Enter to select, Esc to cancel
@@ -176,7 +176,7 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
           <Box key={provider.type} marginBottom={0}>
             <Text color={isSelected ? Colors.AccentBlue : Colors.Foreground}>
               {isSelected ? '▶ ' : '  '}
-              {isAvailable ? '✅' : '❌'} {provider.name}
+              {isAvailable ? '' : '(!) '} {provider.name}
               {provider.isLocal ? ' (Local)' : ' (Cloud)'}
               {!isAvailable && ' - Not Available'}
             </Text>
@@ -189,22 +189,22 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
       {providers[selectedIndex]?.available ? (
         <Box flexDirection="column">
           <Text color={Colors.AccentGreen}>
-            ✨ {providers[selectedIndex].name} is ready to use
+            {providers[selectedIndex].name} is ready to use
           </Text>
           {providers[selectedIndex].isLocal && (
             <Text color={Colors.Comment}>
-              💡 Local providers keep your data private and work offline
+              Local providers keep your data private and work offline
             </Text>
           )}
         </Box>
       ) : (
         <Box flexDirection="column">
           <Text color={Colors.AccentYellow}>
-            ⚠️ {providers[selectedIndex]?.name} is not available
+            {providers[selectedIndex]?.name} is not available
           </Text>
           {providers[selectedIndex]?.type === ProviderType.OLLAMA && (
             <Text color={Colors.Comment}>
-              💡 Install Ollama from https://ollama.ai to use local AI models
+              Install Ollama from https://ollama.ai to use local AI models
             </Text>
           )}
         </Box>

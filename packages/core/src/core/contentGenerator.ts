@@ -230,7 +230,7 @@ function getProviderTypeFromModel(model: string): string {
 
   // Default to ollama for local-first approach
   console.log(
-    `⚠️  Unknown model type: ${model}, defaulting to Ollama (local AI)`,
+    `[WARNING] Unknown model type: ${model}, defaulting to Ollama (local AI)`,
   );
   return 'ollama';
 }

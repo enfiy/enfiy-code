@@ -48,11 +48,11 @@ function analyzeBundleSize() {
 
     totalSize += stats.size;
 
-    console.log(`📦 ${file}: ${sizeInMB}MB`);
+    console.log(`[File] ${file}: ${sizeInMB}MB`);
   });
 
   const totalSizeInMB = (totalSize / 1024 / 1024).toFixed(2);
-  console.log(`\n📊 Total bundle size: ${totalSizeInMB}MB`);
+  console.log(`\n[Summary] Total bundle size: ${totalSizeInMB}MB`);
 
   // Load history
   let history = [];
@@ -89,23 +89,23 @@ function analyzeBundleSize() {
     const diffMB = (sizeDiff / 1024 / 1024).toFixed(2);
 
     if (sizeDiff > 0) {
-      console.log(`📈 Size increased by ${diffMB}MB from previous build`);
+      console.log(`[Growth] Size increased by ${diffMB}MB from previous build`);
     } else if (sizeDiff < 0) {
       console.log(
-        `📉 Size decreased by ${Math.abs(diffMB)}MB from previous build`,
+        `[Reduction] Size decreased by ${Math.abs(diffMB)}MB from previous build`,
       );
     } else {
-      console.log(`➡️  Size unchanged from previous build`);
+      console.log(`[Stable] Size unchanged from previous build`);
     }
   }
 
   // Size warnings
   if (totalSize > MAX_BUNDLE_SIZE) {
     console.warn(
-      `\n⚠️  Bundle size (${totalSizeInMB}MB) exceeds recommended limit (${(MAX_BUNDLE_SIZE / 1024 / 1024).toFixed(1)}MB)`,
+      `\n[WARNING] Bundle size (${totalSizeInMB}MB) exceeds recommended limit (${(MAX_BUNDLE_SIZE / 1024 / 1024).toFixed(1)}MB)`,
     );
 
-    console.log('\n💡 Optimization suggestions:');
+    console.log('\n[Suggestions] Optimization suggestions:');
     console.log('   - Enable more aggressive tree shaking');
     console.log('   - Move heavy dependencies to external');
     console.log('   - Implement dynamic imports for large components');
@@ -113,17 +113,17 @@ function analyzeBundleSize() {
 
     if (totalSize > MAX_BUNDLE_SIZE * 2) {
       console.error(
-        `\n❌ Bundle size is critically large! Consider major refactoring.`,
+        `\n[ERROR] Bundle size is critically large! Consider major refactoring.`,
       );
       process.exit(1);
     }
   } else {
-    console.log(`\n✅ Bundle size is within acceptable limits`);
+    console.log(`\n[OK] Bundle size is within acceptable limits`);
   }
 
   // Performance recommendations
   if (totalSize > 1 * 1024 * 1024) {
-    console.log('\n🚀 Performance recommendations:');
+    console.log('\n[Performance] Performance recommendations:');
     console.log('   - Consider lazy loading for non-critical components');
     console.log('   - Implement component-level code splitting');
     console.log('   - Use dynamic imports for features');
@@ -141,7 +141,7 @@ function analyzeBundleSize() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   try {
     const result = analyzeBundleSize();
-    console.log('\n📋 Analysis complete!');
+    console.log('\nAnalysis complete!');
 
     if (!result.withinLimits) {
       process.exit(1);

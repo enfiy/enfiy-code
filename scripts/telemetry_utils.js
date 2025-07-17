@@ -142,11 +142,11 @@ export async function ensureBinary(
 ) {
   const executablePath = path.join(BIN_DIR, executableName);
   if (fileExists(executablePath)) {
-    console.log(`✅ ${executableName} already exists at ${executablePath}`);
+    console.log(`${executableName} already exists at ${executablePath}`);
     return executablePath;
   }
 
-  console.log(`🔍 ${executableName} not found. Downloading from ${repo}...`);
+  console.log(`${executableName} not found. Downloading from ${repo}...`);
 
   const platform = process.platform === 'win32' ? 'windows' : process.platform;
   const arch = process.arch === 'x64' ? 'amd64' : process.arch;
@@ -154,7 +154,7 @@ export async function ensureBinary(
 
   if (isJaeger && platform === 'windows' && arch === 'arm64') {
     console.warn(
-      `⚠️ Jaeger does not have a release for Windows on ARM64. Skipping.`,
+      `Jaeger does not have a release for Windows on ARM64. Skipping.`,
     );
     return null;
   }
@@ -163,7 +163,7 @@ export async function ensureBinary(
   let asset;
 
   if (isJaeger) {
-    console.log(`🔍 Finding latest Jaeger v2+ asset...`);
+    console.log(`Finding latest Jaeger v2+ asset...`);
     const releases = getJson(`https://api.github.com/repos/${repo}/releases`);
     const sortedReleases = releases
       .filter((r) => !r.prerelease && r.tag_name.startsWith('v'))
@@ -191,7 +191,7 @@ export async function ensureBinary(
         release = r;
         asset = foundAsset;
         console.log(
-          `⬇️  Found ${asset.name} in release ${r.tag_name}, downloading...`,
+          `Found ${asset.name} in release ${r.tag_name}, downloading...`,
         );
         break;
       }
@@ -220,9 +220,9 @@ export async function ensureBinary(
   const archivePath = path.join(tmpDir, asset.name);
 
   try {
-    console.log(`⬇️  Downloading ${asset.name}...`);
+    console.log(`Downloading ${asset.name}...`);
     downloadFile(downloadUrl, archivePath);
-    console.log(`📦 Extracting ${asset.name}...`);
+    console.log(`Extracting ${asset.name}...`);
 
     const actualExt = asset.name.endsWith('.zip') ? 'zip' : 'tar.gz';
 
@@ -252,7 +252,7 @@ export async function ensureBinary(
       fs.chmodSync(executablePath, '755');
     }
 
-    console.log(`✅ ${executableName} installed at ${executablePath}`);
+    console.log(`${executableName} installed at ${executablePath}`);
     return executablePath;
   } finally {
     fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -280,38 +280,38 @@ export function manageTelemetrySettings(
     if (workspaceSettings.telemetry.enabled !== true) {
       workspaceSettings.telemetry.enabled = true;
       settingsModified = true;
-      console.log('⚙️  Enabled telemetry in workspace settings.');
+      console.log('Enabled telemetry in workspace settings.');
     }
     if (workspaceSettings.sandbox !== false) {
       workspaceSettings.sandbox = false;
       settingsModified = true;
-      console.log('✅ Disabled sandbox mode for telemetry.');
+      console.log('Disabled sandbox mode for telemetry.');
     }
     if (workspaceSettings.telemetry.otlpEndpoint !== oTelEndpoint) {
       workspaceSettings.telemetry.otlpEndpoint = oTelEndpoint;
       settingsModified = true;
-      console.log(`🔧 Set telemetry OTLP endpoint to ${oTelEndpoint}.`);
+      console.log(`Set telemetry OTLP endpoint to ${oTelEndpoint}.`);
     }
     if (workspaceSettings.telemetry.target !== target) {
       workspaceSettings.telemetry.target = target;
       settingsModified = true;
-      console.log(`🎯 Set telemetry target to ${target}.`);
+      console.log(`Set telemetry target to ${target}.`);
     }
   } else {
     if (workspaceSettings.telemetry.enabled === true) {
       delete workspaceSettings.telemetry.enabled;
       settingsModified = true;
-      console.log('⚙️  Disabled telemetry in workspace settings.');
+      console.log('Disabled telemetry in workspace settings.');
     }
     if (workspaceSettings.telemetry.otlpEndpoint) {
       delete workspaceSettings.telemetry.otlpEndpoint;
       settingsModified = true;
-      console.log('🔧 Cleared telemetry OTLP endpoint.');
+      console.log('Cleared telemetry OTLP endpoint.');
     }
     if (workspaceSettings.telemetry.target) {
       delete workspaceSettings.telemetry.target;
       settingsModified = true;
-      console.log('🎯 Cleared telemetry target.');
+      console.log('Cleared telemetry target.');
     }
     if (Object.keys(workspaceSettings.telemetry).length === 0) {
       delete workspaceSettings.telemetry;
@@ -323,18 +323,18 @@ export function manageTelemetrySettings(
     ) {
       workspaceSettings.sandbox = originalSandboxSettingToRestore;
       settingsModified = true;
-      console.log('✅ Restored original sandbox setting.');
+      console.log('Restored original sandbox setting.');
     }
   }
 
   if (settingsModified) {
     writeJsonFile(WORKSPACE_SETTINGS_FILE, workspaceSettings);
-    console.log('✅ Workspace settings updated.');
+    console.log('Workspace settings updated.');
   } else {
     console.log(
       enable
-        ? '✅ Workspace settings are already configured for telemetry.'
-        : '✅ Workspace settings already reflect telemetry disabled.',
+        ? 'Workspace settings are already configured for telemetry.'
+        : 'Workspace settings already reflect telemetry disabled.',
     );
   }
   return currentSandboxSetting;
@@ -350,7 +350,7 @@ export function registerCleanup(
     if (cleanedUp) return;
     cleanedUp = true;
 
-    console.log('\n👋 Shutting down...');
+    console.log('\nShutting down...');
 
     manageTelemetrySettings(false, null, originalSandboxSetting);
 
@@ -359,9 +359,9 @@ export function registerCleanup(
       if (proc && proc.pid) {
         const name = path.basename(proc.spawnfile);
         try {
-          console.log(`🛑 Stopping ${name} (PID: ${proc.pid})...`);
+          console.log(`Stopping ${name} (PID: ${proc.pid})...`);
           process.kill(proc.pid, 'SIGTERM');
-          console.log(`✅ ${name} stopped.`);
+          console.log(`${name} stopped.`);
         } catch (e) {
           if (e.code !== 'ESRCH') {
             console.error(`Error stopping ${name}: ${e.message}`);

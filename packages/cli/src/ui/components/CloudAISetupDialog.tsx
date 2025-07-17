@@ -897,7 +897,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             {isAuthenticating ? (
               <>
                 <Text color={Colors.AccentYellow}>
-                  🔐 Authenticating with {authMethodName}...
+                  Authenticating with {authMethodName}...
                 </Text>
                 <Text> </Text>
                 <Text color={Colors.Gray}>
@@ -909,7 +909,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
                   <>
                     <Text> </Text>
                     <Text color={Colors.AccentBlue}>
-                      🌐 Complete authentication in your browser
+                      Complete authentication in your browser
                     </Text>
                     <Text color={Colors.Gray}>
                       • Browser should open automatically
@@ -1040,7 +1040,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         return (
           <Box flexDirection="column" width={width}>
             <Text color={Colors.AccentYellow}>
-              🔍 Checking API key format and saving securely...
+              Checking API key format and saving securely...
             </Text>
           </Box>
         );
@@ -1144,10 +1144,10 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       case 'complete':
         return (
           <Box flexDirection="column" width={width}>
-            <Text color={Colors.AccentGreen}>✓ API Key Setup Complete!</Text>
+            <Text color={Colors.AccentGreen}>API Key Setup Complete!</Text>
             <Text> </Text>
             <Text>Provider: {getProviderDisplayName()}</Text>
-            <Text>Status: ✓ Configured</Text>
+            <Text>Status: Configured</Text>
             <Text> </Text>
             <Text color={Colors.AccentYellow}>Press Enter to continue...</Text>
           </Box>

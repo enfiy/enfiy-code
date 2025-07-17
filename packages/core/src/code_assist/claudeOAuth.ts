@@ -42,7 +42,7 @@ export async function getClaudeOAuthClient(): Promise<ClaudeOAuthResponse> {
   // Check for cached credentials first
   const cachedCreds = await loadCachedClaudeCredentials();
   if (cachedCreds) {
-    console.log('✅ Using cached Claude credentials');
+    console.log('Using cached Claude credentials');
     return cachedCreds;
   }
 
@@ -53,32 +53,32 @@ export async function getClaudeOAuthClient(): Promise<ClaudeOAuthResponse> {
   const isLinux = process.platform === 'linux';
   const isDocker = process.env.container || process.env.DOCKER_CONTAINER;
 
-  console.log('\n🔐 Claude authentication required');
+  console.log('\nClaude authentication required');
   console.log('Opening browser for Claude.ai account authentication...');
   console.log('');
 
   if (isWSL || isLinux || isDocker) {
-    console.log('🌐 Remote/containerized environment detected');
+    console.log('Remote/containerized environment detected');
     console.log(
       "If browser doesn't open automatically, copy this URL to your browser:",
     );
     console.log('');
-    console.log(`🔗 ${webLogin.authUrl}`);
+    console.log(`${webLogin.authUrl}`);
     console.log('');
   }
 
   try {
     await open(webLogin.authUrl);
-    console.log('✅ Browser opened successfully');
+    console.log('Browser opened successfully');
   } catch (_error) {
-    console.log('⚠️ Failed to open browser automatically');
+    console.log('Failed to open browser automatically');
     console.log('Please manually copy and paste this URL into your browser:');
     console.log('');
-    console.log(`🔗 ${webLogin.authUrl}`);
+    console.log(`${webLogin.authUrl}`);
     console.log('');
 
     if (isWSL) {
-      console.log('💡 WSL/Linux Tips:');
+      console.log('WSL/Linux Tips:');
       console.log(`• wslview "${webLogin.authUrl}"`);
       console.log(`• cmd.exe /c start "${webLogin.authUrl}"`);
       console.log('• Or copy URL to Windows browser');
@@ -86,13 +86,13 @@ export async function getClaudeOAuthClient(): Promise<ClaudeOAuthResponse> {
     }
   }
 
-  console.log('⏳ Waiting for authentication in browser...');
+  console.log('Waiting for authentication in browser...');
   console.log('   Please complete the login process in your browser window');
 
   const response = await webLogin.loginCompletePromise;
 
   console.log(
-    '✅ Claude authentication successful! Credentials cached for future use.',
+    'Claude authentication successful! Credentials cached for future use.',
   );
 
   // Cache the credentials

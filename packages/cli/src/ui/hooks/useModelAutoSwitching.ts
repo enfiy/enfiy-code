@@ -69,7 +69,7 @@ export function useModelAutoSwitching({
             // Notify user of the automatic switch
             addMessage({
               type: MessageType.INFO,
-              content: `🔄 Auto-switched from ${modelName} to ${fallbackModel}\nReason: ${getErrorReason(error)}`,
+              content: `Auto-switched from ${modelName} to ${fallbackModel}\nReason: ${getErrorReason(error)}`,
               timestamp: new Date(),
             });
 
@@ -77,7 +77,7 @@ export function useModelAutoSwitching({
           } else {
             addMessage({
               type: MessageType.ERROR,
-              content: `❌ Failed to auto-switch to ${fallbackModel}. Please check model availability.`,
+              content: `Failed to auto-switch to ${fallbackModel}. Please check model availability.`,
               timestamp: new Date(),
             });
           }
@@ -116,7 +116,7 @@ export function useModelAutoSwitching({
           if (fallbackModel) {
             addMessage({
               type: MessageType.INFO,
-              content: `⚠️ Model ${currentModel} usage at ${Math.round(usagePercent)}%. Consider switching to ${fallbackModel} with /model switch ${fallbackModel}`,
+              content: `Model ${currentModel} usage at ${Math.round(usagePercent)}%. Consider switching to ${fallbackModel} with /model switch ${fallbackModel}`,
               timestamp: new Date(),
             });
           }

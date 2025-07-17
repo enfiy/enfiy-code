@@ -466,7 +466,7 @@ export const ProviderSelectionDialog: React.FC<
           {isCheckingProvider && (
             <Box paddingLeft={1} marginBottom={1}>
               <Text color={Colors.AccentBlue}>
-                🔍 Checking provider availability...
+                Checking provider availability...
               </Text>
             </Box>
           )}

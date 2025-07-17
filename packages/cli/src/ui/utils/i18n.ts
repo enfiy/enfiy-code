@@ -55,14 +55,14 @@ export interface TranslationKeys {
 
 export const translations: Record<SupportedLanguage, TranslationKeys> = {
   en: {
-    welcomeTitle: '🚀 **Welcome to Enfiy Code!**',
+    welcomeTitle: '**Welcome to Enfiy Code!**',
     welcomeMessage:
       "I am Enfiy's development assistant, designed to support AI-driven software development.",
     keyFeatures: '**Key Features:**',
-    featureFileOps: '📝 Read, edit, and create files',
-    featureCodeSearch: '🔍 Search and analyze code',
-    featureShellCommands: '🛠️ Execute shell commands',
-    featureSuggestions: '💡 Provide development suggestions and code review',
+    featureFileOps: 'Read, edit, and create files',
+    featureCodeSearch: 'Search and analyze code',
+    featureShellCommands: 'Execute shell commands',
+    featureSuggestions: 'Provide development suggestions and code review',
     helpMessage: "Feel free to ask if there's anything I can help you with!",
 
     providerSelectionTitle: 'AI Provider & Model Selection',
@@ -87,12 +87,12 @@ export const translations: Record<SupportedLanguage, TranslationKeys> = {
     tipTool: '/tool - Access specialized tools and integrations',
     tipBug: '/bug - Report bugs or issues',
 
-    navMove: '↑↓ Move',
+    navMove: 'Move',
     navSelect: 'Enter Select',
-    navBack: '← Back',
+    navBack: 'Back',
     navCancel: 'Esc Cancel',
 
-    setupComplete: '✓ In use:',
+    setupComplete: 'In use:',
     readyMessage: 'Ready! Enter questions or commands. /help for help',
     providerDetected: 'Recommended AI:',
     noModelsAvailable: 'No models available for',
