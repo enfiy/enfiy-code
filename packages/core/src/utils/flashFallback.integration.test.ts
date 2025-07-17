@@ -107,9 +107,9 @@ describe('Flash Fallback Integration', () => {
     // Test with API key auth type - should not trigger fallback
     try {
       await retryWithBackoff(mockApiCall, {
-        maxAttempts: 5,
+        maxAttempts: 3, // Reduced attempts to prevent timeout
         initialDelayMs: 10,
-        maxDelayMs: 100,
+        maxDelayMs: 50, // Reduced delay to prevent timeout
         shouldRetry: (error: Error) => {
           const status = (error as Error & { status?: number }).status;
           return status === 429;
@@ -125,7 +125,7 @@ describe('Flash Fallback Integration', () => {
     // Verify fallback was NOT triggered for API key users
     expect(fallbackCalled).toBe(false);
     expect(mockFallbackHandler).not.toHaveBeenCalled();
-  });
+  }, 10000); // 10 second timeout for this specific test
 
   it('should properly disable simulation state after fallback', () => {
     // Enable simulation

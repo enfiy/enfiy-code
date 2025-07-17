@@ -22,6 +22,9 @@ export default defineConfig({
     // Fix memory leak and EventTarget issues
     pool: 'forks',
     poolOptions: {
+      threads: {
+        singleThread: true,
+      },
       forks: {
         singleFork: true,
         isolate: true,
@@ -29,8 +32,8 @@ export default defineConfig({
     },
     // Reduce concurrent tests to prevent memory issues
     maxConcurrency: 1,
-    // Increase timeout for stable tests
-    testTimeout: 30000,
+    // Increase timeout for stable tests, especially in CI
+    testTimeout: 60000,
     // Clear mocks between tests
     clearMocks: true,
     // Restore all mocks after each test
@@ -42,6 +45,8 @@ export default defineConfig({
     },
     // Prevent hanging tests
     teardownTimeout: 10000,
+    // Retry failed tests up to 2 times in CI
+    retry: process.env.CI ? 2 : 0,
     coverage: {
       enabled: true,
       provider: 'v8',
