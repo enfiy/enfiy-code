@@ -10,6 +10,65 @@ import 'jsdom-global/register';
 // Fix EventTarget memory leak issues
 import { beforeEach, afterEach } from 'vitest';
 
+// Mock yoga-layout to prevent WASM initialization errors
+vi.mock('yoga-layout', () => {
+  const mockNode = {
+    setWidth: vi.fn(),
+    setHeight: vi.fn(),
+    setFlexDirection: vi.fn(),
+    setJustifyContent: vi.fn(),
+    setAlignItems: vi.fn(),
+    setAlignContent: vi.fn(),
+    setFlexWrap: vi.fn(),
+    setFlexGrow: vi.fn(),
+    setFlexShrink: vi.fn(),
+    setFlexBasis: vi.fn(),
+    setMargin: vi.fn(),
+    setPadding: vi.fn(),
+    setPosition: vi.fn(),
+    setPositionType: vi.fn(),
+    calculateLayout: vi.fn(),
+    getComputedWidth: vi.fn(() => 0),
+    getComputedHeight: vi.fn(() => 0),
+    getComputedLayout: vi.fn(() => ({ left: 0, top: 0, width: 0, height: 0 })),
+    insertChild: vi.fn(),
+    removeChild: vi.fn(),
+    getChildCount: vi.fn(() => 0),
+    getChild: vi.fn(),
+    free: vi.fn(),
+  };
+
+  const Yoga = {
+    Node: {
+      create: vi.fn(() => mockNode),
+    },
+    loadYoga: vi.fn(() => Promise.resolve(Yoga)),
+  };
+
+  return {
+    default: Yoga,
+    loadYoga: vi.fn(() => Promise.resolve(Yoga)),
+    Node: {
+      create: vi.fn(() => mockNode),
+    },
+  };
+});
+
+// Mock ink to prevent yoga-layout usage
+vi.mock('ink', async (importOriginal) => {
+  const actualInk = await importOriginal() as any;
+  return {
+    ...actualInk,
+    measureElement: vi.fn(() => ({ width: 100, height: 50 })),
+    useStdout: vi.fn(() => ({ stdout: { write: vi.fn() } })),
+    useStdin: vi.fn(() => ({ stdin: { on: vi.fn() }, setRawMode: vi.fn() })),
+    useInput: vi.fn(),
+    Box: ({ children }: any) => children,
+    Text: ({ children }: any) => children,
+    Static: ({ children }: any) => children,
+  };
+});
+
 vi.mock('zustand');
 
 // Global cleanup tracking

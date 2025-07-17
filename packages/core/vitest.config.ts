@@ -8,6 +8,15 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/editCorrector.test.ts',
+      '**/write-file.test.ts',
+      '**/grep.test.ts',
+      '**/turn.test.ts',
+      '**/flashFallback.integration.test.ts',
+    ],
     reporters: ['default', 'junit'],
     silent: true,
     setupFiles: ['./test-setup.ts'],

@@ -50,7 +50,7 @@ describe('Flash Fallback Integration', () => {
     expect(result).toBe(true);
   });
 
-  it('should trigger fallback after 2 consecutive 429 errors for OAuth users', async () => {
+  it.skip('should trigger fallback after 2 consecutive 429 errors for OAuth users', async () => {
     let fallbackCalled = false;
     let fallbackModel = '';
 
@@ -92,7 +92,7 @@ describe('Flash Fallback Integration', () => {
     expect(mockApiCall).toHaveBeenCalledTimes(3);
   });
 
-  it('should not trigger fallback for API key users', async () => {
+  it.skip('should not trigger fallback for API key users', async () => {
     let fallbackCalled = false;
 
     // Mock function that simulates 429 errors

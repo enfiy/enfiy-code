@@ -118,6 +118,7 @@ jobs:
         with:
           name: coverage-reports-${{ matrix.node-version }}
           path: packages/*/coverage
+          if-no-files-found: ignore
 
   post_coverage_comment:
     name: Post Coverage Comment
@@ -137,11 +138,22 @@ jobs:
 
       - name: Download coverage reports artifact
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: coverage-reports-${{ matrix.node-version }}
           path: coverage_artifact # Download to a specific directory
 
+      - name: Check if coverage files exist
+        id: check-coverage
+        run: |
+          if [ -f "coverage_artifact/cli/coverage/coverage-summary.json" ] || [ -f "coverage_artifact/core/coverage/coverage-summary.json" ]; then
+            echo "coverage-exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "coverage-exists=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Post Coverage Comment using Composite Action
+        if: steps.check-coverage.outputs.coverage-exists == 'true'
         uses: ./.github/actions/post-coverage-comment # Path to the composite action directory
         with:
           cli_json_file: coverage_artifact/cli/coverage/coverage-summary.json

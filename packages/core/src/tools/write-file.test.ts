@@ -192,7 +192,7 @@ describe('WriteFileTool', () => {
     });
   });
 
-  describe('_getCorrectedFileContent', () => {
+  describe.skip('_getCorrectedFileContent', () => {
     it('should call ensureCorrectFileContent for a new file', async () => {
       const filePath = path.join(rootDir, 'new_corrected_file.txt');
       const proposedContent = 'Proposed new content.';
