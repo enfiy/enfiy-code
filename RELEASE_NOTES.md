@@ -26,6 +26,7 @@ This is the initial release of Enfiy Code, a Universal AI Code Assistant that pr
 
 - **ESLint Configuration**: Comprehensive linting rules for code quality
 - **Prettier Integration**: Consistent code formatting across the project
+- **format:check Script**: Non-destructive formatting validation for CI
 - **GitHub Actions**: Automated CI/CD pipeline with testing and coverage
 - **Bundle Analysis**: Automated bundle size tracking and optimization
 
