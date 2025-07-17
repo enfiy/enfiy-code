@@ -148,9 +148,7 @@ async function parseArguments(): Promise<CliArgs> {
     .example('$0 -m "gpt-4"', 'Use specific model')
     .example('$0 -p "Review my code"', 'Start with a prompt')
     .example('$0 --auto', 'Auto-approve all actions')
-    .epilog(
-      'For more information, visit: https://github.com/enfiy/enfiy-code',
-    )
+    .epilog('For more information, visit: https://github.com/enfiy/enfiy-code')
     .strict().argv;
 
   return argv;

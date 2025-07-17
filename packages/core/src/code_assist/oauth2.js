@@ -123,9 +123,7 @@ export async function getOauthClient() {
   console.log('Waiting for authentication in browser...');
   console.log('   Please complete the login process in your browser window');
   await webLogin.loginCompletePromise;
-  console.log(
-    'Authentication successful! Credentials cached for future use.',
-  );
+  console.log('Authentication successful! Credentials cached for future use.');
   return client;
 }
 async function authWithWeb(client) {

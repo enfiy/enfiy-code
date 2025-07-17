@@ -344,7 +344,8 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
                   }
                 >
                   {highlightedIndex === index ? '▶ ' : '  '}
-                  {model.displayName} ({model.size}){model.isInstalled && ' (installed)'}
+                  {model.displayName} ({model.size})
+                  {model.isInstalled && ' (installed)'}
                 </Text>
                 <Text color={Colors.Gray}> {model.description}</Text>
               </Box>

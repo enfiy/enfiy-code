@@ -190,7 +190,10 @@ export class MultiProviderClient {
       await this.provider.initialize(providerConfig);
       this.currentProviderType = providerType;
     } catch (error) {
-      console.error(`[ERROR] Failed to initialize ${providerType} provider:`, error);
+      console.error(
+        `[ERROR] Failed to initialize ${providerType} provider:`,
+        error,
+      );
 
       // Better error message for missing API keys
       if (

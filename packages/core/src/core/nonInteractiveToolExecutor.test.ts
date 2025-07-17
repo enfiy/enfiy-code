@@ -185,7 +185,7 @@ describe('executeToolCall', () => {
           reject(cancellationError);
         };
         signal?.addEventListener('abort', abortHandler);
-        
+
         // Simulate work that might happen if not aborted immediately
         const timeoutId = setTimeout(
           () =>
@@ -194,7 +194,7 @@ describe('executeToolCall', () => {
             ),
           100,
         );
-        
+
         const timeoutHandler = () => {
           clearTimeout(timeoutId);
           signal?.removeEventListener('abort', abortHandler);
