@@ -66,7 +66,7 @@ export class OpenRouterProvider extends BaseProvider {
     }
 
     this.apiKey = config.apiKey;
-    
+
     if (config.baseUrl) {
       this.baseUrl = config.baseUrl;
     }
@@ -101,15 +101,16 @@ export class OpenRouterProvider extends BaseProvider {
 
       const data = await response.json();
       const models = data.data || [];
-      
+
       // Filter and map model IDs
       return models
         .map((model: { id: string }) => model.id)
-        .filter((id: string) => 
-          id.includes('claude') || 
-          id.includes('gpt') || 
-          id.includes('gemini') ||
-          id.includes('mistral')
+        .filter(
+          (id: string) =>
+            id.includes('claude') ||
+            id.includes('gpt') ||
+            id.includes('gemini') ||
+            id.includes('mistral'),
         );
     } catch {
       return this.getRecommendedModels();
@@ -126,23 +127,23 @@ export class OpenRouterProvider extends BaseProvider {
       'anthropic/claude-2.1',
       'anthropic/claude-2',
       'anthropic/claude-instant-1',
-      
+
       // GPT models
       'openai/gpt-4-turbo',
       'openai/gpt-4',
       'openai/gpt-3.5-turbo',
       'openai/gpt-3.5-turbo-16k',
-      
+
       // Gemini models
       'google/gemini-pro',
       'google/gemini-pro-vision',
-      
+
       // Mistral models
       'mistralai/mistral-7b-instruct',
       'mistralai/mixtral-8x7b-instruct',
       'mistralai/mistral-medium',
       'mistralai/mistral-large',
-      
+
       // Other popular models
       'meta-llama/llama-2-70b-chat',
       'meta-llama/llama-2-13b-chat',
@@ -235,7 +236,7 @@ export class OpenRouterProvider extends BaseProvider {
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.apiKey}`,
+      Authorization: `Bearer ${this.apiKey}`,
       'HTTP-Referer': 'https://github.com/enfiy/enfiy-code',
       'X-Title': 'Enfiy Code',
     };
@@ -288,7 +289,7 @@ export class OpenRouterProvider extends BaseProvider {
     }
 
     const modelName = params.model.replace(/^models\//, '');
-    
+
     const requestBody = {
       model: modelName,
       messages,
@@ -349,7 +350,7 @@ export class OpenRouterProvider extends BaseProvider {
     }
 
     const modelName = params.model.replace(/^models\//, '');
-    
+
     const requestBody = {
       model: modelName,
       messages,
@@ -366,9 +367,7 @@ export class OpenRouterProvider extends BaseProvider {
 
     if (!response.ok) {
       const errorData = await response.text();
-      throw new Error(
-        `OpenRouter API Error: ${response.status} ${errorData}`,
-      );
+      throw new Error(`OpenRouter API Error: ${response.status} ${errorData}`);
     }
 
     return this.createStreamGenerator(response);
@@ -403,7 +402,7 @@ export class OpenRouterProvider extends BaseProvider {
             try {
               const parsed: OpenRouterStreamChunk = JSON.parse(data);
               const delta = parsed.choices[0]?.delta?.content;
-              
+
               if (delta) {
                 accumulatedContent += delta;
 
@@ -414,9 +413,10 @@ export class OpenRouterProvider extends BaseProvider {
                         role: 'model',
                         parts: [{ text: accumulatedContent }],
                       },
-                      finishReason: parsed.choices[0]?.finish_reason === 'stop' 
-                        ? FinishReason.STOP 
-                        : FinishReason.OTHER,
+                      finishReason:
+                        parsed.choices[0]?.finish_reason === 'stop'
+                          ? FinishReason.STOP
+                          : FinishReason.OTHER,
                       index: 0,
                       safetyRatings: [],
                     },
@@ -477,14 +477,16 @@ OpenRouter provides access to multiple AI models including Claude, GPT-4, Gemini
       error !== null &&
       'response' in error
     ) {
-      const errorObj = error as { response?: { status?: number; data?: { error?: string } } };
-      
+      const errorObj = error as {
+        response?: { status?: number; data?: { error?: string } };
+      };
+
       if (errorObj.response?.status === 401) {
         return new Error(
           'OpenRouter API Error: Invalid API key. Please check your OpenRouter API key and try again.',
         );
       }
-      
+
       if (errorObj.response?.data?.error) {
         return new Error(
           `OpenRouter API Error: ${errorObj.response.data.error}`,
@@ -498,7 +500,7 @@ OpenRouter provides access to multiple AI models including Claude, GPT-4, Gemini
           'OpenRouter API Error: Invalid API key. Please check your OpenRouter API key format (should start with "sk-or-").',
         );
       }
-      
+
       return new Error(`OpenRouter API Error: ${error.message}`);
     }
 

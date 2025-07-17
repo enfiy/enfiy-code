@@ -159,13 +159,13 @@ export HF_CLIENT_ID="your-huggingface-app-id"
 
 ### Capability Comparison
 
-| Provider    | Code Quality | Speed      | Cost       | Multimodal | Privacy    |
-| ----------- | ------------ | ---------- | ---------- | ---------- | ---------- |
-| Anthropic   | [5/5]      | [4/5]      | [3/5]      | [NO]       | [4/5]      |
-| OpenAI      | [5/5]      | [5/5]      | [3/5]      | [3/5]      | [3/5]      |
-| Google      | [4/5]      | [4/5]      | [4/5]      | [5/5]      | [3/5]      |
-| Mistral     | [4/5]      | [5/5]      | [4/5]      | [NO]       | [4/5]      |
-| HuggingFace | [3/5]      | [3/5]      | [5/5]      | [3/5]      | [5/5]      |
+| Provider    | Code Quality | Speed | Cost  | Multimodal | Privacy |
+| ----------- | ------------ | ----- | ----- | ---------- | ------- |
+| Anthropic   | [5/5]        | [4/5] | [3/5] | [NO]       | [4/5]   |
+| OpenAI      | [5/5]        | [5/5] | [3/5] | [3/5]      | [3/5]   |
+| Google      | [4/5]        | [4/5] | [4/5] | [5/5]      | [3/5]   |
+| Mistral     | [4/5]        | [5/5] | [4/5] | [NO]       | [4/5]   |
+| HuggingFace | [3/5]        | [3/5] | [5/5] | [3/5]      | [5/5]   |
 
 ### Use Case Recommendations
 

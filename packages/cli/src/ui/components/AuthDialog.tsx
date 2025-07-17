@@ -90,9 +90,7 @@ export function AuthDialog({
       </Box>
       <Box marginTop={1}>
         <Text color={Colors.AccentBlue}>
-          {
-            'https://github.com/enfiy/enfiy-code/blob/main/docs/tos-privacy.md'
-          }
+          {'https://github.com/enfiy/enfiy-code/blob/main/docs/tos-privacy.md'}
         </Text>
       </Box>
     </Box>
