@@ -64,9 +64,7 @@ if (targetArg) {
     process.exit(1);
   }
 } else if (settingsTarget) {
-  console.log(
-    `Using telemetry target from settings.json: ${settingsTarget}`,
-  );
+  console.log(`Using telemetry target from settings.json: ${settingsTarget}`);
 }
 
 const scriptPath = join(

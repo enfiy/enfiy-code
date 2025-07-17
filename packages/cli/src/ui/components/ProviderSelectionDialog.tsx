@@ -52,10 +52,7 @@ export const ProviderSelectionDialog: React.FC<
   >(() => {
     // If we have a preselected provider, determine its category
     if (preselectedProvider) {
-      const localProviders = [
-        ProviderType.OLLAMA,
-        ProviderType.VLLM,
-      ];
+      const localProviders = [ProviderType.OLLAMA, ProviderType.VLLM];
       return localProviders.includes(preselectedProvider) ? 'local' : 'cloud';
     }
     return null;

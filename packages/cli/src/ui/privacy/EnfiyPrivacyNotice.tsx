@@ -31,12 +31,12 @@ export const EnfiyPrivacyNotice = ({ onExit }: EnfiyPrivacyNoticeProps) => {
       </Text>
       <Newline />
       <Text>
-        <Text color={Colors.AccentBlue}>Local processing</Text> - Your code
-        and conversations are processed locally
+        <Text color={Colors.AccentBlue}>Local processing</Text> - Your code and
+        conversations are processed locally
       </Text>
       <Text>
-        <Text color={Colors.AccentGreen}>No data sharing</Text> - We
-        don&apos;t store or share your data
+        <Text color={Colors.AccentGreen}>No data sharing</Text> - We don&apos;t
+        store or share your data
       </Text>
       <Text>
         <Text color={Colors.AccentYellow}>Full control</Text> - You control

@@ -71,9 +71,7 @@ async function setupOllama(options: {
     console.log(getOllamaInstallInstructions());
 
     if (options.interactive) {
-      console.log(
-        '\nインストール完了後、再度このコマンドを実行してください',
-      );
+      console.log('\nインストール完了後、再度このコマンドを実行してください');
     }
     return;
   }
@@ -112,9 +110,7 @@ async function setupOllama(options: {
   }
 
   // インストール済みモデルを表示
-  console.log(
-    `\nインストール済みモデル: ${status.installedModels.length}個`,
-  );
+  console.log(`\nインストール済みモデル: ${status.installedModels.length}個`);
   if (status.installedModels.length > 0) {
     status.installedModels.forEach((modelName) => {
       console.log(`  • ${modelName}`);
@@ -255,7 +251,9 @@ function displayOllamaStatus(status: {
         description: string;
         isInstalled: boolean;
       }) => {
-        const icon = model.isInstalled ? '[インストール済み]' : '[未インストール]';
+        const icon = model.isInstalled
+          ? '[インストール済み]'
+          : '[未インストール]';
         console.log(
           `  ${icon} ${model.name} (${model.size}) - ${model.description}`,
         );

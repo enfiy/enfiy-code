@@ -30,7 +30,16 @@ if (!process.cwd().includes('packages')) {
 const tscCommand =
   process.env.NODE_ENV === 'production' ? 'tsc --build --force' : 'tsc --build';
 
-execSync(tscCommand, { stdio: 'inherit' });
+// Add timeout and better error handling for CI environments
+try {
+  execSync(tscCommand, { 
+    stdio: 'inherit',
+    timeout: process.env.CI ? 600000 : 300000, // 10 minutes in CI, 5 minutes locally
+  });
+} catch (error) {
+  console.error('TypeScript build failed:', error.message);
+  process.exit(1);
+}
 
 // copy .{md,json} files
 execSync('node ../../scripts/copy_files.js', { stdio: 'inherit' });

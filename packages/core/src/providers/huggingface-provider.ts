@@ -115,11 +115,11 @@ export class HuggingFaceProvider extends BaseProvider {
     return [
       // Claude AI models (via Hugging Face Inference API)
       'anthropic/claude-3-5-sonnet-20241022',
-      'anthropic/claude-3-5-haiku-20241022', 
+      'anthropic/claude-3-5-haiku-20241022',
       'anthropic/claude-3-opus-20240229',
       'anthropic/claude-3-sonnet-20240229',
       'anthropic/claude-3-haiku-20240307',
-      
+
       // Chat models
       'microsoft/DialoGPT-medium',
       'microsoft/DialoGPT-large',
@@ -721,9 +721,13 @@ This file was auto-generated.`;
       : 'microsoft/DialoGPT-medium';
 
     // Determine if model supports chat format
-    const supportsChatFormat = ['zephyr', 'Mistral', 'Llama', 'CodeLlama', 'claude'].some(
-      (name) => finalModel.includes(name),
-    );
+    const supportsChatFormat = [
+      'zephyr',
+      'Mistral',
+      'Llama',
+      'CodeLlama',
+      'claude',
+    ].some((name) => finalModel.includes(name));
 
     const requestBody =
       supportsChatFormat && messages

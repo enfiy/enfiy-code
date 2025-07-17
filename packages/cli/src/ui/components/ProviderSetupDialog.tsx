@@ -414,7 +414,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
 
           <Box marginBottom={1}>
             <Text color={Colors.Gray}>
-                Setup time: {providerInfo.installTime || '~5 minutes'}
+              Setup time: {providerInfo.installTime || '~5 minutes'}
             </Text>
           </Box>
 

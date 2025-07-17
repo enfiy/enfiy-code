@@ -150,9 +150,7 @@ export async function getOauthClient(): Promise<OAuth2Client> {
 
   await webLogin.loginCompletePromise;
 
-  console.log(
-    'Authentication successful! Credentials cached for future use.',
-  );
+  console.log('Authentication successful! Credentials cached for future use.');
 
   return client;
 }

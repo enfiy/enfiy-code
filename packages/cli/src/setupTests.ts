@@ -12,19 +12,22 @@ if (typeof global !== 'undefined' && typeof EventTarget !== 'undefined') {
   // Store original methods
   const originalAddEventListener = EventTarget.prototype.addEventListener;
   const originalRemoveEventListener = EventTarget.prototype.removeEventListener;
-  
+
   // Track event listeners for cleanup
-  const eventListeners = new Map<EventTarget, Set<{
-    type: string;
-    listener: EventListenerOrEventListenerObject;
-    options?: boolean | AddEventListenerOptions;
-  }>>();
+  const eventListeners = new Map<
+    EventTarget,
+    Set<{
+      type: string;
+      listener: EventListenerOrEventListenerObject;
+      options?: boolean | AddEventListenerOptions;
+    }>
+  >();
 
   // Override addEventListener to track listeners
-  EventTarget.prototype.addEventListener = function(
+  EventTarget.prototype.addEventListener = function (
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ) {
     if (!eventListeners.has(this)) {
       eventListeners.set(this, new Set());
@@ -34,10 +37,10 @@ if (typeof global !== 'undefined' && typeof EventTarget !== 'undefined') {
   };
 
   // Override removeEventListener to untrack listeners
-  EventTarget.prototype.removeEventListener = function(
+  EventTarget.prototype.removeEventListener = function (
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | EventListenerOptions
+    options?: boolean | EventListenerOptions,
   ) {
     if (eventListeners.has(this)) {
       const listeners = eventListeners.get(this)!;
@@ -52,7 +55,9 @@ if (typeof global !== 'undefined' && typeof EventTarget !== 'undefined') {
   };
 
   // Cleanup function for tests
-  (global as unknown as { cleanupEventListeners: () => void }).cleanupEventListeners = () => {
+  (
+    global as unknown as { cleanupEventListeners: () => void }
+  ).cleanupEventListeners = () => {
     for (const [target, listeners] of eventListeners) {
       for (const { type, listener, options } of listeners) {
         try {

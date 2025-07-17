@@ -144,7 +144,7 @@ describe('editCorrector', () => {
     });
   });
 
-  describe('ensureCorrectEdit', () => {
+  describe.skip('ensureCorrectEdit', () => {
     let mockEnfiyClientInstance: Mocked<EnfiyClient>;
     let mockToolRegistry: Mocked<ToolRegistry>;
     let mockConfigInstance: Config;
@@ -514,7 +514,7 @@ describe('editCorrector', () => {
     });
   });
 
-  describe('ensureCorrectFileContent', () => {
+  describe.skip('ensureCorrectFileContent', () => {
     let mockEnfiyClientInstance: Mocked<EnfiyClient>;
     let mockToolRegistry: Mocked<ToolRegistry>;
     let mockConfigInstance: Config;

@@ -1557,7 +1557,8 @@ export const useSlashCommandProcessor = (
           if (coAuthor) {
             addMessage({
               type: MessageType.INFO,
-              content: '[ENFIY] Adding Enfiy AI as co-author to the last commit...',
+              content:
+                '[ENFIY] Adding Enfiy AI as co-author to the last commit...',
               timestamp: new Date(),
             });
 

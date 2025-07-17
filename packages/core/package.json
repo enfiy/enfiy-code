@@ -21,7 +21,9 @@
     "prepublishOnly": "node ../../scripts/prepublish.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "../../LICENSE"
   ],
   "dependencies": {
     "@google/genai": "^1.9.0",
@@ -47,18 +49,14 @@
     "undici": "^7.11.0"
   },
   "devDependencies": {
-    "@types/diff": "^8.0.0",
-    "@types/dotenv": "^8.2.3",
-    "@types/glob": "^9.0.0",
     "@types/html-to-text": "^9.0.4",
     "@types/micromatch": "^4.0.9",
     "@types/mime-types": "^3.0.1",
-    "@types/minimatch": "^6.0.0",
     "@types/ws": "^8.18.1",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20.0.0"
   }
 }

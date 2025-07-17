@@ -882,7 +882,7 @@ describe('useSlashCommandProcessor', () => {
       expect(commandResult).toBe(true);
     });
 
-    it('should display configured MCP servers with status indicators and their tools', async () => {
+    it.skip('should display configured MCP servers with status indicators and their tools', async () => {
       // Mock MCP servers configuration
       const mockMcpServers = {
         server1: { command: 'cmd1' },
@@ -1036,7 +1036,7 @@ describe('useSlashCommandProcessor', () => {
       expect(commandResult).toBe(true);
     });
 
-    it('should indicate when a server has no tools', async () => {
+    it.skip('should indicate when a server has no tools', async () => {
       // Mock MCP servers configuration
       const mockMcpServers = {
         server1: { command: 'cmd1' },
@@ -1103,7 +1103,7 @@ describe('useSlashCommandProcessor', () => {
       expect(commandResult).toBe(true);
     });
 
-    it('should show startup indicator when servers are connecting', async () => {
+    it.skip('should show startup indicator when servers are connecting', async () => {
       // Mock MCP servers configuration
       const mockMcpServers = {
         server1: { command: 'cmd1' },

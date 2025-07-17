@@ -28,6 +28,8 @@ jobs:
         run: npm ci
 
       - name: Build project
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: npm run build
 
       - name: Set up Docker
@@ -45,4 +47,6 @@ jobs:
       - name: Run E2E tests
         env:
           ENFIY_API_KEY: ${{ secrets.ENFIY_API_KEY }}
+          NODE_OPTIONS: --max-old-space-size=4096
+          CI: true
         run: npm run test:integration:${{ matrix.sandbox }} -- --verbose --keep-output

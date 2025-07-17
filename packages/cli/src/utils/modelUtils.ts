@@ -16,32 +16,37 @@ export function getProviderFromModel(modelName: string): ProviderType | null {
   const normalizedModel = modelName.toLowerCase();
 
   // OpenRouter models (check for OpenRouter-specific patterns or provider prefixes first)
-  if (normalizedModel.includes('openrouter') || 
-      normalizedModel.includes('anthropic/') || 
-      normalizedModel.includes('openai/') || 
-      normalizedModel.includes('google/') || 
-      normalizedModel.includes('mistralai/') ||
-      normalizedModel.includes('meta-llama/') ||
-      normalizedModel.includes('cognitivecomputations/') ||
-      normalizedModel.includes('huggingfaceh4/') ||
-      normalizedModel.includes('nousresearch/') ||
-      normalizedModel.includes('teknium/') ||
-      normalizedModel.includes('gryphe/') ||
-      normalizedModel.includes('undi95/') ||
-      normalizedModel.includes('alpindale/') ||
-      normalizedModel.includes('neversleep/') ||
-      normalizedModel.includes('sao10k/') ||
-      normalizedModel.includes('lizpreciatior/') ||
-      normalizedModel.includes('qwen/') ||
-      normalizedModel.includes('nvidia/') ||
-      normalizedModel.includes('liquid/') ||
-      normalizedModel.includes('deepseek/') ||
-      normalizedModel.includes('x-ai/')) {
+  if (
+    normalizedModel.includes('openrouter') ||
+    normalizedModel.includes('anthropic/') ||
+    normalizedModel.includes('openai/') ||
+    normalizedModel.includes('google/') ||
+    normalizedModel.includes('mistralai/') ||
+    normalizedModel.includes('meta-llama/') ||
+    normalizedModel.includes('cognitivecomputations/') ||
+    normalizedModel.includes('huggingfaceh4/') ||
+    normalizedModel.includes('nousresearch/') ||
+    normalizedModel.includes('teknium/') ||
+    normalizedModel.includes('gryphe/') ||
+    normalizedModel.includes('undi95/') ||
+    normalizedModel.includes('alpindale/') ||
+    normalizedModel.includes('neversleep/') ||
+    normalizedModel.includes('sao10k/') ||
+    normalizedModel.includes('lizpreciatior/') ||
+    normalizedModel.includes('qwen/') ||
+    normalizedModel.includes('nvidia/') ||
+    normalizedModel.includes('liquid/') ||
+    normalizedModel.includes('deepseek/') ||
+    normalizedModel.includes('x-ai/')
+  ) {
     return ProviderType.OPENROUTER;
   }
 
   // Anthropic Claude models (but not OpenRouter anthropic/ prefixed models)
-  if (normalizedModel.includes('claude') || normalizedModel.includes('anthropic')) {
+  if (
+    normalizedModel.includes('claude') ||
+    normalizedModel.includes('anthropic')
+  ) {
     return ProviderType.ANTHROPIC;
   }
 
@@ -61,38 +66,43 @@ export function getProviderFromModel(modelName: string): ProviderType | null {
   }
 
   // HuggingFace models
-  if (normalizedModel.includes('huggingface') || normalizedModel.includes('hf/')) {
+  if (
+    normalizedModel.includes('huggingface') ||
+    normalizedModel.includes('hf/')
+  ) {
     return ProviderType.HUGGINGFACE;
   }
 
   // Local models (Ollama, etc.)
-  if (normalizedModel.includes('llama') || 
-      normalizedModel.includes('phi') || 
-      normalizedModel.includes('qwen') ||
-      normalizedModel.includes('deepseek') ||
-      normalizedModel.includes('ollama') ||
-      normalizedModel.includes('codellama') ||
-      normalizedModel.includes('mistral:') ||  // Ollama Mistral variant
-      normalizedModel.includes('vicuna') ||
-      normalizedModel.includes('alpaca') ||
-      normalizedModel.includes('orca') ||
-      normalizedModel.includes('wizardcoder') ||
-      normalizedModel.includes('starcoder') ||
-      normalizedModel.includes('falcon') ||
-      normalizedModel.includes('mpt') ||
-      normalizedModel.includes('dolly') ||
-      normalizedModel.includes('stablelm') ||
-      normalizedModel.includes('yi:') ||
-      normalizedModel.includes('solar:') ||
-      normalizedModel.includes('neural-chat') ||
-      normalizedModel.includes('zephyr') ||
-      normalizedModel.includes('openchat') ||
-      normalizedModel.includes('starling') ||
-      normalizedModel.includes('samantha') ||
-      normalizedModel.includes('tinyllama') ||
-      normalizedModel.includes('gemma') ||
-      normalizedModel.includes('nous-hermes') ||
-      normalizedModel.includes('dolphin')) {
+  if (
+    normalizedModel.includes('llama') ||
+    normalizedModel.includes('phi') ||
+    normalizedModel.includes('qwen') ||
+    normalizedModel.includes('deepseek') ||
+    normalizedModel.includes('ollama') ||
+    normalizedModel.includes('codellama') ||
+    normalizedModel.includes('mistral:') || // Ollama Mistral variant
+    normalizedModel.includes('vicuna') ||
+    normalizedModel.includes('alpaca') ||
+    normalizedModel.includes('orca') ||
+    normalizedModel.includes('wizardcoder') ||
+    normalizedModel.includes('starcoder') ||
+    normalizedModel.includes('falcon') ||
+    normalizedModel.includes('mpt') ||
+    normalizedModel.includes('dolly') ||
+    normalizedModel.includes('stablelm') ||
+    normalizedModel.includes('yi:') ||
+    normalizedModel.includes('solar:') ||
+    normalizedModel.includes('neural-chat') ||
+    normalizedModel.includes('zephyr') ||
+    normalizedModel.includes('openchat') ||
+    normalizedModel.includes('starling') ||
+    normalizedModel.includes('samantha') ||
+    normalizedModel.includes('tinyllama') ||
+    normalizedModel.includes('gemma') ||
+    normalizedModel.includes('nous-hermes') ||
+    normalizedModel.includes('dolphin')
+  ) {
     return ProviderType.OLLAMA;
   }
 
@@ -116,7 +126,11 @@ export function isCloudModel(modelName: string): boolean {
   if (!modelName) return false;
 
   const provider = getProviderFromModel(modelName);
-  return provider !== null && provider !== ProviderType.OLLAMA && provider !== ProviderType.VLLM;
+  return (
+    provider !== null &&
+    provider !== ProviderType.OLLAMA &&
+    provider !== ProviderType.VLLM
+  );
 }
 
 /**

@@ -7,16 +7,16 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
-import {
-  shortenPath,
-  tildeifyPath,
-  tokenLimit,
-} from '@enfiy/core';
+import { shortenPath, tildeifyPath, tokenLimit } from '@enfiy/core';
 import { ConsoleSummaryDisplay } from './ConsoleSummaryDisplay.js';
 import process from 'node:process';
 import { MemoryUsageDisplay } from './MemoryUsageDisplay.js';
 import { getApiKey } from '../../utils/secureStorage.js';
-import { getProviderFromModel, isLocalModel, getProviderDisplayNameFromModel } from '../../utils/modelUtils.js';
+import {
+  getProviderFromModel,
+  isLocalModel,
+  getProviderDisplayNameFromModel,
+} from '../../utils/modelUtils.js';
 
 interface FooterProps {
   model: string;
@@ -90,24 +90,27 @@ export const Footer: React.FC<FooterProps> = ({
   // Model display logic with authentication type
   const authType = getAuthType(model);
   const modelAvailable = isModelAvailable(model);
-  
+
   const modelDisplay = !model ? (
     <Text color={Colors.Gray}>Select AI provider and model</Text>
   ) : !modelAvailable ? (
     <Text color={Colors.Gray}>Select AI provider and model</Text>
-  ) : (() => {
-    const providerName = getProviderDisplayNameFromModel(model);
-    const isLocal = isLocalModel(model);
-    const category = isLocal ? 'Local' : 'Cloud';
-    const displayName = providerName ? `${providerName} ` : '';
-    
-    return (
-      <Text color={Colors.AccentBlue}>
-        [{category}] {displayName}{model}
-        {authType}
-      </Text>
-    );
-  })();
+  ) : (
+    (() => {
+      const providerName = getProviderDisplayNameFromModel(model);
+      const isLocal = isLocalModel(model);
+      const category = isLocal ? 'Local' : 'Cloud';
+      const displayName = providerName ? `${providerName} ` : '';
+
+      return (
+        <Text color={Colors.AccentBlue}>
+          [{category}] {displayName}
+          {model}
+          {authType}
+        </Text>
+      );
+    })()
+  );
 
   return (
     <Box flexDirection="column" width="100%">

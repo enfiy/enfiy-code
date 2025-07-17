@@ -372,12 +372,14 @@ ${t('helpMessage')}`,
         import('../utils/secureStorage.js').then(({ hasStoredCredentials }) => {
           if (!hasStoredCredentials(setupProvider)) {
             // API key was deleted and current model uses this provider - reset model
-            console.log(`API key for ${setupProvider} was deleted. Resetting current model: ${currentModel}`);
+            console.log(
+              `API key for ${setupProvider} was deleted. Resetting current model: ${currentModel}`,
+            );
             setCurrentModel('');
             config.setModel('');
             settings.setValue(SettingScope.User, 'selectedModel', '');
             settings.setValue(SettingScope.User, 'selectedProvider', '');
-            
+
             // Add info message about model being disabled
             addItem(
               {
@@ -402,7 +404,14 @@ ${t('helpMessage')}`,
       // 通常の場合はプロバイダー選択に戻る
       setShowProviderSelection(true);
     }
-  }, [isManagingProvider, setupProvider, currentModel, config, settings, addItem]);
+  }, [
+    isManagingProvider,
+    setupProvider,
+    currentModel,
+    config,
+    settings,
+    addItem,
+  ]);
 
   const handleOpenAPISettings = useCallback(() => {
     setShowProviderSelection(false);
