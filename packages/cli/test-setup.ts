@@ -6,6 +6,7 @@
 
 import { vi } from 'vitest';
 import 'jsdom-global/register';
+import type { ReactNode } from 'react';
 
 // Fix EventTarget memory leak issues
 import { beforeEach, afterEach } from 'vitest';
@@ -56,16 +57,16 @@ vi.mock('yoga-layout', () => {
 
 // Mock ink to prevent yoga-layout usage
 vi.mock('ink', async (importOriginal) => {
-  const actualInk = await importOriginal() as any;
+  const actualInk = await importOriginal() as Record<string, unknown>;
   return {
     ...actualInk,
     measureElement: vi.fn(() => ({ width: 100, height: 50 })),
     useStdout: vi.fn(() => ({ stdout: { write: vi.fn() } })),
     useStdin: vi.fn(() => ({ stdin: { on: vi.fn() }, setRawMode: vi.fn() })),
     useInput: vi.fn(),
-    Box: ({ children }: any) => children,
-    Text: ({ children }: any) => children,
-    Static: ({ children }: any) => children,
+    Box: ({ children }: { children?: ReactNode }) => children,
+    Text: ({ children }: { children?: ReactNode }) => children,
+    Static: ({ children }: { children?: ReactNode }) => children,
   };
 });
 
