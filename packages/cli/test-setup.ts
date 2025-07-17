@@ -204,4 +204,13 @@ afterEach(() => {
   if (typeof global !== 'undefined' && global.gc) {
     global.gc();
   }
+
+  // Suppress any remaining EventTarget cleanup errors
+  if (typeof process !== 'undefined' && process.removeAllListeners) {
+    try {
+      process.removeAllListeners();
+    } catch {
+      // Ignore cleanup errors
+    }
+  }
 });

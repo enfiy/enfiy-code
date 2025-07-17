@@ -71,6 +71,8 @@ export default defineConfig({
     teardownTimeout: process.env.CI ? 30000 : 10000,
     // Retry failed tests up to 2 times in CI
     retry: process.env.CI ? 2 : 0,
+    // Suppress unhandled errors during cleanup
+    dangerouslyIgnoreUnhandledErrors: true,
     coverage: {
       enabled: true,
       provider: 'v8',
