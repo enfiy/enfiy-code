@@ -23,10 +23,8 @@ const OAUTH_CLIENT_ID =
   process.env.ENFIY_GOOGLE_OAUTH_CLIENT_ID ||
   '681255809395-oo8ft2oprdrnp9e3aqf6av3hmdib135j.apps.googleusercontent.com';
 
-// OAuth Secret value - Temporary
-const OAUTH_CLIENT_SECRET =
-  process.env.ENFIY_GOOGLE_OAUTH_CLIENT_SECRET ||
-  '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';
+// OAuth Secret value - Must be set via environment variable
+const OAUTH_CLIENT_SECRET = process.env.ENFIY_GOOGLE_OAUTH_CLIENT_SECRET;
 
 // OAuth Scopes for Cloud Code authorization.
 const OAUTH_SCOPE = [

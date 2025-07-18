@@ -1,0 +1,44 @@
+# Dependency Update workflow
+name: Dependency Update
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Weekly on Monday
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  dependency-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Update dependencies
+        run: |
+          npm update
+          npm audit fix --force
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update dependencies'
+          title: 'chore: weekly dependency update'
+          body: |
+            This PR updates dependencies to their latest versions.
+            
+            - Updated npm dependencies
+            - Fixed security vulnerabilities
+            
+            Please review the changes before merging.
+          branch: deps/update-dependencies
+          delete-branch: true
