@@ -35,10 +35,10 @@ jobs:
           title: 'chore: weekly dependency update'
           body: |
             This PR updates dependencies to their latest versions.
-            
+
             - Updated npm dependencies
             - Fixed security vulnerabilities
-            
+
             Please review the changes before merging.
           branch: deps/update-dependencies
           delete-branch: true

@@ -10,12 +10,9 @@ import {
   setSimulate429,
   disableSimulationAfterFallback,
   shouldSimulate429,
-  createSimulated429Error,
   resetRequestCounter,
 } from './testUtils.js';
 import { DEFAULT_GEMINI_FLASH_MODEL } from '../config/models.js';
-import { retryWithBackoff } from './retry.js';
-import { AuthType } from '../core/contentGenerator.js';
 
 describe('Flash Fallback Integration', () => {
   let config: Config;
@@ -53,15 +50,15 @@ describe('Flash Fallback Integration', () => {
   it('should trigger fallback after 2 consecutive 429 errors for OAuth users', async () => {
     // Simplified test that doesn't require actual API calls
     const mockFallbackHandler = vi.fn().mockResolvedValue(true);
-    
+
     config.setFlashFallbackHandler(mockFallbackHandler);
-    
+
     // Just test that the fallback handler is called correctly
     const result = await config.flashFallbackHandler!(
       'gemini-2.5-pro',
       DEFAULT_GEMINI_FLASH_MODEL,
     );
-    
+
     expect(result).toBe(true);
     expect(mockFallbackHandler).toHaveBeenCalledWith(
       'gemini-2.5-pro',
@@ -72,15 +69,15 @@ describe('Flash Fallback Integration', () => {
   it('should not trigger fallback for API key users', async () => {
     // Simplified test that just verifies the logic without network calls
     const mockFallbackHandler = vi.fn().mockResolvedValue(false);
-    
+
     config.setFlashFallbackHandler(mockFallbackHandler);
-    
+
     // Test that fallback handler can return false (no fallback)
     const result = await config.flashFallbackHandler!(
       'gemini-2.5-pro',
       DEFAULT_GEMINI_FLASH_MODEL,
     );
-    
+
     expect(result).toBe(false);
     expect(mockFallbackHandler).toHaveBeenCalledWith(
       'gemini-2.5-pro',

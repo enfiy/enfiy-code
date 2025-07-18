@@ -1,31 +1,31 @@
 # Labeler configuration for PR validation
-"area/core":
+'area/core':
   - packages/core/**/*
 
-"area/cli":
+'area/cli':
   - packages/cli/**/*
 
-"area/docs":
+'area/docs':
   - docs/**/*
-  - "**/*.md"
+  - '**/*.md'
 
-"area/ci":
+'area/ci':
   - .github/**/*
   - scripts/**/*
 
-"area/tests":
-  - "**/*.test.*"
-  - "**/*.spec.*"
+'area/tests':
+  - '**/*.test.*'
+  - '**/*.spec.*'
   - integration-tests/**/*
 
-"kind/enhancement":
+'kind/enhancement':
   - any: ['feat', 'feature']
 
-"kind/bug":
+'kind/bug':
   - any: ['fix', 'bugfix']
 
-"kind/documentation":
+'kind/documentation':
   - any: ['docs', 'doc']
 
-"kind/maintenance":
+'kind/maintenance':
   - any: ['chore', 'refactor', 'style']
