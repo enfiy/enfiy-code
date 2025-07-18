@@ -48,7 +48,7 @@ export class TestRig {
 
   run(prompt, ...args) {
     const output = execSync(
-      `node ${this.bundlePath} --yolo --prompt "${prompt}" ${args.join(' ')}`,
+      `node ${this.bundlePath} --auto --prompt "${prompt}" ${args.join(' ')}`,
       {
         cwd: this.testDir,
         encoding: 'utf-8',

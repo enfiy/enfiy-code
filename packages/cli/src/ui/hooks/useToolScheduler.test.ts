@@ -50,6 +50,7 @@ const mockConfig = {
   getApprovalMode: vi.fn(() => ApprovalMode.DEFAULT),
   getUsageStatisticsEnabled: () => true,
   getDebugMode: () => false,
+  getSessionId: vi.fn(() => 'test-session-id'),
 };
 
 const mockTool: Tool = {

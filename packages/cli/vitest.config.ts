@@ -44,14 +44,11 @@ export default defineConfig({
       junit: 'junit.xml',
     },
     // Fix memory leak and EventTarget issues
-    pool: 'forks',
+    pool: 'threads',
     poolOptions: {
       threads: {
         singleThread: true,
-      },
-      forks: {
-        singleFork: true,
-        isolate: true,
+        isolate: false,
       },
     },
     // Reduce concurrent tests to prevent memory issues
