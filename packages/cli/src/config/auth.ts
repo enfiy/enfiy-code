@@ -10,13 +10,14 @@ import { loadEnvironment } from './config.js';
 export const validateAuthMethod = (authMethod: string): string | null => {
   loadEnvironment();
 
-  // For Enfiy Code, all auth types map to API_KEY authentication
+  // For Enfiy Code, support various authentication types
   if (
     authMethod === AuthType.API_KEY ||
     authMethod === AuthType.LOGIN_WITH_GOOGLE_PERSONAL ||
     authMethod === AuthType.USE_GEMINI ||
     authMethod === AuthType.USE_VERTEX_AI ||
-    authMethod === 'api-key'
+    authMethod === 'api-key' ||
+    authMethod === 'local'
   ) {
     // For Enfiy, we don't require environment variables since we use secure storage
     // Just validate that it's a supported auth method

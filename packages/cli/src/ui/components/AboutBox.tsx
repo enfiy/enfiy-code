@@ -99,7 +99,13 @@ export const AboutBox: React.FC<AboutBoxProps> = ({
       </Box>
       <Box>
         <Text>
-          {selectedAuthType.startsWith('oauth') ? 'OAuth' : selectedAuthType}
+          {selectedAuthType.startsWith('oauth') 
+            ? 'OAuth' 
+            : selectedAuthType === 'local' 
+              ? 'Local' 
+              : selectedAuthType === 'api-key' 
+                ? 'API Key' 
+                : selectedAuthType}
         </Text>
       </Box>
     </Box>

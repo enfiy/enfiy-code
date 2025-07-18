@@ -129,9 +129,22 @@ export async function main() {
   const extensions = loadExtensions(workspaceRoot);
   const config = await loadCliConfig(settings.merged, extensions, sessionId);
 
-  // set default fallback to api key authentication
+  // set default fallback authentication based on provider and model
   if (!settings.merged.selectedAuthType) {
-    settings.setValue(SettingScope.User, 'selectedAuthType', AuthType.API_KEY);
+    const selectedProvider = settings.merged.selectedProvider;
+    const selectedModel = settings.merged.selectedModel;
+    let defaultAuthType: string = AuthType.API_KEY;
+    
+    // Detect appropriate auth type based on provider and model
+    if (selectedProvider === 'ollama' || (selectedModel && selectedModel.includes('llama'))) {
+      defaultAuthType = 'local'; // Use 'local' for Ollama/local models
+    } else if (selectedProvider && ['openai', 'anthropic', 'mistral', 'huggingface'].includes(selectedProvider)) {
+      defaultAuthType = AuthType.API_KEY;
+    } else if (selectedProvider === 'gemini' || selectedProvider === 'google' || (selectedModel && selectedModel.includes('gemini'))) {
+      defaultAuthType = AuthType.USE_GEMINI;
+    }
+    
+    settings.setValue(SettingScope.User, 'selectedAuthType', defaultAuthType);
   }
 
   setMaxSizedBoxDebugging(config.getDebugMode());
