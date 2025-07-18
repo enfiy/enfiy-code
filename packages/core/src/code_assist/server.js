@@ -11,10 +11,10 @@ import {
   toCountTokenRequest,
   toGenerateContentRequest,
 } from './converter.js';
-// TODO: Use production endpoint once it supports our methods.
+// Production endpoint for Code Assist API
 export const CODE_ASSIST_ENDPOINT =
-  process.env.CODE_ASSIST_ENDPOINT ?? 'https://cloudcode-pa.googleapis.com';
-export const CODE_ASSIST_API_VERSION = 'v1internal';
+  process.env.CODE_ASSIST_ENDPOINT ?? 'https://generativelanguage.googleapis.com';
+export const CODE_ASSIST_API_VERSION = 'v1';
 export class CodeAssistServer {
   auth;
   projectId;

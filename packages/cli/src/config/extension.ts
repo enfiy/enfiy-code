@@ -34,9 +34,7 @@ export function loadExtensions(workspaceDir: string): Extension[] {
   const seenNames = new Set<string>();
   for (const extension of allExtensions) {
     if (!seenNames.has(extension.config.name)) {
-      console.log(
-        `Loading extension: ${extension.config.name} (version: ${extension.config.version})`,
-      );
+      // Loading extension: ${extension.config.name} (version: ${extension.config.version})
       uniqueExtensions.push(extension);
       seenNames.add(extension.config.name);
     }
@@ -65,17 +63,13 @@ function loadExtensionsFromDir(dir: string): Extension[] {
 
 function loadExtension(extensionDir: string): Extension | null {
   if (!fs.statSync(extensionDir).isDirectory()) {
-    console.error(
-      `Warning: unexpected file ${extensionDir} in extensions directory.`,
-    );
+    // Warning: unexpected file ${extensionDir} in extensions directory.
     return null;
   }
 
   const configFilePath = path.join(extensionDir, EXTENSIONS_CONFIG_FILENAME);
   if (!fs.existsSync(configFilePath)) {
-    console.error(
-      `Warning: extension directory ${extensionDir} does not contain a config file ${configFilePath}.`,
-    );
+    // Warning: extension directory ${extensionDir} does not contain a config file ${configFilePath}.
     return null;
   }
 
@@ -83,9 +77,7 @@ function loadExtension(extensionDir: string): Extension | null {
     const configContent = fs.readFileSync(configFilePath, 'utf-8');
     const config = JSON.parse(configContent) as ExtensionConfig;
     if (!config.name || !config.version) {
-      console.error(
-        `Invalid extension config in ${configFilePath}: missing name or version.`,
-      );
+      // Invalid extension config in ${configFilePath}: missing name or version.
       return null;
     }
 
@@ -97,10 +89,8 @@ function loadExtension(extensionDir: string): Extension | null {
       config,
       contextFiles,
     };
-  } catch (e) {
-    console.error(
-      `Warning: error parsing extension config in ${configFilePath}: ${e}`,
-    );
+  } catch (_e) {
+    // Warning: error parsing extension config in ${configFilePath}: ${_e}
     return null;
   }
 }
