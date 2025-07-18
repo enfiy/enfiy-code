@@ -32,7 +32,7 @@ const tscCommand =
 
 // Add timeout and better error handling for CI environments
 try {
-  execSync(tscCommand, { 
+  execSync(tscCommand, {
     stdio: 'inherit',
     timeout: process.env.CI ? 600000 : 300000, // 10 minutes in CI, 5 minutes locally
   });

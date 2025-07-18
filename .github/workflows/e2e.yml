@@ -49,4 +49,9 @@ jobs:
           ENFIY_API_KEY: ${{ secrets.ENFIY_API_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
           CI: true
-        run: npm run test:integration:${{ matrix.sandbox }} -- --verbose --keep-output
+        run: |
+          if [ -z "$ENFIY_API_KEY" ]; then
+            echo "ENFIY_API_KEY is not set, skipping E2E tests"
+            exit 0
+          fi
+          npm run test:integration:${{ matrix.sandbox }} -- --verbose --keep-output

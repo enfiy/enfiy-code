@@ -57,7 +57,7 @@ vi.mock('yoga-layout', () => {
 
 // Mock ink to prevent yoga-layout usage
 vi.mock('ink', async (importOriginal) => {
-  const actualInk = await importOriginal() as Record<string, unknown>;
+  const actualInk = (await importOriginal()) as Record<string, unknown>;
   return {
     ...actualInk,
     measureElement: vi.fn(() => ({ width: 100, height: 50 })),

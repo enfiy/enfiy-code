@@ -54,12 +54,15 @@ describe.skip('useShellHistory', () => {
     mockedFs.readFile.mockResolvedValue('cmd1\ncmd2');
     const { result } = renderHook(() => useShellHistory(MOCKED_PROJECT_ROOT));
 
-    await waitFor(() => {
-      expect(mockedFs.readFile).toHaveBeenCalledWith(
-        MOCKED_HISTORY_FILE,
-        'utf-8',
-      );
-    }, { timeout: 5000 });
+    await waitFor(
+      () => {
+        expect(mockedFs.readFile).toHaveBeenCalledWith(
+          MOCKED_HISTORY_FILE,
+          'utf-8',
+        );
+      },
+      { timeout: 5000 },
+    );
 
     let command: string | null = null;
     act(() => {
