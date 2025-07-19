@@ -52,51 +52,64 @@ export function getDefaultModelForProvider(provider: string): string {
 // Helper function to get provider from model name
 export function getProviderFromModel(model: string): string {
   const modelLower = model.toLowerCase();
-  
+
   // OpenAI models
-  if (modelLower.includes('gpt') || modelLower.includes('o3') || modelLower.includes('o4')) {
+  if (
+    modelLower.includes('gpt') ||
+    modelLower.includes('o3') ||
+    modelLower.includes('o4')
+  ) {
     return 'openai';
   }
-  
+
   // Anthropic models
   if (modelLower.includes('claude')) {
     return 'anthropic';
   }
-  
+
   // Gemini models
   if (modelLower.includes('gemini')) {
     return 'gemini';
   }
-  
+
   // Mistral models
-  if (modelLower.includes('mistral') || modelLower.includes('codestral') || modelLower.includes('devstral')) {
+  if (
+    modelLower.includes('mistral') ||
+    modelLower.includes('codestral') ||
+    modelLower.includes('devstral')
+  ) {
     return 'mistral';
   }
-  
+
   // Ollama models - identified by colon notation (e.g., llama3.2:8b, qwen2.5:7b)
   // or common local model names
-  if (modelLower.includes(':') || 
-      modelLower.includes('llama') || 
-      modelLower.includes('qwen') || 
-      modelLower.includes('deepseek') ||
-      modelLower.includes('phi') ||
-      modelLower.includes('vicuna') ||
-      modelLower.includes('orca') ||
-      modelLower.includes('neural') ||
-      modelLower.includes('codellama')) {
+  if (
+    modelLower.includes(':') ||
+    modelLower.includes('llama') ||
+    modelLower.includes('qwen') ||
+    modelLower.includes('deepseek') ||
+    modelLower.includes('phi') ||
+    modelLower.includes('vicuna') ||
+    modelLower.includes('orca') ||
+    modelLower.includes('neural') ||
+    modelLower.includes('codellama')
+  ) {
     return 'ollama';
   }
-  
+
   // HuggingFace models - models with slash notation
   if (model.includes('/')) {
     return 'huggingface';
   }
-  
+
   return 'gemini'; // Default provider
 }
 
 // Check if model and provider are compatible
-export function isModelProviderCompatible(model: string, provider: string): boolean {
+export function isModelProviderCompatible(
+  model: string,
+  provider: string,
+): boolean {
   const expectedProvider = getProviderFromModel(model);
   return expectedProvider === provider.toLowerCase();
 }

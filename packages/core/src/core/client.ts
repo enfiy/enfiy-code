@@ -275,7 +275,7 @@ export class EnfiyClient {
     for await (const event of resultStream) {
       yield event;
     }
-    
+
     return turn;
   }
 

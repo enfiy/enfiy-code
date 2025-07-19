@@ -159,7 +159,7 @@ export async function createContentGenerator(
     if (!config.apiKey) {
       throw new Error('API key is required for Gemini provider');
     }
-    
+
     const googleGenAI = new GoogleGenAI({
       apiKey: config.apiKey,
       vertexai: config.vertexai,
@@ -169,7 +169,6 @@ export async function createContentGenerator(
     return googleGenAI.models;
   }
 
-  
   throw new Error(
     `Error creating contentGenerator: Unsupported authType: ${config.authType}, providerType: ${providerType}`,
   );
