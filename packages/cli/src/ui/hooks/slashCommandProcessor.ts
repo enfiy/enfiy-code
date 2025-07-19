@@ -1562,7 +1562,7 @@ export const useSlashCommandProcessor = (
               timestamp: new Date(),
             });
 
-            const coAuthorCommand = `git commit --amend --no-edit --trailer "Co-authored-by: Enfiy <enfiy@users.noreply.github.com>"`;
+            const coAuthorCommand = `git commit --amend --no-edit --trailer "Co-authored-by: Enfiy <noreply@enfiy.com>"`;
             command = `${coAuthorCommand} && ${command}`;
           }
 
@@ -1596,7 +1596,7 @@ export const useSlashCommandProcessor = (
           }
 
           command +=
-            ' --body "[ENFIY] Created with Enfiy\\n\\nCo-authored-by: Enfiy <enfiy@users.noreply.github.com>"';
+            ' --body "[ENFIY] Created with Enfiy\\n\\nCo-authored-by: Enfiy <noreply@enfiy.com>"';
 
           addMessage({
             type: MessageType.INFO,
