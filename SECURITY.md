@@ -62,7 +62,9 @@ When reporting a vulnerability, please include:
 - **Git-aware File Filtering**: Prevents accidental inclusion of sensitive files
 - **Environment Variable Support**: Secure configuration through environment variables
 - **Sandboxed Execution**: Docker container support for isolated environments
-- **No Credential Storage**: API keys are not stored in plain text
+- **Secure Credential Storage**: API keys are stored securely using system keychain (keytar)
+- **OAuth Authentication**: Support for secure OAuth flows for supported providers
+- **Tool Execution Confirmation**: All file modifications and command executions require user confirmation
 
 ### Data Privacy
 
@@ -96,4 +98,4 @@ We thank the security research community for their responsible disclosure of vul
 
 ---
 
-Last Updated: July 18, 2025
+Last Updated: July 19, 2025

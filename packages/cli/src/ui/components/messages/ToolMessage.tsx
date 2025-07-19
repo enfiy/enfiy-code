@@ -169,7 +169,7 @@ const ToolInfo: React.FC<ToolInfo> = ({
     }
   }, [emphasis]);
   return (
-    <Box>
+    <Box flexGrow={1} overflow="hidden">
       <Text
         wrap="truncate-end"
         strikethrough={status === ToolCallStatus.Canceled}

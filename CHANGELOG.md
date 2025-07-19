@@ -7,10 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Theme selection dialog now properly responds to keyboard input (Escape key to close)
+- Resolved input character dropping issue in Japanese text input
+- Tool error messages now wrap correctly within terminal width constraints
+- Test isolation improved to prevent interference from user settings
+
 ### Added
 
-- Initial release of Enfiy Code CLI
-- Multi-provider AI support (OpenAI, Anthropic, Google, Azure OpenAI)
+- Integration tests for UI component interactions
+- Test isolation script to run tests in clean environment
+
+### Changed
+
+- Improved error display formatting for better readability
+
+## [0.1.0] - 2025-07-19
+
+### Added
+
+- Initial public release of Enfiy Code CLI
+- Multi-provider AI support (OpenAI, Anthropic, Google, Azure OpenAI, Gemini)
 - Interactive command-line interface with React-based UI
 - File context management with `@file` syntax
 - Shell command integration with `!command` syntax
@@ -27,45 +45,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-line input support with history navigation
 - Progress indicators and loading states
 - Error handling with recovery suggestions
-- Local AI support (Ollama, Hugging Face)
+- Local AI support (Ollama)
 - Bundle size optimization for CLI distribution
 - Comprehensive test suite with CI/CD integration
-
-### Changed
-
-- N/A (Initial release)
-
-### Deprecated
-
-- N/A (Initial release)
-
-### Removed
-
-- N/A (Initial release)
-
-### Fixed
-
-- N/A (Initial release)
+- Theme support with multiple built-in themes
+- Secure authentication methods including OAuth and API keys
+- Provider-specific configuration and setup wizards
 
 ### Security
 
-- Secure API key handling and storage
+- Secure API key handling and storage using system keychain
 - No secrets or keys committed to repository
 - Comprehensive input sanitization
-- ANSI escape sequence stripping
+- ANSI escape sequence stripping to prevent terminal injection
 - Safe file path handling with git-aware filtering
-
-## [0.1.0] - 2025-07-18
-
-### Added
-
-- Initial public release of Enfiy Code CLI
-- Core functionality for AI-powered code assistance
-- Multi-provider support and extensible architecture
-- Interactive terminal interface with advanced features
-- Comprehensive documentation and setup guides
-- Docker containerization for consistent environments
-- CI/CD pipeline with automated testing and security scanning
-- Local AI integration capabilities
-- Memory management and performance optimization
-- Extensible tool system with MCP support
+- Sandbox execution environment for untrusted code
