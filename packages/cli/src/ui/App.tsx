@@ -144,21 +144,14 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
     // If we have a valid settings model that differs from config, sync it immediately
     if (
       settingsModel &&
-      settingsModel !== 'gemini-2.5-pro' &&
-      settingsModel !== 'llama3.2:8b' &&
-      settingsModel !== '' &&
+      settingsModel.trim() !== '' &&
       settingsModel !== config.getModel()
     ) {
       config.setModel(settingsModel);
     }
 
-    // Start with empty if no proper model is configured
-    if (
-      !settingsModel ||
-      settingsModel === 'gemini-2.5-pro' ||
-      settingsModel === 'llama3.2:8b' ||
-      settingsModel === ''
-    ) {
+    // Start with empty if no model is configured
+    if (!settingsModel || settingsModel.trim() === '') {
       return '';
     }
 
@@ -859,13 +852,9 @@ ${t('helpMessage')}`,
           return;
         }
 
-        // If it's a default model and we don't have a model set, don't show it
-        if (
-          (configModel === 'gemini-2.5-pro' || configModel === 'llama3.2:8b') &&
-          !currentModel
-        ) {
-          // Skipping default model override
-          return;
+        // If no current model is set, use the config model
+        if (!currentModel) {
+          // Use the config model
         }
         // Updating model
         setCurrentModel(configModel);

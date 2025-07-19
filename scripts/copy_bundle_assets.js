@@ -32,14 +32,23 @@ if (!existsSync(bundleDir)) {
 }
 
 // Copy specific shell files to the root of the bundle directory
-copyFileSync(
+const possibleShellMdPaths = [
   join(root, 'packages/core/src/tools/shell.md'),
-  join(bundleDir, 'shell.md'),
-);
-copyFileSync(
-  join(root, 'packages/core/src/tools/shell.json'),
-  join(bundleDir, 'shell.json'),
-);
+  join(root, 'packages/core/dist/src/tools/shell.md'),
+  join(root, 'docs/api/tools/shell-tool.md'),
+];
+
+for (const shellMdPath of possibleShellMdPaths) {
+  if (existsSync(shellMdPath)) {
+    copyFileSync(shellMdPath, join(bundleDir, 'shell.md'));
+    break;
+  }
+}
+
+const shellJsonPath = join(root, 'packages/core/src/tools/shell.json');
+if (existsSync(shellJsonPath)) {
+  copyFileSync(shellJsonPath, join(bundleDir, 'shell.json'));
+}
 
 // Find and copy all .sb files from packages to the root of the bundle directory
 const sbFiles = glob.sync('packages/**/*.sb', { cwd: root });
