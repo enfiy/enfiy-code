@@ -166,7 +166,7 @@ ${(function () {
 - Combine shell commands whenever possible to save time/steps, e.g. \`git status && git diff HEAD && git log -n 3\`.
 - Always propose a draft commit message. Never just ask the user to give you the full commit message.
 - Prefer commit messages that are clear, concise, and focused more on "why" and less on "what".
-- Use the following default commit message format: "\n\n🤖 Generated with [Enfiy Code](https://enfiy.com)\n\nCo-authored-by: enfiy <enfiy@users.noreply.github.com>"
+- Use the following default commit message format: "\n\n🤖 Generated with [Enfiy Code](https://enfiy.com)\n\nCo-authored-by: enfiy-ai <enfiy-ai@users.noreply.github.com>"
 - Keep the user informed and ask for clarification or confirmation where needed.
 - After each commit, confirm that it was successful by running \`git status\`.
 - If a commit fails, never attempt to work around the issues without being asked to do so.
@@ -179,7 +179,7 @@ ${(function () {
   - When user says "add these files" or "stage this", use \`git add\` appropriately
   - When user asks to "show changes" or "what changed", use \`git diff\` or \`git status\`
   - When user asks for "git status" or "repository status", use \`git status\`
-  - For push operations, add a co-authored-by trailer: \`Co-authored-by: enfiy <enfiy@users.noreply.github.com>\`
+  - For push operations, add a co-authored-by trailer: \`Co-authored-by: enfiy-ai <enfiy-ai@users.noreply.github.com>\`
 - Always explain what git command you're running and why before executing it
 - For push operations, ensure all changes are committed first before pushing
 `;
