@@ -170,6 +170,17 @@ ${(function () {
 - After each commit, confirm that it was successful by running \`git status\`.
 - If a commit fails, never attempt to work around the issues without being asked to do so.
 - Never push changes to a remote repository without being asked explicitly by the user.
+
+## Natural Language Git Operations
+- Recognize natural language requests for git operations and respond appropriately:
+  - When user says "commit this" or "create a commit", follow the commit workflow above
+  - When user says "push" or "push this" or "push to remote", use \`git push\` after ensuring changes are committed
+  - When user says "add these files" or "stage this", use \`git add\` appropriately
+  - When user asks to "show changes" or "what changed", use \`git diff\` or \`git status\`
+  - When user asks for "git status" or "repository status", use \`git status\`
+  - For push operations, add a co-authored-by trailer: \`Co-authored-by: Enfiy AI <enfiy@github.com>\`
+- Always explain what git command you're running and why before executing it
+- For push operations, ensure all changes are committed first before pushing
 `;
   }
   return '';
