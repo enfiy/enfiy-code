@@ -77,18 +77,18 @@ describe('Settings Loading and Merging', () => {
 
     // Force homedir to return mock path - this ensures we never hit real user settings
     vi.mocked(osActual.homedir).mockReturnValue('/mock/user/home');
-    
+
     // Mock all fs operations to completely isolate from real filesystem
     (mockStripJsonComments as unknown as Mock).mockImplementation(
       (jsonString: string) => jsonString,
     );
-    
+
     // Ensure fs.existsSync returns false for all paths by default
     (mockFsExistsSync as Mock).mockImplementation(() => false);
-    
+
     // Ensure fs.readFileSync returns empty JSON
     (fs.readFileSync as Mock).mockImplementation(() => '{}');
-    
+
     // Mock other fs functions
     (fs.writeFileSync as Mock).mockImplementation(() => {});
     (mockFsMkdirSync as Mock).mockImplementation(() => undefined);

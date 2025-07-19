@@ -275,19 +275,7 @@ export class EnfiyClient {
     for await (const event of resultStream) {
       yield event;
     }
-    if (!turn.pendingToolCalls.length && signal && !signal.aborted) {
-      const nextSpeakerCheck = await checkNextSpeaker(
-        this.getChat(),
-        this,
-        signal,
-      );
-      if (nextSpeakerCheck?.next_speaker === 'model') {
-        const nextRequest = [{ text: 'Please continue.' }];
-        // This recursive call's events will be yielded out, but the final
-        // turn object will be from the top-level call.
-        yield* this.sendMessageStream(nextRequest, signal, turns - 1);
-      }
-    }
+    
     return turn;
   }
 

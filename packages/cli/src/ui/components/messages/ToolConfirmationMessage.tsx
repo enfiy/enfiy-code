@@ -148,24 +148,31 @@ export const ToolConfirmationMessage: React.FC<
     if (bodyContentHeight !== undefined) {
       bodyContentHeight -= 2; // Account for padding;
     }
-    
+
     const commandParts = executionProps.command.split(' ');
     const mainCommand = commandParts[0];
     const args = commandParts.slice(1).join(' ');
     const workingDir = process.cwd();
-    
+
     bodyContent = (
-      <Box flexDirection="column" borderStyle="round" borderColor={Colors.BorderGray} padding={1}>
+      <Box
+        flexDirection="column"
+        borderStyle="round"
+        borderColor={Colors.BorderGray}
+        padding={1}
+      >
         <Box marginBottom={1}>
           <Text color={Colors.AccentYellow} bold>
             Command Details
           </Text>
         </Box>
-        
+
         <Box flexDirection="column" marginBottom={1}>
           <Box>
             <Text color={Colors.Gray}>Command: </Text>
-            <Text color={Colors.AccentCyan} bold>{mainCommand}</Text>
+            <Text color={Colors.AccentCyan} bold>
+              {mainCommand}
+            </Text>
             {args && <Text color={Colors.AccentBlue}> {args}</Text>}
           </Box>
           <Box>
@@ -174,13 +181,16 @@ export const ToolConfirmationMessage: React.FC<
           </Box>
           <Box>
             <Text color={Colors.Gray}>Root Command: </Text>
-            <Text color={Colors.AccentPurple}>{executionProps.rootCommand}</Text>
+            <Text color={Colors.AccentPurple}>
+              {executionProps.rootCommand}
+            </Text>
           </Box>
         </Box>
-        
+
         <Box>
           <Text color={Colors.Gray}>
-            This command will be executed in your system shell with the above parameters.
+            This command will be executed in your system shell with the above
+            parameters.
           </Text>
         </Box>
       </Box>
@@ -205,13 +215,18 @@ export const ToolConfirmationMessage: React.FC<
     );
 
     bodyContent = (
-      <Box flexDirection="column" borderStyle="round" borderColor={Colors.BorderGray} padding={1}>
+      <Box
+        flexDirection="column"
+        borderStyle="round"
+        borderColor={Colors.BorderGray}
+        padding={1}
+      >
         <Box marginBottom={1}>
           <Text color={Colors.AccentYellow} bold>
             Web Fetch Details
           </Text>
         </Box>
-        
+
         <Box flexDirection="column" marginBottom={1}>
           <Box>
             <Text color={Colors.Gray}>Request: </Text>
@@ -228,10 +243,11 @@ export const ToolConfirmationMessage: React.FC<
             </Box>
           )}
         </Box>
-        
+
         <Box>
           <Text color={Colors.Gray}>
-            This will fetch content from external web sources. Check the URLs above.
+            This will fetch content from external web sources. Check the URLs
+            above.
           </Text>
         </Box>
       </Box>
@@ -241,27 +257,37 @@ export const ToolConfirmationMessage: React.FC<
     const mcpProps = confirmationDetails as ToolMcpConfirmationDetails;
 
     bodyContent = (
-      <Box flexDirection="column" borderStyle="round" borderColor={Colors.BorderGray} padding={1}>
+      <Box
+        flexDirection="column"
+        borderStyle="round"
+        borderColor={Colors.BorderGray}
+        padding={1}
+      >
         <Box marginBottom={1}>
           <Text color={Colors.AccentYellow} bold>
             MCP Tool Details
           </Text>
         </Box>
-        
+
         <Box flexDirection="column" marginBottom={1}>
           <Box>
             <Text color={Colors.Gray}>Server: </Text>
-            <Text color={Colors.AccentCyan} bold>{mcpProps.serverName}</Text>
+            <Text color={Colors.AccentCyan} bold>
+              {mcpProps.serverName}
+            </Text>
           </Box>
           <Box>
             <Text color={Colors.Gray}>Tool: </Text>
-            <Text color={Colors.AccentPurple} bold>{mcpProps.toolName}</Text>
+            <Text color={Colors.AccentPurple} bold>
+              {mcpProps.toolName}
+            </Text>
           </Box>
         </Box>
-        
+
         <Box>
           <Text color={Colors.Gray}>
-            This will execute a tool from an external MCP server with the permissions shown above.
+            This will execute a tool from an external MCP server with the
+            permissions shown above.
           </Text>
         </Box>
       </Box>

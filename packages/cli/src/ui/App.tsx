@@ -211,7 +211,9 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
       // Ensure model and provider compatibility
       const compatibleModel = getCompatibleModel(model, provider);
       if (compatibleModel !== model) {
-        console.log(`Model ${model} is not compatible with ${provider}, using ${compatibleModel} instead`);
+        console.log(
+          `Model ${model} is not compatible with ${provider}, using ${compatibleModel} instead`,
+        );
       }
 
       // Update the model in config and current state
@@ -709,20 +711,24 @@ ${t('helpMessage')}`,
         ) {
           // Ensure model and provider compatibility
           const selectedProvider = settings.merged.selectedProvider || 'gemini';
-          const compatibleModel = getCompatibleModel(settings.merged.selectedModel, selectedProvider);
-          
+          const compatibleModel = getCompatibleModel(
+            settings.merged.selectedModel,
+            selectedProvider,
+          );
+
           if (compatibleModel !== settings.merged.selectedModel) {
             console.log(
-              `Model ${settings.merged.selectedModel} is not compatible with ${selectedProvider}, using ${compatibleModel} instead`
+              `Model ${settings.merged.selectedModel} is not compatible with ${selectedProvider}, using ${compatibleModel} instead`,
             );
             // Update settings with compatible model
-            settings.setValue(SettingScope.User, 'selectedModel', compatibleModel);
+            settings.setValue(
+              SettingScope.User,
+              'selectedModel',
+              compatibleModel,
+            );
           }
-          
-          console.log(
-            'Restoring last used model:',
-            compatibleModel,
-          );
+
+          console.log('Restoring last used model:', compatibleModel);
           console.log('Config model before:', config.getModel());
           setCurrentModel(compatibleModel);
           config.setModel(compatibleModel);

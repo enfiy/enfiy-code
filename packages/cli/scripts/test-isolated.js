@@ -52,16 +52,15 @@ process.on('SIGTERM', () => {
 
 try {
   backupSettings();
-  
+
   // Run the tests with all arguments passed through
   const args = process.argv.slice(2);
   const command = ['vitest', 'run', ...args].join(' ');
-  
-  execSync(command, { 
-    stdio: 'inherit', 
-    cwd: process.cwd() 
+
+  execSync(command, {
+    stdio: 'inherit',
+    cwd: process.cwd(),
   });
-  
 } catch (error) {
   console.error('Test execution failed:', error.message);
   process.exit(1);
