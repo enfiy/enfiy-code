@@ -115,7 +115,7 @@ export const SessionSummaryDisplay: React.FC<SessionSummaryDisplayProps> = ({
       {/* Footer */}
       <Box marginTop={1} justifyContent="center">
         <Text color={Colors.AccentBlue} italic>
-          Thank you for using Enfiy Code!
+          Thank you for using Enfiy Code! 🧡
         </Text>
       </Box>
     </Box>

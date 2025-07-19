@@ -14,10 +14,10 @@ import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import * as os from 'os';
 //  OAuth Client ID for Enfiy Code - Temporary using Google AI Studio compatible client
-// ⚠️  WARNING: Currently using Google Cloud Code's OAuth client for compatibility
-// 🔧 TODO: URGENT - Register proper Enfiy Code OAuth application with Google
-// 📝 User will see "Google Cloud Code" or "gemini" in OAuth consent screen
-// 🎯 Need to create dedicated OAuth client at: https://console.developers.google.com/auth/clients
+//  WARNING: Currently using Google Cloud Code's OAuth client for compatibility
+// TODO: URGENT - Register proper Enfiy Code OAuth application with Google
+// User will see "Google Cloud Code" or "gemini" in OAuth consent screen
+// Need to create dedicated OAuth client at: https://console.developers.google.com/auth/clients
 const OAUTH_CLIENT_ID =
   process.env.ENFIY_GOOGLE_OAUTH_CLIENT_ID ||
   '681255809395-oo8ft2oprdrnp9e3aqf6av3hmdib135j.apps.googleusercontent.com';

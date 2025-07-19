@@ -1,225 +1,5 @@
 [
   {
-    "timestamp": "2025-07-15T12:46:01.834Z",
-    "totalSize": 1760261,
-    "totalSizeFormatted": "1.68MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1760261,
-        "sizeFormatted": "1.68MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T12:48:32.587Z",
-    "totalSize": 1760261,
-    "totalSizeFormatted": "1.68MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1760261,
-        "sizeFormatted": "1.68MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T12:52:50.225Z",
-    "totalSize": 1760226,
-    "totalSizeFormatted": "1.68MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1760226,
-        "sizeFormatted": "1.68MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T12:53:11.211Z",
-    "totalSize": 1760226,
-    "totalSizeFormatted": "1.68MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1760226,
-        "sizeFormatted": "1.68MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T13:21:24.893Z",
-    "totalSize": 1739449,
-    "totalSizeFormatted": "1.66MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1739449,
-        "sizeFormatted": "1.66MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T13:32:02.259Z",
-    "totalSize": 1739449,
-    "totalSizeFormatted": "1.66MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1739449,
-        "sizeFormatted": "1.66MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T13:32:22.471Z",
-    "totalSize": 1739449,
-    "totalSizeFormatted": "1.66MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1739449,
-        "sizeFormatted": "1.66MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T13:32:33.266Z",
-    "totalSize": 1735108,
-    "totalSizeFormatted": "1.65MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735108,
-        "sizeFormatted": "1.65MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T13:33:46.626Z",
-    "totalSize": 1735108,
-    "totalSizeFormatted": "1.65MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735108,
-        "sizeFormatted": "1.65MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T13:39:02.152Z",
-    "totalSize": 1735108,
-    "totalSizeFormatted": "1.65MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735108,
-        "sizeFormatted": "1.65MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T13:41:22.109Z",
-    "totalSize": 1735108,
-    "totalSizeFormatted": "1.65MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735108,
-        "sizeFormatted": "1.65MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T13:44:21.227Z",
-    "totalSize": 1735108,
-    "totalSizeFormatted": "1.65MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735108,
-        "sizeFormatted": "1.65MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T13:47:12.815Z",
-    "totalSize": 1735108,
-    "totalSizeFormatted": "1.65MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735108,
-        "sizeFormatted": "1.65MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T13:48:28.378Z",
-    "totalSize": 1735094,
-    "totalSizeFormatted": "1.65MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735094,
-        "sizeFormatted": "1.65MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T13:50:43.957Z",
-    "totalSize": 1735094,
-    "totalSizeFormatted": "1.65MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735094,
-        "sizeFormatted": "1.65MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T14:03:46.759Z",
-    "totalSize": 1735429,
-    "totalSizeFormatted": "1.66MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735429,
-        "sizeFormatted": "1.66MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T14:05:46.542Z",
-    "totalSize": 1735429,
-    "totalSizeFormatted": "1.66MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735429,
-        "sizeFormatted": "1.66MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T14:08:47.539Z",
-    "totalSize": 1735562,
-    "totalSizeFormatted": "1.66MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735562,
-        "sizeFormatted": "1.66MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T14:10:16.264Z",
-    "totalSize": 1735562,
-    "totalSizeFormatted": "1.66MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735562,
-        "sizeFormatted": "1.66MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-15T14:12:33.464Z",
-    "totalSize": 1735572,
-    "totalSizeFormatted": "1.66MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1735572,
-        "sizeFormatted": "1.66MB"
-      }
-    }
-  },
-  {
     "timestamp": "2025-07-15T14:14:58.468Z",
     "totalSize": 1735621,
     "totalSizeFormatted": "1.66MB",
@@ -545,6 +325,226 @@
     "files": {
       "enfiy.js": {
         "size": 806360,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T13:22:41.430Z",
+    "totalSize": 806973,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 806973,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T13:31:00.916Z",
+    "totalSize": 806973,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 806973,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T13:31:26.770Z",
+    "totalSize": 806973,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 806973,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T13:36:12.544Z",
+    "totalSize": 807033,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807033,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T13:39:23.882Z",
+    "totalSize": 807033,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807033,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T13:41:20.416Z",
+    "totalSize": 807033,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807033,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T13:50:22.336Z",
+    "totalSize": 807033,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807033,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T13:51:28.336Z",
+    "totalSize": 807033,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807033,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T14:02:00.894Z",
+    "totalSize": 807014,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807014,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T22:38:43.882Z",
+    "totalSize": 807421,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807421,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T22:40:52.665Z",
+    "totalSize": 807421,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807421,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T22:47:10.773Z",
+    "totalSize": 807897,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807897,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T22:50:30.637Z",
+    "totalSize": 807906,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807906,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T22:52:26.934Z",
+    "totalSize": 807899,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807899,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T22:53:56.228Z",
+    "totalSize": 807899,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807899,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T23:23:21.282Z",
+    "totalSize": 807909,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807909,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T23:44:18.040Z",
+    "totalSize": 807954,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 807954,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T23:51:04.890Z",
+    "totalSize": 809901,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 809901,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-18T23:59:28.166Z",
+    "totalSize": 809681,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 809681,
+        "sizeFormatted": "0.77MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-19T00:20:09.342Z",
+    "totalSize": 809681,
+    "totalSizeFormatted": "0.77MB",
+    "files": {
+      "enfiy.js": {
+        "size": 809681,
         "sizeFormatted": "0.77MB"
       }
     }

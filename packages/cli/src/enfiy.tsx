@@ -134,16 +134,28 @@ export async function main() {
     const selectedProvider = settings.merged.selectedProvider;
     const selectedModel = settings.merged.selectedModel;
     let defaultAuthType: string = AuthType.API_KEY;
-    
+
     // Detect appropriate auth type based on provider and model
-    if (selectedProvider === 'ollama' || (selectedModel && selectedModel.includes('llama'))) {
+    if (
+      selectedProvider === 'ollama' ||
+      (selectedModel && selectedModel.includes('llama'))
+    ) {
       defaultAuthType = 'local'; // Use 'local' for Ollama/local models
-    } else if (selectedProvider && ['openai', 'anthropic', 'mistral', 'huggingface'].includes(selectedProvider)) {
+    } else if (
+      selectedProvider &&
+      ['openai', 'anthropic', 'mistral', 'huggingface'].includes(
+        selectedProvider,
+      )
+    ) {
       defaultAuthType = AuthType.API_KEY;
-    } else if (selectedProvider === 'gemini' || selectedProvider === 'google' || (selectedModel && selectedModel.includes('gemini'))) {
+    } else if (
+      selectedProvider === 'gemini' ||
+      selectedProvider === 'google' ||
+      (selectedModel && selectedModel.includes('gemini'))
+    ) {
       defaultAuthType = AuthType.USE_GEMINI;
     }
-    
+
     settings.setValue(SettingScope.User, 'selectedAuthType', defaultAuthType);
   }
 
@@ -292,21 +304,21 @@ process.on('unhandledRejection', (reason, _promise) => {
       message.includes('Failed to initialize AI provider') ||
       message.includes('Invalid API key format')
     ) {
-      console.error('⚠️  Authentication/Provider error detected.');
+      console.error(' Authentication/Provider error detected.');
       console.error(
         '💡 Please check your API key in .env file or use /provider command.',
       );
       console.error(
-        '📝 Expected format: AIzaSy... (39 characters) for Gemini or provider-specific format',
+        'Expected format: AIzaSy... (39 characters) for Gemini or provider-specific format',
       );
       return; // Don't exit for auth errors
     }
 
     if (message.includes('Could not load the default credentials')) {
-      console.error('⚠️  Google Cloud authentication error detected.');
+      console.error(' Google Cloud authentication error detected.');
       console.error('💡 Enfiy Code uses API keys, not Google Cloud auth.');
       console.error(
-        '📝 Please set your provider API key in .env file (e.g., GEMINI_API_KEY, OLLAMA_HOST).',
+        'Please set your provider API key in .env file (e.g., GEMINI_API_KEY, OLLAMA_HOST).',
       );
       return; // Don't exit for this error
     }

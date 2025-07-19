@@ -216,9 +216,10 @@ export function loadSecureConfig(): SecureConfig {
           const encryptedData = JSON.parse(providerConfig.apiKey);
           config.providers[providerName].apiKey = decrypt(encryptedData);
           config.providers[providerName].encrypted = false; // Mark as decrypted in memory
-        } catch (_error) {
+        } catch (error) {
           console.warn(
-            `Warning: Could not decrypt API key for ${providerName}`,
+            `Warning: Could not decrypt API key for ${providerName}:`,
+            error instanceof Error ? error.message : String(error),
           );
           delete config.providers[providerName].apiKey;
         }
@@ -226,9 +227,10 @@ export function loadSecureConfig(): SecureConfig {
     }
 
     return config;
-  } catch (_error) {
+  } catch (error) {
     console.warn(
-      'Warning: Could not load secure configuration, using defaults',
+      'Warning: Could not load secure configuration, using defaults:',
+      error instanceof Error ? error.message : String(error),
     );
     return defaultConfig;
   }

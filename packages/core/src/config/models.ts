@@ -23,9 +23,9 @@ export const DEFAULT_HUGGINGFACE_MODEL =
 export const DEFAULT_ENFIY_FLASH_MODEL = DEFAULT_GEMINI_FLASH_MODEL;
 export const DEFAULT_ENFIY_EMBEDDING_MODEL = DEFAULT_GEMINI_EMBEDDING_MODEL;
 
-// Primary default (local first)
-export const DEFAULT_ENFIY_MODEL = DEFAULT_LOCAL_MODEL;
-export const DEFAULT_ENFIY_PROVIDER = DEFAULT_LOCAL_PROVIDER;
+// Primary default (cloud first for better user experience)
+export const DEFAULT_ENFIY_MODEL = DEFAULT_GEMINI_MODEL;
+export const DEFAULT_ENFIY_PROVIDER = 'gemini';
 
 // Helper function to get default model for a provider
 export function getDefaultModelForProvider(provider: string): string {
@@ -47,4 +47,64 @@ export function getDefaultModelForProvider(provider: string): string {
     default:
       return DEFAULT_ENFIY_MODEL;
   }
+}
+
+// Helper function to get provider from model name
+export function getProviderFromModel(model: string): string {
+  const modelLower = model.toLowerCase();
+  
+  // OpenAI models
+  if (modelLower.includes('gpt') || modelLower.includes('o3') || modelLower.includes('o4')) {
+    return 'openai';
+  }
+  
+  // Anthropic models
+  if (modelLower.includes('claude')) {
+    return 'anthropic';
+  }
+  
+  // Gemini models
+  if (modelLower.includes('gemini')) {
+    return 'gemini';
+  }
+  
+  // Mistral models
+  if (modelLower.includes('mistral') || modelLower.includes('codestral') || modelLower.includes('devstral')) {
+    return 'mistral';
+  }
+  
+  // Ollama models - identified by colon notation (e.g., llama3.2:8b, qwen2.5:7b)
+  // or common local model names
+  if (modelLower.includes(':') || 
+      modelLower.includes('llama') || 
+      modelLower.includes('qwen') || 
+      modelLower.includes('deepseek') ||
+      modelLower.includes('phi') ||
+      modelLower.includes('vicuna') ||
+      modelLower.includes('orca') ||
+      modelLower.includes('neural') ||
+      modelLower.includes('codellama')) {
+    return 'ollama';
+  }
+  
+  // HuggingFace models - models with slash notation
+  if (model.includes('/')) {
+    return 'huggingface';
+  }
+  
+  return 'gemini'; // Default provider
+}
+
+// Check if model and provider are compatible
+export function isModelProviderCompatible(model: string, provider: string): boolean {
+  const expectedProvider = getProviderFromModel(model);
+  return expectedProvider === provider.toLowerCase();
+}
+
+// Get compatible model for provider if current model is incompatible
+export function getCompatibleModel(model: string, provider: string): string {
+  if (isModelProviderCompatible(model, provider)) {
+    return model;
+  }
+  return getDefaultModelForProvider(provider);
 }

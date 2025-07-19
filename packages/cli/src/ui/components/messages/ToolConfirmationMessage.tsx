@@ -19,7 +19,6 @@ import {
   RadioButtonSelect,
   RadioSelectItem,
 } from '../shared/RadioButtonSelect.js';
-import { MaxSizedBox } from '../shared/MaxSizedBox.js';
 
 export interface ToolConfirmationMessageProps {
   confirmationDetails: ToolCallConfirmationDetails;
@@ -104,14 +103,14 @@ export const ToolConfirmationMessage: React.FC<
       );
     }
 
-    question = `Apply this change?`;
+    question = `File Modification Request`;
     options.push(
       {
-        label: 'Yes, allow once',
+        label: 'Yes, apply change',
         value: ToolConfirmationOutcome.ProceedOnce,
       },
       {
-        label: 'Yes, allow always',
+        label: 'Yes, always allow file edits',
         value: ToolConfirmationOutcome.ProceedAlways,
       },
       {
@@ -132,7 +131,7 @@ export const ToolConfirmationMessage: React.FC<
     const executionProps =
       confirmationDetails as ToolExecuteConfirmationDetails;
 
-    question = `Allow execution?`;
+    question = `Shell Command Execution Request`;
     options.push(
       {
         label: 'Yes, allow once',
@@ -149,17 +148,40 @@ export const ToolConfirmationMessage: React.FC<
     if (bodyContentHeight !== undefined) {
       bodyContentHeight -= 2; // Account for padding;
     }
+    
+    const commandParts = executionProps.command.split(' ');
+    const mainCommand = commandParts[0];
+    const args = commandParts.slice(1).join(' ');
+    const workingDir = process.cwd();
+    
     bodyContent = (
-      <Box flexDirection="column">
-        <Box paddingX={1} marginLeft={1}>
-          <MaxSizedBox
-            maxHeight={bodyContentHeight}
-            maxWidth={Math.max(childWidth - 4, 1)}
-          >
-            <Box>
-              <Text color={Colors.AccentCyan}>{executionProps.command}</Text>
-            </Box>
-          </MaxSizedBox>
+      <Box flexDirection="column" borderStyle="round" borderColor={Colors.BorderGray} padding={1}>
+        <Box marginBottom={1}>
+          <Text color={Colors.AccentYellow} bold>
+            Command Details
+          </Text>
+        </Box>
+        
+        <Box flexDirection="column" marginBottom={1}>
+          <Box>
+            <Text color={Colors.Gray}>Command: </Text>
+            <Text color={Colors.AccentCyan} bold>{mainCommand}</Text>
+            {args && <Text color={Colors.AccentBlue}> {args}</Text>}
+          </Box>
+          <Box>
+            <Text color={Colors.Gray}>Working Directory: </Text>
+            <Text color={Colors.AccentGreen}>{workingDir}</Text>
+          </Box>
+          <Box>
+            <Text color={Colors.Gray}>Root Command: </Text>
+            <Text color={Colors.AccentPurple}>{executionProps.rootCommand}</Text>
+          </Box>
+        </Box>
+        
+        <Box>
+          <Text color={Colors.Gray}>
+            This command will be executed in your system shell with the above parameters.
+          </Text>
         </Box>
       </Box>
     );
@@ -169,30 +191,49 @@ export const ToolConfirmationMessage: React.FC<
       infoProps.urls &&
       !(infoProps.urls.length === 1 && infoProps.urls[0] === infoProps.prompt);
 
-    question = `Do you want to proceed?`;
+    question = `Web Fetch Request`;
     options.push(
       {
         label: 'Yes, allow once',
         value: ToolConfirmationOutcome.ProceedOnce,
       },
       {
-        label: 'Yes, allow always',
+        label: 'Yes, always allow web requests',
         value: ToolConfirmationOutcome.ProceedAlways,
       },
       { label: 'No (esc)', value: ToolConfirmationOutcome.Cancel },
     );
 
     bodyContent = (
-      <Box flexDirection="column" paddingX={1} marginLeft={1}>
-        <Text color={Colors.AccentCyan}>{infoProps.prompt}</Text>
-        {displayUrls && infoProps.urls && infoProps.urls.length > 0 && (
-          <Box flexDirection="column" marginTop={1}>
-            <Text>URLs to fetch:</Text>
-            {infoProps.urls.map((url) => (
-              <Text key={url}> - {url}</Text>
-            ))}
+      <Box flexDirection="column" borderStyle="round" borderColor={Colors.BorderGray} padding={1}>
+        <Box marginBottom={1}>
+          <Text color={Colors.AccentYellow} bold>
+            Web Fetch Details
+          </Text>
+        </Box>
+        
+        <Box flexDirection="column" marginBottom={1}>
+          <Box>
+            <Text color={Colors.Gray}>Request: </Text>
+            <Text color={Colors.AccentCyan}>{infoProps.prompt}</Text>
           </Box>
-        )}
+          {displayUrls && infoProps.urls && infoProps.urls.length > 0 && (
+            <Box flexDirection="column" marginTop={1}>
+              <Text color={Colors.Gray}>URLs to fetch:</Text>
+              {infoProps.urls.map((url) => (
+                <Box key={url} marginLeft={1}>
+                  <Text color={Colors.AccentBlue}>{url}</Text>
+                </Box>
+              ))}
+            </Box>
+          )}
+        </Box>
+        
+        <Box>
+          <Text color={Colors.Gray}>
+            This will fetch content from external web sources. Check the URLs above.
+          </Text>
+        </Box>
       </Box>
     );
   } else {
@@ -200,24 +241,44 @@ export const ToolConfirmationMessage: React.FC<
     const mcpProps = confirmationDetails as ToolMcpConfirmationDetails;
 
     bodyContent = (
-      <Box flexDirection="column" paddingX={1} marginLeft={1}>
-        <Text color={Colors.AccentCyan}>MCP Server: {mcpProps.serverName}</Text>
-        <Text color={Colors.AccentCyan}>Tool: {mcpProps.toolName}</Text>
+      <Box flexDirection="column" borderStyle="round" borderColor={Colors.BorderGray} padding={1}>
+        <Box marginBottom={1}>
+          <Text color={Colors.AccentYellow} bold>
+            MCP Tool Details
+          </Text>
+        </Box>
+        
+        <Box flexDirection="column" marginBottom={1}>
+          <Box>
+            <Text color={Colors.Gray}>Server: </Text>
+            <Text color={Colors.AccentCyan} bold>{mcpProps.serverName}</Text>
+          </Box>
+          <Box>
+            <Text color={Colors.Gray}>Tool: </Text>
+            <Text color={Colors.AccentPurple} bold>{mcpProps.toolName}</Text>
+          </Box>
+        </Box>
+        
+        <Box>
+          <Text color={Colors.Gray}>
+            This will execute a tool from an external MCP server with the permissions shown above.
+          </Text>
+        </Box>
       </Box>
     );
 
-    question = `Allow execution of MCP tool "${mcpProps.toolName}" from server "${mcpProps.serverName}"?`;
+    question = `MCP Tool Execution Request`;
     options.push(
       {
         label: 'Yes, allow once',
         value: ToolConfirmationOutcome.ProceedOnce,
       },
       {
-        label: `Yes, always allow tool "${mcpProps.toolName}" from server "${mcpProps.serverName}"`,
+        label: `Yes, always allow "${mcpProps.toolName}"`,
         value: ToolConfirmationOutcome.ProceedAlwaysTool, // Cast until types are updated
       },
       {
-        label: `Yes, always allow all tools from server "${mcpProps.serverName}"`,
+        label: `Yes, trust all tools from "${mcpProps.serverName}"`,
         value: ToolConfirmationOutcome.ProceedAlwaysServer,
       },
       { label: 'No (esc)', value: ToolConfirmationOutcome.Cancel },

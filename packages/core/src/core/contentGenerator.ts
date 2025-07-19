@@ -156,8 +156,12 @@ export async function createContentGenerator(
     config.authType === AuthType.USE_VERTEX_AI ||
     (config.authType === AuthType.API_KEY && providerType === 'gemini')
   ) {
+    if (!config.apiKey) {
+      throw new Error('API key is required for Gemini provider');
+    }
+    
     const googleGenAI = new GoogleGenAI({
-      apiKey: config.apiKey === '' ? undefined : config.apiKey,
+      apiKey: config.apiKey,
       vertexai: config.vertexai,
       httpOptions,
     });
@@ -165,8 +169,9 @@ export async function createContentGenerator(
     return googleGenAI.models;
   }
 
+  
   throw new Error(
-    `Error creating contentGenerator: Unsupported authType: ${config.authType}`,
+    `Error creating contentGenerator: Unsupported authType: ${config.authType}, providerType: ${providerType}`,
   );
 }
 

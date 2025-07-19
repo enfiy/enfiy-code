@@ -9,4 +9,11 @@ export {
   DEFAULT_GEMINI_MODEL,
   DEFAULT_GEMINI_FLASH_MODEL,
   DEFAULT_GEMINI_EMBEDDING_MODEL,
+  DEFAULT_OPENAI_MODEL,
+  DEFAULT_ANTHROPIC_MODEL,
+  DEFAULT_ENFIY_MODEL,
+  getDefaultModelForProvider,
+  getProviderFromModel,
+  isModelProviderCompatible,
+  getCompatibleModel,
 } from './src/config/models.js';

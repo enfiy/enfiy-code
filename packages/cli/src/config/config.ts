@@ -16,8 +16,12 @@ import {
   ENFIY_CONFIG_DIR as ENFIY_DIR,
   DEFAULT_ENFIY_EMBEDDING_MODEL,
   DEFAULT_ENFIY_MODEL,
+  DEFAULT_GEMINI_MODEL,
+  DEFAULT_OPENAI_MODEL,
+  DEFAULT_ANTHROPIC_MODEL,
   FileDiscoveryService,
   TelemetryTarget,
+  getCompatibleModel,
 } from '@enfiy/core';
 import { Settings } from './settings.js';
 
@@ -63,10 +67,6 @@ async function parseArguments(): Promise<CliArgs> {
       alias: 'm',
       type: 'string',
       description: 'AI model to use',
-      default:
-        process.env.ENFIY_MODEL ||
-        process.env.GEMINI_MODEL ||
-        DEFAULT_ENFIY_MODEL,
     })
     .option('prompt', {
       alias: 'p',
@@ -270,9 +270,54 @@ export async function loadCliConfig(
     cwd: process.cwd(),
     fileDiscoveryService: fileService,
     bugCommand: settings.bugCommand,
-    model: argv.model || settings.selectedModel || argv.model!,
+    model: resolveModelWithSmartFallback(argv.model, settings),
     extensionContextFilePaths,
   });
+}
+
+/**
+ * Smart model resolution with fallback strategy
+ */
+function resolveModelWithSmartFallback(argvModel: string | undefined, settings: Settings): string {
+  const settingsModel = settings.selectedModel;
+  const settingsProvider = settings.selectedProvider;
+  
+  // 1. Use explicitly provided command-line model
+  if (argvModel) {
+    return argvModel;
+  }
+  
+  // 2. Use configured model from settings, ensuring compatibility
+  if (settingsModel && settingsProvider) {
+    return getCompatibleModel(settingsModel, settingsProvider);
+  } else if (settingsModel) {
+    return settingsModel;
+  }
+  
+  // 3. Use environment variables
+  if (process.env.ENFIY_MODEL) {
+    return process.env.ENFIY_MODEL;
+  }
+  
+  if (process.env.GEMINI_MODEL) {
+    return process.env.GEMINI_MODEL;
+  }
+  
+  // 4. Check for available API keys to determine best default
+  if (process.env.GEMINI_API_KEY) {
+    return DEFAULT_GEMINI_MODEL;
+  }
+  
+  if (process.env.OPENAI_API_KEY) {
+    return DEFAULT_OPENAI_MODEL;
+  }
+  
+  if (process.env.ANTHROPIC_API_KEY) {
+    return DEFAULT_ANTHROPIC_MODEL;
+  }
+  
+  // 5. Final fallback - use the configured default
+  return DEFAULT_ENFIY_MODEL;
 }
 
 function mergeMcpServers(settings: Settings, extensions: Extension[]) {

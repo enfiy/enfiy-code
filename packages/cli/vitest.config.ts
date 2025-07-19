@@ -14,6 +14,7 @@ export default defineConfig({
       '**/node_modules/**',
       '**/dist/**',
       '**/cypress/**',
+      // Temporarily disabled tests for stability
       '**/useShellHistory.test.ts',
       '**/useTimer.test.ts',
       '**/slashCommandProcessor.test.ts',
@@ -70,6 +71,8 @@ export default defineConfig({
     retry: process.env.CI ? 2 : 0,
     // Suppress unhandled errors during cleanup
     dangerouslyIgnoreUnhandledErrors: true,
+    // Ensure complete isolation between tests
+    isolate: true,
     coverage: {
       enabled: true,
       provider: 'v8',

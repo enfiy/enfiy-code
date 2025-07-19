@@ -42,7 +42,6 @@ import { loadHierarchicalEnfiyMemory } from '../config/config.js';
 import { LoadedSettings, SettingScope } from '../config/settings.js';
 import { Tips } from './components/Tips.js';
 import { useConsolePatcher } from './components/ConsolePatcher.js';
-import { getProviderFromModel } from '../utils/modelUtils.js';
 import { DetailedMessagesDisplay } from './components/DetailedMessagesDisplay.js';
 import { HistoryItemDisplay } from './components/HistoryItemDisplay.js';
 import { ContextSummaryDisplay } from './components/ContextSummaryDisplay.js';
@@ -55,6 +54,8 @@ import {
   ApprovalMode,
   isEditorAvailable,
   EditorType,
+  getProviderFromModel,
+  getCompatibleModel,
 } from '@enfiy/core';
 // import { validateAuthMethod } from '../config/auth.js';
 import { useLogger } from './hooks/useLogger.js';
@@ -207,13 +208,19 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
 
       const providerName = `${provider.toUpperCase()} (${providerCategories[provider] || t('cloudAI')})`;
 
+      // Ensure model and provider compatibility
+      const compatibleModel = getCompatibleModel(model, provider);
+      if (compatibleModel !== model) {
+        console.log(`Model ${model} is not compatible with ${provider}, using ${compatibleModel} instead`);
+      }
+
       // Update the model in config and current state
-      config.setModel(model);
-      setCurrentModel(model);
+      config.setModel(compatibleModel);
+      setCurrentModel(compatibleModel);
 
       // Save to settings for persistence across sessions
       settings.setValue(SettingScope.User, 'selectedProvider', provider);
-      settings.setValue(SettingScope.User, 'selectedModel', model);
+      settings.setValue(SettingScope.User, 'selectedModel', compatibleModel);
 
       addItem(
         {
@@ -700,13 +707,25 @@ ${t('helpMessage')}`,
           settings.merged.selectedModel &&
           settings.merged.selectedModel !== currentModel
         ) {
+          // Ensure model and provider compatibility
+          const selectedProvider = settings.merged.selectedProvider || 'gemini';
+          const compatibleModel = getCompatibleModel(settings.merged.selectedModel, selectedProvider);
+          
+          if (compatibleModel !== settings.merged.selectedModel) {
+            console.log(
+              `Model ${settings.merged.selectedModel} is not compatible with ${selectedProvider}, using ${compatibleModel} instead`
+            );
+            // Update settings with compatible model
+            settings.setValue(SettingScope.User, 'selectedModel', compatibleModel);
+          }
+          
           console.log(
             'Restoring last used model:',
-            settings.merged.selectedModel,
+            compatibleModel,
           );
           console.log('Config model before:', config.getModel());
-          setCurrentModel(settings.merged.selectedModel);
-          config.setModel(settings.merged.selectedModel);
+          setCurrentModel(compatibleModel);
+          config.setModel(compatibleModel);
           console.log('Config model after:', config.getModel());
         }
 
@@ -725,6 +744,7 @@ ${t('helpMessage')}`,
     showProviderSetup,
     showCloudAISetup,
     showAPISettings,
+    settings,
     settings.merged.selectedModel,
     settings.merged.selectedProvider,
     currentModel,

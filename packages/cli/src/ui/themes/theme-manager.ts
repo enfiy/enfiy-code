@@ -26,7 +26,7 @@ export interface ThemeDisplay {
   type: ThemeType;
 }
 
-export const DEFAULT_THEME: Theme = DefaultOrange;
+export const DEFAULT_THEME: Theme = DefaultDark;
 
 class ThemeManager {
   private readonly availableThemes: Theme[];
@@ -56,6 +56,10 @@ class ThemeManager {
    */
   getAvailableThemes(): ThemeDisplay[] {
     const sortedThemes = [...this.availableThemes].sort((a, b) => {
+      // Put Default theme first
+      if (a.name === 'Default') return -1;
+      if (b.name === 'Default') return 1;
+
       const typeOrder = (type: ThemeType): number => {
         switch (type) {
           case 'dark':

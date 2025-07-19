@@ -359,6 +359,10 @@ export class MultiProviderContentGeneratorWrapper implements ContentGenerator {
   constructor(config: ContentGeneratorConfig) {
     this.config = config;
     this.client = new MultiProviderClient({} as Config); // We don't need full Config for this wrapper
+    // Pre-initialize if we have API key to avoid provider mismatch
+    if (config.apiKey) {
+      this.client.initialize(config.model).catch(console.error);
+    }
   }
 
   async generateContent(

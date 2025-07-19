@@ -432,7 +432,8 @@ export const ProviderSelectionDialog: React.FC<
                 bold={index === highlightedIndex}
               >
                 {index === highlightedIndex ? '> ' : '  '}
-                {category.name.padEnd(12)} {/* Fixed width for consistent alignment */}
+                {category.name.padEnd(12)}{' '}
+                {/* Fixed width for consistent alignment */}
                 <Text
                   color={
                     index === highlightedIndex ? Colors.Comment : Colors.Gray
