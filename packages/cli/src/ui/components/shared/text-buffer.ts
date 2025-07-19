@@ -459,7 +459,7 @@ export function useTextBuffer({
     );
 
     // Debug logging for Japanese text
-    if (lines[0] && lines[0].length > 0 && lines[0].charCodeAt(0) > 127) {
+    if (false && lines[0] && lines[0].length > 0 && lines[0].charCodeAt(0) > 127) {
       console.log('[VISUAL_LAYOUT] Calculating visual layout:', {
         logicalLines: lines,
         visualLines: layout.visualLines,
@@ -517,7 +517,7 @@ export function useTextBuffer({
 
   useEffect(() => {
     // Debug text changes for Japanese input
-    if (text.length > 0 && text.charCodeAt(0) > 127) {
+    if (false && text.length > 0 && text.charCodeAt(0) > 127) {
       console.log('[TEXT_BUFFER] Text changed:', {
         newText: text,
         lines,
@@ -684,7 +684,7 @@ export function useTextBuffer({
             newCursorCol = cpLen(before) + cpLen(parts[0]);
 
             // Debug logging for Japanese text insertion
-            if (parts[0].length > 0 && parts[0].charCodeAt(0) > 127) {
+            if (false && parts[0].length > 0 && parts[0].charCodeAt(0) > 127) {
               console.log('[APPLY_OPS] Inserted Japanese text:', {
                 insertedText: parts[0],
                 before,
@@ -891,7 +891,7 @@ export function useTextBuffer({
       dbg('setText', { text: newText });
 
       // Debug logging for setText calls - track stack trace for Japanese input issues
-      if (newText.length > 0 && newText.charCodeAt(0) > 127) {
+      if (false && newText.length > 0 && newText.charCodeAt(0) > 127) {
         console.log('[SET_TEXT] Japanese text being set:', {
           newText,
           currentText: text,
@@ -900,7 +900,7 @@ export function useTextBuffer({
       } else if (
         newText === '' &&
         text.length > 0 &&
-        text.charCodeAt(0) > 127
+        false && text.charCodeAt(0) > 127
       ) {
         console.log('[SET_TEXT] Japanese text being CLEARED:', {
           previousText: text,
@@ -1490,7 +1490,7 @@ export function useTextBuffer({
 
           if (!isControlChar) {
             // Debug logging for Japanese input
-            if (input.charCodeAt(0) > 127) {
+            if (false && input.charCodeAt(0) > 127) {
               console.log('[HANDLE_INPUT] Inserting Japanese char:', {
                 input,
                 keyName: key.name,

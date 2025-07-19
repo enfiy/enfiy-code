@@ -326,7 +326,7 @@ export class MistralProvider extends BaseProvider {
                     {
                       content: {
                         role: 'model',
-                        parts: [{ text: accumulatedContent }],
+                        parts: [{ text: delta }], // Only yield the new delta, not accumulated content
                       },
                       finishReason:
                         parsed.choices?.[0]?.finish_reason === 'stop'
@@ -342,7 +342,7 @@ export class MistralProvider extends BaseProvider {
                     totalTokenCount: 0,
                   },
                   // Add required properties
-                  text: accumulatedContent,
+                  text: delta, // Only yield the new delta, not accumulated content
                   data: null,
                   functionCalls: [],
                   executableCode: undefined,

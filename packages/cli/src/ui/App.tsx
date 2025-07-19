@@ -249,17 +249,15 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
       addItem(
         {
           type: MessageType.ENFIY,
-          text: `${t('welcomeTitle')}
+          text: `I am Enfiy Code, an AI coding assistant designed to help with software development tasks.
 
-${t('welcomeMessage')}
+I can help you:
+• Read, edit, and create files
+• Search and analyze code  
+• Execute shell commands
+• Provide development guidance
 
-${t('keyFeatures')}
-• ${t('featureFileOps')}
-• ${t('featureCodeSearch')}
-• ${t('featureShellCommands')}
-• ${t('featureSuggestions')}
-
-${t('helpMessage')}`,
+Feel free to ask me anything or type /help for available commands.`,
           // model: currentModel,
         },
         Date.now(),
@@ -341,25 +339,7 @@ ${t('helpMessage')}`,
         setPreselectedProvider(setupConfig.type);
         setShowProviderSelection(true);
 
-        // Add success message only once with timestamp-based deduplication
-        const message = `${setupConfig.type.toUpperCase()} API key configured successfully. Please select a model.`;
-        const now = Date.now();
-
-        // Only add message if it's different from the last one OR if enough time has passed (prevent rapid duplicates)
-        if (
-          lastMessageRef.current !== message ||
-          now - lastMessageTimestamp.current > 1000
-        ) {
-          lastMessageRef.current = message;
-          lastMessageTimestamp.current = now;
-          addItem(
-            {
-              type: MessageType.INFO,
-              text: message,
-            },
-            now,
-          );
-        }
+        // Skip duplicate success messages for provider configuration
       }
     },
     [addItem, isManagingProvider],
@@ -575,7 +555,7 @@ ${t('helpMessage')}`,
         addItem(
           {
             type: MessageType.INFO,
-            text: `${typeof providerConfig.type === 'string' ? providerConfig.type.toUpperCase() : 'Provider'} setup completed successfully! Using model: ${typeof providerConfig.model === 'string' ? providerConfig.model : 'default'}`,
+            text: `Using ${typeof providerConfig.model === 'string' ? providerConfig.model : 'default'} • Type /help for commands`,
           },
           Date.now(),
         );

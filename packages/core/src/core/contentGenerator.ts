@@ -14,7 +14,7 @@ import {
   GoogleGenAI,
 } from '@google/genai';
 import { createCodeAssistContentGenerator } from '../code_assist/codeAssist.js';
-import { DEFAULT_GEMINI_MODEL } from '../config/models.js';
+import { DEFAULT_GEMINI_MODEL, DEFAULT_ENFIY_MODEL } from '../config/models.js';
 import { getEffectiveModel } from './modelCheck.js';
 
 /**
@@ -59,7 +59,7 @@ export async function createContentGeneratorConfig(
   const googleCloudLocation = process.env.GOOGLE_CLOUD_LOCATION;
 
   // Use runtime model from config if available, otherwise fallback to parameter or default
-  const effectiveModel = config?.getModel?.() || model || DEFAULT_GEMINI_MODEL;
+  const effectiveModel = config?.getModel?.() || model || DEFAULT_ENFIY_MODEL;
 
   const contentGeneratorConfig: ContentGeneratorConfig = {
     model: effectiveModel,
@@ -119,7 +119,7 @@ export async function createContentGeneratorConfig(
         contentGeneratorConfig.apiKey = process.env.HUGGINGFACE_API_KEY;
         break;
       default:
-        contentGeneratorConfig.apiKey = geminiApiKey;
+        throw new Error(`Unsupported provider: ${providerType}. Please select a valid provider.`);
     }
 
     return contentGeneratorConfig;

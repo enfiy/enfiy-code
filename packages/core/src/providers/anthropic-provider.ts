@@ -341,7 +341,7 @@ export class AnthropicProvider extends BaseProvider {
                       {
                         content: {
                           role: 'model',
-                          parts: [{ text: accumulatedContent }],
+                          parts: [{ text: delta }], // Only yield the new delta, not accumulated content
                         },
                         finishReason: FinishReason.OTHER,
                         index: 0,
@@ -354,7 +354,7 @@ export class AnthropicProvider extends BaseProvider {
                       totalTokenCount: 0,
                     },
                     // Add required properties
-                    text: accumulatedContent,
+                    text: delta, // Only yield the new delta, not accumulated content
                     data: null,
                     functionCalls: [],
                     executableCode: undefined,

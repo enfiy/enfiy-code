@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
 export interface Suggestion {

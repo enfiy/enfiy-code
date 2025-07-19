@@ -185,9 +185,17 @@ export const Footer: React.FC<FooterProps> = ({
                 </Text>
               </Text>
             ) : (
-              <Text color={Colors.AccentYellow}>
-                Private work room <Text color={Colors.Gray}>(recommended)</Text>
-              </Text>
+              <>
+                {isLocalModel(model) ? (
+                  <Text color="green">
+                    Local AI <Text color={Colors.Gray}>(private, secure)</Text>
+                  </Text>
+                ) : (
+                  <Text color={Colors.AccentYellow}>
+                    Cloud AI <Text color={Colors.Gray}>(external service)</Text>
+                  </Text>
+                )}
+              </>
             )}
           </Box>
         </Box>
