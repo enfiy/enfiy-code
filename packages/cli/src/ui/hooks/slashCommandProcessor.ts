@@ -1558,17 +1558,17 @@ export const useSlashCommandProcessor = (
             addMessage({
               type: MessageType.INFO,
               content:
-                '[ENFIY] Adding Enfiy AI as co-author to the last commit...',
+                '[ENFIY] Adding Enfiy as co-author to the last commit...',
               timestamp: new Date(),
             });
 
-            const coAuthorCommand = `git commit --amend --no-edit --trailer "Co-authored-by: Enfiy AI <enfiy@github.com>"`;
+            const coAuthorCommand = `git commit --amend --no-edit --trailer "Co-authored-by: Enfiy <noreply@enfiy.com>"`;
             command = `${coAuthorCommand} && ${command}`;
           }
 
           addMessage({
             type: MessageType.INFO,
-            content: `[PUSH] Pushing to GitHub${branch ? ` (branch: ${branch})` : ''}${coAuthor ? ' with Enfiy AI co-authorship' : ''}...`,
+            content: `[PUSH] Pushing to GitHub${branch ? ` (branch: ${branch})` : ''}${coAuthor ? ' with Enfiy co-authorship' : ''}...`,
             timestamp: new Date(),
           });
 
@@ -1596,7 +1596,7 @@ export const useSlashCommandProcessor = (
           }
 
           command +=
-            ' --body "[ENFIY] Created with Enfiy AI\\n\\nCo-authored-by: Enfiy AI <enfiy@github.com>"';
+            ' --body "[ENFIY] Created with Enfiy\\n\\nCo-authored-by: Enfiy <noreply@enfiy.com>"';
 
           addMessage({
             type: MessageType.INFO,
