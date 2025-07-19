@@ -2,6 +2,12 @@
 
 This guide explains how to set up OAuth applications for each service provider to enable secure authentication in Enfiy Code.
 
+## Supported OAuth Providers
+
+- Google (Gemini API)
+- Anthropic (Claude API)
+- HuggingFace (future support)
+
 ## Google OAuth Setup
 
 ### 1. Create Google Cloud Project
@@ -27,39 +33,33 @@ export ENFIY_GOOGLE_OAUTH_CLIENT_ID="your_client_id_here"
 export ENFIY_GOOGLE_OAUTH_CLIENT_SECRET="your_client_secret_here"
 ```
 
-## HuggingFace OAuth Setup
+## Anthropic OAuth Setup
 
-### 1. Create HuggingFace Application
+### Claude Subscription Authentication
 
-1. Go to [HuggingFace Settings](https://huggingface.co/settings/applications)
-2. Click "New Application"
-3. Fill in the details:
-   - Name: "Enfiy Code CLI"
-   - Description: "AI Code Assistant CLI Tool"
-   - Homepage URL: "https://github.com/enfiy/enfiy-code"
-   - Redirect URI: "http://localhost:8080/oauth/callback"
+Enfiy Code supports Claude Pro/Max subscription authentication:
 
-### 2. Configure Environment Variables
+1. Ensure you have an active Claude Pro or Max subscription
+2. Use the OAuth flow in Enfiy Code's provider setup
+3. No additional OAuth application setup required
 
-```bash
-export ENFIY_HUGGINGFACE_OAUTH_CLIENT_ID="your_hf_client_id_here"
-export ENFIY_HUGGINGFACE_OAUTH_CLIENT_SECRET="your_hf_client_secret_here"
-```
-
-## Claude/Anthropic OAuth Setup
-
-### 1. Create Anthropic Application
-
-1. Go to [Anthropic Console](https://console.anthropic.com/)
-2. Navigate to API Keys section
-3. Create a new API key for your application
-4. Note: Currently uses API key authentication, OAuth may be added in future
-
-### 2. Configure Environment Variables
+### API Key Alternative
 
 ```bash
 export ANTHROPIC_API_KEY="your_anthropic_api_key_here"
 ```
+
+Get your API key from [Anthropic Console](https://console.anthropic.com/settings/keys).
+
+## HuggingFace Setup (API Key)
+
+Currently, HuggingFace uses API key authentication:
+
+```bash
+export HUGGINGFACE_API_KEY="hf_your_token_here"
+```
+
+Get your token from [HuggingFace Settings](https://huggingface.co/settings/tokens).
 
 ## Security Best Practices
 
@@ -79,26 +79,26 @@ export ANTHROPIC_API_KEY="your_anthropic_api_key_here"
 
 ## Testing OAuth Setup
 
-### 1. Test Google OAuth
+### Test Google OAuth
 
 ```bash
 # Set environment variables
 export ENFIY_GOOGLE_OAUTH_CLIENT_ID="your_id"
 export ENFIY_GOOGLE_OAUTH_CLIENT_SECRET="your_secret"
 
-# Test authentication
-enfiy-code auth --provider google
+# Start Enfiy Code and test authentication
+npx @enfiy/enfiy-code
+# Select provider setup and choose Google with OAuth
 ```
 
-### 2. Test HuggingFace OAuth
+### Test Claude Authentication
 
 ```bash
-# Set environment variables
-export ENFIY_HUGGINGFACE_OAUTH_CLIENT_ID="your_id"
-export ENFIY_HUGGINGFACE_OAUTH_CLIENT_SECRET="your_secret"
+# Start Enfiy Code
+npx @enfiy/enfiy-code
 
-# Test authentication
-enfiy-code auth --provider huggingface
+# Use provider setup to test Claude subscription auth
+# or set API key: export ANTHROPIC_API_KEY="your_key"
 ```
 
 ## Troubleshooting
@@ -117,12 +117,16 @@ enfiy-code auth --provider huggingface
    - Verify your OAuth app has the required scopes enabled
    - Check API permissions in the provider console
 
+4. **"Claude subscription not found"**
+   - Ensure you have an active Claude Pro or Max subscription
+   - Try the API key method instead
+
 ### Debug Mode
 
 ```bash
-# Enable debug logging
+# Enable debug logging for OAuth issues
 export DEBUG=oauth:*
-enfiy-code auth --provider google --debug
+npx @enfiy/enfiy-code --debug
 ```
 
 ## Production Deployment
@@ -132,7 +136,6 @@ enfiy-code auth --provider google --debug
 ```bash
 # Production environment variables
 export NODE_ENV=production
-export CODE_ASSIST_ENDPOINT=https://generativelanguage.googleapis.com
 export ENFIY_GOOGLE_OAUTH_CLIENT_ID="prod_client_id"
 export ENFIY_GOOGLE_OAUTH_CLIENT_SECRET="prod_client_secret"
 ```
@@ -148,6 +151,10 @@ export ENFIY_GOOGLE_OAUTH_CLIENT_SECRET="prod_client_secret"
 
 If you encounter issues with OAuth setup:
 
-1. Check the [troubleshooting section](#troubleshooting)
+1. Check the [API Configuration Guide](./api-configuration.md) for basic setup
 2. Review the provider's OAuth documentation
 3. File an issue at [GitHub Issues](https://github.com/enfiy/enfiy-code/issues)
+
+---
+
+For simpler setup without OAuth, see the [API Configuration Guide](./api-configuration.md) for direct API key configuration.
