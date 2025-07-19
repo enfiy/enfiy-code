@@ -75,12 +75,22 @@ describe('Settings Loading and Merging', () => {
     mockFsMkdirSync = vi.mocked(fs.mkdirSync);
     mockStripJsonComments = vi.mocked(stripJsonComments);
 
+    // Force homedir to return mock path - this ensures we never hit real user settings
     vi.mocked(osActual.homedir).mockReturnValue('/mock/user/home');
+    
+    // Mock all fs operations to completely isolate from real filesystem
     (mockStripJsonComments as unknown as Mock).mockImplementation(
       (jsonString: string) => jsonString,
     );
-    (mockFsExistsSync as Mock).mockReturnValue(false);
-    (fs.readFileSync as Mock).mockReturnValue('{}'); // Return valid empty JSON
+    
+    // Ensure fs.existsSync returns false for all paths by default
+    (mockFsExistsSync as Mock).mockImplementation(() => false);
+    
+    // Ensure fs.readFileSync returns empty JSON
+    (fs.readFileSync as Mock).mockImplementation(() => '{}');
+    
+    // Mock other fs functions
+    (fs.writeFileSync as Mock).mockImplementation(() => {});
     (mockFsMkdirSync as Mock).mockImplementation(() => undefined);
   });
 
