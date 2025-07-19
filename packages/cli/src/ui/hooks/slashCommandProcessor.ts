@@ -1562,7 +1562,7 @@ export const useSlashCommandProcessor = (
               timestamp: new Date(),
             });
 
-            const coAuthorCommand = `git commit --amend --no-edit --trailer "Co-authored-by: Enfiy <noreply@enfiy.com>"`;
+            const coAuthorCommand = `git commit --amend --no-edit --trailer "Co-authored-by: enfiy <enfiy@users.noreply.github.com>"`;
             command = `${coAuthorCommand} && ${command}`;
           }
 
