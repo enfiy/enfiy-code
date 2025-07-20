@@ -66,15 +66,45 @@ export const Help: React.FC<Help> = ({ commands }) => (
     </Text>
     {commands
       .filter((command) => command.description)
-      .map((command: SlashCommand) => (
-        <Text key={command.name} color={Colors.Foreground}>
-          <Text bold color={Colors.AccentBlue}>
-            {' '}
-            /{command.name}
+      .map((command: SlashCommand) => {
+        // Special handling for models command to show it as a sub-command
+        if (command.name === 'models') {
+          return (
+            <Text key={command.name} color={Colors.Foreground}>
+              <Text bold color={Colors.AccentBlue}>
+                {' '}
+                  /models
+              </Text>
+              {command.description && ' - ' + command.description}
+            </Text>
+          );
+        }
+        
+        return (
+          <Text key={command.name} color={Colors.Foreground}>
+            <Text bold color={Colors.AccentBlue}>
+              {' '}
+              /{command.name}
+            </Text>
+            {command.description && ' - ' + command.description}
+            {/* Show models as sub-command under provider */}
+            {command.name === 'provider' && (
+              <>
+                {'\n'}
+                <Text bold color={Colors.AccentBlue}>
+                  {'  /models'}
+                </Text>
+                {' - Interactive model selection panel'}
+              </>
+            )}
           </Text>
-          {command.description && ' - ' + command.description}
-        </Text>
-      ))}
+        );
+      })
+      .filter((element, index, array) => {
+        // Filter out the standalone models command since it's now shown under provider
+        const command = commands.filter(cmd => cmd.description)[index];
+        return command?.name !== 'models';
+      })}
     <Text color={Colors.Foreground}>
       <Text bold color={Colors.AccentBlue}>
         {' '}

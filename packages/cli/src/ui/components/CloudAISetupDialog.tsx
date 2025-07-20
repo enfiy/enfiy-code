@@ -80,30 +80,31 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       return 'api-key-management';
     }
 
-    // If we have an existing key and this is a new setup (not managing), skip API setup
-    if (existingKey && !isManaging) {
+    // If we have an existing key and this is a new setup (not managing), 
+    // only skip if forceAuthSelection is false
+    if (existingKey && !isManaging && !forceAuthSelection) {
       console.log('Existing key found, will complete setup automatically');
       return 'auto-complete';
     }
 
-    // Check if provider has only API key auth method, skip selection
-    if (
-      provider === ProviderType.GEMINI ||
-      provider === ProviderType.ANTHROPIC ||
-      provider === ProviderType.OPENAI ||
-      provider === ProviderType.MISTRAL ||
-      provider === ProviderType.OPENROUTER ||
-      provider === ProviderType.HUGGINGFACE
-    ) {
-      console.log(
-        'Single auth method (API key) detected, going directly to api-key-input',
-      );
-      return 'api-key-input';
+    // Show authentication method selection if provider has multiple auth methods
+    const tempAuthMethods = (() => {
+      switch (provider) {
+        case ProviderType.GEMINI:
+          return 3; // API Key, OAuth, Vertex AI
+        default:
+          return 1; // Only API Key
+      }
+    })();
+    
+    if (tempAuthMethods > 1) {
+      console.log('Multiple auth methods detected, going to auth method selection');
+      return 'auth-method-selection';
     }
 
-    // Show authentication method selection for providers with multiple options
-    console.log('Going to authentication method selection');
-    return 'auth-method-selection';
+    // For providers with only API key auth method, go directly to API key input
+    console.log('Single auth method (API key) detected, going directly to api-key-input');
+    return 'api-key-input';
   });
 
   const [apiKey, setApiKey] = useState('');
@@ -117,7 +118,8 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
   const [authMethod, setAuthMethod] = useState<string>('');
 
   // Get available auth methods for provider
-  const getAuthMethods = useCallback((): Array<{
+  // Get base auth methods for provider without delete option
+  const getBaseAuthMethods = useCallback((): Array<{
     id: string;
     name: string;
     description: string;
@@ -130,13 +132,15 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             name: 'API Key',
             description: 'Use Gemini API key from Google AI Studio',
           },
-        ];
-      case ProviderType.ANTHROPIC:
-        return [
           {
-            id: 'api-key',
-            name: 'API Key',
-            description: 'Use Anthropic API key from console.anthropic.com',
+            id: 'oauth',
+            name: 'Google OAuth',
+            description: 'Authenticate with your Google account',
+          },
+          {
+            id: 'vertex-ai',
+            name: 'Vertex AI',
+            description: 'Use Google Cloud Vertex AI authentication',
           },
         ];
       case ProviderType.OPENAI:
@@ -153,14 +157,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             id: 'api-key',
             name: 'API Key',
             description: 'Use Mistral API key from console.mistral.ai',
-          },
-        ];
-      case ProviderType.HUGGINGFACE:
-        return [
-          {
-            id: 'api-key',
-            name: 'API Key',
-            description: 'Use HuggingFace token from huggingface.co',
           },
         ];
       case ProviderType.OPENROUTER:
@@ -182,19 +178,39 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     }
   }, [provider]);
 
+  // Get available auth methods for provider (includes delete option if credentials exist)
+  const getAuthMethods = useCallback((): Array<{
+    id: string;
+    name: string;
+    description: string;
+  }> => {
+    const existingKey = getApiKey(provider);
+    const baseMethods = getBaseAuthMethods();
+    
+    // Add delete option if credentials exist
+    if (existingKey) {
+      return [
+        ...baseMethods,
+        {
+          id: 'delete',
+          name: 'Delete Credentials',
+          description: 'Remove stored authentication credentials',
+        },
+      ];
+    }
+    
+    return baseMethods;
+  }, [provider, getBaseAuthMethods]);
+
   // Get provider display name
   const getProviderDisplayName = useCallback((): string => {
     switch (provider) {
-      case ProviderType.ANTHROPIC:
-        return 'Anthropic Claude';
       case ProviderType.OPENAI:
         return 'OpenAI';
       case ProviderType.GEMINI:
         return 'Google Gemini';
       case ProviderType.MISTRAL:
         return 'Mistral AI';
-      case ProviderType.HUGGINGFACE:
-        return 'HuggingFace';
       case ProviderType.OPENROUTER:
         return 'OpenRouter';
       default:
@@ -205,14 +221,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
   // Get API key instructions
   const getApiKeyInstructions = (): string[] => {
     switch (provider) {
-      case ProviderType.ANTHROPIC:
-        return [
-          '1. Visit https://console.anthropic.com/',
-          '2. Sign in or create an account',
-          '3. Go to API Keys section',
-          '4. Create a new API key',
-          '5. Copy the key (starts with "sk-ant-api03-")',
-        ];
       case ProviderType.OPENAI:
         return [
           '1. Visit https://platform.openai.com/api-keys',
@@ -234,14 +242,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           '3. Go to API Keys section',
           '4. Create a new API key',
           '5. Copy the generated key',
-        ];
-      case ProviderType.HUGGINGFACE:
-        return [
-          '1. Visit https://huggingface.co/settings/tokens',
-          '2. Sign in to your account',
-          '3. Click "New token"',
-          '4. Select "Read" or "Write" permissions',
-          '5. Copy the token (starts with "hf_")',
         ];
       case ProviderType.OPENROUTER:
         return [
@@ -288,7 +288,8 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           throw new Error('Failed to obtain Claude OAuth token');
         }
 
-        // Store the OAuth token with plan type indicator
+        // TODO: Store Claude subscription OAuth tokens in separate OAuth storage
+        // For now, store as API key but this should be refactored  
         const subscriptionToken = `CLAUDE_${planType.toUpperCase()}_OAUTH:${oauthResponse.access_token}`;
         storeApiKey(provider, subscriptionToken, undefined, 'oauth');
 
@@ -323,39 +324,38 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     setValidationError(null);
 
     try {
-      if (provider === ProviderType.ANTHROPIC && authMethod === 'claude-max') {
-        console.log('Checking Claude Max subscription...');
-        const hasClaudeMax = await checkClaudeMaxSubscription();
-        console.log('Claude Max check result:', hasClaudeMax);
+      if (provider === ProviderType.GEMINI && authMethod === 'oauth') {
+        console.log('Starting Google OAuth authentication...');
+        // Import and use Google OAuth
+        const { authenticateGeminiOAuth } = await import('../../utils/subscriptionAuth.js');
+        const authResult = await authenticateGeminiOAuth();
+        
+        // OAuth credentials are automatically saved by the OAuth module
+        // Do not store in API key storage system
+        console.log('Google OAuth credentials stored');
 
-        if (hasClaudeMax) {
-          storeApiKey(
-            provider,
-            'CLAUDE_MAX_AUTHENTICATED',
-            undefined,
-            'claude-max',
-          );
-          console.log('Claude Max credentials stored');
+        setStep('complete');
+        onComplete({
+          type: provider,
+          apiKey: `GOOGLE_OAUTH:${authResult.sessionToken}`,
+        });
+      } else if (provider === ProviderType.GEMINI && authMethod === 'vertex-ai') {
+        console.log('Starting Vertex AI authentication...');
+        storeApiKey(provider, 'VERTEX_AI_AUTHENTICATED', undefined, 'vertex-ai');
+        console.log('Vertex AI credentials stored');
 
-          setStep('complete');
-          onComplete({
-            type: provider,
-            apiKey: 'CLAUDE_MAX_AUTHENTICATED',
-          });
-        } else {
-          console.log('Claude Max subscription not found');
-          setValidationError(
-            'Claude Max subscription not found. Please upgrade your plan or use API key authentication.',
-          );
-          // Stay on oauth-setup to show error message
-          setStep('oauth-setup');
-          setHighlightedIndex(0);
-        }
+        setStep('complete');
+        onComplete({
+          type: provider,
+          apiKey: 'VERTEX_AI_AUTHENTICATED',
+        });
+      } else {
+        throw new Error(`Unsupported OAuth authentication for provider: ${provider}`);
       }
     } catch (error) {
       console.error('OAuth authentication error:', error);
-      setValidationError(`Authentication failed: ${error}`);
-      // Stay on oauth-setup to show error, don't go back immediately
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setValidationError(`Authentication failed: ${errorMessage}`);
       setStep('oauth-setup');
       setHighlightedIndex(0);
     } finally {
@@ -363,25 +363,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     }
   }, [provider, authMethod, onComplete]);
 
-  const checkClaudeMaxSubscription = async (): Promise<boolean> => {
-    // TODO: Implement actual Claude Max subscription check
-    // This could involve checking environment variables, config files,
-    // or making API calls to Anthropic's subscription service
-
-    // For now, always return true to test the flow
-    // In production, this would check for Claude Desktop installation,
-    // environment variables, or make API calls to verify subscription
-    console.log('Checking Claude Max subscription...');
-
-    try {
-      // For testing, always return true immediately
-      // In production, replace with actual subscription check
-      return true;
-    } catch (error) {
-      console.error('Claude Max subscription check failed:', error);
-      return false;
-    }
-  };
 
   const cleanApiKey = useCallback(
     (key: string): string =>
@@ -471,6 +452,14 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
               `Selected Claude subscription method: ${selectedMethod.id}`,
             );
             setStep('subscription-login');
+            setHighlightedIndex(0);
+          } else if (selectedMethod.id === 'vertex-ai') {
+            console.log(`Selected Vertex AI method: ${selectedMethod.id}`);
+            setStep('oauth-setup');
+            setHighlightedIndex(0);
+          } else if (selectedMethod.id === 'local') {
+            console.log(`Selected local connection method: ${selectedMethod.id}`);
+            setStep('oauth-setup');
             setHighlightedIndex(0);
           }
         }
@@ -877,8 +866,30 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         );
 
       case 'oauth-setup': {
-        const authMethodName =
-          authMethod === 'oauth' ? 'Google Account' : 'Claude Max Plan';
+        const getAuthMethodDisplayInfo = () => {
+          if (provider === ProviderType.GEMINI && authMethod === 'oauth') {
+            return {
+              name: 'Google Account',
+              description: 'Opening browser for Google account authentication...',
+              readyDescription: 'This will open your browser for Google account authentication.',
+            };
+          } else if (provider === ProviderType.GEMINI && authMethod === 'vertex-ai') {
+            return {
+              name: 'Vertex AI',
+              description: 'Configuring Google Cloud Vertex AI authentication...',
+              readyDescription: 'This will configure Google Cloud Vertex AI authentication.',
+            };
+          } else {
+            return {
+              name: authMethod,
+              description: 'Processing authentication...',
+              readyDescription: 'This will start the authentication process.',
+            };
+          }
+        };
+
+        const authInfo = getAuthMethodDisplayInfo();
+
         return (
           <Box flexDirection="column" width={width}>
             {validationError && !isAuthenticating && (
@@ -897,15 +908,13 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             {isAuthenticating ? (
               <>
                 <Text color={Colors.AccentYellow}>
-                  Authenticating with {authMethodName}...
+                  Authenticating with {authInfo.name}...
                 </Text>
                 <Text> </Text>
                 <Text color={Colors.Gray}>
-                  {authMethod === 'oauth'
-                    ? 'Opening browser for Google account authentication...'
-                    : 'Checking Claude subscription status...'}
+                  {authInfo.description}
                 </Text>
-                {authMethod === 'oauth' && (
+                {(authMethod === 'oauth') && (
                   <>
                     <Text> </Text>
                     <Text color={Colors.AccentBlue}>
@@ -928,13 +937,11 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             ) : validationError ? null : (
               <>
                 <Text color={Colors.AccentBlue}>
-                  Ready to authenticate with {authMethodName}
+                  Ready to authenticate with {authInfo.name}
                 </Text>
                 <Text> </Text>
                 <Text color={Colors.Gray}>
-                  {authMethod === 'oauth'
-                    ? 'This will open your browser for Google account authentication.'
-                    : 'This will check your Claude Max subscription status.'}
+                  {authInfo.readyDescription}
                 </Text>
                 <Text> </Text>
                 <Box paddingLeft={1}>
@@ -1000,27 +1007,25 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
                 paddingY={0}
                 width={width - 4}
               >
-                <Text>
-                  {isInputMode ? (
-                    apiKey.length > 0 ? (
-                      <>
-                        <Text color={Colors.AccentYellow}>
-                          {apiKey.replace(/./g, '*')}
-                        </Text>
-                        <Text color={Colors.AccentBlue}>█</Text>
-                      </>
-                    ) : (
-                      <>
-                        <Text color={Colors.AccentBlue}>█</Text>
-                        <Text color={Colors.Gray}>
-                          Paste your API key here...
-                        </Text>
-                      </>
-                    )
+                {isInputMode ? (
+                  apiKey.length > 0 ? (
+                    <>
+                      <Text wrap="wrap" color={Colors.AccentYellow}>
+                        {apiKey.replace(/./g, '*')}
+                      </Text>
+                      <Text color={Colors.AccentBlue}>█</Text>
+                    </>
                   ) : (
-                    <Text color={Colors.Gray}>Paste your API key here...</Text>
-                  )}
-                </Text>
+                    <>
+                      <Text color={Colors.AccentBlue}>█</Text>
+                      <Text color={Colors.Gray}>
+                        Paste your API key here...
+                      </Text>
+                    </>
+                  )
+                ) : (
+                  <Text color={Colors.Gray}>Paste your API key here...</Text>
+                )}
               </Box>
             </Box>
 

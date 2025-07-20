@@ -52,7 +52,7 @@ export const ProviderSelectionDialog: React.FC<
   >(() => {
     // If we have a preselected provider, determine its category
     if (preselectedProvider) {
-      const localProviders = [ProviderType.OLLAMA, ProviderType.VLLM];
+      const localProviders = [ProviderType.OLLAMA, ProviderType.LMSTUDIO];
       return localProviders.includes(preselectedProvider) ? 'local' : 'cloud';
     }
     return null;
@@ -100,11 +100,24 @@ export const ProviderSelectionDialog: React.FC<
           return true; // Needs setup - connection failed
         }
       }
+      if (provider === ProviderType.LMSTUDIO) {
+        // Check if LM Studio is running
+        try {
+          const response = await fetch('http://localhost:1234/v1/models', {
+            method: 'GET',
+            signal: AbortSignal.timeout(1000),
+          });
+          return !response.ok; // If not OK, needs setup
+        } catch {
+          return true; // Connection failed, needs setup
+        }
+      }
       if (provider === ProviderType.HUGGINGFACE) {
         // For local HuggingFace, check if local server is configured
         return true; // Needs setup - show configuration guide
       }
-      return false; // Other local providers don't need setup check for now
+      // Other local providers need actual availability check
+      return true; // Default to needs setup for unimplemented local providers
     } else {
       // For cloud providers, always show setup dialog for initial configuration
       // This will handle both API key and OAuth authentication methods
@@ -119,17 +132,20 @@ export const ProviderSelectionDialog: React.FC<
         id: 'local' as const,
         name: t('localAI'),
         description: t('localAIDescription'),
-        providers: [ProviderType.OLLAMA],
+        providers: [
+          ProviderType.OLLAMA,
+          ProviderType.LMSTUDIO,
+        ],
       },
       {
         id: 'cloud' as const,
         name: t('cloudAI'),
         description: t('cloudAIDescription'),
         providers: [
-          ProviderType.ANTHROPIC,
           ProviderType.OPENAI,
           ProviderType.GEMINI,
           ProviderType.MISTRAL,
+          ProviderType.OPENROUTER,
         ],
       },
       {
@@ -139,9 +155,9 @@ export const ProviderSelectionDialog: React.FC<
         providers: [],
       },
       {
-        id: 'none' as const,
+        id: 'skip' as const,
         name: 'Skip Setup',
-        description: 'Do not configure AI provider now',
+        description: 'Continue without configuring a provider',
         providers: [],
       },
     ],
@@ -168,8 +184,19 @@ export const ProviderSelectionDialog: React.FC<
             } catch {
               configs[provider] = false;
             }
+          } else if (provider === ProviderType.LMSTUDIO) {
+            try {
+              const response = await fetch('http://localhost:1234/v1/models', {
+                method: 'GET',
+                signal: AbortSignal.timeout(1000),
+              });
+              configs[provider] = response.ok;
+            } catch {
+              configs[provider] = false;
+            }
           } else {
-            configs[provider] = true; // Other local providers don't need checking
+            // Other local providers default to not configured until implemented
+            configs[provider] = false;
           }
         } else {
           // For cloud providers, check if they have stored credentials
@@ -190,18 +217,16 @@ export const ProviderSelectionDialog: React.FC<
     switch (provider) {
       case ProviderType.OLLAMA:
         return 'Ollama';
-      case ProviderType.HUGGINGFACE:
-        return isLocal ? 'HuggingFace' : 'HuggingFace';
-      case ProviderType.VLLM:
-        return 'vLLM';
-      case ProviderType.ANTHROPIC:
-        return 'Anthropic';
+      case ProviderType.LMSTUDIO:
+        return 'LM Studio';
       case ProviderType.OPENAI:
         return 'OpenAI';
       case ProviderType.GEMINI:
         return 'Google Gemini';
       case ProviderType.MISTRAL:
         return 'Mistral';
+      case ProviderType.OPENROUTER:
+        return 'OpenRouter';
       default:
         return String(provider);
     }
@@ -225,16 +250,21 @@ export const ProviderSelectionDialog: React.FC<
   // Provider descriptions - context dependent
   const getProviderDescription = (provider: ProviderType): string => {
     switch (provider) {
+      // Local providers
       case ProviderType.OLLAMA:
         return 'Popular local AI runtime - Easy setup, excellent models';
-      case ProviderType.ANTHROPIC:
-        return 'Claude API - Superior reasoning and safety';
+      case ProviderType.LMSTUDIO:
+        return 'User-friendly GUI for GGUF models';
+        
+      // Cloud providers
       case ProviderType.OPENAI:
         return 'Industry standard, versatile';
       case ProviderType.GEMINI:
         return 'Long context, multimodal';
       case ProviderType.MISTRAL:
         return 'European AI, efficient and high-performance';
+      case ProviderType.OPENROUTER:
+        return 'Multi-provider access, competitive pricing';
       default:
         return '';
     }
@@ -328,8 +358,8 @@ export const ProviderSelectionDialog: React.FC<
           return;
         }
 
-        if (selected.id === 'none') {
-          // User chose not to configure - close dialog
+        if (selected.id === 'skip') {
+          // Skip setup - close dialog
           onCancel();
           return;
         }

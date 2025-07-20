@@ -78,6 +78,7 @@ import {
   ProviderSetupDialog,
   CloudAISetupDialog,
   APISettingsDialog,
+  ModelSelectionDialog,
 } from './components/LazyComponents.js';
 import { ProviderType, AuthType } from '@enfiy/core';
 
@@ -172,9 +173,12 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
   const [showPrivacyNotice, setShowPrivacyNotice] = useState<boolean>(false);
   const [showProviderSelection, setShowProviderSelection] =
     useState<boolean>(false);
+  const [isProviderSelectionManual, setIsProviderSelectionManual] = 
+    useState<boolean>(false);
   const [showProviderSetup, setShowProviderSetup] = useState<boolean>(false);
   const [showCloudAISetup, setShowCloudAISetup] = useState<boolean>(false);
   const [showAPISettings, setShowAPISettings] = useState<boolean>(false);
+  const [showModelSelection, setShowModelSelection] = useState<boolean>(false);
   const [setupProvider, setSetupProvider] = useState<ProviderType | null>(null);
   const [isManagingProvider, setIsManagingProvider] = useState<boolean>(false);
   const [isFirstRun, setIsFirstRun] = useState<boolean>(true);
@@ -186,20 +190,14 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
   }, []);
 
   const handleProviderSelect = useCallback(
-    (provider: ProviderType, model: string) => {
+    async (provider: ProviderType, model: string) => {
       // Save the selected provider and model to config
-      const providerCategories: Record<ProviderType, string> = {
-        [ProviderType.OLLAMA]: t('localAI'),
-        [ProviderType.VLLM]: t('localAI'),
-        [ProviderType.ANTHROPIC]: t('cloudAI'),
-        [ProviderType.OPENAI]: t('cloudAI'),
-        [ProviderType.GEMINI]: t('cloudAI'),
-        [ProviderType.MISTRAL]: t('cloudAI'),
-        [ProviderType.HUGGINGFACE]: t('cloudAI'),
-        [ProviderType.OPENROUTER]: t('cloudAI'),
-      };
+      // Import provider factory to check if provider is local
+      const { ProviderFactory } = await import('@enfiy/core');
+      const isLocal = ProviderFactory.getLocalProviderTypes().includes(provider);
+      const category = isLocal ? t('localAI') : t('cloudAI');
 
-      const providerName = `${provider.toUpperCase()} (${providerCategories[provider] || t('cloudAI')})`;
+      const providerName = `${provider.toUpperCase()} (${category})`;
 
       // Ensure model and provider compatibility
       const compatibleModel = getCompatibleModel(model, provider);
@@ -264,6 +262,7 @@ Feel free to ask me anything or type /help for available commands.`,
       );
 
       setShowProviderSelection(false);
+      setIsProviderSelectionManual(false);
       setPreselectedProvider(null); // Clear preselection
       setIsFirstRun(false);
     },
@@ -272,6 +271,7 @@ Feel free to ask me anything or type /help for available commands.`,
 
   const handleProviderSelectionCancel = useCallback(() => {
     setShowProviderSelection(false);
+    setIsProviderSelectionManual(false);
     setPreselectedProvider(null); // Clear preselection
     // If it's first run and they cancel, just set first run to false
     if (isFirstRun) {
@@ -280,16 +280,56 @@ Feel free to ask me anything or type /help for available commands.`,
   }, [isFirstRun]);
 
   const openProviderSelection = useCallback(() => {
+    setIsProviderSelectionManual(true);
+    setPreselectedProvider(null); // Clear any preselected provider to show category selection
     setShowProviderSelection(true);
+  }, []);
+
+  const openModelSelection = useCallback(() => {
+    setShowModelSelection(true);
+  }, []);
+
+  const handleModelSelection = useCallback(async (modelName: string) => {
+    try {
+      // Update the current model
+      setCurrentModel(modelName);
+      config.setModel(modelName);
+      settings.setValue(SettingScope.User, 'selectedModel', modelName);
+      
+      // Add success message
+      addItem(
+        {
+          type: MessageType.INFO,
+          text: `Model switched to: ${modelName}`,
+        },
+        Date.now(),
+      );
+      
+      // Close the dialog
+      setShowModelSelection(false);
+    } catch (error) {
+      console.error('Failed to switch model:', error);
+      addItem(
+        {
+          type: MessageType.ERROR,
+          text: `Failed to switch to model: ${modelName}`,
+        },
+        Date.now(),
+      );
+    }
+  }, [config, settings, addItem]);
+
+  const handleModelSelectionCancel = useCallback(() => {
+    setShowModelSelection(false);
   }, []);
 
   const handleProviderSetupRequired = useCallback((provider: ProviderType) => {
     console.log('handleProviderSetupRequired called with provider:', provider);
     const cloudProviders = [
-      ProviderType.ANTHROPIC,
       ProviderType.OPENAI,
       ProviderType.GEMINI,
       ProviderType.MISTRAL,
+      ProviderType.OPENROUTER,
     ];
 
     setSetupProvider(provider);
@@ -312,6 +352,7 @@ Feel free to ask me anything or type /help for available commands.`,
   const handleProviderManagement = useCallback((provider: ProviderType) => {
     setSetupProvider(provider);
     setShowProviderSelection(false);
+    setIsProviderSelectionManual(false);
     setIsManagingProvider(true);
     setShowCloudAISetup(true);
   }, []);
@@ -397,11 +438,13 @@ Feel free to ask me anything or type /help for available commands.`,
 
   const handleOpenAPISettings = useCallback(() => {
     setShowProviderSelection(false);
+    setIsProviderSelectionManual(false);
     setShowAPISettings(true);
   }, []);
 
   const handleAPISettingsCancel = useCallback(() => {
     setShowAPISettings(false);
+    setIsProviderSelectionManual(true);
     setShowProviderSelection(true);
   }, []);
 
@@ -594,6 +637,7 @@ Feel free to ask me anything or type /help for available commands.`,
   const handleSwitchToCloud = useCallback(() => {
     setShowProviderSetup(false);
     setSetupProvider(null);
+    setIsProviderSelectionManual(true);
     setShowProviderSelection(true);
     // TODO: Could add logic to pre-select cloud category in ProviderSelectionDialog
   }, []);
@@ -601,9 +645,15 @@ Feel free to ask me anything or type /help for available commands.`,
   // Check if this is first run (no provider configured)
   useEffect(() => {
     const checkProviderConfiguration = async () => {
-      // Skip if we're already in setup mode
-      if (showProviderSelection || showProviderSetup) {
+      // Skip if we're already in setup mode or have a working model
+      if (showProviderSelection || showProviderSetup || showModelSelection) {
         console.log('Skipping provider check - already in setup mode');
+        return;
+      }
+      
+      // If we already have a current model that works, don't show provider selection
+      if (currentModel && currentModel !== '') {
+        // console.log('Current model is set, skipping provider configuration:', currentModel);
         return;
       }
 
@@ -624,7 +674,7 @@ Feel free to ask me anything or type /help for available commands.`,
         hasApiKey = hasStoredCredentials(settings.merged.selectedProvider);
 
         // For local providers, API key is not required
-        const localProviders = ['ollama', 'vllm', 'huggingface'];
+        const localProviders = ['ollama', 'lmstudio'];
         if (
           localProviders.includes(
             settings.merged.selectedProvider.toLowerCase(),
@@ -634,9 +684,15 @@ Feel free to ask me anything or type /help for available commands.`,
         }
       }
 
-      // Only show provider selection if configuration is incomplete
-      // Remove isFirstRun from the condition - rely on actual configuration state
-      if (!hasValidProvider || !hasValidModel || !hasApiKey) {
+      // Check if we have a working model from config (from environment variables)
+      const configModel = config.getModel();
+      const hasWorkingConfig = configModel && configModel !== '';
+      
+      // Check if we can already use the system (model is set in config and appears to be working)
+      const canUseSystem = hasWorkingConfig || (hasValidProvider && hasValidModel && hasApiKey);
+      
+      // Only show provider selection if we can't use the system
+      if (!canUseSystem) {
         // プロバイダー検出を実行
         try {
           const { getRecommendedProvider } = await import('@enfiy/core');
@@ -648,6 +704,11 @@ Feel free to ask me anything or type /help for available commands.`,
             hasApiKey,
             provider: settings.merged.selectedProvider,
             model: settings.merged.selectedModel,
+            configModel: config.getModel(),
+            showProviderSelection,
+            showAPISettings,
+            showCloudAISetup,
+            showProviderSetup,
           });
 
           // Only show provider detection message if not first run
@@ -677,6 +738,12 @@ Feel free to ask me anything or type /help for available commands.`,
         }
       } else {
         // Provider, model, and API key are all configured
+        // Close provider selection if it's currently open
+        if (showProviderSelection && !isProviderSelectionManual) {
+          console.log('Valid configuration detected, closing provider selection');
+          setShowProviderSelection(false);
+        }
+        
         // Restore the last used model to the current state
         if (
           settings.merged.selectedModel &&
@@ -727,7 +794,16 @@ Feel free to ask me anything or type /help for available commands.`,
     settings.merged.selectedModel,
     settings.merged.selectedProvider,
     currentModel,
+    isProviderSelectionManual,
   ]);
+
+  // Force close provider selection if we have a working configuration (but not if manually opened)
+  useEffect(() => {
+    if (showProviderSelection && !isProviderSelectionManual && currentModel && currentModel !== '') {
+      console.log('Force closing provider selection - working model detected:', currentModel);
+      setTimeout(() => setShowProviderSelection(false), 100);
+    }
+  }, [showProviderSelection, isProviderSelectionManual, currentModel]);
 
   const errorCount = useMemo(
     () => consoleMessages.filter((msg) => msg.type === 'error').length,
@@ -894,6 +970,7 @@ You can switch authentication methods by typing /auth`,
     setQuittingMessages,
     openPrivacyNotice,
     openProviderSelection,
+    openModelSelection,
   );
   const pendingHistoryItems = [...pendingSlashCommandHistoryItems];
 
@@ -1320,6 +1397,13 @@ You can switch authentication methods by typing /auth`,
               _inputWidth={inputWidth}
               preselectedProvider={preselectedProvider ?? undefined}
             />
+          ) : showModelSelection ? (
+            <ModelSelectionDialog
+              config={config}
+              onSelect={handleModelSelection}
+              onCancel={handleModelSelectionCancel}
+              terminalWidth={mainAreaWidth}
+            />
           ) : showAPISettings ? (
             <APISettingsDialog
               onManageProvider={handleAPISettingsManageProvider}
@@ -1361,7 +1445,6 @@ You can switch authentication methods by typing /auth`,
                 elapsedTime={elapsedTime}
               />
               <Box
-                marginTop={1}
                 display="flex"
                 justifyContent="space-between"
                 width="100%"
@@ -1478,6 +1561,7 @@ You can switch authentication methods by typing /auth`,
             }
             totalTokenCount={sessionStats.currentResponse.totalTokenCount}
             isSlashCommand={buffer.text.trim().startsWith('/')}
+            selectedProvider={settings.merged.selectedProvider}
           />
         </Box>
       </Box>

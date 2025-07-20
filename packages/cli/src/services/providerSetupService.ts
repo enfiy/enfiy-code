@@ -69,17 +69,32 @@ export class ProviderSetupService {
           temperature: 0.7,
           maxTokens: 8192,
         };
-      case ProviderType.HUGGINGFACE:
-        return {
-          type: ProviderType.HUGGINGFACE,
-          model: 'anthropic/claude-3-5-sonnet-20241022',
-          temperature: 0.7,
-          maxTokens: 4096,
-        };
       case ProviderType.OPENROUTER:
         return {
           type: ProviderType.OPENROUTER,
           model: 'anthropic/claude-3.5-sonnet',
+          temperature: 0.7,
+          maxTokens: 4096,
+        };
+      case ProviderType.OPENAI:
+        return {
+          type: ProviderType.OPENAI,
+          model: 'gpt-4o-mini',
+          temperature: 0.7,
+          maxTokens: 4096,
+        };
+      case ProviderType.MISTRAL:
+        return {
+          type: ProviderType.MISTRAL,
+          model: 'mistral-large',
+          temperature: 0.7,
+          maxTokens: 4096,
+        };
+      case ProviderType.LMSTUDIO:
+        return {
+          type: ProviderType.LMSTUDIO,
+          baseUrl: 'http://localhost:1234',
+          model: 'local-model',
           temperature: 0.7,
           maxTokens: 4096,
         };
@@ -162,12 +177,6 @@ export class ProviderSetupService {
         return {
           name: 'OpenAI',
           description: 'Cloud AI - GPT models',
-          icon: '',
-        };
-      case ProviderType.ANTHROPIC:
-        return {
-          name: 'Anthropic Claude',
-          description: 'Cloud AI - Claude models',
           icon: '',
         };
       default:

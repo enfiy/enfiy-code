@@ -45,33 +45,6 @@ export function isSubscriptionValid(provider: ProviderType): boolean {
   return true;
 }
 
-// Claude subscription authentication
-export async function authenticateClaudeSubscription(
-  email: string,
-  password: string,
-): Promise<SubscriptionAuth> {
-  // This is a mock implementation - in real scenario, you'd integrate with Claude's web authentication
-  // For now, we'll simulate the login process
-
-  try {
-    // Simulate API call to Claude authentication
-    const response = await simulateClaudeLogin(email, password);
-
-    const auth: SubscriptionAuth = {
-      provider: ProviderType.ANTHROPIC,
-      authType: 'subscription',
-      accountEmail: email,
-      subscriptionTier: response.tier,
-      sessionToken: response.sessionToken,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
-    };
-
-    setSubscriptionAuth(auth);
-    return auth;
-  } catch (error) {
-    throw new Error(`Claude subscription authentication failed: ${error}`);
-  }
-}
 
 // Gemini OAuth authentication
 export async function authenticateGeminiOAuth(): Promise<SubscriptionAuth> {
@@ -129,36 +102,6 @@ export function getAuthStatus(provider: ProviderType): {
   };
 }
 
-// Mock functions for demonstration - replace with real implementations
-async function simulateClaudeLogin(
-  email: string,
-  password: string,
-): Promise<{
-  sessionToken: string;
-  tier: 'free' | 'pro' | 'max';
-}> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  // Mock validation
-  if (!email.includes('@')) {
-    throw new Error('Invalid email format');
-  }
-
-  if (password.length < 6) {
-    throw new Error('Invalid password');
-  }
-
-  // Mock successful response
-  return {
-    sessionToken: 'claude_session_' + Math.random().toString(36).substring(7),
-    tier: email.includes('pro')
-      ? 'pro'
-      : email.includes('max')
-        ? 'max'
-        : 'free',
-  };
-}
 
 async function simulateGoogleOAuth(): Promise<{
   email: string;
@@ -176,22 +119,13 @@ async function simulateGoogleOAuth(): Promise<{
   };
 }
 
-export function getProviderDisplayName(
+export async function getProviderDisplayName(
   provider: ProviderType,
   authStatus: ReturnType<typeof getAuthStatus>,
-): string {
-  const baseNames: Record<ProviderType, string> = {
-    [ProviderType.ANTHROPIC]: 'Claude',
-    [ProviderType.GEMINI]: 'Gemini',
-    [ProviderType.OPENAI]: 'OpenAI',
-    [ProviderType.MISTRAL]: 'Mistral',
-    [ProviderType.OLLAMA]: 'Ollama',
-    [ProviderType.HUGGINGFACE]: 'HuggingFace',
-    [ProviderType.VLLM]: 'vLLM',
-    [ProviderType.OPENROUTER]: 'OpenRouter',
-  };
-
-  const baseName = baseNames[provider] || provider.toString();
+): Promise<string> {
+  // Use getProviderDisplayName from modelUtils for consistency
+  const { getProviderDisplayName: getDisplayName } = await import('./modelUtils.js');
+  const baseName = getDisplayName(provider);
 
   if (!authStatus.isAuthenticated) {
     return `${baseName} (Not Connected)`;

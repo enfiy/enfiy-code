@@ -27,7 +27,7 @@ import {
 } from '../../utils/huggingfaceSetup.js';
 
 interface LocalAISetupDialogProps {
-  provider: ProviderType.OLLAMA | ProviderType.HUGGINGFACE;
+  provider: ProviderType.OLLAMA | ProviderType.LMSTUDIO;
   onComplete: (config: LocalAIConfig) => void;
   onCancel: () => void;
   terminalWidth: number;
@@ -46,12 +46,6 @@ type SetupStep =
   | 'ollama-install'
   | 'ollama-start'
   | 'ollama-models'
-  | 'hf-check'
-  | 'hf-method-selection'
-  | 'hf-tgi-setup'
-  | 'hf-vllm-setup'
-  | 'hf-ollama-setup'
-  | 'hf-server-start'
   | 'model-selection'
   | 'installation-progress'
   | 'complete';
@@ -63,7 +57,7 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
   terminalWidth,
 }) => {
   const [step, setStep] = useState<SetupStep>(
-    provider === ProviderType.OLLAMA ? 'ollama-check' : 'hf-check',
+    provider === ProviderType.OLLAMA ? 'ollama-check' : 'complete',
   );
   const [setupMethod, setSetupMethod] = useState<'local' | 'cloud' | 'custom'>(
     'local',
@@ -77,20 +71,21 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
   const [modelInstallProgress, setModelInstallProgress] =
     useState<ModelInstallProgress | null>(null);
 
-  // HuggingFace関連の状態
-  const [hfStatus, setHfStatus] = useState<HuggingFaceSetupStatus | null>(null);
+  // LM Studio関連の状態
+  const [lmStudioStatus, setLmStudioStatus] = useState<any | null>(null);
   const [_apiKey, _setApiKey] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
-  const [selectedHFMethod, setSelectedHFMethod] = useState<
-    'tgi' | 'vllm' | 'ollama' | null
+  const [selectedLMSMethod, setSelectedLMSMethod] = useState<
+    'local' | null
   >(null);
 
   // プロバイダー別の初期チェック
   useEffect(() => {
     if (provider === ProviderType.OLLAMA) {
       checkOllamaInstallation().then(setOllamaStatus);
-    } else if (provider === ProviderType.HUGGINGFACE) {
-      checkHuggingFaceSetup().then(setHfStatus);
+    } else if (provider === ProviderType.LMSTUDIO) {
+      // Check LM Studio installation - for now just set a placeholder
+      setLmStudioStatus({ isInstalled: false, isRunning: false });
     }
   }, [provider]);
 
@@ -109,14 +104,14 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
     }
   }, [ollamaStatus, step]);
 
-  // HuggingFaceステータス確認後の処理
+  // LM Studioステータス確認後の処理
   useEffect(() => {
-    if (hfStatus && step === 'hf-check') {
+    if (lmStudioStatus && step === 'lms-check') {
       // ローカルAIカテゴリーなので、ローカル実行のみ
       setSetupMethod('local');
-      setStep('hf-method-selection');
+      setStep('model-selection');
     }
-  }, [hfStatus, step]);
+  }, [lmStudioStatus, step]);
 
   const getAvailableModels = useCallback(() => {
     if (provider === ProviderType.OLLAMA && ollamaStatus) {
@@ -124,19 +119,16 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
         ? ollamaStatus.installedModels
         : ollamaStatus.recommendedModels.map((m) => m.name);
     }
-    if (provider === ProviderType.HUGGINGFACE) {
-      return getRecommendedHFModels().map((m) => m.name);
+    if (provider === ProviderType.LMSTUDIO) {
+      return ['local-model', 'downloaded-model-1', 'downloaded-model-2'];
     }
     return [];
   }, [provider, ollamaStatus]);
 
   const getLocalEndpoint = useCallback(() => {
     if (provider === ProviderType.OLLAMA) return 'http://localhost:11434';
-    if (provider === ProviderType.HUGGINGFACE) {
-      if (selectedHFMethod === 'tgi') return 'http://localhost:8080';
-      if (selectedHFMethod === 'vllm') return 'http://localhost:8000';
-      if (selectedHFMethod === 'ollama') return 'http://localhost:11434';
-      if (hfStatus?.localServerUrl) return hfStatus.localServerUrl;
+    if (provider === ProviderType.LMSTUDIO) {
+      return 'http://localhost:1234';
     }
     return 'http://localhost:8080';
   }, [provider, selectedHFMethod, hfStatus?.localServerUrl]);
@@ -183,33 +175,6 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
         }
         break;
 
-      case 'hf-method-selection':
-        if (highlightedIndex === 0) {
-          setSelectedHFMethod('tgi');
-          setStep('hf-tgi-setup');
-        } else if (highlightedIndex === 1) {
-          setSelectedHFMethod('vllm');
-          setStep('hf-vllm-setup');
-        } else if (highlightedIndex === 2) {
-          setSelectedHFMethod('ollama');
-          setStep('hf-ollama-setup');
-        }
-        break;
-
-      case 'hf-tgi-setup':
-      case 'hf-vllm-setup':
-      case 'hf-ollama-setup':
-        setStep('hf-server-start');
-        break;
-
-      case 'hf-server-start':
-        if (highlightedIndex === 0) {
-          // Start server automatically (if implemented)
-          setStep('model-selection');
-        } else {
-          onCancel();
-        }
-        break;
 
       case 'model-selection': {
         const models = getAvailableModels();
@@ -265,8 +230,6 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
         let maxIndex = 0;
         if (step === 'ollama-models')
           maxIndex = ollamaStatus?.recommendedModels.length || 0;
-        else if (step === 'hf-method-selection')
-          maxIndex = 2; // TGI, vLLM, Ollama
         else if (step === 'model-selection')
           maxIndex = getAvailableModels().length - 1;
 
@@ -353,184 +316,6 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
           </Box>
         );
 
-      case 'hf-method-selection':
-        return (
-          <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentBlue}>
-              Select HuggingFace Setup Method
-            </Text>
-            <Text> </Text>
-            <Text
-              color={
-                highlightedIndex === 0 ? Colors.AccentGreen : Colors.Foreground
-              }
-            >
-              {highlightedIndex === 0 ? '▶ ' : '  '}Text Generation Inference
-              (Recommended)
-            </Text>
-            <Text color={Colors.Gray}>
-              {' '}
-              Docker-based, easy setup, official HuggingFace server
-            </Text>
-            <Text> </Text>
-            <Text
-              color={
-                highlightedIndex === 1 ? Colors.AccentGreen : Colors.Foreground
-              }
-            >
-              {highlightedIndex === 1 ? '▶ ' : '  '}vLLM Server
-            </Text>
-            <Text color={Colors.Gray}>
-              {' '}
-              Fast inference, requires Python setup
-            </Text>
-            <Text> </Text>
-            <Text
-              color={
-                highlightedIndex === 2 ? Colors.AccentGreen : Colors.Foreground
-              }
-            >
-              {highlightedIndex === 2 ? '▶ ' : '  '}Ollama with HuggingFace
-              Models
-            </Text>
-            <Text color={Colors.Gray}>
-              {' '}
-              Use existing Ollama to run HuggingFace models
-            </Text>
-          </Box>
-        );
-
-      case 'hf-tgi-setup':
-        return (
-          <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentBlue}>
-              Text Generation Inference Setup
-            </Text>
-            <Text> </Text>
-            <Text bold>Prerequisites:</Text>
-            <Text>• Docker Desktop installed</Text>
-            <Text>• At least 4GB free memory</Text>
-            <Text> </Text>
-            <Text bold>Installation Steps:</Text>
-            <Text>1. Install Docker Desktop:</Text>
-            <Text> Visit: https://www.docker.com/products/docker-desktop</Text>
-            <Text> </Text>
-            <Text>2. Open terminal and run:</Text>
-            <Text color={Colors.AccentYellow}>
-              {' '}
-              docker run -p 8080:80 -v $PWD/data:/data \
-            </Text>
-            <Text color={Colors.AccentYellow}>
-              {' '}
-              ghcr.io/huggingface/text-generation-inference:latest \
-            </Text>
-            <Text color={Colors.AccentYellow}>
-              {' '}
-              --model-id microsoft/DialoGPT-medium
-            </Text>
-            <Text> </Text>
-            <Text>3. Wait for model download and server start</Text>
-            <Text>4. Server will be available at: http://localhost:8080</Text>
-            <Text> </Text>
-            <Text color={Colors.AccentGreen}>
-              Press Enter to continue once server is running
-            </Text>
-          </Box>
-        );
-
-      case 'hf-vllm-setup':
-        return (
-          <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentBlue}>
-              vLLM Server Setup
-            </Text>
-            <Text> </Text>
-            <Text bold>Prerequisites:</Text>
-            <Text>• Python 3.8+ installed</Text>
-            <Text>• At least 8GB free memory</Text>
-            <Text>• CUDA (for GPU acceleration, optional)</Text>
-            <Text> </Text>
-            <Text bold>Installation Steps:</Text>
-            <Text>1. Install vLLM:</Text>
-            <Text color={Colors.AccentYellow}> pip install vllm</Text>
-            <Text> </Text>
-            <Text>2. Start vLLM server:</Text>
-            <Text color={Colors.AccentYellow}>
-              {' '}
-              python -m vllm.entrypoints.openai.api_server \
-            </Text>
-            <Text color={Colors.AccentYellow}>
-              {' '}
-              --model microsoft/DialoGPT-medium --port 8000
-            </Text>
-            <Text> </Text>
-            <Text>3. Wait for model download and server start</Text>
-            <Text>4. Server will be available at: http://localhost:8000</Text>
-            <Text> </Text>
-            <Text color={Colors.AccentGreen}>
-              Press Enter to continue once server is running
-            </Text>
-          </Box>
-        );
-
-      case 'hf-ollama-setup':
-        return (
-          <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentBlue}>
-              Ollama + HuggingFace Setup
-            </Text>
-            <Text> </Text>
-            <Text bold>Prerequisites:</Text>
-            <Text>• Ollama installed and running</Text>
-            <Text>• At least 2GB free memory</Text>
-            <Text> </Text>
-            <Text bold>Installation Steps:</Text>
-            <Text>1. Ensure Ollama is running:</Text>
-            <Text color={Colors.AccentYellow}> ollama serve</Text>
-            <Text> </Text>
-            <Text>2. Pull HuggingFace model through Ollama:</Text>
-            <Text color={Colors.AccentYellow}>
-              {' '}
-              ollama pull huggingface/CodeBERTa-small-v1
-            </Text>
-            <Text> </Text>
-            <Text>3. Server will be available at: http://localhost:11434</Text>
-            <Text> </Text>
-            <Text color={Colors.AccentGreen}>
-              Press Enter to continue once model is downloaded
-            </Text>
-          </Box>
-        );
-
-      case 'hf-server-start':
-        return (
-          <Box flexDirection="column" width={width}>
-            <Text bold color={Colors.AccentYellow}>
-              Server Status Check
-            </Text>
-            <Text> </Text>
-            <Text>Selected method: {selectedHFMethod?.toUpperCase()}</Text>
-            <Text> </Text>
-            <Text
-              color={
-                highlightedIndex === 0 ? Colors.AccentGreen : Colors.Foreground
-              }
-            >
-              {highlightedIndex === 0 ? '▶ ' : '  '}Continue to Model Selection
-            </Text>
-            <Text
-              color={
-                highlightedIndex === 1 ? Colors.AccentGreen : Colors.Foreground
-              }
-            >
-              {highlightedIndex === 1 ? '▶ ' : '  '}Cancel Setup
-            </Text>
-            <Text> </Text>
-            <Text color={Colors.Gray}>
-              Make sure your server is running before continuing
-            </Text>
-          </Box>
-        );
 
       case 'installation-progress':
         return (

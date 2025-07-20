@@ -7,10 +7,44 @@
 import { ProviderType } from '@enfiy/core';
 
 /**
- * Determine the provider type from a model name
+ * Convert provider string to ProviderType enum
  */
-export function getProviderFromModel(modelName: string): ProviderType | null {
+function getProviderTypeFromString(providerString: string): ProviderType | null {
+  const normalized = providerString.toLowerCase();
+  
+  switch (normalized) {
+    case 'openrouter':
+      return ProviderType.OPENROUTER;
+    case 'openai':
+      return ProviderType.OPENAI;
+    case 'gemini':
+    case 'google':
+      return ProviderType.GEMINI;
+    case 'mistral':
+    case 'mistralai':
+      return ProviderType.MISTRAL;
+    case 'ollama':
+      return ProviderType.OLLAMA;
+    case 'lmstudio':
+      return ProviderType.LMSTUDIO;
+    default:
+      return null;
+  }
+}
+
+/**
+ * Determine the provider type from a model name, optionally with provider context
+ */
+export function getProviderFromModel(modelName: string, providerContext?: string): ProviderType | null {
   if (!modelName) return null;
+
+  // If provider context is provided, use it first
+  if (providerContext) {
+    const contextProvider = getProviderTypeFromString(providerContext);
+    if (contextProvider) {
+      return contextProvider;
+    }
+  }
 
   // Normalize model name for matching
   const normalizedModel = modelName.toLowerCase();
@@ -42,16 +76,9 @@ export function getProviderFromModel(modelName: string): ProviderType | null {
     return ProviderType.OPENROUTER;
   }
 
-  // Anthropic Claude models (but not OpenRouter anthropic/ prefixed models)
-  if (
-    normalizedModel.includes('claude') ||
-    normalizedModel.includes('anthropic')
-  ) {
-    return ProviderType.ANTHROPIC;
-  }
 
-  // Google Gemini models
-  if (normalizedModel.includes('gemini')) {
+  // Google Gemini models (only for non-prefixed models to avoid conflicts with OpenRouter)
+  if (normalizedModel.includes('gemini') && !normalizedModel.includes('/')) {
     return ProviderType.GEMINI;
   }
 
@@ -65,13 +92,6 @@ export function getProviderFromModel(modelName: string): ProviderType | null {
     return ProviderType.MISTRAL;
   }
 
-  // HuggingFace models
-  if (
-    normalizedModel.includes('huggingface') ||
-    normalizedModel.includes('hf/')
-  ) {
-    return ProviderType.HUGGINGFACE;
-  }
 
   // Local models (Ollama, etc.)
   if (
@@ -116,7 +136,7 @@ export function isLocalModel(modelName: string): boolean {
   if (!modelName) return false;
 
   const provider = getProviderFromModel(modelName);
-  return provider === ProviderType.OLLAMA || provider === ProviderType.VLLM;
+  return provider === ProviderType.OLLAMA || provider === ProviderType.LMSTUDIO;
 }
 
 /**
@@ -129,7 +149,7 @@ export function isCloudModel(modelName: string): boolean {
   return (
     provider !== null &&
     provider !== ProviderType.OLLAMA &&
-    provider !== ProviderType.VLLM
+    provider !== ProviderType.LMSTUDIO
   );
 }
 
@@ -138,8 +158,6 @@ export function isCloudModel(modelName: string): boolean {
  */
 export function getProviderDisplayName(provider: ProviderType): string {
   switch (provider) {
-    case ProviderType.ANTHROPIC:
-      return 'Anthropic';
     case ProviderType.OPENAI:
       return 'OpenAI';
     case ProviderType.GEMINI:
@@ -148,12 +166,10 @@ export function getProviderDisplayName(provider: ProviderType): string {
       return 'Mistral';
     case ProviderType.OPENROUTER:
       return 'OpenRouter';
-    case ProviderType.HUGGINGFACE:
-      return 'HuggingFace';
     case ProviderType.OLLAMA:
       return 'Ollama';
-    case ProviderType.VLLM:
-      return 'vLLM';
+    case ProviderType.LMSTUDIO:
+      return 'LM Studio';
     default: {
       // This should never happen if all enum cases are handled
       const _exhaustiveCheck: never = provider;
@@ -163,9 +179,9 @@ export function getProviderDisplayName(provider: ProviderType): string {
 }
 
 /**
- * Get provider display name from model name
+ * Get provider display name from model name with optional provider context
  */
-export function getProviderDisplayNameFromModel(modelName: string): string {
-  const provider = getProviderFromModel(modelName);
+export function getProviderDisplayNameFromModel(modelName: string, providerContext?: string): string {
+  const provider = getProviderFromModel(modelName, providerContext);
   return provider ? getProviderDisplayName(provider) : '';
 }

@@ -84,6 +84,7 @@ export const useSlashCommandProcessor = (
   setQuittingMessages: (message: HistoryItem[]) => void,
   openPrivacyNotice: () => void,
   openProviderSelection: () => void,
+  openModelSelection: () => void,
 ) => {
   const session = useSessionStats();
   const gitService = useMemo(() => {
@@ -939,15 +940,22 @@ export const useSlashCommandProcessor = (
       {
         name: 'provider',
         altName: 'ai',
-        description: 'select AI provider and model',
+        description: 'Select AI provider and model',
         action: (_mainCommand, _subCommand, _args) => {
           openProviderSelection();
         },
       },
       {
-        name: 'model',
+        name: 'models',
+        description: 'Interactive model selection panel',
+        action: (_mainCommand, _subCommand, _args) => {
+          openModelSelection();
+        },
+      },
+      {
+        name: 'usage',
         description:
-          'manage model selection and usage limits. Usage: /model [list|switch|status|order|auto]',
+          'manage model usage limits and settings. Usage: /usage [list|switch|status|order|auto]',
         action: async (_mainCommand, subCommand, args) => {
           if (!config) {
             addMessage({
@@ -1013,7 +1021,7 @@ export const useSlashCommandProcessor = (
               if (!args?.trim()) {
                 addMessage({
                   type: MessageType.ERROR,
-                  content: 'Usage: /model switch <model_name>',
+                  content: 'Usage: /usage switch <model_name>',
                   timestamp: new Date(),
                 });
                 return;
@@ -1108,7 +1116,7 @@ export const useSlashCommandProcessor = (
               }
 
               orderMessage +=
-                '\nUse: /model switch <model_name> to change primary model';
+                '\nUse: /usage switch <model_name> to change primary model';
 
               addMessage({
                 type: MessageType.INFO,
@@ -1138,7 +1146,7 @@ export const useSlashCommandProcessor = (
                 addMessage({
                   type: MessageType.INFO,
                   content:
-                    'Automatic Model Switching Status:\n\n[ENABLED] Enabled\n\nFallback triggers:\n- Rate limits (429 errors)\n- Server errors (5xx)\n- Usage limit reached (>95%)\n\nUse: /model auto [on|off] to toggle',
+                    'Automatic Model Switching Status:\n\n[ENABLED] Enabled\n\nFallback triggers:\n- Rate limits (429 errors)\n- Server errors (5xx)\n- Usage limit reached (>95%)\n\nUse: /usage auto [on|off] to toggle',
                   timestamp: new Date(),
                 });
               }
@@ -1180,7 +1188,7 @@ export const useSlashCommandProcessor = (
             default:
               addMessage({
                 type: MessageType.ERROR,
-                content: `Unknown /model command: ${subCommand}. Available: list, switch, status, order, auto`,
+                content: `Unknown /usage command: ${subCommand}. Available: list, switch, status, order, auto`,
                 timestamp: new Date(),
               });
               return;
@@ -2060,6 +2068,7 @@ export const useSlashCommandProcessor = (
     setPendingCompressionItem,
     openPrivacyNotice,
     openProviderSelection,
+    openModelSelection,
   ]);
 
   const handleSlashCommand = useCallback(
