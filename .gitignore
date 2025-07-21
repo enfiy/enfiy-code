@@ -181,6 +181,8 @@ fixtures/temp/
 e2e-results/
 playwright-report/
 test-results/
+# Integration test generated files
+generated/
 
 # Jest
 jest.config.local.js
@@ -193,6 +195,7 @@ jest-stare/
 bundle-size-history.json
 webpack-bundle-analyzer-report.html
 stats.json
+bundle-analyzer-report.html
 
 # Performance monitoring
 lighthouse-results/
@@ -311,6 +314,11 @@ aws-exports.js
 test-browser-open.js
 debug-output/
 benchmark-results/
+# Development temporary files
+.temp/
+.tmp/
+scratch/
+experiment/
 
 # Generated documentation
 docs/generated/
