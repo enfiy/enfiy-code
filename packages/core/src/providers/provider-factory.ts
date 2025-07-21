@@ -12,6 +12,7 @@ import { GeminiProvider } from './gemini-provider.js';
 import { OllamaProvider } from './ollama-provider.js';
 import { OpenAIProvider } from './openai-provider.js';
 import { MistralProvider } from './mistral-provider.js';
+import { AnthropicProvider } from './anthropic-provider.js';
 import { OpenRouterProvider } from './openrouter-provider.js';
 
 export class ProviderFactory {
@@ -28,6 +29,8 @@ export class ProviderFactory {
         return new OpenAIProvider();
       case ProviderType.MISTRAL:
         return new MistralProvider();
+      case ProviderType.ANTHROPIC:
+        return new AnthropicProvider();
       case ProviderType.OPENROUTER:
         return new OpenRouterProvider();
 
@@ -47,6 +50,7 @@ export class ProviderFactory {
       { type: ProviderType.GEMINI, name: 'Google Gemini' },
       { type: ProviderType.OPENAI, name: 'OpenAI' },
       { type: ProviderType.MISTRAL, name: 'Mistral AI' },
+      { type: ProviderType.ANTHROPIC, name: 'Anthropic' },
       { type: ProviderType.OPENROUTER, name: 'OpenRouter' },
     ];
 
@@ -121,6 +125,7 @@ export class ProviderFactory {
       ProviderType.GEMINI,
       ProviderType.OPENAI,
       ProviderType.MISTRAL,
+      ProviderType.ANTHROPIC,
       ProviderType.OPENROUTER,
     ];
   }
@@ -140,6 +145,7 @@ export class ProviderFactory {
       ProviderType.OPENAI,
       ProviderType.GEMINI,
       ProviderType.MISTRAL,
+      ProviderType.ANTHROPIC,
       ProviderType.OPENROUTER,
     ];
   }

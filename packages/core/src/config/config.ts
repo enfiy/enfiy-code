@@ -48,7 +48,7 @@ import { ClearcutLogger } from '../telemetry/clearcut-logger/clearcut-logger.js'
 export enum ApprovalMode {
   DEFAULT = 'default',
   AUTO_EDIT = 'autoEdit',
-  YOLO = 'yolo',
+  AUTO = 'auto',
 }
 
 export interface AccessibilitySettings {
@@ -401,6 +401,9 @@ export class Config {
   }
 
   getEnfiyClient(): EnfiyClient {
+    if (!this.enfiyClient) {
+      throw new Error('EnfiyClient not initialized. Please run /provider command to configure authentication.');
+    }
     return this.enfiyClient;
   }
 

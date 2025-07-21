@@ -67,6 +67,11 @@ export class MultiProviderClient {
       return ProviderType.MISTRAL;
     }
 
+    // Anthropic models
+    if (modelLower.includes('claude')) {
+      return ProviderType.ANTHROPIC;
+    }
+
     // Ollama models (comprehensive pattern matching)
     if (
       modelLower.includes('llama') ||
@@ -141,6 +146,9 @@ export class MultiProviderClient {
         break;
       case ProviderType.MISTRAL:
         apiKey = process.env.MISTRAL_API_KEY;
+        break;
+      case ProviderType.ANTHROPIC:
+        apiKey = process.env.ANTHROPIC_API_KEY;
         break;
       case ProviderType.OPENROUTER:
         apiKey = process.env.OPENROUTER_API_KEY;
@@ -343,6 +351,8 @@ export class MultiProviderClient {
         return 'GEMINI_API_KEY';
       case ProviderType.MISTRAL:
         return 'MISTRAL_API_KEY';
+      case ProviderType.ANTHROPIC:
+        return 'ANTHROPIC_API_KEY';
       case ProviderType.OPENROUTER:
         return 'OPENROUTER_API_KEY';
       case ProviderType.OLLAMA:
@@ -418,6 +428,11 @@ export class MultiProviderContentGeneratorWrapper implements ContentGenerator {
       return ProviderType.MISTRAL;
     }
 
+    // Anthropic models
+    if (modelLower.includes('claude')) {
+      return ProviderType.ANTHROPIC;
+    }
+
     // OpenRouter models
     if (modelLower.includes('openrouter') || modelLower.includes('OR/')) {
       return ProviderType.OPENROUTER;
@@ -438,6 +453,7 @@ export class MultiProviderContentGeneratorWrapper implements ContentGenerator {
       [ProviderType.OPENAI]: 'OPENAI_API_KEY',
       [ProviderType.GEMINI]: 'GEMINI_API_KEY',
       [ProviderType.MISTRAL]: 'MISTRAL_API_KEY',
+      [ProviderType.ANTHROPIC]: 'ANTHROPIC_API_KEY',
       [ProviderType.OPENROUTER]: 'OPENROUTER_API_KEY',
     };
     return envVarMap[providerType];

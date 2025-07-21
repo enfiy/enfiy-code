@@ -128,7 +128,7 @@ export class EnfiyClient {
 
   getChat(): EnfiyChat {
     if (!this.chat) {
-      throw new Error('Chat not initialized');
+      throw new Error('Chat not initialized. Please ensure authentication is properly configured by running /provider command or check your API key settings.');
     }
     return this.chat;
   }

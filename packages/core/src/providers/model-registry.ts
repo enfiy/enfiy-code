@@ -680,8 +680,8 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
 
   [ProviderType.MISTRAL]: [
     {
-      id: 'mistral-large-24.11',
-      name: 'Mistral Large 24.11',
+      id: 'mistral-large-2411',
+      name: 'Mistral Large 2411',
       provider: ProviderType.MISTRAL,
       category: 'cloud',
       description: '123B parameter model for complex reasoning and analysis',
@@ -731,10 +731,53 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
     },
   ],
 
+  [ProviderType.ANTHROPIC]: [
+    {
+      id: 'claude-3-5-sonnet-20241022',
+      name: 'Claude 3.5 Sonnet',
+      provider: ProviderType.ANTHROPIC,
+      category: 'cloud',
+      description: 'High-performance model with excellent coding and reasoning',
+      contextLength: 200000,
+      pricing: { input: 3, output: 15, unit: '$/1M tokens' },
+      capabilities: ['chat', 'code', 'reasoning', 'analysis', 'long-context'],
+    },
+    {
+      id: 'claude-3-5-sonnet-20240620',
+      name: 'Claude 3.5 Sonnet (Previous)',
+      provider: ProviderType.ANTHROPIC,
+      category: 'cloud',
+      description: 'Previous version of Claude 3.5 Sonnet',
+      contextLength: 200000,
+      pricing: { input: 3, output: 15, unit: '$/1M tokens' },
+      capabilities: ['chat', 'code', 'reasoning', 'analysis', 'long-context'],
+    },
+    {
+      id: 'claude-3-opus-20240229',
+      name: 'Claude 3 Opus',
+      provider: ProviderType.ANTHROPIC,
+      category: 'cloud',
+      description: 'Most powerful Claude model for complex tasks',
+      contextLength: 200000,
+      pricing: { input: 15, output: 75, unit: '$/1M tokens' },
+      capabilities: ['chat', 'code', 'reasoning', 'analysis', 'complex', 'long-context'],
+    },
+    {
+      id: 'claude-3-5-haiku-20241022',
+      name: 'Claude 3.5 Haiku',
+      provider: ProviderType.ANTHROPIC,
+      category: 'cloud',
+      description: 'Fast and cost-effective model',
+      contextLength: 200000,
+      pricing: { input: 0.8, output: 4, unit: '$/1M tokens' },
+      capabilities: ['chat', 'code', 'fast', 'cost-effective'],
+    },
+  ],
+
   [ProviderType.OPENROUTER]: [
     // Claude models via OpenRouter
     {
-      id: 'anthropic/claude-3.5-sonnet',
+      id: 'anthropic/claude-3-5-sonnet',
       name: 'Claude 3.5 Sonnet',
       provider: ProviderType.OPENROUTER,
       category: 'cloud',

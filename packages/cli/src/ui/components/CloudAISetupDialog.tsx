@@ -96,8 +96,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     return 0;
   });
   const [isInputMode, setIsInputMode] = useState(false);
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
-  const [authMethod, setAuthMethod] = useState<string>('');
 
   // Get available auth methods for provider
   // Get base auth methods for provider without delete option
@@ -113,16 +111,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             id: 'api-key',
             name: 'API Key',
             description: 'Use Gemini API key from Google AI Studio',
-          },
-          {
-            id: 'oauth',
-            name: 'Google OAuth',
-            description: 'Authenticate with your Google account',
-          },
-          {
-            id: 'vertex-ai',
-            name: 'Vertex AI',
-            description: 'Use Google Cloud Vertex AI authentication',
           },
         ];
       case ProviderType.OPENAI:
@@ -149,6 +137,14 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             description: 'Use OpenRouter API key from openrouter.ai',
           },
         ];
+      case ProviderType.ANTHROPIC:
+        return [
+          {
+            id: 'api-key',
+            name: 'API Key',
+            description: 'Use Anthropic API key from console.anthropic.com',
+          },
+        ];
       default:
         return [
           {
@@ -160,29 +156,12 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     }
   }, [provider]);
 
-  // Get available auth methods for provider (includes delete option if credentials exist)
+  // Get available auth methods for provider
   const getAuthMethods = useCallback((): Array<{
     id: string;
     name: string;
     description: string;
-  }> => {
-    const existingKey = getApiKey(provider);
-    const baseMethods = getBaseAuthMethods();
-
-    // Add delete option if credentials exist
-    if (existingKey) {
-      return [
-        ...baseMethods,
-        {
-          id: 'delete',
-          name: 'Delete Credentials',
-          description: 'Remove stored authentication credentials',
-        },
-      ];
-    }
-
-    return baseMethods;
-  }, [provider, getBaseAuthMethods]);
+  }> => getBaseAuthMethods(), [getBaseAuthMethods]);
 
   // Get provider display name
   const getProviderDisplayName = useCallback((): string => {
@@ -193,6 +172,8 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         return 'Google Gemini';
       case ProviderType.MISTRAL:
         return 'Mistral AI';
+      case ProviderType.ANTHROPIC:
+        return 'Anthropic';
       case ProviderType.OPENROUTER:
         return 'OpenRouter';
       default:
@@ -233,6 +214,14 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           '4. Set optional name and credit limit',
           '5. Copy the API key (starts with "sk-or-")',
         ];
+      case ProviderType.ANTHROPIC:
+        return [
+          '1. Visit https://console.anthropic.com/account/keys',
+          '2. Sign in or create an account',
+          '3. Click "Create Key"',
+          '4. Give your key a name',
+          '5. Copy the API key (starts with "sk-ant-")',
+        ];
       default:
         return [
           'Please check the provider documentation for API key setup instructions.',
@@ -255,95 +244,21 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     }
   }, [step, getAuthMethods, provider]);
 
-  const handleClaudeSubscriptionAuth = useCallback(
-    async (planType: 'pro' | 'max') => {
-      console.log(`Starting Claude ${planType} subscription authentication`);
-      setIsAuthenticating(true);
-      setValidationError(null);
-
-      try {
-        throw new Error('OAuth authentication not supported');
-      } catch (error: unknown) {
-        console.error('Claude subscription authentication failed:', error);
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-        setValidationError(
-          `Failed to authenticate with Claude ${planType} subscription: ${errorMessage}`,
-        );
-      } finally {
-        setIsAuthenticating(false);
-      }
-    },
-    [],
-  );
-
-  const handleOAuthAuthentication = useCallback(async () => {
-    console.log(
-      `Starting OAuth authentication for ${provider} with method ${authMethod}`,
-    );
-    setIsAuthenticating(true);
-    setValidationError(null);
-
-    try {
-      if (provider === ProviderType.GEMINI && authMethod === 'oauth') {
-        console.log('Starting Google OAuth authentication...');
-        // Import and use Google OAuth
-        const { authenticateGeminiOAuth } = await import(
-          '../../utils/subscriptionAuth.js'
-        );
-        const authResult = await authenticateGeminiOAuth();
-
-        // OAuth credentials are automatically saved by the OAuth module
-        // Do not store in API key storage system
-        console.log('Google OAuth credentials stored');
-
-        setStep('complete');
-        onComplete({
-          type: provider,
-          apiKey: `GOOGLE_OAUTH:${authResult.sessionToken}`,
-        });
-      } else if (
-        provider === ProviderType.GEMINI &&
-        authMethod === 'vertex-ai'
-      ) {
-        console.log('Starting Vertex AI authentication...');
-        storeApiKey(
-          provider,
-          'VERTEX_AI_AUTHENTICATED',
-          undefined,
-          'vertex-ai',
-        );
-        console.log('Vertex AI credentials stored');
-
-        setStep('complete');
-        onComplete({
-          type: provider,
-          apiKey: 'VERTEX_AI_AUTHENTICATED',
-        });
-      } else {
-        throw new Error(
-          `Unsupported OAuth authentication for provider: ${provider}`,
-        );
-      }
-    } catch (error) {
-      console.error('OAuth authentication error:', error);
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      setValidationError(`Authentication failed: ${errorMessage}`);
-      setStep('oauth-setup');
-      setHighlightedIndex(0);
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }, [provider, authMethod, onComplete]);
 
   const cleanApiKey = useCallback(
-    (key: string): string =>
+    (key: string): string => {
       // Remove bracketed paste mode escape sequences and other unwanted characters
-      key
+      const cleaned = key
         .replace(/\[200~/g, '') // Remove bracketed paste start
         .replace(/\[201~/g, '') // Remove bracketed paste end
-        .trim(), // Remove leading/trailing whitespace
+        // eslint-disable-next-line no-control-regex
+        .replace(/[\x00-\x08\x0E-\x1F\x7F]/gu, '') // Remove control characters except tab, newline, carriage return
+        .replace(/\r?\n/g, '') // Remove line breaks
+        .replace(/\t/g, ''); // Remove tabs
+      
+      // Only trim leading/trailing whitespace, preserve internal spaces for API keys that might need them
+      return cleaned.trim();
+    },
     [],
   );
 
@@ -411,65 +326,14 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           onCancel();
         } else {
           const selectedMethod = authMethods[highlightedIndex];
-          setAuthMethod(selectedMethod.id);
 
           if (selectedMethod.id === 'api-key') {
             setStep('api-key-input');
-            setHighlightedIndex(0);
-          } else if (selectedMethod.id === 'oauth') {
-            console.log(`Selected OAuth method: ${selectedMethod.id}`);
-            setStep('oauth-setup');
-            console.log('setHighlightedIndex(0) called from oauth selection');
-            setHighlightedIndex(0);
-          } else if (selectedMethod.id === 'claude-subscription') {
-            console.log(
-              `Selected Claude subscription method: ${selectedMethod.id}`,
-            );
-            setStep('subscription-login');
-            setHighlightedIndex(0);
-          } else if (selectedMethod.id === 'vertex-ai') {
-            console.log(`Selected Vertex AI method: ${selectedMethod.id}`);
-            setStep('oauth-setup');
-            setHighlightedIndex(0);
-          } else if (selectedMethod.id === 'local') {
-            console.log(
-              `Selected local connection method: ${selectedMethod.id}`,
-            );
-            setStep('oauth-setup');
             setHighlightedIndex(0);
           }
         }
         break;
       }
-
-      case 'subscription-login':
-        if (highlightedIndex === 2) {
-          // Back option selected
-          setStep('auth-method-selection');
-          setHighlightedIndex(0);
-        } else {
-          // Pro or Max plan selected
-          const planType = highlightedIndex === 0 ? 'pro' : 'max';
-          console.log(
-            `Starting Claude ${planType} subscription authentication`,
-          );
-          handleClaudeSubscriptionAuth(planType);
-        }
-        break;
-
-      case 'oauth-setup':
-        if (validationError && !isAuthenticating) {
-          // Try again by going back to auth method selection
-          console.log('Going back to auth method selection from error state');
-          setValidationError(null);
-          setStep('auth-method-selection');
-          setHighlightedIndex(0);
-        } else if (!isAuthenticating && !validationError) {
-          // Start authentication when user presses Enter
-          console.log('Starting authentication from oauth-setup');
-          handleOAuthAuthentication();
-        }
-        break;
 
       case 'api-key-input': {
         const existingKey = getApiKey(provider);
@@ -550,11 +414,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     getAuthMethods,
     onCancel,
     onComplete,
-    setAuthMethod,
-    handleClaudeSubscriptionAuth,
-    validationError,
-    isAuthenticating,
-    handleOAuthAuthentication,
     provider,
     setApiKey,
     setIsInputMode,
@@ -563,19 +422,8 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
   const handleInput = useCallback(
     (input: string, key: Record<string, boolean>) => {
       if (key.escape || (key.ctrl && input === 'c')) {
-        // If we're in api-key-input mode and actively typing, exit input mode
         if (step === 'api-key-input' && isInputMode) {
           setIsInputMode(false);
-          setHighlightedIndex(0); // Reset to "Enter API Key" option
-          return;
-        }
-        // If we're in oauth-setup and authenticating, cancel the auth process
-        if (step === 'oauth-setup' && isAuthenticating) {
-          console.log('Cancelling OAuth authentication...');
-          setIsAuthenticating(false);
-          setValidationError('Authentication cancelled by user');
-          setStep('auth-method-selection');
-          console.log('setHighlightedIndex(0) called from cancel auth');
           setHighlightedIndex(0);
           return;
         }
@@ -585,49 +433,33 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
 
       // Special handling for api-key-input step
       if (step === 'api-key-input' && isInputMode) {
-        // In input mode - handle text input but allow arrow navigation
         if (key.upArrow || key.downArrow) {
-          // Allow arrow navigation even in input mode
-          // Fall through to navigation handling below
+          // Allow arrow navigation
         } else if (key.return) {
-          debugLogger.info(
-            'ui-interaction',
-            'Return key pressed in API key input',
-            {
-              apiKey,
-              trimmed: apiKey.trim(),
-              length: apiKey.length,
-              isEmpty: !apiKey.trim(),
-              provider,
-            },
-          );
-
-          if (apiKey.trim()) {
-            debugLogger.info(
-              'ui-interaction',
-              'Starting API key validation process',
-              {
-                key: apiKey,
-                length: apiKey.length,
-                provider,
-              },
-            );
+          const finalKey = apiKey.trim();
+          if (finalKey) {
             setIsInputMode(false);
             setStep('api-key-validation');
             validateAndSaveApiKey();
-          } else {
-            console.log('Enter pressed but API key is empty');
           }
           return;
         } else if (key.backspace || key.delete) {
-          setApiKey((prev) => prev.slice(0, -1));
-          return;
-        } else if (input && !key.ctrl && !key.meta) {
           setApiKey((prev) => {
-            const newValue = prev + input;
-            // Clean the API key in real-time to remove any paste artifacts
-            return cleanApiKey(newValue);
+            const chars = Array.from(prev);
+            return chars.slice(0, -1).join('');
           });
+          return;
+        } else if (input && input.length > 0) {
+          // Handle both single characters and pasted content
+          if (!key.ctrl && !key.meta && !key.alt) {
+            // Buffer input to handle IME composition properly
+            setTimeout(() => {
+              setApiKey((prev) => {
+                const newValue = prev + input;
+                return cleanApiKey(newValue);
+              });
+            }, 0);
+          }
           return;
         }
       }
@@ -705,7 +537,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       apiKey,
       getMaxIndex,
       handleEnterKey,
-      isAuthenticating,
       onCancel,
       provider,
       validateAndSaveApiKey,
@@ -816,174 +647,23 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
               </Box>
             ))}
 
-            <Text> </Text>
             <Box paddingLeft={1}>
-              <Text
-                color={
-                  authMethods.length === highlightedIndex
-                    ? Colors.AccentBlue
-                    : Colors.Gray
-                }
-                bold={authMethods.length === highlightedIndex}
-              >
-                {authMethods.length === highlightedIndex ? '> ' : '  '}← Back
-              </Text>
-            </Box>
-          </Box>
-        );
-      }
-
-      case 'subscription-login':
-        return (
-          <Box flexDirection="column" width={width}>
-            <Text color={Colors.Gray}>Sign in to your Claude.ai account</Text>
-            <Text> </Text>
-
-            <Text color={Colors.Foreground}>
-              Choose your Claude subscription:
-            </Text>
-            <Text> </Text>
-
-            <Box paddingLeft={1}>
-              <Text
-                color={
-                  highlightedIndex === 0 ? Colors.AccentBlue : Colors.Foreground
-                }
-              >
-                {highlightedIndex === 0 ? '> ' : '  '}Claude Pro Plan (More
-                usage, priority access)
-              </Text>
-            </Box>
-            <Box paddingLeft={1}>
-              <Text
-                color={
-                  highlightedIndex === 1 ? Colors.AccentBlue : Colors.Foreground
-                }
-              >
-                {highlightedIndex === 1 ? '> ' : '  '}Claude Max Plan (Highest
-                usage, latest features)
-              </Text>
-            </Box>
-
-            <Text> </Text>
-            <Text color={Colors.Comment}>
-              We&apos;ll open Claude.ai in your browser for secure
-              authentication.
-            </Text>
-            <Text color={Colors.Comment}>
-              Your login session will be used for this application.
-            </Text>
-
-            <Text> </Text>
-            <Box paddingLeft={1}>
-              <Text
-                color={highlightedIndex === 2 ? Colors.AccentBlue : Colors.Gray}
-              >
-                {highlightedIndex === 2 ? '> ' : '  '}← Back
-              </Text>
-            </Box>
-
-            {validationError && (
-              <>
-                <Text> </Text>
-                <Text color={Colors.AccentRed}>Error: {validationError}</Text>
-                <Text color={Colors.Comment}>Press Enter to try again</Text>
-              </>
-            )}
-          </Box>
-        );
-
-      case 'oauth-setup': {
-        const getAuthMethodDisplayInfo = () => {
-          if (provider === ProviderType.GEMINI && authMethod === 'oauth') {
-            return {
-              name: 'Google Account',
-              description:
-                'Opening browser for Google account authentication...',
-              readyDescription:
-                'This will open your browser for Google account authentication.',
-            };
-          } else if (
-            provider === ProviderType.GEMINI &&
-            authMethod === 'vertex-ai'
-          ) {
-            return {
-              name: 'Vertex AI',
-              description:
-                'Configuring Google Cloud Vertex AI authentication...',
-              readyDescription:
-                'This will configure Google Cloud Vertex AI authentication.',
-            };
-          } else {
-            return {
-              name: authMethod,
-              description: 'Processing authentication...',
-              readyDescription: 'This will start the authentication process.',
-            };
-          }
-        };
-
-        const authInfo = getAuthMethodDisplayInfo();
-
-        return (
-          <Box flexDirection="column" width={width}>
-            {validationError && !isAuthenticating && (
-              <>
-                <Text color={Colors.AccentRed}>{validationError}</Text>
-                <Text> </Text>
-                <Box paddingLeft={1}>
-                  <Text color={Colors.AccentBlue} bold>
-                    {'> '}Press Enter to try again or Esc to go back
-                  </Text>
-                </Box>
-                <Text> </Text>
-              </>
-            )}
-
-            {isAuthenticating ? (
-              <>
-                <Text color={Colors.AccentYellow}>
-                  Authenticating with {authInfo.name}...
+              <Box width={35}>
+                <Text
+                  color={
+                    authMethods.length === highlightedIndex
+                      ? Colors.AccentBlue
+                      : Colors.Gray
+                  }
+                  bold={authMethods.length === highlightedIndex}
+                >
+                  {authMethods.length === highlightedIndex ? '> ' : '  '}← Back
                 </Text>
-                <Text> </Text>
-                <Text color={Colors.Gray}>{authInfo.description}</Text>
-                {authMethod === 'oauth' && (
-                  <>
-                    <Text> </Text>
-                    <Text color={Colors.AccentBlue}>
-                      Complete authentication in your browser
-                    </Text>
-                    <Text color={Colors.Gray}>
-                      • Browser should open automatically
-                    </Text>
-                    <Text color={Colors.Gray}>
-                      • If not, check console for authentication URL
-                    </Text>
-                    <Text color={Colors.Gray}>
-                      • WSL/Linux: Copy URL to Windows browser if needed
-                    </Text>
-                  </>
-                )}
-                <Text> </Text>
-                <Text color={Colors.Gray}>Press Esc to cancel</Text>
-              </>
-            ) : validationError ? null : (
-              <>
-                <Text color={Colors.AccentBlue}>
-                  Ready to authenticate with {authInfo.name}
-                </Text>
-                <Text> </Text>
-                <Text color={Colors.Gray}>{authInfo.readyDescription}</Text>
-                <Text> </Text>
-                <Box paddingLeft={1}>
-                  <Text color={Colors.AccentBlue} bold>
-                    {'> '}Press Enter to start authentication
-                  </Text>
-                </Box>
-                <Text> </Text>
-                <Text color={Colors.Gray}>Press Esc to go back</Text>
-              </>
-            )}
+              </Box>
+              <Box flexGrow={1}>
+                <Text color={Colors.Comment}>Return to provider selection</Text>
+              </Box>
+            </Box>
           </Box>
         );
       }
@@ -1007,60 +687,71 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
 
                 {/* Use existing API key option */}
                 <Box paddingLeft={1}>
-                  <Text
-                    color={
-                      highlightedIndex === 0
-                        ? Colors.AccentBlue
-                        : Colors.Foreground
-                    }
-                    bold={highlightedIndex === 0}
-                  >
-                    {highlightedIndex === 0 ? '> ' : '  '}Use Existing API Key
+                  <Box width={35}>
+                    <Text
+                      color={
+                        highlightedIndex === 0
+                          ? Colors.AccentBlue
+                          : Colors.Foreground
+                      }
+                      bold={highlightedIndex === 0}
+                    >
+                      {highlightedIndex === 0 ? '> ' : '  '}Use Existing API Key
+                    </Text>
+                  </Box>
+                  <Box flexGrow={1}>
                     <Text
                       color={
                         highlightedIndex === 0 ? Colors.Comment : Colors.Gray
                       }
                     >
-                      {' '}
                       Continue with current configuration
                     </Text>
-                  </Text>
+                  </Box>
                 </Box>
 
                 {/* Enter new API key option */}
                 <Box paddingLeft={1}>
-                  <Text
-                    color={
-                      highlightedIndex === 1
-                        ? Colors.AccentBlue
-                        : Colors.Foreground
-                    }
-                    bold={highlightedIndex === 1}
-                  >
-                    {highlightedIndex === 1 ? '> ' : '  '}Enter New API Key
+                  <Box width={35}>
+                    <Text
+                      color={
+                        highlightedIndex === 1
+                          ? Colors.AccentBlue
+                          : Colors.Foreground
+                      }
+                      bold={highlightedIndex === 1}
+                    >
+                      {highlightedIndex === 1 ? '> ' : '  '}Enter New API Key
+                    </Text>
+                  </Box>
+                  <Box flexGrow={1}>
                     <Text
                       color={
                         highlightedIndex === 1 ? Colors.Comment : Colors.Gray
                       }
                     >
-                      {' '}
                       Replace with a different key
                     </Text>
-                  </Text>
+                  </Box>
                 </Box>
 
                 {/* Back option */}
                 <Box paddingLeft={1}>
-                  <Text
-                    color={
-                      highlightedIndex === 2
-                        ? Colors.AccentBlue
-                        : Colors.Foreground
-                    }
-                    bold={highlightedIndex === 2}
-                  >
-                    {highlightedIndex === 2 ? '> ' : '  '}← Back
-                  </Text>
+                  <Box width={35}>
+                    <Text
+                      color={
+                        highlightedIndex === 2
+                          ? Colors.AccentBlue
+                          : Colors.Foreground
+                      }
+                      bold={highlightedIndex === 2}
+                    >
+                      {highlightedIndex === 2 ? '> ' : '  '}← Back
+                    </Text>
+                  </Box>
+                  <Box flexGrow={1}>
+                    <Text color={Colors.Comment}>Return to authentication method selection</Text>
+                  </Box>
                 </Box>
               </>
             ) : (
@@ -1152,14 +843,19 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             {/* Show back option when no existing key */}
             {!existingKey && (
               <Box paddingLeft={1}>
-                <Text
-                  color={
-                    highlightedIndex === 1 ? Colors.AccentBlue : Colors.Gray
-                  }
-                  bold={highlightedIndex === 1}
-                >
-                  {highlightedIndex === 1 ? '> ' : '  '}← Back
-                </Text>
+                <Box width={35}>
+                  <Text
+                    color={
+                      highlightedIndex === 1 ? Colors.AccentBlue : Colors.Gray
+                    }
+                    bold={highlightedIndex === 1}
+                  >
+                    {highlightedIndex === 1 ? '> ' : '  '}← Back
+                  </Text>
+                </Box>
+                <Box flexGrow={1}>
+                  <Text color={Colors.Comment}>Return to authentication method selection</Text>
+                </Box>
               </Box>
             )}
           </Box>

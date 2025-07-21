@@ -10,7 +10,7 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
-import { shortenPath, tildeifyPath, tokenLimit } from '@enfiy/core';
+import { shortenPath, tildeifyPath, tokenLimit, ApprovalMode } from '@enfiy/core';
 import { ConsoleSummaryDisplay } from './ConsoleSummaryDisplay.js';
 import process from 'node:process';
 import { MemoryUsageDisplay } from './MemoryUsageDisplay.js';
@@ -36,6 +36,7 @@ interface FooterProps {
   totalTokenCount: number;
   isSlashCommand?: boolean; // New prop for slash command detection
   selectedProvider?: string; // Provider context for accurate provider determination
+  approvalMode?: ApprovalMode; // Auto-approval mode detection
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -51,6 +52,7 @@ export const Footer: React.FC<FooterProps> = ({
   totalTokenCount,
   isSlashCommand = false,
   selectedProvider,
+  approvalMode,
 }) => {
   const limit = tokenLimit(model);
   const percentage = totalTokenCount / limit;
@@ -121,10 +123,18 @@ export const Footer: React.FC<FooterProps> = ({
       const category = isLocal ? 'Local' : 'Cloud';
       const displayName = providerName ? `${providerName} ` : '';
 
+      // Clean up model name display for OpenRouter models
+      const cleanModelName = (() => {
+        if (providerName === 'OpenRouter' && model.includes('/')) {
+          return model.split('/')[1]; // Remove provider prefix for OpenRouter models
+        }
+        return model;
+      })();
+
       return (
         <Text color={Colors.AccentBlue}>
           [{category}] {displayName}
-          {model}
+          {cleanModelName}
           {authType}
         </Text>
       );
@@ -264,6 +274,15 @@ export const Footer: React.FC<FooterProps> = ({
               </>
             )}
           </Box>
+          
+          {/* Auto-approval mode indicator */}
+          {approvalMode === ApprovalMode.AUTO && (
+            <Box alignItems="center" marginTop={0}>
+              <Text color={Colors.AccentGreen}>
+                Mode : auto
+              </Text>
+            </Box>
+          )}
         </Box>
       )}
     </Box>

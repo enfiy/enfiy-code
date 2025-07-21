@@ -243,7 +243,7 @@ export async function loadCliConfig(
     mcpServers,
     userMemory: memoryContent,
     enfiyMdFileCount: fileCount,
-    approvalMode: argv.auto || false ? ApprovalMode.YOLO : ApprovalMode.DEFAULT,
+    approvalMode: argv.auto ? ApprovalMode.AUTO : ApprovalMode.DEFAULT,
     showMemoryUsage:
       argv.show_memory_usage || settings.showMemoryUsage || false,
     accessibility: settings.accessibility,

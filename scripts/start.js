@@ -59,7 +59,30 @@ if (process.env.DEBUG && !sandboxCommand) {
 }
 
 nodeArgs.push('./packages/cli');
-nodeArgs.push(...process.argv.slice(2));
+
+// Handle npm arguments properly - extract actual CLI arguments
+let cliArgs = process.argv.slice(2);
+
+// If running via npm, npm passes arguments after the script name
+// We need to filter out npm-specific arguments and keep only CLI arguments
+if (process.env.npm_lifecycle_event) {
+  // When run via npm script, npm adds its own config arguments
+  // We need to extract only the arguments intended for the CLI
+  const npmConfigStart = cliArgs.findIndex(arg => arg.startsWith('--npm'));
+  if (npmConfigStart !== -1) {
+    // Keep only arguments before npm config arguments
+    cliArgs = cliArgs.slice(0, npmConfigStart);
+  }
+  // Also filter out other npm-specific arguments that might appear
+  cliArgs = cliArgs.filter(arg => 
+    !arg.startsWith('--cache') &&
+    !arg.startsWith('--prefix') &&
+    !arg.startsWith('--color') &&
+    !arg.startsWith('--timing')
+  );
+}
+
+nodeArgs.push(...cliArgs);
 
 const env = {
   ...process.env,

@@ -139,14 +139,14 @@ describe('useAutoAcceptIndicator', () => {
     expect(mockConfigInstance.getApprovalMode).toHaveBeenCalledTimes(1);
   });
 
-  it('should initialize with ApprovalMode.YOLO if config.getApprovalMode returns ApprovalMode.YOLO', () => {
-    mockConfigInstance.getApprovalMode.mockReturnValue(ApprovalMode.YOLO);
+  it('should initialize with ApprovalMode.AUTO if config.getApprovalMode returns ApprovalMode.AUTO', () => {
+    mockConfigInstance.getApprovalMode.mockReturnValue(ApprovalMode.AUTO);
     const { result } = renderHook(() =>
       useAutoAcceptIndicator({
         config: mockConfigInstance as unknown as ActualConfigType,
       }),
     );
-    expect(result.current).toBe(ApprovalMode.YOLO);
+    expect(result.current).toBe(ApprovalMode.AUTO);
     expect(mockConfigInstance.getApprovalMode).toHaveBeenCalledTimes(1);
   });
 
@@ -171,9 +171,9 @@ describe('useAutoAcceptIndicator', () => {
       capturedUseInputHandler('y', { ctrl: true } as InkKey);
     });
     expect(mockConfigInstance.setApprovalMode).toHaveBeenCalledWith(
-      ApprovalMode.YOLO,
+      ApprovalMode.AUTO,
     );
-    expect(result.current).toBe(ApprovalMode.YOLO);
+    expect(result.current).toBe(ApprovalMode.AUTO);
 
     act(() => {
       capturedUseInputHandler('y', { ctrl: true } as InkKey);
@@ -187,9 +187,9 @@ describe('useAutoAcceptIndicator', () => {
       capturedUseInputHandler('y', { ctrl: true } as InkKey);
     });
     expect(mockConfigInstance.setApprovalMode).toHaveBeenCalledWith(
-      ApprovalMode.YOLO,
+      ApprovalMode.AUTO,
     );
-    expect(result.current).toBe(ApprovalMode.YOLO);
+    expect(result.current).toBe(ApprovalMode.AUTO);
 
     act(() => {
       capturedUseInputHandler('', { tab: true, shift: true } as InkKey);

@@ -28,9 +28,9 @@ export function useAutoAcceptIndicator({
 
     if (key.ctrl && input === 'y') {
       nextApprovalMode =
-        config.getApprovalMode() === ApprovalMode.YOLO
+        config.getApprovalMode() === ApprovalMode.AUTO
           ? ApprovalMode.DEFAULT
-          : ApprovalMode.YOLO;
+          : ApprovalMode.AUTO;
     } else if (key.tab && key.shift) {
       nextApprovalMode =
         config.getApprovalMode() === ApprovalMode.AUTO_EDIT

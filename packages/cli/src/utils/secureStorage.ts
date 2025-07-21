@@ -388,6 +388,7 @@ function getEnvVarForProvider(provider: string): string | undefined {
     gemini: 'GEMINI_API_KEY',
     google: 'GOOGLE_API_KEY',
     mistral: 'MISTRAL_API_KEY',
+    anthropic: 'ANTHROPIC_API_KEY',
 
     // OpenRouter
     openrouter: 'OPENROUTER_API_KEY',
@@ -419,6 +420,9 @@ export function validateApiKey(provider: string, apiKey: string): boolean {
 
     // Mistral
     mistral: /^[A-Za-z0-9]{32,}$/,
+
+    // Anthropic - More flexible pattern to handle different key formats
+    anthropic: /^sk-ant-[A-Za-z0-9\-_]{20,}$/,
 
     // OpenRouter
     openrouter: /^sk-or-v1-[0-9a-f]{64}$/,

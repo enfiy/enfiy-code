@@ -305,7 +305,7 @@ process.on('unhandledRejection', (reason, _promise) => {
     ) {
       console.error(' Authentication/Provider error detected.');
       console.error(
-        '💡 Please check your API key in .env file or use /provider command.',
+        'Please check your API key in .env file or use /provider command.',
       );
       console.error(
         'Expected format: AIzaSy... (39 characters) for Gemini or provider-specific format',
@@ -315,7 +315,7 @@ process.on('unhandledRejection', (reason, _promise) => {
 
     if (message.includes('Could not load the default credentials')) {
       console.error(' Google Cloud authentication error detected.');
-      console.error('💡 Enfiy Code uses API keys, not Google Cloud auth.');
+      console.error('Enfiy Code uses API keys, not Google Cloud auth.');
       console.error(
         'Please set your provider API key in .env file (e.g., GEMINI_API_KEY, OLLAMA_HOST).',
       );
@@ -333,7 +333,7 @@ process.on('unhandledRejection', (reason, _promise) => {
     console.error(reason);
   }
   console.error(
-    '💡 If this persists, please check your .env file and API key configuration.',
+    'If this persists, please check your .env file and API key configuration.',
   );
   // Exit for genuinely unhandled errors
   process.exit(1);
@@ -345,7 +345,7 @@ async function loadNonInteractiveConfig(
   settings: LoadedSettings,
 ) {
   let finalConfig = config;
-  if (config.getApprovalMode() !== ApprovalMode.YOLO) {
+  if (config.getApprovalMode() !== ApprovalMode.AUTO) {
     // Only exclude shell commands in non-interactive mode
     // File operations (EditTool, WriteFileTool) should be allowed with confirmation dialogs
     const existingExcludeTools = settings.merged.excludeTools || [];

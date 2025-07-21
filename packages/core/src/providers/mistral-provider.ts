@@ -94,8 +94,11 @@ export class MistralProvider extends BaseProvider {
 
   getRecommendedModels(): string[] {
     return [
+      'mistral-large-2411',
       'mistral-large-latest',
+      'mistral-medium-2505',
       'mistral-medium-latest',
+      'mistral-small-2503',
       'mistral-small-latest',
       'codestral-latest',
       'mistral-embed',

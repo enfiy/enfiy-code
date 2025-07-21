@@ -113,7 +113,7 @@ describe.skip('UI Integration Tests', () => {
       stdin.write('\x1B[B'); // Down arrow
 
       // Verify onHighlight was called with the next theme
-      expect(onHighlight).toHaveBeenCalled();
+      expect(_onHighlight).toHaveBeenCalled();
     });
 
     it('should switch between theme and scope sections with Tab key', () => {

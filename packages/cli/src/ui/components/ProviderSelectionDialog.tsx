@@ -127,9 +127,10 @@ export const ProviderSelectionDialog: React.FC<
         name: t('cloudAI'),
         description: t('cloudAIDescription'),
         providers: [
-          ProviderType.OPENAI,
+          ProviderType.ANTHROPIC,
           ProviderType.GEMINI,
           ProviderType.MISTRAL,
+          ProviderType.OPENAI,
           ProviderType.OPENROUTER,
         ],
       },
@@ -198,6 +199,8 @@ export const ProviderSelectionDialog: React.FC<
         return 'Google Gemini';
       case ProviderType.MISTRAL:
         return 'Mistral';
+      case ProviderType.ANTHROPIC:
+        return 'Anthropic';
       case ProviderType.OPENROUTER:
         return 'OpenRouter';
       default:
@@ -234,6 +237,8 @@ export const ProviderSelectionDialog: React.FC<
         return 'Long context, multimodal';
       case ProviderType.MISTRAL:
         return 'European AI, efficient and high-performance';
+      case ProviderType.ANTHROPIC:
+        return 'High-quality reasoning and coding';
       case ProviderType.OPENROUTER:
         return 'Multi-provider access, competitive pricing';
       default:

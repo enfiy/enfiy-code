@@ -24,6 +24,7 @@ export interface ModelInfo {
   costTier: 'free' | 'low' | 'medium' | 'high';
   contextLength: number;
   isAvailable: boolean;
+  displayName?: string;
 }
 
 export interface ModelFallbackConfig {
@@ -67,6 +68,7 @@ export class ModelManager {
     gemini: boolean;
     openai: boolean;
     mistral: boolean;
+    anthropic: boolean;
     ollama: boolean;
     openrouter: boolean;
   }> {
@@ -75,6 +77,7 @@ export class ModelManager {
       gemini: hasStoredCredentials(ProviderType.GEMINI),
       openai: hasStoredCredentials(ProviderType.OPENAI),
       mistral: hasStoredCredentials(ProviderType.MISTRAL),
+      anthropic: hasStoredCredentials(ProviderType.ANTHROPIC),
       ollama: await this.checkOllamaAvailability(),
       openrouter: hasStoredCredentials(ProviderType.OPENROUTER),
     };
@@ -108,15 +111,28 @@ export class ModelManager {
       const data = await response.json();
       const models = data.models || [];
 
-      return models.map((model: { name: string; [key: string]: unknown }) => ({
-        name: model.name,
-        description: `Local Ollama model - ${model.name}`,
-        provider: 'ollama',
-        capabilities: ['code', 'reasoning'],
-        costTier: 'free' as const,
-        contextLength: 32000,
-        isAvailable: true,
-      }));
+      return models.map((model: { name: string; [key: string]: unknown }) => {
+        // Create a more user-friendly description based on model name
+        const getModelDescription = (modelName: string): string => {
+          if (modelName.includes('llama')) return 'Meta Llama - Local AI model';
+          if (modelName.includes('qwen')) return 'Qwen - Local AI model';
+          if (modelName.includes('gemma')) return 'Google Gemma - Local AI model';
+          if (modelName.includes('phi')) return 'Microsoft Phi - Local AI model';
+          if (modelName.includes('mistral')) return 'Mistral - Local AI model';
+          if (modelName.includes('codellama')) return 'Code Llama - Local coding model';
+          return 'Local AI model';
+        };
+
+        return {
+          name: model.name,
+          description: getModelDescription(model.name),
+          provider: 'ollama',
+          capabilities: ['code', 'reasoning'],
+          costTier: 'free' as const,
+          contextLength: 32000,
+          isAvailable: true,
+        };
+      });
     } catch {
       return [];
     }
@@ -246,6 +262,29 @@ export class ModelManager {
       );
     }
 
+    if (authStatus.anthropic) {
+      availableModels.push(
+        {
+          name: 'claude-3-5-sonnet-20241022',
+          description: 'Claude 3.5 Sonnet - Latest Anthropic model',
+          provider: 'anthropic',
+          capabilities: ['code', 'reasoning', 'analysis'],
+          costTier: 'high',
+          contextLength: 200000,
+          isAvailable: true,
+        },
+        {
+          name: 'claude-3-haiku-20240307',
+          description: 'Claude 3 Haiku - Fast and efficient',
+          provider: 'anthropic',
+          capabilities: ['code', 'reasoning'],
+          costTier: 'low',
+          contextLength: 200000,
+          isAvailable: true,
+        },
+      );
+    }
+
     if (authStatus.ollama) {
       // Get locally available Ollama models
       const ollamaModels = await this.getOllamaModels();
@@ -262,15 +301,17 @@ export class ModelManager {
           costTier: 'medium',
           contextLength: 200000,
           isAvailable: true,
+          displayName: 'claude-3.5-sonnet',
         },
         {
           name: 'meta-llama/llama-3.2-90b-instruct',
-          description: 'Llama 3.2 90B via OpenRouter',
+          description: 'Llama 3.2 90B Instruct via OpenRouter',
           provider: 'openrouter',
           capabilities: ['code', 'reasoning'],
           costTier: 'high',
           contextLength: 128000,
           isAvailable: true,
+          displayName: 'llama-3.2-90b-instruct',
         },
       );
     }

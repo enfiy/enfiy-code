@@ -113,6 +113,9 @@ export async function createContentGeneratorConfig(
       case 'mistral':
         contentGeneratorConfig.apiKey = process.env.MISTRAL_API_KEY;
         break;
+      case 'anthropic':
+        contentGeneratorConfig.apiKey = process.env.ANTHROPIC_API_KEY;
+        break;
       case 'openrouter':
         contentGeneratorConfig.apiKey = process.env.OPENROUTER_API_KEY;
         break;
@@ -211,6 +214,11 @@ function getProviderTypeFromModel(model: string): string {
     modelLower.includes('devstral')
   ) {
     return 'mistral';
+  }
+
+  // Anthropic models
+  if (modelLower.includes('claude')) {
+    return 'anthropic';
   }
 
   // Ollama models (comprehensive pattern matching)

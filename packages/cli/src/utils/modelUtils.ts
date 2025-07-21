@@ -28,6 +28,8 @@ function getProviderTypeFromString(
     case 'mistral':
     case 'mistralai':
       return ProviderType.MISTRAL;
+    case 'anthropic':
+      return ProviderType.ANTHROPIC;
     case 'ollama':
       return ProviderType.OLLAMA;
     default:
@@ -95,6 +97,11 @@ export function getProviderFromModel(
   // Mistral models
   if (normalizedModel.includes('mistral')) {
     return ProviderType.MISTRAL;
+  }
+
+  // Anthropic models
+  if (normalizedModel.includes('claude')) {
+    return ProviderType.ANTHROPIC;
   }
 
   // Local models (Ollama, etc.)
@@ -168,6 +175,8 @@ export function getProviderDisplayName(provider: ProviderType): string {
       return 'Gemini';
     case ProviderType.MISTRAL:
       return 'Mistral';
+    case ProviderType.ANTHROPIC:
+      return 'Anthropic';
     case ProviderType.OPENROUTER:
       return 'OpenRouter';
     case ProviderType.OLLAMA:

@@ -90,7 +90,7 @@ const mockToolRequiresConfirmation: Tool = {
   ),
 };
 
-describe('useReactToolScheduler in YOLO Mode', () => {
+describe('useReactToolScheduler in AUTO Mode', () => {
   let onComplete: Mock;
   let setPendingHistoryItem: Mock;
 
@@ -101,8 +101,8 @@ describe('useReactToolScheduler in YOLO Mode', () => {
     (mockToolRequiresConfirmation.execute as Mock).mockClear();
     (mockToolRequiresConfirmation.shouldConfirmExecute as Mock).mockClear();
 
-    // IMPORTANT: Enable YOLO mode for this test suite
-    (mockConfig.getApprovalMode as Mock).mockReturnValue(ApprovalMode.YOLO);
+    // IMPORTANT: Enable AUTO mode for this test suite
+    (mockConfig.getApprovalMode as Mock).mockReturnValue(ApprovalMode.AUTO);
 
     vi.useFakeTimers();
   });
@@ -110,11 +110,11 @@ describe('useReactToolScheduler in YOLO Mode', () => {
   afterEach(() => {
     vi.clearAllTimers();
     vi.useRealTimers();
-    // IMPORTANT: Disable YOLO mode after this test suite
+    // IMPORTANT: Disable AUTO mode after this test suite
     (mockConfig.getApprovalMode as Mock).mockReturnValue(ApprovalMode.DEFAULT);
   });
 
-  const renderSchedulerInYoloMode = () =>
+  const renderSchedulerInAutoMode = () =>
     renderHook(() =>
       useReactToolScheduler(
         onComplete,
@@ -124,18 +124,18 @@ describe('useReactToolScheduler in YOLO Mode', () => {
       ),
     );
 
-  it('should skip confirmation and execute tool directly when yoloMode is true', async () => {
+  it('should skip confirmation and execute tool directly when autoMode is true', async () => {
     mockToolRegistry.getTool.mockReturnValue(mockToolRequiresConfirmation);
-    const expectedOutput = 'YOLO Confirmed output';
+    const expectedOutput = 'AUTO Confirmed output';
     (mockToolRequiresConfirmation.execute as Mock).mockResolvedValue({
       llmContent: expectedOutput,
-      returnDisplay: 'YOLO Formatted tool output',
+      returnDisplay: 'AUTO Formatted tool output',
     } as ToolResult);
 
-    const { result } = renderSchedulerInYoloMode();
+    const { result } = renderSchedulerInAutoMode();
     const schedule = result.current[1];
     const request: ToolCallRequestInfo = {
-      callId: 'yoloCall',
+      callId: 'autoCall',
       name: 'mockToolRequiresConfirmation',
       args: { data: 'any data' },
       isClientInitiated: false,
@@ -173,10 +173,10 @@ describe('useReactToolScheduler in YOLO Mode', () => {
         status: 'success',
         request,
         response: expect.objectContaining({
-          resultDisplay: 'YOLO Formatted tool output',
+          resultDisplay: 'AUTO Formatted tool output',
           responseParts: {
             functionResponse: {
-              id: 'yoloCall',
+              id: 'autoCall',
               name: 'mockToolRequiresConfirmation',
               response: { output: expectedOutput },
             },

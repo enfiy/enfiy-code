@@ -21,6 +21,7 @@ export enum ProviderType {
   OPENAI = 'openai',
   GEMINI = 'gemini',
   MISTRAL = 'mistral',
+  ANTHROPIC = 'anthropic',
   OPENROUTER = 'openrouter',
 }
 

@@ -15,7 +15,7 @@ import { ModelManager } from '../../services/modelManager.js';
 
 export interface ModelSelectionDialogProps {
   config: Config;
-  onSelect: (modelName: string) => void;
+  onSelect: (modelName: string, provider?: ProviderType) => void;
   onCancel: () => void;
   terminalWidth: number;
 }
@@ -26,6 +26,7 @@ interface ModelInfo {
   description: string;
   isAvailable: boolean;
   costTier: string;
+  displayName?: string;
   usage?: {
     used: number;
     limit: number;
@@ -55,6 +56,8 @@ export const ModelSelectionDialog: React.FC<ModelSelectionDialogProps> = ({
         return 'Google Gemini';
       case ProviderType.MISTRAL:
         return 'Mistral';
+      case ProviderType.ANTHROPIC:
+        return 'Anthropic';
       case ProviderType.OPENROUTER:
         return 'OpenRouter';
       case ProviderType.OLLAMA:
@@ -82,6 +85,7 @@ export const ModelSelectionDialog: React.FC<ModelSelectionDialogProps> = ({
               description: model.description,
               isAvailable: model.isAvailable,
               costTier: model.costTier,
+              displayName: model.displayName,
               usage,
             };
           }),
@@ -151,7 +155,7 @@ export const ModelSelectionDialog: React.FC<ModelSelectionDialogProps> = ({
       }
 
       if (models[highlightedIndex]) {
-        onSelect(models[highlightedIndex].name);
+        onSelect(models[highlightedIndex].name, models[highlightedIndex].provider);
       }
     }
   });
@@ -211,11 +215,12 @@ export const ModelSelectionDialog: React.FC<ModelSelectionDialogProps> = ({
           const isCurrent = model.name === currentModel;
           const prefix = isHighlighted ? '> ' : '  ';
 
-          // Truncate long model names
+          // Use display name if available, otherwise use the actual name
+          const nameToDisplay = model.displayName || model.name;
           const displayName =
-            model.name.length > 30
-              ? model.name.substring(0, 27) + '...'
-              : model.name;
+            nameToDisplay.length > 30
+              ? nameToDisplay.substring(0, 27) + '...'
+              : nameToDisplay;
 
           return (
             <Box key={model.name} paddingLeft={1}>
@@ -244,17 +249,22 @@ export const ModelSelectionDialog: React.FC<ModelSelectionDialogProps> = ({
 
         {/* Close option */}
         <Box paddingLeft={1}>
-          <Text
-            color={
-              highlightedIndex === models.length
-                ? Colors.AccentBlue
-                : Colors.Foreground
-            }
-            bold={highlightedIndex === models.length}
-          >
-            {highlightedIndex === models.length ? '> ' : '  '}
-            Close
-          </Text>
+          <Box width={35}>
+            <Text
+              color={
+                highlightedIndex === models.length
+                  ? Colors.AccentBlue
+                  : Colors.Foreground
+              }
+              bold={highlightedIndex === models.length}
+            >
+              {highlightedIndex === models.length ? '> ' : '  '}
+              ← Close
+            </Text>
+          </Box>
+          <Box flexGrow={1}>
+            <Text color={Colors.Comment}>Exit model selection</Text>
+          </Box>
         </Box>
       </Box>
 

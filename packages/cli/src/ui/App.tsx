@@ -227,13 +227,16 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
         Date.now(),
       );
 
-      addItem(
-        {
-          type: MessageType.INFO,
-          text: t('readyMessage'),
-        },
-        Date.now(),
-      );
+      // Show ready message only in development environment
+      if (process.env.NODE_ENV === 'development' || process.env.ENFIY_SHOW_READY_MESSAGE === 'true') {
+        addItem(
+          {
+            type: MessageType.INFO,
+            text: t('readyMessage'),
+          },
+          Date.now(),
+        );
+      }
 
       // Add Japanese input notice if locale is Japanese
       const locale = process.env.LANG || '';
@@ -294,26 +297,26 @@ Feel free to ask me anything or type /help for available commands.`,
   }, []);
 
   const handleModelSelection = useCallback(
-    async (modelName: string) => {
+    async (modelName: string, provider?: ProviderType) => {
       try {
         // Update the current model
         setCurrentModel(modelName);
         config.setModel(modelName);
         settings.setValue(SettingScope.User, 'selectedModel', modelName);
 
-        // Automatically detect and update the provider to match the model
-        const detectedProvider = getProviderFromModel(modelName);
+        // Use the provided provider, or automatically detect if not provided
+        const selectedProvider = provider || getProviderFromModel(modelName);
         settings.setValue(
           SettingScope.User,
           'selectedProvider',
-          detectedProvider,
+          selectedProvider,
         );
 
         // Add success message
         addItem(
           {
             type: MessageType.INFO,
-            text: `Model switched to: ${modelName} (provider: ${detectedProvider})`,
+            text: `Model switched to: ${modelName} (provider: ${selectedProvider})`,
           },
           Date.now(),
         );
@@ -341,9 +344,10 @@ Feel free to ask me anything or type /help for available commands.`,
   const handleProviderSetupRequired = useCallback((provider: ProviderType) => {
     console.log('handleProviderSetupRequired called with provider:', provider);
     const cloudProviders = [
-      ProviderType.OPENAI,
+      ProviderType.ANTHROPIC,
       ProviderType.GEMINI,
       ProviderType.MISTRAL,
+      ProviderType.OPENAI,
       ProviderType.OPENROUTER,
     ];
 
@@ -1584,6 +1588,7 @@ You can switch authentication methods by typing /auth`,
             totalTokenCount={sessionStats.currentResponse.totalTokenCount}
             isSlashCommand={buffer.text.trim().startsWith('/')}
             selectedProvider={settings.merged.selectedProvider}
+            approvalMode={config.getApprovalMode()}
           />
         </Box>
       </Box>

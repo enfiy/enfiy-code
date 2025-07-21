@@ -459,7 +459,7 @@ export class CoreToolScheduler {
 
       const { request: reqInfo, tool: toolInstance } = toolCall;
       try {
-        if (this.approvalMode === ApprovalMode.YOLO) {
+        if (this.approvalMode === ApprovalMode.AUTO) {
           this.setStatusInternal(reqInfo.callId, 'scheduled');
         } else {
           const confirmationDetails = await toolInstance.shouldConfirmExecute(

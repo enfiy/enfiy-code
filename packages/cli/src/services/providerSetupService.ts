@@ -89,7 +89,14 @@ export class ProviderSetupService {
       case ProviderType.MISTRAL:
         return {
           type: ProviderType.MISTRAL,
-          model: 'mistral-large',
+          model: 'mistral-large-2411',
+          temperature: 0.7,
+          maxTokens: 4096,
+        };
+      case ProviderType.ANTHROPIC:
+        return {
+          type: ProviderType.ANTHROPIC,
+          model: 'claude-3-5-sonnet-20241022',
           temperature: 0.7,
           maxTokens: 4096,
         };

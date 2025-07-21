@@ -30,6 +30,7 @@ export * from './providers/gemini-provider.js';
 export * from './providers/ollama-provider.js';
 export * from './providers/openai-provider.js';
 export * from './providers/mistral-provider.js';
+export * from './providers/anthropic-provider.js';
 export * from './providers/openrouter-provider.js';
 export * from './providers/model-registry.js';
 export * from './providers/provider-detector.js';

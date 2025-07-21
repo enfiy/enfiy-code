@@ -39,12 +39,14 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
   // Get provider display name
   const getProviderDisplayName = (provider: ProviderType): string => {
     switch (provider) {
-      case ProviderType.OPENAI:
-        return 'OpenAI';
+      case ProviderType.ANTHROPIC:
+        return 'Anthropic';
       case ProviderType.GEMINI:
         return 'Google Gemini';
       case ProviderType.MISTRAL:
         return 'Mistral AI';
+      case ProviderType.OPENAI:
+        return 'OpenAI';
       case ProviderType.OPENROUTER:
         return 'OpenRouter';
       default:
@@ -88,9 +90,10 @@ export const APISettingsDialog: React.FC<APISettingsDialogProps> = ({
   // Load configured providers
   const loadConfiguredProviders = useCallback(() => {
     const cloudProviders = [
-      ProviderType.OPENAI,
+      ProviderType.ANTHROPIC,
       ProviderType.GEMINI,
       ProviderType.MISTRAL,
+      ProviderType.OPENAI,
       ProviderType.OPENROUTER,
     ];
 

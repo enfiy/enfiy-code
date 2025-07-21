@@ -86,8 +86,18 @@ export function detectCloudProviders(): DetectedProvider[] {
   providers.push({
     type: ProviderType.MISTRAL,
     available: !!process.env.MISTRAL_API_KEY,
-    defaultModel: 'mistral-large-24.11',
+    defaultModel: 'mistral-large-2411',
     reason: process.env.MISTRAL_API_KEY
+      ? 'API key configured'
+      : 'API key required',
+  });
+
+  // Anthropic
+  providers.push({
+    type: ProviderType.ANTHROPIC,
+    available: !!process.env.ANTHROPIC_API_KEY,
+    defaultModel: 'claude-3-5-sonnet-20241022',
+    reason: process.env.ANTHROPIC_API_KEY
       ? 'API key configured'
       : 'API key required',
   });
