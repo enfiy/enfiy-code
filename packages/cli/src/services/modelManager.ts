@@ -7,7 +7,8 @@
  * Based on original work by Google LLC (2025)
  * Modified and extended by Hayate Esaki (2025)
  */
-import { Config } from '@enfiy/core';
+import { Config, ProviderType } from '@enfiy/core';
+import { hasStoredCredentials } from '../utils/secureStorage.js';
 
 export interface ModelUsage {
   used: number;
@@ -69,13 +70,16 @@ export class ModelManager {
     ollama: boolean;
     openrouter: boolean;
   }> {
-    return {
-      gemini: !!process.env.GEMINI_API_KEY,
-      openai: !!process.env.OPENAI_API_KEY,
-      mistral: !!process.env.MISTRAL_API_KEY,
+    // Force strict authentication check - only show providers with actual credentials
+    const authStatus = {
+      gemini: hasStoredCredentials(ProviderType.GEMINI),
+      openai: hasStoredCredentials(ProviderType.OPENAI),
+      mistral: hasStoredCredentials(ProviderType.MISTRAL),
       ollama: await this.checkOllamaAvailability(),
-      openrouter: !!process.env.OPENROUTER_API_KEY,
+      openrouter: hasStoredCredentials(ProviderType.OPENROUTER),
     };
+    
+    return authStatus;
   }
 
   /**
