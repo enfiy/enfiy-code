@@ -21,6 +21,9 @@ packages/*/out/
 *.tsbuildinfo
 tsconfig.tsbuildinfo
 
+# Build artifacts directory
+build-artifacts/
+
 # Webpack and bundler outputs
 public/build/
 public/dist/
@@ -314,11 +317,18 @@ aws-exports.js
 test-browser-open.js
 debug-output/
 benchmark-results/
+
 # Development temporary files
 .temp/
 .tmp/
 scratch/
 experiment/
+tools/dev/
+
+# Removed provider files and configurations
+*lmstudio*
+*LMStudio*
+LocalAISetupDialog.*
 
 # Generated documentation
 docs/generated/

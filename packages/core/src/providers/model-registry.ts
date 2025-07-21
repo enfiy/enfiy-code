@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import { ProviderType } from './types.js';
 
 export interface ModelInfo {
@@ -22,20 +25,7 @@ export interface ModelInfo {
 }
 
 export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
-  // LM Studio models (uses loaded model)
-  [ProviderType.LMSTUDIO]: [
-    {
-      id: 'loaded-model',
-      name: 'Currently Loaded Model',
-      provider: ProviderType.LMSTUDIO,
-      category: 'local',
-      description: 'Model loaded in LM Studio',
-      contextLength: 131072,
-      capabilities: ['chat', 'code', 'reasoning'],
-    },
-  ],
-  
-  
+
   [ProviderType.OLLAMA]: [
     {
       id: 'llama3.2:3b',
@@ -624,7 +614,6 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
     },
   ],
 
-
   [ProviderType.GEMINI]: [
     {
       id: 'gemini-2.5-pro',
@@ -741,7 +730,6 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       capabilities: ['code', 'debugging', 'development', 'fast'],
     },
   ],
-
 
   [ProviderType.OPENROUTER]: [
     // Claude models via OpenRouter

@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import { ProviderFactory, ProviderType, ProviderConfig } from '@enfiy/core';
 
 export interface ProviderSetupResult {
@@ -87,14 +90,6 @@ export class ProviderSetupService {
         return {
           type: ProviderType.MISTRAL,
           model: 'mistral-large',
-          temperature: 0.7,
-          maxTokens: 4096,
-        };
-      case ProviderType.LMSTUDIO:
-        return {
-          type: ProviderType.LMSTUDIO,
-          baseUrl: 'http://localhost:1234',
-          model: 'local-model',
           temperature: 0.7,
           maxTokens: 4096,
         };

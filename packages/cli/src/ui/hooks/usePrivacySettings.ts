@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import { useState, useEffect, useCallback } from 'react';
 import { Config } from '@enfiy/core';
 
@@ -14,14 +17,14 @@ export interface PrivacyState {
   dataCollectionOptIn?: boolean;
 }
 
-export const usePrivacySettings = (config: Config) => {
+export const usePrivacySettings = (_config: Config) => {
   const [privacyState, setPrivacyState] = useState<PrivacyState>({
     isLoading: false,
     isFreeTier: false,
     dataCollectionOptIn: true,
   });
 
-  const [tempDataCollectionOptIn, setTempDataCollectionOptIn] = useState<
+  const [_tempDataCollectionOptIn, _setTempDataCollectionOptIn] = useState<
     boolean | undefined
   >(undefined);
 
@@ -32,15 +35,11 @@ export const usePrivacySettings = (config: Config) => {
       isFreeTier: false,
       dataCollectionOptIn: true,
     });
-  }, [config]);
+  }, []);
 
-  const updateDataCollectionOptIn = useCallback(
-    async (optIn: boolean) => {
-      // OAuth not supported - no-op
-      return;
-    },
-    [config, privacyState.isFreeTier],
-  );
+  const updateDataCollectionOptIn = useCallback(async (_optIn: boolean) => {
+    // OAuth not supported - no-op
+  }, []);
 
   useEffect(() => {
     loadPrivacySettings();
@@ -48,7 +47,7 @@ export const usePrivacySettings = (config: Config) => {
 
   return {
     privacyState,
-    tempDataCollectionOptIn,
+    tempDataCollectionOptIn: _tempDataCollectionOptIn,
     loadPrivacySettings,
     updateDataCollectionOptIn,
   };

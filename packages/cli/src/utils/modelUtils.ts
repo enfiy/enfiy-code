@@ -1,17 +1,22 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import { ProviderType } from '@enfiy/core';
 
 /**
  * Convert provider string to ProviderType enum
  */
-function getProviderTypeFromString(providerString: string): ProviderType | null {
+function getProviderTypeFromString(
+  providerString: string,
+): ProviderType | null {
   const normalized = providerString.toLowerCase();
-  
+
   switch (normalized) {
     case 'openrouter':
       return ProviderType.OPENROUTER;
@@ -25,8 +30,6 @@ function getProviderTypeFromString(providerString: string): ProviderType | null 
       return ProviderType.MISTRAL;
     case 'ollama':
       return ProviderType.OLLAMA;
-    case 'lmstudio':
-      return ProviderType.LMSTUDIO;
     default:
       return null;
   }
@@ -35,7 +38,10 @@ function getProviderTypeFromString(providerString: string): ProviderType | null 
 /**
  * Determine the provider type from a model name, optionally with provider context
  */
-export function getProviderFromModel(modelName: string, providerContext?: string): ProviderType | null {
+export function getProviderFromModel(
+  modelName: string,
+  providerContext?: string,
+): ProviderType | null {
   if (!modelName) return null;
 
   // If provider context is provided, use it first
@@ -76,7 +82,6 @@ export function getProviderFromModel(modelName: string, providerContext?: string
     return ProviderType.OPENROUTER;
   }
 
-
   // Google Gemini models (only for non-prefixed models to avoid conflicts with OpenRouter)
   if (normalizedModel.includes('gemini') && !normalizedModel.includes('/')) {
     return ProviderType.GEMINI;
@@ -91,7 +96,6 @@ export function getProviderFromModel(modelName: string, providerContext?: string
   if (normalizedModel.includes('mistral')) {
     return ProviderType.MISTRAL;
   }
-
 
   // Local models (Ollama, etc.)
   if (
@@ -136,7 +140,7 @@ export function isLocalModel(modelName: string): boolean {
   if (!modelName) return false;
 
   const provider = getProviderFromModel(modelName);
-  return provider === ProviderType.OLLAMA || provider === ProviderType.LMSTUDIO;
+  return provider === ProviderType.OLLAMA;
 }
 
 /**
@@ -149,7 +153,7 @@ export function isCloudModel(modelName: string): boolean {
   return (
     provider !== null &&
     provider !== ProviderType.OLLAMA &&
-    provider !== ProviderType.LMSTUDIO
+    true
   );
 }
 
@@ -168,8 +172,6 @@ export function getProviderDisplayName(provider: ProviderType): string {
       return 'OpenRouter';
     case ProviderType.OLLAMA:
       return 'Ollama';
-    case ProviderType.LMSTUDIO:
-      return 'LM Studio';
     default: {
       // This should never happen if all enum cases are handled
       const _exhaustiveCheck: never = provider;
@@ -181,7 +183,10 @@ export function getProviderDisplayName(provider: ProviderType): string {
 /**
  * Get provider display name from model name with optional provider context
  */
-export function getProviderDisplayNameFromModel(modelName: string, providerContext?: string): string {
+export function getProviderDisplayNameFromModel(
+  modelName: string,
+  providerContext?: string,
+): string {
   const provider = getProviderFromModel(modelName, providerContext);
   return provider ? getProviderDisplayName(provider) : '';
 }

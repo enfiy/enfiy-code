@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
@@ -86,12 +89,13 @@ export const Footer: React.FC<FooterProps> = ({
     if (apiKey.includes('CLAUDE_MAX_OAUTH')) return ' (Max OAuth)';
     if (apiKey.includes('CLAUDE_PRO_SUBSCRIPTION')) return ' (Pro Sub)';
     if (apiKey.includes('CLAUDE_MAX_SUBSCRIPTION')) return ' (Max Sub)';
-    
+
     // OAuth authentication is no longer supported
     // if (apiKey === 'OAUTH_AUTHENTICATED' || apiKey.includes('OAUTH')) return ' (OAuth)';
-    
+
     // Check for subscription plans (non-Claude)
-    if (apiKey.includes('SUBSCRIPTION') || apiKey.includes('SUB_')) return ' (Subscription)';
+    if (apiKey.includes('SUBSCRIPTION') || apiKey.includes('SUB_'))
+      return ' (Subscription)';
     if (apiKey.includes('PRO_') || apiKey.includes('PREMIUM_')) return ' (Pro)';
     if (apiKey.includes('ENTERPRISE_')) return ' (Enterprise)';
 
@@ -109,7 +113,10 @@ export const Footer: React.FC<FooterProps> = ({
     <Text color={Colors.Gray}>Select AI provider and model</Text>
   ) : (
     (() => {
-      const providerName = getProviderDisplayNameFromModel(model, selectedProvider);
+      const providerName = getProviderDisplayNameFromModel(
+        model,
+        selectedProvider,
+      );
       const isLocal = isLocalModel(model);
       const category = isLocal ? 'Local' : 'Cloud';
       const displayName = providerName ? `${providerName} ` : '';
@@ -199,25 +206,30 @@ export const Footer: React.FC<FooterProps> = ({
             ) : (
               <>
                 {(() => {
-                  const provider = getProviderFromModel(model, selectedProvider);
+                  const provider = getProviderFromModel(
+                    model,
+                    selectedProvider,
+                  );
                   const apiKey = provider ? getApiKey(provider) : null;
-                  
+
                   if (isLocalModel(model)) {
                     return (
                       <Text color="green">
-                        Connection: Local AI <Text color={Colors.Gray}>(private, secure)</Text>
+                        Connection: Local AI{' '}
+                        <Text color={Colors.Gray}>(private, secure)</Text>
                       </Text>
                     );
                   }
-                  
+
                   if (!apiKey) {
                     return (
                       <Text color={Colors.AccentRed}>
-                        Connection: Not configured <Text color={Colors.Gray}>(no authentication)</Text>
+                        Connection: Not configured{' '}
+                        <Text color={Colors.Gray}>(no authentication)</Text>
                       </Text>
                     );
                   }
-                  
+
                   // OAuth authentication is no longer supported
                   // if (apiKey === 'OAUTH_AUTHENTICATED' || apiKey.includes('OAUTH')) {
                   //   return (
@@ -226,20 +238,26 @@ export const Footer: React.FC<FooterProps> = ({
                   //     </Text>
                   //   );
                   // }
-                  
+
                   // Subscription authentication (secure, paid)
-                  if (apiKey.includes('SUBSCRIPTION') || apiKey.includes('PRO_') || apiKey.includes('CLAUDE_PRO')) {
+                  if (
+                    apiKey.includes('SUBSCRIPTION') ||
+                    apiKey.includes('PRO_') ||
+                    apiKey.includes('CLAUDE_PRO')
+                  ) {
                     return (
                       <Text color="green">
-                        Connection: Subscription <Text color={Colors.Gray}>(secure, paid plan)</Text>
+                        Connection: Subscription{' '}
+                        <Text color={Colors.Gray}>(secure, paid plan)</Text>
                       </Text>
                     );
                   }
-                  
+
                   // API Key authentication (standard)
                   return (
                     <Text color={Colors.AccentYellow}>
-                      Connection: API Key <Text color={Colors.Gray}>(external service)</Text>
+                      Connection: API Key{' '}
+                      <Text color={Colors.Gray}>(external service)</Text>
                     </Text>
                   );
                 })()}

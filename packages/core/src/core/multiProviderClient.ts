@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import {
   Content,
   GenerateContentResponse,
@@ -99,10 +102,6 @@ export class MultiProviderClient {
       return ProviderType.OLLAMA;
     }
 
-    // LM Studio models
-    if (modelLower.includes('lmstudio') || modelLower.includes('local-model')) {
-      return ProviderType.LMSTUDIO;
-    }
 
     // OpenRouter models (prefixed routing patterns)
     if (
@@ -117,7 +116,6 @@ export class MultiProviderClient {
     ) {
       return ProviderType.OPENROUTER;
     }
-
 
     // For unknown models, default to Ollama with a helpful message
     console.log(
@@ -148,7 +146,6 @@ export class MultiProviderClient {
         apiKey = process.env.OPENROUTER_API_KEY;
         break;
       case ProviderType.OLLAMA:
-      case ProviderType.LMSTUDIO:
         return undefined; // Local providers, no API key needed
       default:
         return undefined;
@@ -382,7 +379,7 @@ export class MultiProviderContentGeneratorWrapper implements ContentGenerator {
   constructor(config: ContentGeneratorConfig) {
     this.config = config;
     this.client = new MultiProviderClient({} as Config); // We don't need full Config for this wrapper
-    
+
     // Set API key in environment if provided in config
     if (config.apiKey) {
       const providerType = this.getProviderTypeFromModel(config.model);
@@ -393,7 +390,7 @@ export class MultiProviderContentGeneratorWrapper implements ContentGenerator {
       this.client.initialize(config.model).catch(console.error);
     }
   }
-  
+
   private getProviderTypeFromModel(model: string): ProviderType {
     const modelLower = model.toLowerCase();
 
@@ -431,15 +428,11 @@ export class MultiProviderContentGeneratorWrapper implements ContentGenerator {
       return ProviderType.OLLAMA;
     }
 
-    // LMStudio models
-    if (modelLower.includes('lmstudio')) {
-      return ProviderType.LMSTUDIO;
-    }
 
     // Default to Gemini for unknown models
     return ProviderType.GEMINI;
   }
-  
+
   private getEnvVarForProvider(providerType: ProviderType): string | undefined {
     const envVarMap: { [key: string]: string } = {
       [ProviderType.OPENAI]: 'OPENAI_API_KEY',
@@ -461,7 +454,7 @@ export class MultiProviderContentGeneratorWrapper implements ContentGenerator {
         process.env[envVar] = this.config.apiKey;
       }
     }
-    
+
     await this.client.initialize(this.config.model);
 
     // Convert contents to proper Content[] format
@@ -487,7 +480,7 @@ export class MultiProviderContentGeneratorWrapper implements ContentGenerator {
         process.env[envVar] = this.config.apiKey;
       }
     }
-    
+
     await this.client.initialize(this.config.model);
 
     // Convert contents to proper Content[] format

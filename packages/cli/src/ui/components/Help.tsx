@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -73,13 +73,13 @@ export const Help: React.FC<Help> = ({ commands }) => (
             <Text key={command.name} color={Colors.Foreground}>
               <Text bold color={Colors.AccentBlue}>
                 {' '}
-                  /models
+                /models
               </Text>
               {command.description && ' - ' + command.description}
             </Text>
           );
         }
-        
+
         return (
           <Text key={command.name} color={Colors.Foreground}>
             <Text bold color={Colors.AccentBlue}>
@@ -100,9 +100,9 @@ export const Help: React.FC<Help> = ({ commands }) => (
           </Text>
         );
       })
-      .filter((element, index, array) => {
+      .filter((element, index, _array) => {
         // Filter out the standalone models command since it's now shown under provider
-        const command = commands.filter(cmd => cmd.description)[index];
+        const command = commands.filter((cmd) => cmd.description)[index];
         return command?.name !== 'models';
       })}
     <Text color={Colors.Foreground}>

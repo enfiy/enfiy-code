@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,7 +9,7 @@ import { parseAndFormatApiError } from './errorParsing.js';
 import { AuthType, StructuredError } from '@enfiy/core';
 
 describe('parseAndFormatApiError', () => {
-  const enterpriseMessage = 'upgrade to a plan with higher limits';
+  const _enterpriseMessage = 'upgrade to a plan with higher limits';
   const vertexMessage = 'request a quota increase through Vertex';
   const geminiMessage = 'request a quota increase through AI Studio';
 
@@ -28,7 +28,6 @@ describe('parseAndFormatApiError', () => {
     expect(result).toContain('[API Error: Rate limit exceeded');
     expect(result).toContain('Your request has been rate limited');
   });
-
 
   it('should format a 429 API error with the vertex message', () => {
     const errorMessage =

@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -52,7 +55,7 @@ export const ProviderSelectionDialog: React.FC<
   >(() => {
     // If we have a preselected provider, determine its category
     if (preselectedProvider) {
-      const localProviders = [ProviderType.OLLAMA, ProviderType.LMSTUDIO];
+      const localProviders = [ProviderType.OLLAMA];
       return localProviders.includes(preselectedProvider) ? 'local' : 'cloud';
     }
     return null;
@@ -100,18 +103,6 @@ export const ProviderSelectionDialog: React.FC<
           return true; // Needs setup - connection failed
         }
       }
-      if (provider === ProviderType.LMSTUDIO) {
-        // Check if LM Studio is running
-        try {
-          const response = await fetch('http://localhost:1234/v1/models', {
-            method: 'GET',
-            signal: AbortSignal.timeout(1000),
-          });
-          return !response.ok; // If not OK, needs setup
-        } catch {
-          return true; // Connection failed, needs setup
-        }
-      }
       // No other local providers currently supported
       // Other local providers need actual availability check
       return true; // Default to needs setup for unimplemented local providers
@@ -129,10 +120,7 @@ export const ProviderSelectionDialog: React.FC<
         id: 'local' as const,
         name: t('localAI'),
         description: t('localAIDescription'),
-        providers: [
-          ProviderType.OLLAMA,
-          ProviderType.LMSTUDIO,
-        ],
+        providers: [ProviderType.OLLAMA],
       },
       {
         id: 'cloud' as const,
@@ -181,16 +169,6 @@ export const ProviderSelectionDialog: React.FC<
             } catch {
               configs[provider] = false;
             }
-          } else if (provider === ProviderType.LMSTUDIO) {
-            try {
-              const response = await fetch('http://localhost:1234/v1/models', {
-                method: 'GET',
-                signal: AbortSignal.timeout(1000),
-              });
-              configs[provider] = response.ok;
-            } catch {
-              configs[provider] = false;
-            }
           } else {
             // Other local providers default to not configured until implemented
             configs[provider] = false;
@@ -209,13 +187,11 @@ export const ProviderSelectionDialog: React.FC<
 
   // Provider name display
   const getProviderDisplayName = (provider: ProviderType): string => {
-    const isLocal = selectedCategory === 'local';
+    const _isLocal = selectedCategory === 'local';
 
     switch (provider) {
       case ProviderType.OLLAMA:
         return 'Ollama';
-      case ProviderType.LMSTUDIO:
-        return 'LM Studio';
       case ProviderType.OPENAI:
         return 'OpenAI';
       case ProviderType.GEMINI:
@@ -250,9 +226,7 @@ export const ProviderSelectionDialog: React.FC<
       // Local providers
       case ProviderType.OLLAMA:
         return 'Popular local AI runtime - Easy setup, excellent models';
-      case ProviderType.LMSTUDIO:
-        return 'User-friendly GUI for GGUF models';
-        
+
       // Cloud providers
       case ProviderType.OPENAI:
         return 'Industry standard, versatile';

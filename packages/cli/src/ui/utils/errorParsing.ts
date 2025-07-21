@@ -1,12 +1,16 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
 
 import { AuthType, StructuredError } from '@enfiy/core';
 
-const RATE_LIMIT_ERROR_MESSAGE_GOOGLE =
+const _RATE_LIMIT_ERROR_MESSAGE_GOOGLE =
   '\nPlease wait and try again later. To increase your limits, upgrade to a plan with higher limits, or use /auth to switch to using a paid API key from AI Studio at https://aistudio.google.com/apikey';
 const RATE_LIMIT_ERROR_MESSAGE_USE_GEMINI =
   '\nPlease wait and try again later. To increase your limits, request a quota increase through AI Studio, or switch to another /auth method';

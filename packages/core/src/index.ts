@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 // Export config
 export * from './config/config.js';
 export * from './config/models.js';
@@ -28,10 +31,8 @@ export * from './providers/ollama-provider.js';
 export * from './providers/openai-provider.js';
 export * from './providers/mistral-provider.js';
 export * from './providers/openrouter-provider.js';
-export * from './providers/lmstudio-provider.js';
 export * from './providers/model-registry.js';
 export * from './providers/provider-detector.js';
-
 
 // Export utilities
 export * from './utils/paths.js';

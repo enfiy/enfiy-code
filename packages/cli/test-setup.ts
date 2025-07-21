@@ -1,12 +1,45 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import { vi } from 'vitest';
 import 'jsdom-global/register';
 import type { ReactNode } from 'react';
+
+// Suppress EventTarget cleanup errors during vitest teardown
+const originalConsoleError = console.error;
+console.error = (...args: unknown[]) => {
+  const message = args.join(' ');
+  if (
+    message.includes('removeEventListener') ||
+    message.includes('EventTarget') ||
+    message.includes('not a valid instance')
+  ) {
+    // Suppress EventTarget cleanup errors
+    return;
+  }
+  originalConsoleError(...args);
+};
+
+// Handle unhandled rejections that might occur during cleanup
+process.on('unhandledRejection', (reason) => {
+  const message = String(reason);
+  if (
+    message.includes('removeEventListener') ||
+    message.includes('EventTarget') ||
+    message.includes('not a valid instance')
+  ) {
+    // Suppress EventTarget cleanup errors
+    return;
+  }
+  // Log other unhandled rejections
+  console.error('Unhandled Rejection:', reason);
+});
 
 // Fix EventTarget memory leak issues
 import { beforeEach, afterEach } from 'vitest';

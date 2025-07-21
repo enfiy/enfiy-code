@@ -1,16 +1,18 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import { Provider, ProviderType, ProviderConfig } from './types.js';
 import { GeminiProvider } from './gemini-provider.js';
 import { OllamaProvider } from './ollama-provider.js';
 import { OpenAIProvider } from './openai-provider.js';
 import { MistralProvider } from './mistral-provider.js';
 import { OpenRouterProvider } from './openrouter-provider.js';
-import { LMStudioProvider } from './lmstudio-provider.js';
 
 export class ProviderFactory {
   static createProvider(type: ProviderType): Provider {
@@ -18,8 +20,6 @@ export class ProviderFactory {
       // Local Providers
       case ProviderType.OLLAMA:
         return new OllamaProvider();
-      case ProviderType.LMSTUDIO:
-        return new LMStudioProvider();
 
       // Cloud Providers
       case ProviderType.GEMINI:
@@ -42,7 +42,6 @@ export class ProviderFactory {
     const providers = [
       // Local Providers
       { type: ProviderType.OLLAMA, name: 'Ollama (Local)' },
-      { type: ProviderType.LMSTUDIO, name: 'LM Studio (Local)' },
 
       // Cloud Providers
       { type: ProviderType.GEMINI, name: 'Google Gemini' },
@@ -119,7 +118,6 @@ export class ProviderFactory {
   static getImplementedProviderTypes(): ProviderType[] {
     return [
       ProviderType.OLLAMA,
-      ProviderType.LMSTUDIO,
       ProviderType.GEMINI,
       ProviderType.OPENAI,
       ProviderType.MISTRAL,
@@ -131,10 +129,7 @@ export class ProviderFactory {
    * Get local provider types
    */
   static getLocalProviderTypes(): ProviderType[] {
-    return [
-      ProviderType.OLLAMA, 
-      ProviderType.LMSTUDIO,
-    ];
+    return [ProviderType.OLLAMA];
   }
 
   /**

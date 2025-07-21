@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import { debugLogger } from './debugLogger.js';
 
 import * as fs from 'node:fs';
@@ -466,7 +469,7 @@ export function validateApiKey(provider: string, apiKey: string): boolean {
   }
 
   // For local providers like Ollama, no API key required
-  const localProviders = ['ollama', 'vllm', 'lmstudio'];
+  const localProviders = ['ollama', 'vllm'];
   if (localProviders.includes(provider.toLowerCase())) {
     return true; // No API key validation needed for local providers
   }

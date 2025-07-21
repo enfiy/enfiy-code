@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import {
   EmbedContentParameters,
   GenerateContentConfig,
@@ -25,7 +28,6 @@ import { Config } from '../config/config.js';
 import { getCoreSystemPrompt } from './prompts.js';
 import { ReadManyFilesTool } from '../tools/read-many-files.js';
 import { getResponseText } from '../utils/generateContentResponseUtilities.js';
-import { checkNextSpeaker } from '../utils/nextSpeakerChecker.js';
 import { reportError } from '../utils/errorReporting.js';
 import { EnfiyChat } from './enfiyChat.js';
 import { retryWithBackoff } from '../utils/retry.js';
@@ -39,7 +41,6 @@ import {
 import { MultiProviderClient } from './multiProviderClient.js';
 import { ProxyAgent, setGlobalDispatcher } from 'undici';
 import { DEFAULT_ENFIY_FLASH_MODEL } from '../config/models.js';
-import { AuthType } from './contentGenerator.js';
 
 /**
  * Ensures model name is in the correct format for Gemini API calls
@@ -228,7 +229,9 @@ export class EnfiyClient {
     try {
       const userMemory = this.config.getUserMemory();
       const systemInstruction = getCoreSystemPrompt(userMemory);
-      const generateContentConfigWithThinking = isThinkingSupported(this.config.getModel())
+      const generateContentConfigWithThinking = isThinkingSupported(
+        this.config.getModel(),
+      )
         ? {
             ...this.generateContentConfig,
             thinkingConfig: {
@@ -562,7 +565,9 @@ export class EnfiyClient {
    * Handles fallback to Flash model when persistent 429 errors occur.
    * Uses a fallback handler if provided by the config, otherwise returns null.
    */
-  private async handleFlashFallback(authType?: string): Promise<string | null> {
+  private async handleFlashFallback(
+    _authType?: string,
+  ): Promise<string | null> {
     // No fallback needed for API key users
     return null;
   }

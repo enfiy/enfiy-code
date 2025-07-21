@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -24,41 +24,55 @@ export const Tips: React.FC<TipsProps> = ({ config }) => {
       <Box marginTop={1} flexDirection="column">
         <Box flexDirection="row">
           <Box width={10}>
-            <Text bold color={Colors.AccentBlue}>/provider</Text>
+            <Text bold color={Colors.AccentBlue}>
+              /provider
+            </Text>
           </Box>
           <Text color={Colors.Foreground}>- {t('tipProvider')}</Text>
         </Box>
         <Box flexDirection="row">
           <Box width={10}>
-            <Text bold color={Colors.AccentBlue}>/models</Text>
+            <Text bold color={Colors.AccentBlue}>
+              /models
+            </Text>
           </Box>
-          <Text color={Colors.Foreground}>- Interactive model selection panel</Text>
+          <Text color={Colors.Foreground}>
+            - Interactive model selection panel
+          </Text>
         </Box>
         <Box flexDirection="row">
           <Box width={10}>
-            <Text bold color={Colors.AccentBlue}>/mcp</Text>
+            <Text bold color={Colors.AccentBlue}>
+              /mcp
+            </Text>
           </Box>
           <Text color={Colors.Foreground}>- {t('tipMcp')}</Text>
         </Box>
         <Box flexDirection="row">
           <Box width={10}>
-            <Text bold color={Colors.AccentBlue}>/tool</Text>
+            <Text bold color={Colors.AccentBlue}>
+              /tool
+            </Text>
           </Box>
           <Text color={Colors.Foreground}>- {t('tipTool')}</Text>
         </Box>
         <Box flexDirection="row">
           <Box width={10}>
-            <Text bold color={Colors.AccentBlue}>/help</Text>
+            <Text bold color={Colors.AccentBlue}>
+              /help
+            </Text>
           </Box>
           <Text color={Colors.Foreground}>- {t('tipHelp')}</Text>
         </Box>
         <Box flexDirection="row">
           <Box width={10}>
-            <Text bold color={Colors.AccentBlue}>/bug</Text>
+            <Text bold color={Colors.AccentBlue}>
+              /bug
+            </Text>
           </Box>
           <Text color={Colors.Foreground}>- {t('tipBug')}</Text>
         </Box>
-        
+
         <Box marginTop={1}>
           <Text color={Colors.Foreground}>{t('tipGeneral')}</Text>
         </Box>

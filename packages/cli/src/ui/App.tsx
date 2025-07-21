@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import {
   Box,
@@ -173,7 +176,7 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
   const [showPrivacyNotice, setShowPrivacyNotice] = useState<boolean>(false);
   const [showProviderSelection, setShowProviderSelection] =
     useState<boolean>(false);
-  const [isProviderSelectionManual, setIsProviderSelectionManual] = 
+  const [isProviderSelectionManual, setIsProviderSelectionManual] =
     useState<boolean>(false);
   const [showProviderSetup, setShowProviderSetup] = useState<boolean>(false);
   const [showCloudAISetup, setShowCloudAISetup] = useState<boolean>(false);
@@ -194,7 +197,8 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
       // Save the selected provider and model to config
       // Import provider factory to check if provider is local
       const { ProviderFactory } = await import('@enfiy/core');
-      const isLocal = ProviderFactory.getLocalProviderTypes().includes(provider);
+      const isLocal =
+        ProviderFactory.getLocalProviderTypes().includes(provider);
       const category = isLocal ? t('localAI') : t('cloudAI');
 
       const providerName = `${provider.toUpperCase()} (${category})`;
@@ -289,39 +293,46 @@ Feel free to ask me anything or type /help for available commands.`,
     setShowModelSelection(true);
   }, []);
 
-  const handleModelSelection = useCallback(async (modelName: string) => {
-    try {
-      // Update the current model
-      setCurrentModel(modelName);
-      config.setModel(modelName);
-      settings.setValue(SettingScope.User, 'selectedModel', modelName);
-      
-      // Automatically detect and update the provider to match the model
-      const detectedProvider = getProviderFromModel(modelName);
-      settings.setValue(SettingScope.User, 'selectedProvider', detectedProvider);
-      
-      // Add success message
-      addItem(
-        {
-          type: MessageType.INFO,
-          text: `Model switched to: ${modelName} (provider: ${detectedProvider})`,
-        },
-        Date.now(),
-      );
-      
-      // Close the dialog
-      setShowModelSelection(false);
-    } catch (error) {
-      console.error('Failed to switch model:', error);
-      addItem(
-        {
-          type: MessageType.ERROR,
-          text: `Failed to switch to model: ${modelName}`,
-        },
-        Date.now(),
-      );
-    }
-  }, [config, settings, addItem]);
+  const handleModelSelection = useCallback(
+    async (modelName: string) => {
+      try {
+        // Update the current model
+        setCurrentModel(modelName);
+        config.setModel(modelName);
+        settings.setValue(SettingScope.User, 'selectedModel', modelName);
+
+        // Automatically detect and update the provider to match the model
+        const detectedProvider = getProviderFromModel(modelName);
+        settings.setValue(
+          SettingScope.User,
+          'selectedProvider',
+          detectedProvider,
+        );
+
+        // Add success message
+        addItem(
+          {
+            type: MessageType.INFO,
+            text: `Model switched to: ${modelName} (provider: ${detectedProvider})`,
+          },
+          Date.now(),
+        );
+
+        // Close the dialog
+        setShowModelSelection(false);
+      } catch (error) {
+        console.error('Failed to switch model:', error);
+        addItem(
+          {
+            type: MessageType.ERROR,
+            text: `Failed to switch to model: ${modelName}`,
+          },
+          Date.now(),
+        );
+      }
+    },
+    [config, settings, addItem],
+  );
 
   const handleModelSelectionCancel = useCallback(() => {
     setShowModelSelection(false);
@@ -361,8 +372,8 @@ Feel free to ask me anything or type /help for available commands.`,
     setShowCloudAISetup(true);
   }, []);
 
-  const lastMessageRef = useRef<string>('');
-  const lastMessageTimestamp = useRef<number>(0);
+  const _lastMessageRef = useRef<string>('');
+  const _lastMessageTimestamp = useRef<number>(0);
 
   const handleCloudAISetupComplete = useCallback(
     (setupConfig: {
@@ -387,7 +398,7 @@ Feel free to ask me anything or type /help for available commands.`,
         // Skip duplicate success messages for provider configuration
       }
     },
-    [addItem, isManagingProvider],
+    [isManagingProvider],
   );
 
   const handleCloudAISetupCancel = useCallback(() => {
@@ -654,7 +665,7 @@ Feel free to ask me anything or type /help for available commands.`,
         console.log('Skipping provider check - already in setup mode');
         return;
       }
-      
+
       // If we already have a current model that works, don't show provider selection
       if (currentModel && currentModel !== '') {
         // console.log('Current model is set, skipping provider configuration:', currentModel);
@@ -678,7 +689,7 @@ Feel free to ask me anything or type /help for available commands.`,
         hasApiKey = hasStoredCredentials(settings.merged.selectedProvider);
 
         // For local providers, API key is not required
-        const localProviders = ['ollama', 'lmstudio'];
+        const localProviders = ['ollama'];
         if (
           localProviders.includes(
             settings.merged.selectedProvider.toLowerCase(),
@@ -691,10 +702,11 @@ Feel free to ask me anything or type /help for available commands.`,
       // Check if we have a working model from config (from environment variables)
       const configModel = config.getModel();
       const hasWorkingConfig = configModel && configModel !== '';
-      
+
       // Check if we can already use the system (model is set in config and appears to be working)
-      const canUseSystem = hasWorkingConfig || (hasValidProvider && hasValidModel && hasApiKey);
-      
+      const canUseSystem =
+        hasWorkingConfig || (hasValidProvider && hasValidModel && hasApiKey);
+
       // Only show provider selection if we can't use the system
       if (!canUseSystem) {
         // プロバイダー検出を実行
@@ -744,7 +756,9 @@ Feel free to ask me anything or type /help for available commands.`,
         // Provider, model, and API key are all configured
         // Close provider selection if it's currently open
         if (showProviderSelection && !isProviderSelectionManual) {
-          console.log('Valid configuration detected, closing provider selection');
+          console.log(
+            'Valid configuration detected, closing provider selection',
+          );
           setShowProviderSelection(false);
         }
         // Restore the last used model to the current state
@@ -798,12 +812,21 @@ Feel free to ask me anything or type /help for available commands.`,
     settings.merged.selectedProvider,
     currentModel,
     isProviderSelectionManual,
+    showModelSelection,
   ]);
 
   // Force close provider selection if we have a working configuration (but not if manually opened)
   useEffect(() => {
-    if (showProviderSelection && !isProviderSelectionManual && currentModel && currentModel !== '') {
-      console.log('Force closing provider selection - working model detected:', currentModel);
+    if (
+      showProviderSelection &&
+      !isProviderSelectionManual &&
+      currentModel &&
+      currentModel !== ''
+    ) {
+      console.log(
+        'Force closing provider selection - working model detected:',
+        currentModel,
+      );
       setTimeout(() => setShowProviderSelection(false), 100);
     }
   }, [showProviderSelection, isProviderSelectionManual, currentModel]);
@@ -1447,11 +1470,7 @@ You can switch authentication methods by typing /auth`,
                 }
                 elapsedTime={elapsedTime}
               />
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                width="100%"
-              >
+              <Box display="flex" justifyContent="space-between" width="100%">
                 <Box>
                   {process.env.GEMINI_SYSTEM_MD && (
                     <Text color={Colors.AccentRed}>|⌐■_■| </Text>

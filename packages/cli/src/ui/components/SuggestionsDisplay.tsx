@@ -1,10 +1,9 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
 export interface Suggestion {

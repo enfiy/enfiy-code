@@ -26,13 +26,13 @@ This document provides instructions for repository administrators on how to enab
 The repository already includes a CodeQL workflow at `.github/workflows/codeql-analysis.yml` with the following configuration:
 
 ```yaml
-name: "CodeQL"
+name: 'CodeQL'
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
   schedule:
     - cron: '30 1 * * 0'
 
@@ -48,22 +48,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript', 'typescript' ]
+        language: ['javascript', 'typescript']
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
 ```
 
 ### Step 4: Enable Code Scanning Alerts
@@ -134,7 +134,7 @@ You can add custom CodeQL queries by:
 Periodically update the CodeQL action version in the workflow:
 
 ```yaml
-uses: github/codeql-action/init@v3  # Check for latest version
+uses: github/codeql-action/init@v3 # Check for latest version
 ```
 
 ### Review Query Packs
@@ -146,7 +146,7 @@ Check for new security query packs that might benefit the project:
   uses: github/codeql-action/init@v3
   with:
     languages: ${{ matrix.language }}
-    queries: +security-extended  # Add extended security queries
+    queries: +security-extended # Add extended security queries
 ```
 
 ---

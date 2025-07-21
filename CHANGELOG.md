@@ -7,28 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-
-- Theme selection dialog now properly responds to keyboard input (Escape key to close)
-- Resolved input character dropping issue in Japanese text input
-- Tool error messages now wrap correctly within terminal width constraints
-- Test isolation improved to prevent interference from user settings
-
-### Added
-
-- Integration tests for UI component interactions
-- Test isolation script to run tests in clean environment
-
-### Changed
-
-- Improved error display formatting for better readability
-
-## [0.1.0] - 2025-07-19
+## [0.1.0] - 2025-07-21
 
 ### Added
 
 - Initial public release of Enfiy Code CLI
-- Multi-provider AI support (OpenAI, Anthropic, Google, Azure OpenAI, Gemini)
+- Multi-provider AI support (OpenAI, Anthropic, Google, Azure OpenAI, Mistral, Gemini)
 - Interactive command-line interface with React-based UI
 - File context management with `@file` syntax
 - Shell command integration with `!command` syntax
@@ -51,6 +35,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Theme support with multiple built-in themes
 - Secure authentication methods including OAuth and API keys
 - Provider-specific configuration and setup wizards
+- Enhanced .gitignore patterns for development workflow
+
+### Fixed
+
+- Fixed 66 ESLint errors and warnings across the codebase
+- Resolved unused variable warnings by implementing proper naming conventions
+- Fixed React Hook dependency warnings for improved component stability
+- Corrected constant condition errors in text-buffer implementation
+- Resolved missing test scripts and configuration issues
+- Fixed integration test failures and improved test isolation
+- Updated license headers across all files with proper copyright attribution
+- Improved Prettier formatting consistency across all source files
+- Fixed EventTarget cleanup issues in test environment
+- Enhanced vitest configuration for better test stability and reliability
 
 ### Security
 
@@ -60,3 +58,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ANSI escape sequence stripping to prevent terminal injection
 - Safe file path handling with git-aware filtering
 - Sandbox execution environment for untrusted code
+- Enhanced .gitignore patterns for better security coverage
+- Comprehensive security analysis with GitHub Actions workflows
+- Proper license header management with copyright attribution

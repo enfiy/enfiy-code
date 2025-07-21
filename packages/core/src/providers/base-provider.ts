@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import { Provider, ProviderConfig, ProviderType } from './types.js';
 import {
   Content,
@@ -109,7 +112,7 @@ export abstract class BaseProvider implements Provider {
    * Check if this is a local provider
    */
   isLocalProvider(): boolean {
-    const localProviders = [ProviderType.OLLAMA, ProviderType.LMSTUDIO];
+    const localProviders = [ProviderType.OLLAMA];
     return localProviders.includes(this.type);
   }
 
@@ -139,7 +142,6 @@ export abstract class BaseProvider implements Provider {
   protected getDefaultBaseUrl(): string {
     const defaultUrls: Record<string, string> = {
       [ProviderType.OLLAMA]: 'http://localhost:11434',
-      [ProviderType.LMSTUDIO]: 'http://localhost:1234',
     };
 
     return defaultUrls[this.type] || 'http://localhost:8080';

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -55,10 +55,8 @@ const LazyHelp = lazy(() =>
 const LazyAboutBox = lazy(() =>
   import('./AboutBox.js').then((m) => ({ default: m.AboutBox })),
 );
-const LazyModelSelectionDialog = lazy(() =>
-  import('./ModelSelectionDialog.js').then((m) => ({
-    default: m.ModelSelectionDialog,
-  })),
+const LazyModelSelectionDialog = lazy(
+  () => import('./ModelSelectionDialog.js').then((m) => ({ default: m.ModelSelectionDialog })),
 );
 
 // Loading component

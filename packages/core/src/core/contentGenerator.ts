@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import {
   CountTokensResponse,
   GenerateContentResponse,
@@ -13,7 +16,7 @@ import {
   EmbedContentParameters,
   GoogleGenAI,
 } from '@google/genai';
-import { DEFAULT_GEMINI_MODEL, DEFAULT_ENFIY_MODEL } from '../config/models.js';
+import { DEFAULT_ENFIY_MODEL } from '../config/models.js';
 import { getEffectiveModel } from './modelCheck.js';
 
 /**
@@ -50,7 +53,10 @@ export type ContentGeneratorConfig = {
 export async function createContentGeneratorConfig(
   model: string | undefined,
   authType: AuthType | undefined,
-  config?: { getModel?: () => string; getSelectedProvider?: () => string | undefined },
+  config?: {
+    getModel?: () => string;
+    getSelectedProvider?: () => string | undefined;
+  },
 ): Promise<ContentGeneratorConfig> {
   const geminiApiKey = process.env.GEMINI_API_KEY;
   const googleApiKey = process.env.GOOGLE_API_KEY;
@@ -65,7 +71,6 @@ export async function createContentGeneratorConfig(
     authType,
     selectedProvider: config?.getSelectedProvider?.(),
   };
-
 
   if (authType === AuthType.USE_GEMINI && geminiApiKey) {
     contentGeneratorConfig.apiKey = geminiApiKey;
@@ -113,11 +118,12 @@ export async function createContentGeneratorConfig(
         break;
       // Local providers - no API key needed
       case 'ollama':
-      case 'lmstudio':
         // Local providers don't need API keys
         break;
       default:
-        throw new Error(`Unsupported provider: ${providerType}. Please select a valid provider.`);
+        throw new Error(
+          `Unsupported provider: ${providerType}. Please select a valid provider.`,
+        );
     }
 
     return contentGeneratorConfig;
@@ -138,7 +144,7 @@ export async function createContentGenerator(
 
   // Check if a specific provider is configured in settings
   const configuredProvider = config.selectedProvider;
-  
+
   // Determine provider type - prioritize configured provider over model-based detection
   let providerType: string;
   if (configuredProvider && configuredProvider !== 'gemini') {
@@ -242,10 +248,6 @@ function getProviderTypeFromModel(model: string): string {
     return 'ollama';
   }
 
-  // LM Studio models
-  if (modelLower.includes('lmstudio') || modelLower.includes('local-model')) {
-    return 'lmstudio';
-  }
 
   // OpenRouter models (prefixed routing patterns)
   if (
@@ -260,7 +262,6 @@ function getProviderTypeFromModel(model: string): string {
   ) {
     return 'openrouter';
   }
-
 
   // Default to ollama for local-first approach
   console.log(

@@ -1,10 +1,13 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
-import { Config, getProviderFromModel } from '@enfiy/core';
+import { Config } from '@enfiy/core';
 
 export interface ModelUsage {
   used: number;
@@ -97,11 +100,11 @@ export class ModelManager {
     try {
       const response = await fetch('http://localhost:11434/api/tags');
       if (!response.ok) return [];
-      
+
       const data = await response.json();
       const models = data.models || [];
-      
-      return models.map((model: any) => ({
+
+      return models.map((model: { name: string; [key: string]: unknown }) => ({
         name: model.name,
         description: `Local Ollama model - ${model.name}`,
         provider: 'ollama',
@@ -162,7 +165,7 @@ export class ModelManager {
           costTier: 'low',
           contextLength: 1000000,
           isAvailable: true,
-        }
+        },
       );
     }
 
@@ -203,7 +206,7 @@ export class ModelManager {
           costTier: 'medium',
           contextLength: 128000,
           isAvailable: true,
-        }
+        },
       );
     }
 
@@ -235,7 +238,7 @@ export class ModelManager {
           costTier: 'medium',
           contextLength: 32000,
           isAvailable: true,
-        }
+        },
       );
     }
 
@@ -264,7 +267,7 @@ export class ModelManager {
           costTier: 'high',
           contextLength: 128000,
           isAvailable: true,
-        }
+        },
       );
     }
 

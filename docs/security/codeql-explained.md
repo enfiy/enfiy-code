@@ -7,10 +7,12 @@
 ## 主な特徴
 
 ### 1. セマンティック解析
+
 - 単純なパターンマッチングではなく、コードの意味を理解して解析
 - データフローを追跡し、潜在的な脆弱性を発見
 
 ### 2. 検出可能な脆弱性の例
+
 - **SQLインジェクション**: ユーザー入力が適切にサニタイズされずにSQL文に使用される
 - **XSS（クロスサイトスクリプティング）**: 信頼できない入力がHTMLに直接出力される
 - **パストラバーサル**: ファイルパスの検証不足による任意ファイルアクセス
@@ -18,6 +20,7 @@
 - **機密情報の漏洩**: ハードコードされたパスワードやAPIキー
 
 ### 3. 言語サポート
+
 - JavaScript/TypeScript（Enfiy Codeで使用）
 - Python, Java, C/C++, C#, Go, Ruby など
 
@@ -50,31 +53,31 @@ Warning: Code scanning is not enabled for this repository.
 ### 2. 自動的に作成される設定
 
 ```yaml
-name: "CodeQL"
+name: 'CodeQL'
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
   schedule:
-    - cron: '30 1 * * 0'  # 毎週日曜日に実行
+    - cron: '30 1 * * 0' # 毎週日曜日に実行
 
 jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: javascript, typescript
-    
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript, typescript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
 ```
 
 ## メリット

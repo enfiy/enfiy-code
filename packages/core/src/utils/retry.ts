@@ -1,11 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
-import { AuthType } from '../core/contentGenerator.js';
-
 export interface RetryOptions {
   maxAttempts: number;
   initialDelayMs: number;
@@ -67,8 +68,8 @@ export async function retryWithBackoff<T>(
     maxAttempts,
     initialDelayMs,
     maxDelayMs,
-    onPersistent429,
-    authType,
+    onPersistent429: _onPersistent429,
+    authType: _authType,
     shouldRetry,
   } = {
     ...DEFAULT_RETRY_OPTIONS,
@@ -77,7 +78,7 @@ export async function retryWithBackoff<T>(
 
   let attempt = 0;
   let currentDelay = initialDelayMs;
-  let consecutive429Count = 0;
+  let _consecutive429Count = 0;
 
   while (attempt < maxAttempts) {
     attempt++;
@@ -88,9 +89,9 @@ export async function retryWithBackoff<T>(
 
       // Track consecutive 429 errors
       if (errorStatus === 429) {
-        consecutive429Count++;
+        _consecutive429Count++;
       } else {
-        consecutive429Count = 0;
+        _consecutive429Count = 0; // Reset counter for non-429 errors
       }
 
       // No fallback for API key users

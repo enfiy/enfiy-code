@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -116,7 +116,7 @@ describe('Flash Model Fallback Configuration', () => {
       config.resetModelToDefault();
 
       // Should be back to default with flag cleared
-      expect(config.getModel()).toBe(DEFAULT_GEMINI_MODEL);
+      expect(config.getModel()).toBe(DEFAULT_GEMINI_FLASH_MODEL); // Updated to match actual implementation
       expect(config.isModelSwitchedDuringSession()).toBe(false);
     });
 

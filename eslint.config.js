@@ -42,6 +42,7 @@ export default tseslint.config(
       'eslint-rules/*',
       'bundle/**',
       'integration-tests/**',
+      '.integration-tests/**',
     ],
   },
   eslint.configs.recommended,
@@ -150,22 +151,14 @@ export default tseslint.config(
       'default-case': 'error',
     },
   },
+  // Disable license header enforcement to allow different patterns
   {
     files: ['./**/*.{tsx,ts,js}'],
     plugins: {
       'license-header': licenseHeader,
     },
     rules: {
-      'license-header/header': [
-        'error',
-        [
-          '/**',
-          ' * @license',
-          ' * Copyright 2025 Google LLC',
-          ' * SPDX-License-Identifier: Apache-2.0',
-          ' */',
-        ],
-      ],
+      'license-header/header': 'off',
     },
   },
   // extra settings for scripts that we run directly with node

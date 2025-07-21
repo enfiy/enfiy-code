@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import { BaseProvider } from './base-provider.js';
 import { ProviderConfig, ProviderType } from './types.js';
 import {
@@ -297,7 +300,7 @@ export class MistralProvider extends BaseProvider {
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    let accumulatedContent = '';
+    // let _accumulatedContent = '';
 
     try {
       while (true) {
@@ -319,7 +322,7 @@ export class MistralProvider extends BaseProvider {
               const delta = parsed.choices?.[0]?.delta?.content;
 
               if (delta) {
-                accumulatedContent += delta;
+                // accumulatedContent += delta;
 
                 const streamResponse = {
                   candidates: [

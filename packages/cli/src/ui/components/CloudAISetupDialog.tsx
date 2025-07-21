@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import React, { useState, useCallback, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
@@ -165,7 +168,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
   }> => {
     const existingKey = getApiKey(provider);
     const baseMethods = getBaseAuthMethods();
-    
+
     // Add delete option if credentials exist
     if (existingKey) {
       return [
@@ -177,7 +180,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         },
       ];
     }
-    
+
     return baseMethods;
   }, [provider, getBaseAuthMethods]);
 
@@ -271,7 +274,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         setIsAuthenticating(false);
       }
     },
-    [provider, onComplete],
+    [],
   );
 
   const handleOAuthAuthentication = useCallback(async () => {
@@ -285,9 +288,11 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       if (provider === ProviderType.GEMINI && authMethod === 'oauth') {
         console.log('Starting Google OAuth authentication...');
         // Import and use Google OAuth
-        const { authenticateGeminiOAuth } = await import('../../utils/subscriptionAuth.js');
+        const { authenticateGeminiOAuth } = await import(
+          '../../utils/subscriptionAuth.js'
+        );
         const authResult = await authenticateGeminiOAuth();
-        
+
         // OAuth credentials are automatically saved by the OAuth module
         // Do not store in API key storage system
         console.log('Google OAuth credentials stored');
@@ -297,9 +302,17 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           type: provider,
           apiKey: `GOOGLE_OAUTH:${authResult.sessionToken}`,
         });
-      } else if (provider === ProviderType.GEMINI && authMethod === 'vertex-ai') {
+      } else if (
+        provider === ProviderType.GEMINI &&
+        authMethod === 'vertex-ai'
+      ) {
         console.log('Starting Vertex AI authentication...');
-        storeApiKey(provider, 'VERTEX_AI_AUTHENTICATED', undefined, 'vertex-ai');
+        storeApiKey(
+          provider,
+          'VERTEX_AI_AUTHENTICATED',
+          undefined,
+          'vertex-ai',
+        );
         console.log('Vertex AI credentials stored');
 
         setStep('complete');
@@ -308,11 +321,14 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           apiKey: 'VERTEX_AI_AUTHENTICATED',
         });
       } else {
-        throw new Error(`Unsupported OAuth authentication for provider: ${provider}`);
+        throw new Error(
+          `Unsupported OAuth authentication for provider: ${provider}`,
+        );
       }
     } catch (error) {
       console.error('OAuth authentication error:', error);
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       setValidationError(`Authentication failed: ${errorMessage}`);
       setStep('oauth-setup');
       setHighlightedIndex(0);
@@ -320,7 +336,6 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       setIsAuthenticating(false);
     }
   }, [provider, authMethod, onComplete]);
-
 
   const cleanApiKey = useCallback(
     (key: string): string =>
@@ -417,7 +432,9 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             setStep('oauth-setup');
             setHighlightedIndex(0);
           } else if (selectedMethod.id === 'local') {
-            console.log(`Selected local connection method: ${selectedMethod.id}`);
+            console.log(
+              `Selected local connection method: ${selectedMethod.id}`,
+            );
             setStep('oauth-setup');
             setHighlightedIndex(0);
           }
@@ -532,6 +549,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     step,
     getAuthMethods,
     onCancel,
+    onComplete,
     setAuthMethod,
     handleClaudeSubscriptionAuth,
     validationError,
@@ -880,14 +898,21 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           if (provider === ProviderType.GEMINI && authMethod === 'oauth') {
             return {
               name: 'Google Account',
-              description: 'Opening browser for Google account authentication...',
-              readyDescription: 'This will open your browser for Google account authentication.',
+              description:
+                'Opening browser for Google account authentication...',
+              readyDescription:
+                'This will open your browser for Google account authentication.',
             };
-          } else if (provider === ProviderType.GEMINI && authMethod === 'vertex-ai') {
+          } else if (
+            provider === ProviderType.GEMINI &&
+            authMethod === 'vertex-ai'
+          ) {
             return {
               name: 'Vertex AI',
-              description: 'Configuring Google Cloud Vertex AI authentication...',
-              readyDescription: 'This will configure Google Cloud Vertex AI authentication.',
+              description:
+                'Configuring Google Cloud Vertex AI authentication...',
+              readyDescription:
+                'This will configure Google Cloud Vertex AI authentication.',
             };
           } else {
             return {
@@ -921,10 +946,8 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
                   Authenticating with {authInfo.name}...
                 </Text>
                 <Text> </Text>
-                <Text color={Colors.Gray}>
-                  {authInfo.description}
-                </Text>
-                {(authMethod === 'oauth') && (
+                <Text color={Colors.Gray}>{authInfo.description}</Text>
+                {authMethod === 'oauth' && (
                   <>
                     <Text> </Text>
                     <Text color={Colors.AccentBlue}>
@@ -950,9 +973,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
                   Ready to authenticate with {authInfo.name}
                 </Text>
                 <Text> </Text>
-                <Text color={Colors.Gray}>
-                  {authInfo.readyDescription}
-                </Text>
+                <Text color={Colors.Gray}>{authInfo.readyDescription}</Text>
                 <Text> </Text>
                 <Box paddingLeft={1}>
                   <Text color={Colors.AccentBlue} bold>
@@ -969,7 +990,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
 
       case 'api-key-input': {
         const existingKey = getApiKey(provider);
-        
+
         return (
           <Box flexDirection="column" width={width}>
             {existingKey ? (
@@ -979,45 +1000,62 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
                 </Text>
                 <Text> </Text>
                 <Text color={Colors.AccentGreen}>
-                  ✓ API key already configured: {existingKey.substring(0, 6)}...{existingKey.slice(-4)}
+                  ✓ API key already configured: {existingKey.substring(0, 6)}...
+                  {existingKey.slice(-4)}
                 </Text>
                 <Text> </Text>
-                
+
                 {/* Use existing API key option */}
                 <Box paddingLeft={1}>
                   <Text
                     color={
-                      highlightedIndex === 0 ? Colors.AccentBlue : Colors.Foreground
+                      highlightedIndex === 0
+                        ? Colors.AccentBlue
+                        : Colors.Foreground
                     }
                     bold={highlightedIndex === 0}
                   >
                     {highlightedIndex === 0 ? '> ' : '  '}Use Existing API Key
-                    <Text color={highlightedIndex === 0 ? Colors.Comment : Colors.Gray}>
-                      {' '}Continue with current configuration
+                    <Text
+                      color={
+                        highlightedIndex === 0 ? Colors.Comment : Colors.Gray
+                      }
+                    >
+                      {' '}
+                      Continue with current configuration
                     </Text>
                   </Text>
                 </Box>
-                
+
                 {/* Enter new API key option */}
                 <Box paddingLeft={1}>
                   <Text
                     color={
-                      highlightedIndex === 1 ? Colors.AccentBlue : Colors.Foreground
+                      highlightedIndex === 1
+                        ? Colors.AccentBlue
+                        : Colors.Foreground
                     }
                     bold={highlightedIndex === 1}
                   >
                     {highlightedIndex === 1 ? '> ' : '  '}Enter New API Key
-                    <Text color={highlightedIndex === 1 ? Colors.Comment : Colors.Gray}>
-                      {' '}Replace with a different key
+                    <Text
+                      color={
+                        highlightedIndex === 1 ? Colors.Comment : Colors.Gray
+                      }
+                    >
+                      {' '}
+                      Replace with a different key
                     </Text>
                   </Text>
                 </Box>
-                
+
                 {/* Back option */}
                 <Box paddingLeft={1}>
                   <Text
                     color={
-                      highlightedIndex === 2 ? Colors.AccentBlue : Colors.Foreground
+                      highlightedIndex === 2
+                        ? Colors.AccentBlue
+                        : Colors.Foreground
                     }
                     bold={highlightedIndex === 2}
                   >
@@ -1051,7 +1089,9 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
                 <Box paddingLeft={1}>
                   <Text
                     color={
-                      highlightedIndex === 0 ? Colors.AccentBlue : Colors.Foreground
+                      highlightedIndex === 0
+                        ? Colors.AccentBlue
+                        : Colors.Foreground
                     }
                     bold={highlightedIndex === 0}
                   >
@@ -1060,56 +1100,62 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
                 </Box>
               </>
             )}
-            
-            {/* Show input box when in input mode (new key entry) */}
-            {((!existingKey && highlightedIndex === 0) || (existingKey && highlightedIndex === 1)) && isInputMode && (
-              <>
-                {/* Input box - always visible, active when selected and in input mode */}
-                <Box paddingLeft={1} paddingRight={1}>
-                  <Box
-                    borderStyle="single"
-                    borderColor={
-                      highlightedIndex === 0 && !isInputMode
-                        ? Colors.AccentBlue
-                        : isInputMode
-                          ? Colors.AccentBlue
-                          : Colors.Gray
-                    }
-                    paddingX={1}
-                    paddingY={0}
-                    width={width - 4}
-                  >
-                    {isInputMode ? (
-                      apiKey.length > 0 ? (
-                        <>
-                          <Text wrap="wrap" color={Colors.AccentYellow}>
-                            {apiKey.replace(/./g, '*')}
-                          </Text>
-                          <Text color={Colors.AccentBlue}>█</Text>
-                        </>
-                      ) : (
-                        <>
-                          <Text color={Colors.AccentBlue}>█</Text>
-                          <Text color={Colors.Gray}>
-                            Paste your API key here...
-                          </Text>
-                        </>
-                      )
-                    ) : (
-                      <Text color={Colors.Gray}>Paste your API key here...</Text>
-                    )}
-                  </Box>
-                </Box>
 
-                <Text> </Text>
-              </>
-            )}
-            
+            {/* Show input box when in input mode (new key entry) */}
+            {((!existingKey && highlightedIndex === 0) ||
+              (existingKey && highlightedIndex === 1)) &&
+              isInputMode && (
+                <>
+                  {/* Input box - always visible, active when selected and in input mode */}
+                  <Box paddingLeft={1} paddingRight={1}>
+                    <Box
+                      borderStyle="single"
+                      borderColor={
+                        highlightedIndex === 0 && !isInputMode
+                          ? Colors.AccentBlue
+                          : isInputMode
+                            ? Colors.AccentBlue
+                            : Colors.Gray
+                      }
+                      paddingX={1}
+                      paddingY={0}
+                      width={width - 4}
+                    >
+                      {isInputMode ? (
+                        apiKey.length > 0 ? (
+                          <>
+                            <Text wrap="wrap" color={Colors.AccentYellow}>
+                              {apiKey.replace(/./g, '*')}
+                            </Text>
+                            <Text color={Colors.AccentBlue}>█</Text>
+                          </>
+                        ) : (
+                          <>
+                            <Text color={Colors.AccentBlue}>█</Text>
+                            <Text color={Colors.Gray}>
+                              Paste your API key here...
+                            </Text>
+                          </>
+                        )
+                      ) : (
+                        <Text color={Colors.Gray}>
+                          Paste your API key here...
+                        </Text>
+                      )}
+                    </Box>
+                  </Box>
+
+                  <Text> </Text>
+                </>
+              )}
+
             {/* Show back option when no existing key */}
             {!existingKey && (
               <Box paddingLeft={1}>
                 <Text
-                  color={highlightedIndex === 1 ? Colors.AccentBlue : Colors.Gray}
+                  color={
+                    highlightedIndex === 1 ? Colors.AccentBlue : Colors.Gray
+                  }
                   bold={highlightedIndex === 1}
                 >
                   {highlightedIndex === 1 ? '> ' : '  '}← Back

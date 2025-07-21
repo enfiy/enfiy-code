@@ -1,7 +1,11 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
 
 import stripAnsi from 'strip-ansi';
@@ -458,15 +462,7 @@ export function useTextBuffer({
       viewport.width,
     );
 
-    // Debug logging for Japanese text
-    if (false && lines[0] && lines[0].length > 0 && lines[0].charCodeAt(0) > 127) {
-      console.log('[VISUAL_LAYOUT] Calculating visual layout:', {
-        logicalLines: lines,
-        visualLines: layout.visualLines,
-        cursor: [cursorRow, cursorCol],
-        visualCursor: layout.visualCursor,
-      });
-    }
+    // Debug logging for Japanese text - disabled
 
     setVisualLines(layout.visualLines);
     setVisualCursor(layout.visualCursor);
@@ -516,14 +512,7 @@ export function useTextBuffer({
   const text = lines.join('\n');
 
   useEffect(() => {
-    // Debug text changes for Japanese input
-    if (false && text.length > 0 && text.charCodeAt(0) > 127) {
-      console.log('[TEXT_BUFFER] Text changed:', {
-        newText: text,
-        lines,
-        cursor: [cursorRow, cursorCol],
-      });
-    }
+    // Debug text changes for Japanese input - disabled
 
     if (onChange) {
       onChange(text);
@@ -683,20 +672,7 @@ export function useTextBuffer({
             newLines[newCursorRow] = resultLine;
             newCursorCol = cpLen(before) + cpLen(parts[0]);
 
-            // Debug logging for Japanese text insertion
-            if (false && parts[0].length > 0 && parts[0].charCodeAt(0) > 127) {
-              console.log('[APPLY_OPS] Inserted Japanese text:', {
-                insertedText: parts[0],
-                before,
-                after,
-                resultLine,
-                newCursor: [newCursorRow, newCursorCol],
-                beforeLen: cpLen(before),
-                insertedLen: cpLen(parts[0]),
-                afterLen: cpLen(after),
-                totalLen: cpLen(resultLine),
-              });
-            }
+            // Debug logging for Japanese text insertion - disabled
           }
         } else if (op.type === 'backspace') {
           console.log('[APPLY_OPS] Processing backspace:', {
@@ -890,23 +866,7 @@ export function useTextBuffer({
     (newText: string): void => {
       dbg('setText', { text: newText });
 
-      // Debug logging for setText calls - track stack trace for Japanese input issues
-      if (false && newText.length > 0 && newText.charCodeAt(0) > 127) {
-        console.log('[SET_TEXT] Japanese text being set:', {
-          newText,
-          currentText: text,
-          stack: new Error().stack?.split('\n').slice(1, 4).join('\n'),
-        });
-      } else if (
-        newText === '' &&
-        text.length > 0 &&
-        false && text.charCodeAt(0) > 127
-      ) {
-        console.log('[SET_TEXT] Japanese text being CLEARED:', {
-          previousText: text,
-          stack: new Error().stack?.split('\n').slice(1, 4).join('\n'),
-        });
-      }
+      // Debug logging for setText calls - disabled
 
       pushUndo();
       const newContentLines = newText.replace(/\r\n?/g, '\n').split('\n');
@@ -917,7 +877,7 @@ export function useTextBuffer({
       setCursorCol(cpLen(newContentLines[lastNewLineIndex] ?? ''));
       setPreferredCol(null);
     },
-    [pushUndo, setPreferredCol, text],
+    [pushUndo, setPreferredCol],
   );
 
   const replaceRange = useCallback(
@@ -942,7 +902,7 @@ export function useTextBuffer({
           endRow,
           endCol,
           linesLength: lines.length,
-          endRowLineLength: currentLineLen(endRow),
+          endRowLineLength: endRow < lines.length ? currentLineLen(endRow) : -1,
         });
         return false;
       }
@@ -1489,15 +1449,7 @@ export function useTextBuffer({
             (input.charCodeAt(0) < 32 || input.charCodeAt(0) === 127);
 
           if (!isControlChar) {
-            // Debug logging for Japanese input
-            if (false && input.charCodeAt(0) > 127) {
-              console.log('[HANDLE_INPUT] Inserting Japanese char:', {
-                input,
-                keyName: key.name,
-                beforeText: text,
-                cursor: [cursorRow, cursorCol],
-              });
-            }
+            // Debug logging for Japanese input - disabled
             // Allow input with ANSI codes to pass through - stripUnsafeCharacters will clean them
             insert(input);
           }

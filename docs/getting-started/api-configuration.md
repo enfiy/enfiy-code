@@ -44,25 +44,30 @@ HUGGINGFACE_API_KEY=your-huggingface-api-key-here
 ### Cloud Providers
 
 #### OpenAI
+
 - **API Key Format**: `sk-...`
 - **Get Key**: [OpenAI Platform](https://platform.openai.com/api-keys)
 - **Environment Variable**: `OPENAI_API_KEY`
 
 #### Anthropic (Claude)
+
 - **API Key Format**: `sk-ant-api03-...`
 - **Get Key**: [Anthropic Console](https://console.anthropic.com/settings/keys)
 - **Environment Variable**: `ANTHROPIC_API_KEY`
 
 #### Google Gemini
+
 - **API Key Format**: `AIza...`
 - **Get Key**: [Google AI Studio](https://makersuite.google.com/app/apikey)
 - **Environment Variable**: `GEMINI_API_KEY`
 
 #### Mistral
+
 - **Get Key**: [Mistral Console](https://console.mistral.ai/)
 - **Environment Variable**: `MISTRAL_API_KEY`
 
 #### HuggingFace
+
 - **API Key Format**: `hf_...`
 - **Get Key**: [HuggingFace Settings](https://huggingface.co/settings/tokens)
 - **Environment Variable**: `HUGGINGFACE_API_KEY`

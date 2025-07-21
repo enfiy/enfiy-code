@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -50,10 +50,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
   const [currentInput, setCurrentInput] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
 
-  const isLocalProvider = [
-    ProviderType.OLLAMA,
-    ProviderType.LMSTUDIO,
-  ].includes(provider);
+  const isLocalProvider = [ProviderType.OLLAMA].includes(provider);
   const isCloudProvider = [
     ProviderType.OPENAI,
     ProviderType.GEMINI,
@@ -86,7 +83,10 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
 
   // Check if local provider is installed
   useEffect(() => {
-    if (isLocalProvider && (provider === ProviderType.OLLAMA || provider === ProviderType.LMSTUDIO)) {
+    if (
+      isLocalProvider &&
+      provider === ProviderType.OLLAMA
+    ) {
       checkOllamaInstallation();
     } else if (isCloudProvider) {
       // For cloud providers, always start with method selection
@@ -267,8 +267,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
             'Strong performance',
             'European privacy standards',
           ],
-          benefits:
-            'High-performance models with European privacy standards',
+          benefits: 'High-performance models with European privacy standards',
           installTime: '~1 minute',
         };
       case ProviderType.OPENROUTER:
@@ -283,8 +282,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
             'Competitive pricing',
             'Wide model selection',
           ],
-          benefits:
-            'Access to multiple AI providers through a single API',
+          benefits: 'Access to multiple AI providers through a single API',
           installTime: '~1 minute',
         };
       case ProviderType.GEMINI:

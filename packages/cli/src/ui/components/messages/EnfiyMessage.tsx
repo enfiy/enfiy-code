@@ -1,7 +1,11 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
 
 import React from 'react';
@@ -25,36 +29,37 @@ export const EnfiyMessage: React.FC<EnfiyMessageProps> = ({
   availableTerminalHeight,
   terminalWidth,
   model,
-  config,
+  config: _config,
 }) => {
   // Function to determine color based on content type and model
   const getIndicatorColor = () => '#fb923c'; // Always use orange theme color
   const indicatorColor = getIndicatorColor();
-  
+
   // Get provider information for display
   const getModelDisplayText = (modelName: string): string => {
     const provider = getProviderFromModel(modelName);
-    
+
     if (provider) {
       // Special cases for better display names
       const displayNames: Record<string, string> = {
-        'openai': 'OpenAI',
-        'anthropic': 'Anthropic',
-        'gemini': 'Gemini',
-        'mistral': 'Mistral',
-        'ollama': 'Ollama',
-        'huggingface': 'HuggingFace',
-        'openrouter': 'OpenRouter'
+        openai: 'OpenAI',
+        anthropic: 'Anthropic',
+        gemini: 'Gemini',
+        mistral: 'Mistral',
+        ollama: 'Ollama',
+        huggingface: 'HuggingFace',
+        openrouter: 'OpenRouter',
       };
-      
+
       // Capitalize provider name for display as fallback
-      const fallbackDisplayName = provider.charAt(0).toUpperCase() + provider.slice(1);
+      const fallbackDisplayName =
+        provider.charAt(0).toUpperCase() + provider.slice(1);
       const displayName = displayNames[provider] || fallbackDisplayName;
       return `${displayName}: ${modelName}`;
     }
     return modelName;
   };
-  
+
   return (
     <Box flexDirection="column">
       {/* Model name header */}
@@ -62,7 +67,8 @@ export const EnfiyMessage: React.FC<EnfiyMessageProps> = ({
         <Box flexDirection="row" marginBottom={0}>
           <Text color={indicatorColor}>●</Text>
           <Text color={indicatorColor} bold>
-            {' '}{getModelDisplayText(model)}
+            {' '}
+            {getModelDisplayText(model)}
           </Text>
         </Box>
       )}

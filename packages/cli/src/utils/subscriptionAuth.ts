@@ -1,7 +1,11 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
 
 import { ProviderType } from '@enfiy/core';
@@ -44,7 +48,6 @@ export function isSubscriptionValid(provider: ProviderType): boolean {
 
   return true;
 }
-
 
 // Gemini OAuth authentication
 export async function authenticateGeminiOAuth(): Promise<SubscriptionAuth> {
@@ -102,7 +105,6 @@ export function getAuthStatus(provider: ProviderType): {
   };
 }
 
-
 async function simulateGoogleOAuth(): Promise<{
   email: string;
   accessToken: string;
@@ -124,7 +126,9 @@ export async function getProviderDisplayName(
   authStatus: ReturnType<typeof getAuthStatus>,
 ): Promise<string> {
   // Use getProviderDisplayName from modelUtils for consistency
-  const { getProviderDisplayName: getDisplayName } = await import('./modelUtils.js');
+  const { getProviderDisplayName: getDisplayName } = await import(
+    './modelUtils.js'
+  );
   const baseName = getDisplayName(provider);
 
   if (!authStatus.isAuthenticated) {

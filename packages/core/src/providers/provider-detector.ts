@@ -1,9 +1,12 @@
 /**
  * @license
  * Copyright 2025 Google LLC
+ * Copyright 2025 Hayate Esaki
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Based on original work by Google LLC (2025)
+ * Modified and extended by Hayate Esaki (2025)
  */
-
 import { ProviderType } from './types.js';
 
 export interface DetectedProvider {
@@ -48,32 +51,6 @@ export async function detectLocalProviders(): Promise<DetectedProvider[]> {
     });
   }
 
-  // Detect LM Studio (default port: 1234)
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-    const response = await fetch('http://localhost:1234/v1/models', {
-      method: 'GET',
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
-    if (response.ok) {
-      providers.push({
-        type: ProviderType.LMSTUDIO,
-        available: true,
-        defaultModel: 'loaded-model',
-        reason: 'Running',
-      });
-    }
-  } catch {
-    providers.push({
-      type: ProviderType.LMSTUDIO,
-      available: false,
-      reason: 'Not running',
-    });
-  }
 
   return providers;
 }
@@ -93,7 +70,6 @@ export function detectCloudProviders(): DetectedProvider[] {
       ? 'API key configured'
       : 'API key required',
   });
-
 
   // Gemini
   providers.push({
