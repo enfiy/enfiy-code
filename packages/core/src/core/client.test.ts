@@ -129,6 +129,7 @@ describe('Gemini Client (client.ts)', () => {
         getProxy: vi.fn().mockReturnValue(undefined),
         getWorkingDir: vi.fn().mockReturnValue('/test/dir'),
         getFileService: vi.fn().mockReturnValue(fileService),
+        getSelectedProvider: vi.fn().mockReturnValue('gemini'),
       };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return mock as any;
