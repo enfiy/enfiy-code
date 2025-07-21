@@ -12,6 +12,7 @@ Execute bash commands in the project environment. This tool allows you to run sh
 ## Usage
 
 Use this tool to:
+
 - Run build commands (npm, make, etc.)
 - Execute tests
 - Interact with git

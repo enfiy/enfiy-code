@@ -63,24 +63,22 @@ nodeArgs.push('./packages/cli');
 // Handle npm arguments properly - extract actual CLI arguments
 let cliArgs = process.argv.slice(2);
 
-// If running via npm, npm passes arguments after the script name
-// We need to filter out npm-specific arguments and keep only CLI arguments
+// If running via npm, check for npm config variables for CLI flags
 if (process.env.npm_lifecycle_event) {
-  // When run via npm script, npm adds its own config arguments
-  // We need to extract only the arguments intended for the CLI
-  const npmConfigStart = cliArgs.findIndex((arg) => arg.startsWith('--npm'));
-  if (npmConfigStart !== -1) {
-    // Keep only arguments before npm config arguments
-    cliArgs = cliArgs.slice(0, npmConfigStart);
+  // npm converts --flag to npm_config_flag environment variables
+  if (process.env.npm_config_auto === 'true') {
+    cliArgs.push('--auto');
   }
-  // Also filter out other npm-specific arguments that might appear
-  cliArgs = cliArgs.filter(
-    (arg) =>
-      !arg.startsWith('--cache') &&
-      !arg.startsWith('--prefix') &&
-      !arg.startsWith('--color') &&
-      !arg.startsWith('--timing'),
-  );
+  if (process.env.npm_config_debug === 'true') {
+    cliArgs.push('--debug');
+  }
+  // Add other common flags that might be passed via npm
+  if (process.env.npm_config_model) {
+    cliArgs.push('--model', process.env.npm_config_model);
+  }
+  if (process.env.npm_config_prompt) {
+    cliArgs.push('--prompt', process.env.npm_config_prompt);
+  }
 }
 
 nodeArgs.push(...cliArgs);

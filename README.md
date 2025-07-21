@@ -13,7 +13,7 @@
 
 ## Quickstart
 
-Ensure you have [Node.js v20 or higher](https://nodejs.org/en/download) installed.
+Ensure you have [Node.js v18 or higher](https://nodejs.org/en/download) installed.
 
 **Option 1: Run without installing (Recommended for first-time users)**
 
@@ -48,17 +48,17 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 
 | Provider                                                                       | Description                                                                                                           |
 | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| <img src="./docs/assets/provider/provider-anthropic-claude.png" height="24" /> | **[Anthropic Claude](https://www.anthropic.com/claude)**<br>Industry-leading AI for coding tasks                      |
-| <img src="./docs/assets/provider/provider-openai-gpt.png" height="24" />       | **[OpenAI GPT](https://openai.com/)**<br>Popular and versatile language models                                        |
-| <img src="./docs/assets/provider/provider-google-gemini.png" height="24" />    | **[Google Gemini](https://deepmind.google/technologies/gemini/)**<br>Multimodal AI with strong reasoning capabilities |
-| <img src="./docs/assets/provider/provider-mistral-ai.png" height="24" />       | **[Mistral AI](https://mistral.ai/)**<br>Open-source focused AI models                                                |
-| <img src="./docs/assets/provider/provider-openrouter.png" height="24" />       | **[OpenRouter](https://openrouter.ai/)**<br>Unified access to many AI models                                          |
+| <img src="./docs/assets/provider/provider-anthropic-claude.png" height="42" /> | **[Anthropic Claude](https://www.anthropic.com/claude)**<br>Industry-leading AI for coding tasks                      |
+| <img src="./docs/assets/provider/provider-openai-gpt.png" height="42" />       | **[OpenAI GPT](https://openai.com/)**<br>Popular and versatile language models                                        |
+| <img src="./docs/assets/provider/provider-google-gemini.png" height="42" />    | **[Google Gemini](https://deepmind.google/technologies/gemini/)**<br>Multimodal AI with strong reasoning capabilities |
+| <img src="./docs/assets/provider/provider-mistral-ai.png" height="42" />       | **[Mistral AI](https://mistral.ai/)**<br>Open-source focused AI models                                                |
+| <img src="./docs/assets/provider/provider-openrouter.png" height="42" />       | **[OpenRouter](https://openrouter.ai/)**<br>Unified access to many AI models                                          |
 
 ### Local AI (Private)
 
 | Provider                                                             | Description                                                               |
 | -------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| <img src="./docs/assets/provider/provider-ollama.png" height="24" /> | **[Ollama](https://ollama.com/)**<br>Run models locally with full privacy |
+| <img src="./docs/assets/provider/provider-ollama.png" height="42" /> | **[Ollama](https://ollama.com/)**<br>Run models locally with full privacy |
 
 ## Authentication
 
