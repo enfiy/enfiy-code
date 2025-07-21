@@ -7,9 +7,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
-import { ProviderType } from '@enfiy/core';
+import { ProviderType , Config } from '@enfiy/core';
 import { ModelManager } from '../../services/modelManager.js';
-import { Config } from '@enfiy/core';
 
 export interface ModelSelectionDialogProps {
   config: Config;
@@ -258,3 +257,6 @@ export const ModelSelectionDialog: React.FC<ModelSelectionDialogProps> = ({
     </Box>
   );
 };
+
+// Default export for LazyComponents compatibility
+export default ModelSelectionDialog;
