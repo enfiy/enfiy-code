@@ -272,6 +272,7 @@ export async function loadCliConfig(
     bugCommand: settings.bugCommand,
     model: resolveModelWithSmartFallback(argv.model, settings),
     extensionContextFilePaths,
+    selectedProvider: settings.selectedProvider,
   });
 }
 

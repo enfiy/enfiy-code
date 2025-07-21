@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Config } from '@enfiy/core';
+import { Config, getProviderFromModel } from '@enfiy/core';
 
 export interface ModelUsage {
   used: number;
@@ -56,67 +56,219 @@ export class ModelManager {
     };
   }
 
+  /**
+   * Check which providers have valid authentication
+   */
+  private async checkProviderAuthentication(): Promise<{
+    gemini: boolean;
+    openai: boolean;
+    mistral: boolean;
+    ollama: boolean;
+    openrouter: boolean;
+  }> {
+    return {
+      gemini: !!process.env.GEMINI_API_KEY,
+      openai: !!process.env.OPENAI_API_KEY,
+      mistral: !!process.env.MISTRAL_API_KEY,
+      ollama: await this.checkOllamaAvailability(),
+      openrouter: !!process.env.OPENROUTER_API_KEY,
+    };
+  }
+
+  /**
+   * Check if Ollama is running locally
+   */
+  private async checkOllamaAvailability(): Promise<boolean> {
+    try {
+      const response = await fetch('http://localhost:11434/api/tags', {
+        method: 'GET',
+        signal: AbortSignal.timeout(3000),
+      });
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Get available Ollama models
+   */
+  private async getOllamaModels(): Promise<ModelInfo[]> {
+    try {
+      const response = await fetch('http://localhost:11434/api/tags');
+      if (!response.ok) return [];
+      
+      const data = await response.json();
+      const models = data.models || [];
+      
+      return models.map((model: any) => ({
+        name: model.name,
+        description: `Local Ollama model - ${model.name}`,
+        provider: 'ollama',
+        capabilities: ['code', 'reasoning'],
+        costTier: 'free' as const,
+        contextLength: 32000,
+        isAvailable: true,
+      }));
+    } catch {
+      return [];
+    }
+  }
+
   async getAvailableModels(): Promise<ModelInfo[]> {
     const client = this.config.getEnfiyClient();
     if (!client) return [];
 
-    // Mock implementation - in real scenario, this would query providers
-    return [
-      {
-        name: 'gemini-1.5-pro',
-        description: 'Google Gemini Pro - High performance model',
-        provider: 'google',
-        capabilities: ['code', 'reasoning', 'vision'],
-        costTier: 'high',
-        contextLength: 2000000,
-        isAvailable: true,
-      },
-      {
-        name: 'gemini-1.5-flash',
-        description: 'Google Gemini Flash - Fast and efficient',
-        provider: 'google',
-        capabilities: ['code', 'reasoning'],
-        costTier: 'low',
-        contextLength: 1000000,
-        isAvailable: true,
-      },
-      {
-        name: 'claude-3.5-sonnet',
-        description: 'Anthropic Claude Sonnet - Balanced performance',
-        provider: 'anthropic',
-        capabilities: ['code', 'reasoning', 'analysis'],
-        costTier: 'medium',
-        contextLength: 200000,
-        isAvailable: true,
-      },
-      {
-        name: 'gpt-4',
-        description: 'OpenAI GPT-4 - Versatile model',
-        provider: 'openai',
-        capabilities: ['code', 'reasoning', 'vision'],
-        costTier: 'high',
-        contextLength: 128000,
-        isAvailable: true,
-      },
-      {
-        name: 'mistral-large-24.02',
-        description: 'Mistral Large - Powerful and efficient',
-        provider: 'mistral',
-        capabilities: ['code', 'reasoning', 'multilingual'],
-        costTier: 'high',
-        contextLength: 32000,
-        isAvailable: true,
-      },
-      {
-        name: 'mistral-small-24.02',
-        description: 'Mistral Small - Fast and cost-effective',
-        provider: 'mistral',
-        capabilities: ['code', 'reasoning'],
-        costTier: 'low',
-        contextLength: 32000,
-        isAvailable: true,
-      },
-    ];
+    const availableModels: ModelInfo[] = [];
+
+    // Check authentication status for each provider
+    const authStatus = await this.checkProviderAuthentication();
+
+    // Add models from authenticated providers
+    if (authStatus.gemini) {
+      availableModels.push(
+        {
+          name: 'gemini-2.5-pro',
+          description: 'Google Gemini 2.5 Pro - Latest high performance model',
+          provider: 'gemini',
+          capabilities: ['code', 'reasoning', 'vision', 'thinking'],
+          costTier: 'high',
+          contextLength: 2000000,
+          isAvailable: true,
+        },
+        {
+          name: 'gemini-2.5-flash',
+          description: 'Google Gemini 2.5 Flash - Fast and efficient',
+          provider: 'gemini',
+          capabilities: ['code', 'reasoning', 'vision'],
+          costTier: 'low',
+          contextLength: 1000000,
+          isAvailable: true,
+        },
+        {
+          name: 'gemini-1.5-pro',
+          description: 'Google Gemini 1.5 Pro - Stable high performance',
+          provider: 'gemini',
+          capabilities: ['code', 'reasoning', 'vision'],
+          costTier: 'high',
+          contextLength: 2000000,
+          isAvailable: true,
+        },
+        {
+          name: 'gemini-1.5-flash',
+          description: 'Google Gemini 1.5 Flash - Fast processing',
+          provider: 'gemini',
+          capabilities: ['code', 'reasoning'],
+          costTier: 'low',
+          contextLength: 1000000,
+          isAvailable: true,
+        }
+      );
+    }
+
+    if (authStatus.openai) {
+      availableModels.push(
+        {
+          name: 'gpt-4o',
+          description: 'OpenAI GPT-4o - Multimodal flagship model',
+          provider: 'openai',
+          capabilities: ['code', 'reasoning', 'vision', 'audio'],
+          costTier: 'high',
+          contextLength: 128000,
+          isAvailable: true,
+        },
+        {
+          name: 'gpt-4o-mini',
+          description: 'OpenAI GPT-4o Mini - Fast and cost-effective',
+          provider: 'openai',
+          capabilities: ['code', 'reasoning', 'vision'],
+          costTier: 'low',
+          contextLength: 128000,
+          isAvailable: true,
+        },
+        {
+          name: 'gpt-4',
+          description: 'OpenAI GPT-4 - Reliable high performance',
+          provider: 'openai',
+          capabilities: ['code', 'reasoning'],
+          costTier: 'high',
+          contextLength: 128000,
+          isAvailable: true,
+        },
+        {
+          name: 'o3-mini',
+          description: 'OpenAI o3-mini - Advanced reasoning model',
+          provider: 'openai',
+          capabilities: ['reasoning', 'analysis', 'problem-solving'],
+          costTier: 'medium',
+          contextLength: 128000,
+          isAvailable: true,
+        }
+      );
+    }
+
+    if (authStatus.mistral) {
+      availableModels.push(
+        {
+          name: 'mistral-large-24.11',
+          description: 'Mistral Large - Latest high performance model',
+          provider: 'mistral',
+          capabilities: ['code', 'reasoning', 'multilingual'],
+          costTier: 'high',
+          contextLength: 128000,
+          isAvailable: true,
+        },
+        {
+          name: 'mistral-small-24.09',
+          description: 'Mistral Small - Fast and efficient',
+          provider: 'mistral',
+          capabilities: ['code', 'reasoning'],
+          costTier: 'low',
+          contextLength: 32000,
+          isAvailable: true,
+        },
+        {
+          name: 'codestral-22.07',
+          description: 'Mistral Codestral - Code generation specialist',
+          provider: 'mistral',
+          capabilities: ['code', 'programming'],
+          costTier: 'medium',
+          contextLength: 32000,
+          isAvailable: true,
+        }
+      );
+    }
+
+    if (authStatus.ollama) {
+      // Get locally available Ollama models
+      const ollamaModels = await this.getOllamaModels();
+      availableModels.push(...ollamaModels);
+    }
+
+    if (authStatus.openrouter) {
+      availableModels.push(
+        {
+          name: 'anthropic/claude-3.5-sonnet',
+          description: 'Claude 3.5 Sonnet via OpenRouter',
+          provider: 'openrouter',
+          capabilities: ['code', 'reasoning', 'analysis'],
+          costTier: 'medium',
+          contextLength: 200000,
+          isAvailable: true,
+        },
+        {
+          name: 'meta-llama/llama-3.2-90b-instruct',
+          description: 'Llama 3.2 90B via OpenRouter',
+          provider: 'openrouter',
+          capabilities: ['code', 'reasoning'],
+          costTier: 'high',
+          contextLength: 128000,
+          isAvailable: true,
+        }
+      );
+    }
+
+    return availableModels;
   }
 
   async getModelUsage(modelName: string): Promise<ModelUsage> {

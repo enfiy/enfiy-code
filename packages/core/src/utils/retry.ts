@@ -93,27 +93,7 @@ export async function retryWithBackoff<T>(
         consecutive429Count = 0;
       }
 
-      // If we have persistent 429s and a fallback callback for OAuth
-      if (
-        consecutive429Count >= 2 &&
-        onPersistent429 &&
-        authType === AuthType.LOGIN_WITH_GOOGLE_PERSONAL
-      ) {
-        try {
-          const fallbackModel = await onPersistent429(authType);
-          if (fallbackModel) {
-            // Reset attempt counter and try with new model
-            attempt = 0;
-            consecutive429Count = 0;
-            currentDelay = initialDelayMs;
-            // With the model updated, we continue to the next attempt
-            continue;
-          }
-        } catch (fallbackError) {
-          // If fallback fails, continue with original error
-          console.warn('Fallback to Flash model failed:', fallbackError);
-        }
-      }
+      // No fallback for API key users
 
       // Check if we've exhausted retries or shouldn't retry
       if (attempt >= maxAttempts || !shouldRetry(error as Error)) {

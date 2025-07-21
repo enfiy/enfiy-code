@@ -281,6 +281,7 @@ describe('ToolRegistry', () => {
         mcpServerConfigVal,
         undefined,
         toolRegistry,
+        expect.any(Object),
       );
       // We no longer check these as discoverMcpTools is mocked
       // expect(vi.mocked(mcpToTool)).toHaveBeenCalledTimes(1);
@@ -310,6 +311,7 @@ describe('ToolRegistry', () => {
         {},
         'mcp-server-start-command --param',
         toolRegistry,
+        expect.any(Object),
       );
     });
 
@@ -328,6 +330,7 @@ describe('ToolRegistry', () => {
         },
         undefined,
         toolRegistry,
+        expect.any(Object),
       );
       expect(toolRegistry.getAllTools()).toHaveLength(0);
     });

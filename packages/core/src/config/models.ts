@@ -23,9 +23,9 @@ export const DEFAULT_HUGGINGFACE_MODEL =
 export const DEFAULT_ENFIY_FLASH_MODEL = DEFAULT_GEMINI_FLASH_MODEL;
 export const DEFAULT_ENFIY_EMBEDDING_MODEL = DEFAULT_GEMINI_EMBEDDING_MODEL;
 
-// Primary default (cloud first for better user experience)
-export const DEFAULT_ENFIY_MODEL = DEFAULT_GEMINI_MODEL;
-export const DEFAULT_ENFIY_PROVIDER = 'gemini';
+// Primary default - use provider-agnostic approach
+export const DEFAULT_ENFIY_MODEL = DEFAULT_OPENAI_MODEL; // Changed from Gemini to OpenAI for better compatibility
+export const DEFAULT_ENFIY_PROVIDER = 'openai';
 
 // Helper function to get default model for a provider
 export function getDefaultModelForProvider(provider: string): string {

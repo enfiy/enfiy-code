@@ -128,6 +128,7 @@ export interface ConfigParameters {
   model: string;
   extensionContextFilePaths?: string[];
   providerConfig?: ProviderConfig;
+  selectedProvider?: string;
 }
 
 export class Config {
@@ -167,6 +168,7 @@ export class Config {
   private model: string;
   private readonly extensionContextFilePaths: string[];
   private modelSwitchedDuringSession: boolean = false;
+  private readonly selectedProvider: string | undefined;
   flashFallbackHandler?: FlashFallbackHandler;
 
   constructor(params: ConfigParameters) {
@@ -209,6 +211,7 @@ export class Config {
     this.bugCommand = params.bugCommand;
     this.model = params.model;
     this.extensionContextFilePaths = params.extensionContextFilePaths ?? [];
+    this.selectedProvider = params.selectedProvider;
 
     if (params.contextFileName) {
       setEnfiyMdFilename(params.contextFileName);
@@ -458,6 +461,10 @@ export class Config {
       await this.gitService.initialize();
     }
     return this.gitService;
+  }
+
+  getSelectedProvider(): string | undefined {
+    return this.selectedProvider;
   }
 }
 

@@ -13,12 +13,10 @@ import {
 export enum ProviderType {
   // Local AI Providers
   OLLAMA = 'ollama',
-  HUGGINGFACE = 'huggingface',
-  VLLM = 'vllm',
+  LMSTUDIO = 'lmstudio',
 
   // Cloud AI Providers
   OPENAI = 'openai',
-  ANTHROPIC = 'anthropic',
   GEMINI = 'gemini',
   MISTRAL = 'mistral',
   OPENROUTER = 'openrouter',

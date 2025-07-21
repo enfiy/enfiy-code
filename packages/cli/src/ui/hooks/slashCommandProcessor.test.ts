@@ -179,6 +179,7 @@ describe('useSlashCommandProcessor', () => {
         mockSetQuittingMessages,
         vi.fn(),
         vi.fn(),
+        vi.fn(),
       ),
     );
   };
@@ -380,6 +381,7 @@ describe('useSlashCommandProcessor', () => {
           mockCorgiMode,
           false,
           mockSetQuittingMessages,
+          vi.fn(),
           vi.fn(),
           vi.fn(),
         ),

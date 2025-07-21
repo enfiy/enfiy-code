@@ -3,8 +3,13 @@
   "compilerOptions": {
     "outDir": "dist",
     "jsx": "react-jsx",
-    "lib": ["DOM", "DOM.Iterable", "ES2020"],
-    "types": ["node", "vitest/globals"]
+    "lib": ["DOM", "DOM.Iterable", "ES2023"],
+    "types": ["node", "vitest/globals"],
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "target": "es2022",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "index.ts",

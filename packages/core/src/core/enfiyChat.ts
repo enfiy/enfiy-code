@@ -192,37 +192,11 @@ export class EnfiyChat {
   }
 
   /**
-   * Handles fallback to Flash model when persistent 429 errors occur for OAuth users.
+   * Handles fallback to Flash model when persistent 429 errors occur.
    * Uses a fallback handler if provided by the config, otherwise returns null.
    */
   private async handleFlashFallback(authType?: string): Promise<string | null> {
-    // Only handle fallback for OAuth users
-    if (authType !== AuthType.LOGIN_WITH_GOOGLE_PERSONAL) {
-      return null;
-    }
-
-    const currentModel = this.config.getModel();
-    const fallbackModel = DEFAULT_ENFIY_FLASH_MODEL;
-
-    // Don't fallback if already using Flash model
-    if (currentModel === fallbackModel) {
-      return null;
-    }
-
-    // Check if config has a fallback handler (set by CLI package)
-    const fallbackHandler = this.config.flashFallbackHandler;
-    if (typeof fallbackHandler === 'function') {
-      try {
-        const accepted = await fallbackHandler(currentModel, fallbackModel);
-        if (accepted) {
-          this.config.setModel(fallbackModel);
-          return fallbackModel;
-        }
-      } catch (error) {
-        console.warn('Flash fallback handler failed:', error);
-      }
-    }
-
+    // No fallback needed for API key users
     return null;
   }
 

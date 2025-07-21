@@ -98,9 +98,9 @@ export abstract class BaseProvider implements Provider {
   isCloudProvider(): boolean {
     const cloudProviders = [
       ProviderType.OPENAI,
-      ProviderType.ANTHROPIC,
       ProviderType.GEMINI,
       ProviderType.MISTRAL,
+      ProviderType.OPENROUTER,
     ];
     return cloudProviders.includes(this.type);
   }
@@ -109,7 +109,7 @@ export abstract class BaseProvider implements Provider {
    * Check if this is a local provider
    */
   isLocalProvider(): boolean {
-    const localProviders = [ProviderType.OLLAMA, ProviderType.HUGGINGFACE];
+    const localProviders = [ProviderType.OLLAMA, ProviderType.LMSTUDIO];
     return localProviders.includes(this.type);
   }
 
@@ -139,7 +139,7 @@ export abstract class BaseProvider implements Provider {
   protected getDefaultBaseUrl(): string {
     const defaultUrls: Record<string, string> = {
       [ProviderType.OLLAMA]: 'http://localhost:11434',
-      [ProviderType.HUGGINGFACE]: 'https://api-inference.huggingface.co/models',
+      [ProviderType.LMSTUDIO]: 'http://localhost:1234',
     };
 
     return defaultUrls[this.type] || 'http://localhost:8080';
@@ -206,12 +206,12 @@ export abstract class BaseProvider implements Provider {
     const instructions: Record<string, string> = {
       [ProviderType.OPENAI]:
         'Get your API key from https://platform.openai.com/api-keys',
-      [ProviderType.ANTHROPIC]:
-        'Get your API key from https://console.anthropic.com/',
       [ProviderType.GEMINI]:
         'Get your API key from https://makersuite.google.com/app/apikey',
       [ProviderType.MISTRAL]:
         'Get your API key from https://console.mistral.ai/',
+      [ProviderType.OPENROUTER]:
+        'Get your API key from https://openrouter.ai/keys',
     };
 
     return (

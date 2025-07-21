@@ -9,7 +9,7 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { parse } from 'shell-quote';
-import { MCPServerConfig } from '../config/config.js';
+import { MCPServerConfig, Config } from '../config/config.js';
 import { DiscoveredMCPTool } from './mcp-tool.js';
 import { CallableTool, mcpToTool, Schema } from '@google/genai';
 import { ToolRegistry } from './tool-registry.js';
@@ -121,6 +121,7 @@ export async function discoverMcpTools(
   mcpServers: Record<string, MCPServerConfig>,
   mcpServerCommand: string | undefined,
   toolRegistry: ToolRegistry,
+  config: Config,
 ): Promise<void> {
   // Set discovery state to in progress
   mcpDiscoveryState = MCPDiscoveryState.IN_PROGRESS;
@@ -141,7 +142,7 @@ export async function discoverMcpTools(
 
     const discoveryPromises = Object.entries(mcpServers).map(
       ([mcpServerName, mcpServerConfig]) =>
-        connectAndDiscover(mcpServerName, mcpServerConfig, toolRegistry),
+        connectAndDiscover(mcpServerName, mcpServerConfig, toolRegistry, config),
     );
     await Promise.all(discoveryPromises);
 
@@ -158,6 +159,7 @@ async function connectAndDiscover(
   mcpServerName: string,
   mcpServerConfig: MCPServerConfig,
   toolRegistry: ToolRegistry,
+  config: Config,
 ): Promise<void> {
   // Initialize the server status as connecting
   updateMCPServerStatus(mcpServerName, MCPServerStatus.CONNECTING);
@@ -246,7 +248,10 @@ async function connectAndDiscover(
       const stderrStr = data.toString();
       // Filter out verbose INFO logs from some MCP servers
       if (!stderrStr.includes('] INFO')) {
-        console.debug(`MCP STDERR (${mcpServerName}):`, stderrStr);
+        // Only show MCP STDERR messages if debug mode is enabled
+        if (config.getDebugMode()) {
+          console.debug(`MCP STDERR (${mcpServerName}):`, stderrStr);
+        }
       }
     });
   }

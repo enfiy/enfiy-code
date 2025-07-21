@@ -1127,7 +1127,6 @@ describe('useEnfiyStream', () => {
     it('should call parseAndFormatApiError with the correct authType on stream initialization failure', async () => {
       // 1. Setup
       const mockError = new Error('Rate limit exceeded');
-      const mockAuthType = AuthType.LOGIN_WITH_GOOGLE_PERSONAL;
       mockParseAndFormatApiError.mockClear();
       mockSendMessageStream.mockReturnValue(
         (async function* () {
@@ -1139,7 +1138,7 @@ describe('useEnfiyStream', () => {
       const testConfig = {
         ...mockConfig,
         getContentGeneratorConfig: vi.fn(() => ({
-          authType: mockAuthType,
+          authType: AuthType.API_KEY,
         })),
       } as unknown as Config;
 
@@ -1169,7 +1168,7 @@ describe('useEnfiyStream', () => {
       await waitFor(() => {
         expect(mockParseAndFormatApiError).toHaveBeenCalledWith(
           'Rate limit exceeded',
-          mockAuthType,
+          AuthType.API_KEY,
         );
       });
     });

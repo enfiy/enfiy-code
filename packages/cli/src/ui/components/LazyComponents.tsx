@@ -15,6 +15,7 @@ import { EditorDialogProps } from './EditorSettingsDialog.js';
 import { AuthDialogProps } from './AuthDialog.js';
 import { Help as HelpProps } from './Help.js';
 import { AboutBoxProps } from './AboutBox.js';
+import { ModelSelectionDialogProps } from './ModelSelectionDialog.js';
 
 // Lazy load heavy components
 const LazyProviderSelectionDialog = lazy(() =>
@@ -54,6 +55,11 @@ const LazyHelp = lazy(() =>
 const LazyAboutBox = lazy(() =>
   import('./AboutBox.js').then((m) => ({ default: m.AboutBox })),
 );
+const LazyModelSelectionDialog = lazy(() =>
+  import('./ModelSelectionDialog.js').then((m) => ({
+    default: m.ModelSelectionDialog,
+  })),
+);
 
 // Loading component
 const LoadingSpinner = () => <Text color="gray">Loading...</Text>;
@@ -92,3 +98,6 @@ export const EditorSettingsDialog = withLazyLoading<EditorDialogProps>(
 export const AuthDialog = withLazyLoading<AuthDialogProps>(LazyAuthDialog);
 export const Help = withLazyLoading<HelpProps>(LazyHelp);
 export const AboutBox = withLazyLoading<AboutBoxProps>(LazyAboutBox);
+export const ModelSelectionDialog = withLazyLoading<ModelSelectionDialogProps>(
+  LazyModelSelectionDialog,
+);

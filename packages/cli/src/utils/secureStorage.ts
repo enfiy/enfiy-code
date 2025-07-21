@@ -382,27 +382,12 @@ function getEnvVarForProvider(provider: string): string | undefined {
   const envVarMap: { [key: string]: string } = {
     // Cloud AI Providers
     openai: 'OPENAI_API_KEY',
-    anthropic: 'ANTHROPIC_API_KEY',
     gemini: 'GEMINI_API_KEY',
     google: 'GOOGLE_API_KEY',
     mistral: 'MISTRAL_API_KEY',
-    cohere: 'COHERE_API_KEY',
-    perplexity: 'PERPLEXITY_API_KEY',
-    groq: 'GROQ_API_KEY',
-    together: 'TOGETHER_API_KEY',
-    fireworks: 'FIREWORKS_API_KEY',
-    anyscale: 'ANYSCALE_API_KEY',
-
-    // HuggingFace
-    huggingface: 'HUGGINGFACE_API_KEY',
-    hf: 'HUGGINGFACE_API_KEY',
 
     // OpenRouter
     openrouter: 'OPENROUTER_API_KEY',
-
-    // Azure
-    azure: 'AZURE_OPENAI_API_KEY',
-    'azure-openai': 'AZURE_OPENAI_API_KEY',
   };
 
   return envVarMap[provider.toLowerCase()];
@@ -425,9 +410,6 @@ export function validateApiKey(provider: string, apiKey: string): boolean {
     // OpenAI
     openai: /^sk-.*$/, // Modified to be more permissive
 
-    // Anthropic
-    anthropic: /^sk-ant-api03-[A-Za-z0-9_-]{95}$/,
-
     // Google (Gemini) - Very flexible pattern to accept any reasonable key format
     gemini: /^AIza.{20,}$/,
     google: /^AIza.{20,}$/,
@@ -435,34 +417,8 @@ export function validateApiKey(provider: string, apiKey: string): boolean {
     // Mistral
     mistral: /^[A-Za-z0-9]{32,}$/,
 
-    // HuggingFace
-    huggingface: /^hf_[A-Za-z0-9]{34}$/,
-    hf: /^hf_[A-Za-z0-9]{34}$/,
-
     // OpenRouter
-    openrouter: /^sk-or-[A-Za-z0-9_-]{48,}$/,
-
-    // Cohere
-    cohere: /^[A-Za-z0-9]{40,}$/,
-
-    // Groq
-    groq: /^gsk_[A-Za-z0-9]{52}$/,
-
-    // Together
-    together: /^[A-Za-z0-9]{64}$/,
-
-    // Fireworks
-    fireworks: /^[A-Za-z0-9]{40,}$/,
-
-    // Anyscale
-    anyscale: /^esecret_[A-Za-z0-9]{32,}$/,
-
-    // Perplexity
-    perplexity: /^pplx-[A-Za-z0-9]{32,}$/,
-
-    // Azure OpenAI
-    azure: /^[A-Za-z0-9]{32}$/,
-    'azure-openai': /^[A-Za-z0-9]{32}$/,
+    openrouter: /^sk-or-v1-[0-9a-f]{64}$/,
   };
 
   const providerKey = provider.toLowerCase();
@@ -510,7 +466,7 @@ export function validateApiKey(provider: string, apiKey: string): boolean {
   }
 
   // For local providers like Ollama, no API key required
-  const localProviders = ['ollama', 'vllm', 'huggingface'];
+  const localProviders = ['ollama', 'vllm', 'lmstudio'];
   if (localProviders.includes(provider.toLowerCase())) {
     return true; // No API key validation needed for local providers
   }

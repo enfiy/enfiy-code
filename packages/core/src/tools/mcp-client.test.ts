@@ -156,6 +156,7 @@ describe('discoverMcpTools', () => {
       mockConfig.getMcpServers() ?? {},
       mockConfig.getMcpServerCommand(),
       mockToolRegistry as any,
+      mockConfig as any,
     );
     expect(mockConfig.getMcpServers).toHaveBeenCalledTimes(1);
     expect(mockConfig.getMcpServerCommand).toHaveBeenCalledTimes(1);
@@ -187,6 +188,7 @@ describe('discoverMcpTools', () => {
       mockConfig.getMcpServers() ?? {},
       mockConfig.getMcpServerCommand(),
       mockToolRegistry as any,
+      mockConfig as any,
     );
 
     expect(parse).toHaveBeenCalledWith(commandString, process.env);
@@ -233,6 +235,7 @@ describe('discoverMcpTools', () => {
       mockConfig.getMcpServers() ?? {},
       mockConfig.getMcpServerCommand(),
       mockToolRegistry as any,
+      mockConfig as any,
     );
 
     expect(StdioClientTransport).toHaveBeenCalledWith({
@@ -272,6 +275,7 @@ describe('discoverMcpTools', () => {
       mockConfig.getMcpServers() ?? {},
       mockConfig.getMcpServerCommand(),
       mockToolRegistry as any,
+      mockConfig as any,
     );
 
     expect(SSEClientTransport).toHaveBeenCalledWith(new URL(serverConfig.url!));
@@ -374,6 +378,7 @@ describe('discoverMcpTools', () => {
       mockConfig.getMcpServers() ?? {},
       mockConfig.getMcpServerCommand(),
       mockToolRegistry as any,
+      mockConfig as any,
     );
 
     expect(mockToolRegistry.registerTool).toHaveBeenCalledTimes(3);
@@ -442,6 +447,7 @@ describe('discoverMcpTools', () => {
         mockConfig.getMcpServers() ?? {},
         mockConfig.getMcpServerCommand(),
         mockToolRegistry as any,
+        mockConfig as any,
       ),
     ).rejects.toThrow('Parsing failed');
     expect(mockToolRegistry.registerTool).not.toHaveBeenCalled();
@@ -456,6 +462,7 @@ describe('discoverMcpTools', () => {
       mockConfig.getMcpServers() ?? {},
       mockConfig.getMcpServerCommand(),
       mockToolRegistry as any,
+      mockConfig as any,
     );
 
     expect(console.error).toHaveBeenCalledWith(
@@ -481,6 +488,7 @@ describe('discoverMcpTools', () => {
       mockConfig.getMcpServers() ?? {},
       mockConfig.getMcpServerCommand(),
       mockToolRegistry as any,
+      mockConfig as any,
     );
 
     expect(console.error).toHaveBeenCalledWith(
@@ -509,6 +517,7 @@ describe('discoverMcpTools', () => {
       mockConfig.getMcpServers() ?? {},
       mockConfig.getMcpServerCommand(),
       mockToolRegistry as any,
+      mockConfig as any,
     );
 
     expect(console.error).toHaveBeenCalledWith(
@@ -533,6 +542,7 @@ describe('discoverMcpTools', () => {
       mockConfig.getMcpServers() ?? {},
       mockConfig.getMcpServerCommand(),
       mockToolRegistry as any,
+      mockConfig as any,
     );
 
     const clientInstances = vi.mocked(Client).mock.results;

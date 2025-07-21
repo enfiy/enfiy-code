@@ -22,6 +22,20 @@ export interface ModelInfo {
 }
 
 export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
+  // LM Studio models (uses loaded model)
+  [ProviderType.LMSTUDIO]: [
+    {
+      id: 'loaded-model',
+      name: 'Currently Loaded Model',
+      provider: ProviderType.LMSTUDIO,
+      category: 'local',
+      description: 'Model loaded in LM Studio',
+      contextLength: 131072,
+      capabilities: ['chat', 'code', 'reasoning'],
+    },
+  ],
+  
+  
   [ProviderType.OLLAMA]: [
     {
       id: 'llama3.2:3b',
@@ -610,57 +624,6 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
     },
   ],
 
-  [ProviderType.ANTHROPIC]: [
-    {
-      id: 'claude-opus-4',
-      name: 'Claude Opus 4',
-      provider: ProviderType.ANTHROPIC,
-      category: 'cloud',
-      description:
-        'Most powerful Claude model, excellent for complex coding (72.5% SWE-bench)',
-      contextLength: 200000,
-      pricing: { input: 15, output: 75, unit: '$/1M tokens' },
-      capabilities: [
-        'chat',
-        'code',
-        'reasoning',
-        'complex',
-        'thinking',
-        'computer-use',
-      ],
-    },
-    {
-      id: 'claude-sonnet-4',
-      name: 'Claude Sonnet 4',
-      provider: ProviderType.ANTHROPIC,
-      category: 'cloud',
-      description:
-        'Advanced coding model with improved capabilities (72.7% SWE-bench)',
-      contextLength: 200000,
-      pricing: { input: 3, output: 15, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'thinking', 'computer-use'],
-    },
-    {
-      id: 'claude-3-5-sonnet-20241022',
-      name: 'Claude 3.5 Sonnet',
-      provider: ProviderType.ANTHROPIC,
-      category: 'cloud',
-      description: 'High-performance Claude model with excellent reasoning',
-      contextLength: 200000,
-      pricing: { input: 3, output: 15, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'complex', 'analysis'],
-    },
-    {
-      id: 'claude-3-haiku-20240307',
-      name: 'Claude 3 Haiku',
-      provider: ProviderType.ANTHROPIC,
-      category: 'cloud',
-      description: 'Fast and efficient Claude model',
-      contextLength: 200000,
-      pricing: { input: 0.25, output: 1.25, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'fast'],
-    },
-  ],
 
   [ProviderType.GEMINI]: [
     {
@@ -779,113 +742,6 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
     },
   ],
 
-  [ProviderType.HUGGINGFACE]: [
-    // Claude AI models (via Hugging Face Inference API)
-    {
-      id: 'anthropic/claude-3-5-sonnet-20241022',
-      name: 'Claude 3.5 Sonnet',
-      provider: ProviderType.HUGGINGFACE,
-      category: 'cloud',
-      description: 'High-performance Claude model via HuggingFace API',
-      contextLength: 200000,
-      pricing: { input: 3, output: 15, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'complex', 'analysis'],
-    },
-    {
-      id: 'anthropic/claude-3-5-haiku-20241022',
-      name: 'Claude 3.5 Haiku',
-      provider: ProviderType.HUGGINGFACE,
-      category: 'cloud',
-      description: 'Fast and efficient Claude model via HuggingFace API',
-      contextLength: 200000,
-      pricing: { input: 0.8, output: 4, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'fast', 'cost-effective'],
-    },
-    {
-      id: 'anthropic/claude-3-opus-20240229',
-      name: 'Claude 3 Opus',
-      provider: ProviderType.HUGGINGFACE,
-      category: 'cloud',
-      description: 'Most powerful Claude 3 model via HuggingFace API',
-      contextLength: 200000,
-      pricing: { input: 15, output: 75, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'complex', 'analysis'],
-    },
-    {
-      id: 'anthropic/claude-3-sonnet-20240229',
-      name: 'Claude 3 Sonnet',
-      provider: ProviderType.HUGGINGFACE,
-      category: 'cloud',
-      description: 'Balanced Claude 3 model via HuggingFace API',
-      contextLength: 200000,
-      pricing: { input: 3, output: 15, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning'],
-    },
-    {
-      id: 'anthropic/claude-3-haiku-20240307',
-      name: 'Claude 3 Haiku',
-      provider: ProviderType.HUGGINGFACE,
-      category: 'cloud',
-      description: 'Fast Claude 3 model via HuggingFace API',
-      contextLength: 200000,
-      pricing: { input: 0.25, output: 1.25, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'fast'],
-    },
-    {
-      id: 'meta-llama/Meta-Llama-3.3-70B-Instruct',
-      name: 'Llama 3.3 70B Instruct',
-      provider: ProviderType.HUGGINGFACE,
-      category: 'cloud',
-      description:
-        "Meta's latest large language model with improved instruction following",
-      contextLength: 128000,
-      pricing: { input: 0.7, output: 0.8, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'instruction-following'],
-    },
-    {
-      id: 'meta-llama/Meta-Llama-3.1-70B-Instruct',
-      name: 'Llama 3.1 70B Instruct',
-      provider: ProviderType.HUGGINGFACE,
-      category: 'cloud',
-      description:
-        'Powerful 70B parameter model with strong reasoning capabilities',
-      contextLength: 128000,
-      pricing: { input: 0.7, output: 0.8, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'analysis'],
-    },
-    {
-      id: 'meta-llama/Meta-Llama-3.1-8B-Instruct',
-      name: 'Llama 3.1 8B Instruct',
-      provider: ProviderType.HUGGINGFACE,
-      category: 'cloud',
-      description:
-        'Efficient 8B parameter model, good balance of performance and cost',
-      contextLength: 128000,
-      pricing: { input: 0.2, output: 0.2, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'fast', 'cost-effective'],
-    },
-    {
-      id: 'Qwen/Qwen2.5-Coder-32B-Instruct',
-      name: 'Qwen 2.5 Coder 32B',
-      provider: ProviderType.HUGGINGFACE,
-      category: 'cloud',
-      description:
-        'Specialized coding model with excellent programming capabilities',
-      contextLength: 128000,
-      pricing: { input: 0.3, output: 0.3, unit: '$/1M tokens' },
-      capabilities: ['code', 'debugging', 'generation', 'refactoring'],
-    },
-    {
-      id: 'microsoft/DialoGPT-large',
-      name: 'DialoGPT Large',
-      provider: ProviderType.HUGGINGFACE,
-      category: 'cloud',
-      description: 'Conversational AI model optimized for dialogue',
-      contextLength: 32000,
-      pricing: { input: 0.1, output: 0.1, unit: '$/1M tokens' },
-      capabilities: ['chat', 'conversation', 'fast'],
-    },
-  ],
 
   [ProviderType.OPENROUTER]: [
     // Claude models via OpenRouter

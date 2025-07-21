@@ -32,6 +32,7 @@ interface FooterProps {
   candidatesTokenCount: number;
   totalTokenCount: number;
   isSlashCommand?: boolean; // New prop for slash command detection
+  selectedProvider?: string; // Provider context for accurate provider determination
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -46,6 +47,7 @@ export const Footer: React.FC<FooterProps> = ({
   showMemoryUsage,
   totalTokenCount,
   isSlashCommand = false,
+  selectedProvider,
 }) => {
   const limit = tokenLimit(model);
   const percentage = totalTokenCount / limit;
@@ -59,7 +61,7 @@ export const Footer: React.FC<FooterProps> = ({
       return true;
     }
 
-    const provider = getProviderFromModel(modelName);
+    const provider = getProviderFromModel(modelName, selectedProvider);
     if (!provider) return true; // Unknown models are assumed available
 
     const apiKey = getApiKey(provider);
@@ -70,21 +72,31 @@ export const Footer: React.FC<FooterProps> = ({
   const getAuthType = (modelName: string): string => {
     if (!modelName) return '';
 
-    const provider = getProviderFromModel(modelName);
+    const provider = getProviderFromModel(modelName, selectedProvider);
     if (!provider) return '';
 
     const apiKey = getApiKey(provider);
     if (!apiKey) return ' (No API Key)';
 
-    // Check for subscription authentication
-    if (apiKey.includes('CLAUDE_PRO_OAUTH')) return ' (Pro)';
-    if (apiKey.includes('CLAUDE_MAX_OAUTH')) return ' (Max)';
-    if (apiKey.includes('CLAUDE_PRO_SUBSCRIPTION')) return ' (Pro)';
-    if (apiKey.includes('CLAUDE_MAX_SUBSCRIPTION')) return ' (Max)';
-    if (apiKey === 'OAUTH_AUTHENTICATED') return ' (OAuth)';
+    // Check for local providers
+    if (isLocalModel(modelName)) return ' (Local)';
 
-    // Regular API key
-    return ' (API)';
+    // Check for subscription authentication (Claude Pro/Max)
+    if (apiKey.includes('CLAUDE_PRO_OAUTH')) return ' (Pro OAuth)';
+    if (apiKey.includes('CLAUDE_MAX_OAUTH')) return ' (Max OAuth)';
+    if (apiKey.includes('CLAUDE_PRO_SUBSCRIPTION')) return ' (Pro Sub)';
+    if (apiKey.includes('CLAUDE_MAX_SUBSCRIPTION')) return ' (Max Sub)';
+    
+    // OAuth authentication is no longer supported
+    // if (apiKey === 'OAUTH_AUTHENTICATED' || apiKey.includes('OAUTH')) return ' (OAuth)';
+    
+    // Check for subscription plans (non-Claude)
+    if (apiKey.includes('SUBSCRIPTION') || apiKey.includes('SUB_')) return ' (Subscription)';
+    if (apiKey.includes('PRO_') || apiKey.includes('PREMIUM_')) return ' (Pro)';
+    if (apiKey.includes('ENTERPRISE_')) return ' (Enterprise)';
+
+    // Regular API key authentication
+    return ' (API Key)';
   };
 
   // Model display logic with authentication type
@@ -97,7 +109,7 @@ export const Footer: React.FC<FooterProps> = ({
     <Text color={Colors.Gray}>Select AI provider and model</Text>
   ) : (
     (() => {
-      const providerName = getProviderDisplayNameFromModel(model);
+      const providerName = getProviderDisplayNameFromModel(model, selectedProvider);
       const isLocal = isLocalModel(model);
       const category = isLocal ? 'Local' : 'Cloud';
       const displayName = providerName ? `${providerName} ` : '';
@@ -186,15 +198,51 @@ export const Footer: React.FC<FooterProps> = ({
               </Text>
             ) : (
               <>
-                {isLocalModel(model) ? (
-                  <Text color="green">
-                    Local AI <Text color={Colors.Gray}>(private, secure)</Text>
-                  </Text>
-                ) : (
-                  <Text color={Colors.AccentYellow}>
-                    Cloud AI <Text color={Colors.Gray}>(external service)</Text>
-                  </Text>
-                )}
+                {(() => {
+                  const provider = getProviderFromModel(model, selectedProvider);
+                  const apiKey = provider ? getApiKey(provider) : null;
+                  
+                  if (isLocalModel(model)) {
+                    return (
+                      <Text color="green">
+                        Connection: Local AI <Text color={Colors.Gray}>(private, secure)</Text>
+                      </Text>
+                    );
+                  }
+                  
+                  if (!apiKey) {
+                    return (
+                      <Text color={Colors.AccentRed}>
+                        Connection: Not configured <Text color={Colors.Gray}>(no authentication)</Text>
+                      </Text>
+                    );
+                  }
+                  
+                  // OAuth authentication is no longer supported
+                  // if (apiKey === 'OAUTH_AUTHENTICATED' || apiKey.includes('OAUTH')) {
+                  //   return (
+                  //     <Text color="green">
+                  //       Connection: OAuth <Text color={Colors.Gray}>(secure, token-based)</Text>
+                  //     </Text>
+                  //   );
+                  // }
+                  
+                  // Subscription authentication (secure, paid)
+                  if (apiKey.includes('SUBSCRIPTION') || apiKey.includes('PRO_') || apiKey.includes('CLAUDE_PRO')) {
+                    return (
+                      <Text color="green">
+                        Connection: Subscription <Text color={Colors.Gray}>(secure, paid plan)</Text>
+                      </Text>
+                    );
+                  }
+                  
+                  // API Key authentication (standard)
+                  return (
+                    <Text color={Colors.AccentYellow}>
+                      Connection: API Key <Text color={Colors.Gray}>(external service)</Text>
+                    </Text>
+                  );
+                })()}
               </>
             )}
           </Box>

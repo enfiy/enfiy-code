@@ -296,11 +296,15 @@ Feel free to ask me anything or type /help for available commands.`,
       config.setModel(modelName);
       settings.setValue(SettingScope.User, 'selectedModel', modelName);
       
+      // Automatically detect and update the provider to match the model
+      const detectedProvider = getProviderFromModel(modelName);
+      settings.setValue(SettingScope.User, 'selectedProvider', detectedProvider);
+      
       // Add success message
       addItem(
         {
           type: MessageType.INFO,
-          text: `Model switched to: ${modelName}`,
+          text: `Model switched to: ${modelName} (provider: ${detectedProvider})`,
         },
         Date.now(),
       );
@@ -743,7 +747,6 @@ Feel free to ask me anything or type /help for available commands.`,
           console.log('Valid configuration detected, closing provider selection');
           setShowProviderSelection(false);
         }
-        
         // Restore the last used model to the current state
         if (
           settings.merged.selectedModel &&

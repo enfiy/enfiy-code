@@ -9,7 +9,6 @@ import { LoadedSettings, SettingScope } from '../../config/settings.js';
 import {
   // AuthType,
   Config,
-  clearCachedCredentialFile,
   // getErrorMessage,
 } from '@enfiy/core';
 
@@ -58,7 +57,7 @@ export const useAuthCommand = (
   const handleAuthSelect = useCallback(
     async (authMethod: string | undefined, scope: SettingScope) => {
       if (authMethod) {
-        await clearCachedCredentialFile();
+        // OAuth cache clearing not needed
         settings.setValue(scope, 'selectedAuthType', authMethod);
       }
       setIsAuthDialogOpen(false);

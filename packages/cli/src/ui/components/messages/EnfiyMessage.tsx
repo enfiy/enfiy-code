@@ -7,6 +7,7 @@
 import React from 'react';
 import { Text, Box } from 'ink';
 import { MarkdownDisplay } from '../../utils/MarkdownDisplay.js';
+import { getProviderFromModel, Config } from '@enfiy/core';
 // import { Colors } from '../../colors.js';
 
 interface EnfiyMessageProps {
@@ -15,6 +16,7 @@ interface EnfiyMessageProps {
   availableTerminalHeight?: number;
   terminalWidth: number;
   model?: string;
+  config?: Config;
 }
 
 export const EnfiyMessage: React.FC<EnfiyMessageProps> = ({
@@ -23,10 +25,36 @@ export const EnfiyMessage: React.FC<EnfiyMessageProps> = ({
   availableTerminalHeight,
   terminalWidth,
   model,
+  config,
 }) => {
   // Function to determine color based on content type and model
   const getIndicatorColor = () => '#fb923c'; // Always use orange theme color
   const indicatorColor = getIndicatorColor();
+  
+  // Get provider information for display
+  const getModelDisplayText = (modelName: string): string => {
+    const provider = getProviderFromModel(modelName);
+    
+    if (provider) {
+      // Special cases for better display names
+      const displayNames: Record<string, string> = {
+        'openai': 'OpenAI',
+        'anthropic': 'Anthropic',
+        'gemini': 'Gemini',
+        'mistral': 'Mistral',
+        'ollama': 'Ollama',
+        'huggingface': 'HuggingFace',
+        'openrouter': 'OpenRouter'
+      };
+      
+      // Capitalize provider name for display as fallback
+      const fallbackDisplayName = provider.charAt(0).toUpperCase() + provider.slice(1);
+      const displayName = displayNames[provider] || fallbackDisplayName;
+      return `${displayName}: ${modelName}`;
+    }
+    return modelName;
+  };
+  
   return (
     <Box flexDirection="column">
       {/* Model name header */}
@@ -34,7 +62,7 @@ export const EnfiyMessage: React.FC<EnfiyMessageProps> = ({
         <Box flexDirection="row" marginBottom={0}>
           <Text color={indicatorColor}>●</Text>
           <Text color={indicatorColor} bold>
-            {' '}{model}
+            {' '}{getModelDisplayText(model)}
           </Text>
         </Box>
       )}

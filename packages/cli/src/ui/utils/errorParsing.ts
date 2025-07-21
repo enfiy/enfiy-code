@@ -45,8 +45,6 @@ function isStructuredError(error: unknown): error is StructuredError {
 
 function getRateLimitMessage(authType?: AuthType): string {
   switch (authType) {
-    case AuthType.LOGIN_WITH_GOOGLE_PERSONAL:
-      return RATE_LIMIT_ERROR_MESSAGE_GOOGLE;
     case AuthType.USE_GEMINI:
       return RATE_LIMIT_ERROR_MESSAGE_USE_GEMINI;
     case AuthType.USE_VERTEX_AI:

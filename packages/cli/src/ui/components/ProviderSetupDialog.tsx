@@ -52,13 +52,13 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
 
   const isLocalProvider = [
     ProviderType.OLLAMA,
-    ProviderType.HUGGINGFACE,
+    ProviderType.LMSTUDIO,
   ].includes(provider);
   const isCloudProvider = [
     ProviderType.OPENAI,
-    ProviderType.ANTHROPIC,
     ProviderType.GEMINI,
     ProviderType.MISTRAL,
+    ProviderType.OPENROUTER,
   ].includes(provider);
 
   const checkOllamaInstallation = useCallback(async () => {
@@ -219,8 +219,8 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
         return 'llama3.2:8b';
       case ProviderType.OPENAI:
         return 'gpt-4o-mini';
-      case ProviderType.ANTHROPIC:
-        return 'claude-3-5-sonnet-20241022';
+      case ProviderType.MISTRAL:
+        return 'mistral-large-latest';
       case ProviderType.GEMINI:
         return 'gemini-2.0-flash-exp';
       default:
@@ -255,20 +255,36 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
           benefits: 'Most popular AI service with excellent performance',
           installTime: '~1 minute',
         };
-      case ProviderType.ANTHROPIC:
+      case ProviderType.MISTRAL:
         return {
-          name: 'Anthropic',
-          description: 'Claude models with advanced reasoning',
-          apiUrl: 'https://console.anthropic.com/account/keys',
-          subscriptionUrl: 'https://claude.ai',
-          subscriptionName: 'Claude Pro',
+          name: 'Mistral',
+          description: 'European AI with efficient and high-performance models',
+          apiUrl: 'https://console.mistral.ai/api-keys',
+          subscriptionUrl: 'https://mistral.ai',
+          subscriptionName: 'Mistral Pro',
           features: [
-            'Superior reasoning',
-            'Long context windows',
-            'Safety-focused',
+            'Efficient inference',
+            'Strong performance',
+            'European privacy standards',
           ],
           benefits:
-            'Advanced reasoning and coding capabilities with focus on safety',
+            'High-performance models with European privacy standards',
+          installTime: '~1 minute',
+        };
+      case ProviderType.OPENROUTER:
+        return {
+          name: 'OpenRouter',
+          description: 'Multi-provider access with competitive pricing',
+          apiUrl: 'https://openrouter.ai/keys',
+          subscriptionUrl: 'https://openrouter.ai',
+          subscriptionName: 'OpenRouter Credits',
+          features: [
+            'Multiple model providers',
+            'Competitive pricing',
+            'Wide model selection',
+          ],
+          benefits:
+            'Access to multiple AI providers through a single API',
           installTime: '~1 minute',
         };
       case ProviderType.GEMINI:

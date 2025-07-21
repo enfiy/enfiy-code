@@ -8,10 +8,7 @@
   "bugs": {
     "url": "https://github.com/enfiy/enfiy-code/issues"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/enfiy/enfiy-code.git"
-  },
+  "repository": "enfiy/enfiy-code",
   "keywords": [
     "cli",
     "ai",
@@ -73,8 +70,8 @@
     "prepublishOnly": "node scripts/prepublish.js"
   },
   "bin": {
-    "enfiy-code": "./dist/index.js",
-    "enfiy": "./dist/index.js"
+    "enfiy-code": "./bundle/enfiy.js",
+    "enfiy": "./bundle/enfiy.js"
   },
   "files": [
     "bundle/",
@@ -102,6 +99,7 @@
     "globals": "^16.3.0",
     "lodash": "^4.17.21",
     "prettier": "^3.6.2",
+    "react-devtools-core": "^4.28.5",
     "rimraf": "^6.0.1",
     "strip-json-comments": "^5.0.2",
     "typescript-eslint": "^8.37.0",

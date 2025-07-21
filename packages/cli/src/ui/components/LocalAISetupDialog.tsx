@@ -106,7 +106,7 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
 
   // LM Studioステータス確認後の処理
   useEffect(() => {
-    if (lmStudioStatus && step === 'lms-check') {
+    if (lmStudioStatus && step === 'model-selection') {
       // ローカルAIカテゴリーなので、ローカル実行のみ
       setSetupMethod('local');
       setStep('model-selection');
@@ -131,7 +131,7 @@ export const LocalAISetupDialog: React.FC<LocalAISetupDialogProps> = ({
       return 'http://localhost:1234';
     }
     return 'http://localhost:8080';
-  }, [provider, selectedHFMethod, hfStatus?.localServerUrl]);
+  }, [provider]);
 
   const handleEnterKey = useCallback(async () => {
     switch (step) {

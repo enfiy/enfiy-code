@@ -51,6 +51,10 @@ export interface SlashCommand {
   name: string;
   altName?: string;
   description?: string;
+  subCommands?: Array<{
+    name: string;
+    description: string;
+  }>;
   completion?: () => Promise<string[]>;
   action: (
     mainCommand: string,
@@ -941,6 +945,12 @@ export const useSlashCommandProcessor = (
         name: 'provider',
         altName: 'ai',
         description: 'Select AI provider and model',
+        subCommands: [
+          {
+            name: 'models',
+            description: 'Interactive model selection panel',
+          },
+        ],
         action: (_mainCommand, _subCommand, _args) => {
           openProviderSelection();
         },

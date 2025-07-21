@@ -38,7 +38,6 @@ describe('EnfiyChat', () => {
       getUsageStatisticsEnabled: () => true,
       getDebugMode: () => false,
       getContentGeneratorConfig: () => ({
-        authType: 'oauth-personal',
         model: 'test-model',
       }),
       getModel: vi.fn().mockReturnValue('gemini-pro'),

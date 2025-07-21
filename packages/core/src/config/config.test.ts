@@ -270,4 +270,22 @@ describe('Server Config (config.ts)', () => {
       expect(config.getTelemetryOtlpEndpoint()).toBe(DEFAULT_OTLP_ENDPOINT);
     });
   });
+
+  describe('Selected Provider Settings', () => {
+    it('should return provided selectedProvider', () => {
+      const selectedProvider = 'openai';
+      const paramsWithProvider: ConfigParameters = {
+        ...baseParams,
+        selectedProvider,
+      };
+      const config = new Config(paramsWithProvider);
+      expect(config.getSelectedProvider()).toBe(selectedProvider);
+    });
+
+    it('should return undefined if selectedProvider is not provided', () => {
+      const paramsWithoutProvider: ConfigParameters = { ...baseParams };
+      const config = new Config(paramsWithoutProvider);
+      expect(config.getSelectedProvider()).toBeUndefined();
+    });
+  });
 });

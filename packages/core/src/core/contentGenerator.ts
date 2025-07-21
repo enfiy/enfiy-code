@@ -13,7 +13,6 @@ import {
   EmbedContentParameters,
   GoogleGenAI,
 } from '@google/genai';
-import { createCodeAssistContentGenerator } from '../code_assist/codeAssist.js';
 import { DEFAULT_GEMINI_MODEL, DEFAULT_ENFIY_MODEL } from '../config/models.js';
 import { getEffectiveModel } from './modelCheck.js';
 
@@ -35,7 +34,6 @@ export interface ContentGenerator {
 }
 
 export enum AuthType {
-  LOGIN_WITH_GOOGLE_PERSONAL = 'oauth-personal',
   USE_GEMINI = 'gemini-api-key',
   USE_VERTEX_AI = 'vertex-ai',
   API_KEY = 'api-key',
@@ -46,12 +44,13 @@ export type ContentGeneratorConfig = {
   apiKey?: string;
   vertexai?: boolean;
   authType?: AuthType | undefined;
+  selectedProvider?: string;
 };
 
 export async function createContentGeneratorConfig(
   model: string | undefined,
   authType: AuthType | undefined,
-  config?: { getModel?: () => string },
+  config?: { getModel?: () => string; getSelectedProvider?: () => string | undefined },
 ): Promise<ContentGeneratorConfig> {
   const geminiApiKey = process.env.GEMINI_API_KEY;
   const googleApiKey = process.env.GOOGLE_API_KEY;
@@ -64,12 +63,9 @@ export async function createContentGeneratorConfig(
   const contentGeneratorConfig: ContentGeneratorConfig = {
     model: effectiveModel,
     authType,
+    selectedProvider: config?.getSelectedProvider?.(),
   };
 
-  // if we are using google auth nothing else to validate for now
-  if (authType === AuthType.LOGIN_WITH_GOOGLE_PERSONAL) {
-    return contentGeneratorConfig;
-  }
 
   if (authType === AuthType.USE_GEMINI && geminiApiKey) {
     contentGeneratorConfig.apiKey = geminiApiKey;
@@ -109,14 +105,16 @@ export async function createContentGeneratorConfig(
       case 'openai':
         contentGeneratorConfig.apiKey = process.env.OPENAI_API_KEY;
         break;
-      case 'anthropic':
-        contentGeneratorConfig.apiKey = process.env.ANTHROPIC_API_KEY;
-        break;
       case 'mistral':
         contentGeneratorConfig.apiKey = process.env.MISTRAL_API_KEY;
         break;
-      case 'huggingface':
-        contentGeneratorConfig.apiKey = process.env.HUGGINGFACE_API_KEY;
+      case 'openrouter':
+        contentGeneratorConfig.apiKey = process.env.OPENROUTER_API_KEY;
+        break;
+      // Local providers - no API key needed
+      case 'ollama':
+      case 'lmstudio':
+        // Local providers don't need API keys
         break;
       default:
         throw new Error(`Unsupported provider: ${providerType}. Please select a valid provider.`);
@@ -138,8 +136,16 @@ export async function createContentGenerator(
     },
   };
 
-  // Determine provider type from model
-  const providerType = getProviderTypeFromModel(config.model);
+  // Check if a specific provider is configured in settings
+  const configuredProvider = config.selectedProvider;
+  
+  // Determine provider type - prioritize configured provider over model-based detection
+  let providerType: string;
+  if (configuredProvider && configuredProvider !== 'gemini') {
+    providerType = configuredProvider;
+  } else {
+    providerType = getProviderTypeFromModel(config.model);
+  }
 
   // For non-Gemini providers, use MultiProviderClient wrapper
   if (providerType !== 'gemini' && config.authType === AuthType.API_KEY) {
@@ -147,9 +153,6 @@ export async function createContentGenerator(
   }
 
   // For Gemini, use existing implementation
-  if (config.authType === AuthType.LOGIN_WITH_GOOGLE_PERSONAL) {
-    return createCodeAssistContentGenerator(httpOptions, config.authType);
-  }
 
   if (
     config.authType === AuthType.USE_GEMINI ||
@@ -190,11 +193,6 @@ function getProviderTypeFromModel(model: string): string {
     return 'openai';
   }
 
-  // Anthropic models
-  if (modelLower.includes('claude') || modelLower.includes('anthropic')) {
-    return 'anthropic';
-  }
-
   // Gemini models
   if (modelLower.includes('gemini')) {
     return 'gemini';
@@ -209,28 +207,60 @@ function getProviderTypeFromModel(model: string): string {
     return 'mistral';
   }
 
-  // Ollama models (expanded to include qwen, deepseek)
+  // Ollama models (comprehensive pattern matching)
   if (
     modelLower.includes('llama') ||
     modelLower.includes('codellama') ||
     modelLower.includes('ollama') ||
     modelLower.includes('qwen') ||
     modelLower.includes('deepseek') ||
-    modelLower.includes(':')
+    modelLower.includes('phi') ||
+    modelLower.includes('mistral') ||
+    modelLower.includes('gemma') ||
+    modelLower.includes('vicuna') ||
+    modelLower.includes('alpaca') ||
+    modelLower.includes('orca') ||
+    modelLower.includes('nous') ||
+    modelLower.includes('yi') ||
+    modelLower.includes('solar') ||
+    modelLower.includes('dolphin') ||
+    modelLower.includes('mixtral') ||
+    modelLower.includes('openchat') ||
+    modelLower.includes('starling') ||
+    modelLower.includes('neural') ||
+    modelLower.includes('tinyllama') ||
+    modelLower.includes('wizard') ||
+    modelLower.includes('zephyr') ||
+    modelLower.includes('stable') ||
+    modelLower.includes('falcon') ||
+    modelLower.includes('mpt') ||
+    modelLower.includes('redpajama') ||
+    modelLower.includes('ggml') ||
+    modelLower.includes('gguf') ||
+    modelLower.includes(':') // Ollama tag format (model:tag)
   ) {
     return 'ollama';
   }
 
-  // HuggingFace models (models with / or specific prefixes)
-  if (
-    modelLower.includes('huggingface') ||
-    modelLower.includes('hf') ||
-    model.includes('/') ||
-    modelLower.startsWith('meta-') ||
-    modelLower.startsWith('microsoft/')
-  ) {
-    return 'huggingface';
+  // LM Studio models
+  if (modelLower.includes('lmstudio') || modelLower.includes('local-model')) {
+    return 'lmstudio';
   }
+
+  // OpenRouter models (prefixed routing patterns)
+  if (
+    modelLower.includes('openrouter') ||
+    modelLower.startsWith('anthropic/') ||
+    modelLower.startsWith('openai/') ||
+    modelLower.startsWith('google/') ||
+    modelLower.startsWith('meta-llama/') ||
+    modelLower.startsWith('mistralai/') ||
+    modelLower.startsWith('nous-hermes') ||
+    modelLower.startsWith('phind/')
+  ) {
+    return 'openrouter';
+  }
+
 
   // Default to ollama for local-first approach
   console.log(

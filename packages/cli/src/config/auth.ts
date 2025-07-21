@@ -13,7 +13,6 @@ export const validateAuthMethod = (authMethod: string): string | null => {
   // For Enfiy Code, support various authentication types
   if (
     authMethod === AuthType.API_KEY ||
-    authMethod === AuthType.LOGIN_WITH_GOOGLE_PERSONAL ||
     authMethod === AuthType.USE_GEMINI ||
     authMethod === AuthType.USE_VERTEX_AI ||
     authMethod === 'api-key' ||

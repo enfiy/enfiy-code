@@ -17,7 +17,7 @@ interface TipsProps {
 export const Tips: React.FC<TipsProps> = ({ config }) => {
   const _enfiyMdFileCount = config.getEnfiyMdFileCount(); // TODO: rename this method
   return (
-    <Box flexDirection="column" marginBottom={1}>
+    <Box flexDirection="column">
       <Text color={Colors.AccentBlue} bold>
         {t('tipsTitle')}
       </Text>
@@ -27,6 +27,12 @@ export const Tips: React.FC<TipsProps> = ({ config }) => {
             <Text bold color={Colors.AccentBlue}>/provider</Text>
           </Box>
           <Text color={Colors.Foreground}>- {t('tipProvider')}</Text>
+        </Box>
+        <Box flexDirection="row">
+          <Box width={10}>
+            <Text bold color={Colors.AccentBlue}>/models</Text>
+          </Box>
+          <Text color={Colors.Foreground}>- Interactive model selection panel</Text>
         </Box>
         <Box flexDirection="row">
           <Box width={10}>

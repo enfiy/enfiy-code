@@ -25,15 +25,13 @@ export * from './providers/types.js';
 export * from './providers/provider-factory.js';
 export * from './providers/gemini-provider.js';
 export * from './providers/ollama-provider.js';
+export * from './providers/openai-provider.js';
+export * from './providers/mistral-provider.js';
+export * from './providers/openrouter-provider.js';
+export * from './providers/lmstudio-provider.js';
 export * from './providers/model-registry.js';
 export * from './providers/provider-detector.js';
 
-export * from './code_assist/codeAssist.js';
-export * from './code_assist/oauth2.js';
-export * from './code_assist/claudeOAuth.js';
-export * from './code_assist/huggingfaceOAuth.js';
-export * from './code_assist/server.js';
-export * from './code_assist/types.js';
 
 // Export utilities
 export * from './utils/paths.js';

@@ -43,8 +43,9 @@ import { AuthType } from './contentGenerator.js';
 
 /**
  * Ensures model name is in the correct format for Gemini API calls
+ * Only applies Gemini-specific formatting when using Gemini provider directly
  */
-function formatModelName(modelName: string): string {
+function formatModelNameForGemini(modelName: string): string {
   // If model doesn't start with models/, add it
   if (!modelName.startsWith('models/')) {
     modelName = 'models/' + modelName;
@@ -71,7 +72,7 @@ export class EnfiyClient {
   private chat?: EnfiyChat;
   private contentGenerator?: ContentGenerator;
   private multiProviderClient: MultiProviderClient;
-  private model: string;
+  // Model is obtained dynamically from config.getModel() when needed
   private embeddingModel: string;
   private generateContentConfig: GenerateContentConfig = {
     temperature: 0,
@@ -84,8 +85,7 @@ export class EnfiyClient {
       setGlobalDispatcher(new ProxyAgent(config.getProxy() as string));
     }
 
-    // Use the original model - contentGenerator will handle provider selection
-    this.model = config.getModel();
+    // Model is obtained dynamically from config.getModel() when needed
 
     // Initialize the multi-provider client
     this.multiProviderClient = new MultiProviderClient(config);
@@ -228,7 +228,7 @@ export class EnfiyClient {
     try {
       const userMemory = this.config.getUserMemory();
       const systemInstruction = getCoreSystemPrompt(userMemory);
-      const generateContentConfigWithThinking = isThinkingSupported(this.model)
+      const generateContentConfigWithThinking = isThinkingSupported(this.config.getModel())
         ? {
             ...this.generateContentConfig,
             thinkingConfig: {
@@ -387,7 +387,7 @@ export class EnfiyClient {
     generationConfig: GenerateContentConfig,
     abortSignal: AbortSignal,
   ): Promise<GenerateContentResponse> {
-    const modelToUse = formatModelName(this.model);
+    const modelToUse = formatModelNameForGemini(this.config.getModel());
     const configToUse: GenerateContentConfig = {
       ...this.generateContentConfig,
       ...generationConfig,
@@ -481,9 +481,10 @@ export class EnfiyClient {
       return null;
     }
 
-    const formattedModel = formatModelName(this.model);
+    const currentModel = this.config.getModel(); // Always get current model from config
+    const formattedModel = formatModelNameForGemini(currentModel);
     console.log('[CLIENT] CountTokens with model:', {
-      original: this.model,
+      original: currentModel,
       formatted: formattedModel,
     });
 
@@ -498,17 +499,17 @@ export class EnfiyClient {
       if (originalTokenCount === undefined) {
         // If token count is undefined, we can't determine if we need to compress.
         console.warn(
-          `Could not determine token count for model ${this.model}. Skipping compression check.`,
+          `Could not determine token count for model ${this.config.getModel()}. Skipping compression check.`,
         );
         return null;
       }
       const tokenCount = originalTokenCount; // Now guaranteed to be a number
 
-      const limit = tokenLimit(this.model);
+      const limit = tokenLimit(this.config.getModel());
       if (!limit) {
         // If no limit is defined for the model, we can't compress.
         console.warn(
-          `No token limit defined for model ${this.model}. Skipping compression check.`,
+          `No token limit defined for model ${this.config.getModel()}. Skipping compression check.`,
         );
         return null;
       }
@@ -535,9 +536,10 @@ export class EnfiyClient {
       },
     ];
     this.chat = await this.startChat(newHistory);
-    const formattedModelForNew = formatModelName(this.model);
+    const currentModelForNew = this.config.getModel(); // Always get current model from config
+    const formattedModelForNew = formatModelNameForGemini(currentModelForNew);
     console.log('[CLIENT] CountTokens for new history with model:', {
-      original: this.model,
+      original: currentModelForNew,
       formatted: formattedModelForNew,
     });
 
@@ -557,38 +559,11 @@ export class EnfiyClient {
   }
 
   /**
-   * Handles fallback to Flash model when persistent 429 errors occur for OAuth users.
+   * Handles fallback to Flash model when persistent 429 errors occur.
    * Uses a fallback handler if provided by the config, otherwise returns null.
    */
   private async handleFlashFallback(authType?: string): Promise<string | null> {
-    // Only handle fallback for OAuth users
-    if (authType !== AuthType.LOGIN_WITH_GOOGLE_PERSONAL) {
-      return null;
-    }
-
-    const currentModel = this.model;
-    const fallbackModel = DEFAULT_ENFIY_FLASH_MODEL;
-
-    // Don't fallback if already using Flash model
-    if (currentModel === fallbackModel) {
-      return null;
-    }
-
-    // Check if config has a fallback handler (set by CLI package)
-    const fallbackHandler = this.config.flashFallbackHandler;
-    if (typeof fallbackHandler === 'function') {
-      try {
-        const accepted = await fallbackHandler(currentModel, fallbackModel);
-        if (accepted) {
-          this.config.setModel(fallbackModel);
-          this.model = fallbackModel;
-          return fallbackModel;
-        }
-      } catch (error) {
-        console.warn('Flash fallback handler failed:', error);
-      }
-    }
-
+    // No fallback needed for API key users
     return null;
   }
 }

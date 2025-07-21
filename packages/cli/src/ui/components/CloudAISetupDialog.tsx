@@ -7,7 +7,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { Colors } from '../colors.js';
-import { ProviderType, AuthType, getClaudeOAuthClient } from '@enfiy/core';
+import { ProviderType, AuthType } from '@enfiy/core';
 import {
   storeApiKey,
   removeApiKey,
@@ -80,31 +80,10 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       return 'api-key-management';
     }
 
-    // If we have an existing key and this is a new setup (not managing), 
-    // only skip if forceAuthSelection is false
-    if (existingKey && !isManaging && !forceAuthSelection) {
-      console.log('Existing key found, will complete setup automatically');
-      return 'auto-complete';
-    }
-
-    // Show authentication method selection if provider has multiple auth methods
-    const tempAuthMethods = (() => {
-      switch (provider) {
-        case ProviderType.GEMINI:
-          return 3; // API Key, OAuth, Vertex AI
-        default:
-          return 1; // Only API Key
-      }
-    })();
-    
-    if (tempAuthMethods > 1) {
-      console.log('Multiple auth methods detected, going to auth method selection');
-      return 'auth-method-selection';
-    }
-
-    // For providers with only API key auth method, go directly to API key input
-    console.log('Single auth method (API key) detected, going directly to api-key-input');
-    return 'api-key-input';
+    // Always show authentication method selection screen
+    // This allows users to see available options even if API key exists
+    console.log('Always showing auth method selection screen');
+    return 'auth-method-selection';
   });
 
   const [apiKey, setApiKey] = useState('');
@@ -262,14 +241,16 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     switch (step) {
       case 'auth-method-selection':
         return getAuthMethods().length; // Auth methods + Back
-      case 'api-key-input':
-        return 1; // Start input, Cancel
+      case 'api-key-input': {
+        const existingKey = getApiKey(provider);
+        return existingKey ? 2 : 1; // If existing key: Use existing, Enter new, Back (0,1,2) | No existing: Enter new, Back (0,1)
+      }
       case 'api-key-management':
         return 3; // View, Update, Delete, Back
       default:
         return 0;
     }
-  }, [step, getAuthMethods]);
+  }, [step, getAuthMethods, provider]);
 
   const handleClaudeSubscriptionAuth = useCallback(
     async (planType: 'pro' | 'max') => {
@@ -278,30 +259,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
       setValidationError(null);
 
       try {
-        console.log('Opening Claude.ai for OAuth authentication...');
-
-        // Use Claude OAuth authentication
-        const oauthResponse = await getClaudeOAuthClient();
-        console.log('Claude OAuth authentication successful:', !!oauthResponse);
-
-        if (!oauthResponse || !oauthResponse.access_token) {
-          throw new Error('Failed to obtain Claude OAuth token');
-        }
-
-        // TODO: Store Claude subscription OAuth tokens in separate OAuth storage
-        // For now, store as API key but this should be refactored  
-        const subscriptionToken = `CLAUDE_${planType.toUpperCase()}_OAUTH:${oauthResponse.access_token}`;
-        storeApiKey(provider, subscriptionToken, undefined, 'oauth');
-
-        console.log(
-          `Claude ${planType} subscription authentication successful`,
-        );
-
-        onComplete({
-          type: provider,
-          authType: AuthType.API_KEY,
-          apiKey: subscriptionToken,
-        });
+        throw new Error('OAuth authentication not supported');
       } catch (error: unknown) {
         console.error('Claude subscription authentication failed:', error);
         const errorMessage =
@@ -404,13 +362,14 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         return;
       }
 
-      // Store the cleaned API key
-      storeApiKey(provider, cleanedApiKey);
+      // Store the cleaned API key with correct auth method
+      storeApiKey(provider, cleanedApiKey, undefined, 'api-key');
       setStep('complete');
 
       // Complete setup immediately
       onComplete({
         type: provider,
+        authType: AuthType.API_KEY,
         apiKey: cleanedApiKey,
       });
     } catch (error) {
@@ -495,14 +454,37 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         }
         break;
 
-      case 'api-key-input':
-        if (highlightedIndex === 0) {
-          setIsInputMode(true);
-        } else if (highlightedIndex === 1) {
-          // Back option selected
-          onCancel();
+      case 'api-key-input': {
+        const existingKey = getApiKey(provider);
+        if (existingKey) {
+          // With existing key: Use existing (0), Enter new (1), Back (2)
+          if (highlightedIndex === 0) {
+            // Use existing API key
+            onComplete({
+              type: provider,
+              authType: AuthType.API_KEY,
+              apiKey: existingKey,
+            });
+          } else if (highlightedIndex === 1) {
+            // Enter new API key
+            setIsInputMode(true);
+          } else if (highlightedIndex === 2) {
+            // Back option selected
+            setStep('auth-method-selection');
+            setHighlightedIndex(0);
+          }
+        } else {
+          // Without existing key: Enter new (0), Back (1)
+          if (highlightedIndex === 0) {
+            setIsInputMode(true);
+          } else if (highlightedIndex === 1) {
+            // Back option selected
+            setStep('auth-method-selection');
+            setHighlightedIndex(0);
+          }
         }
         break;
+      }
 
       case 'api-key-management': {
         const actions: ManagementAction[] = [
@@ -642,9 +624,18 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             'to',
             newIndex,
           );
-          // If moving to index 0 and we're in api-key-input step, enable input mode
-          if (newIndex === 0 && step === 'api-key-input') {
-            setIsInputMode(true);
+          // Handle input mode for api-key-input step
+          if (step === 'api-key-input') {
+            const existingKey = getApiKey(provider);
+            if (existingKey) {
+              // With existing key: Use existing (0), Enter new (1), Back (2)
+              // Only enable input mode for index 1 (Enter new)
+              setIsInputMode(newIndex === 1);
+            } else {
+              // Without existing key: Enter new (0), Back (1)
+              // Enable input mode for index 0 (Enter new)
+              setIsInputMode(newIndex === 0);
+            }
           } else {
             setIsInputMode(false);
           }
@@ -666,7 +657,19 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
             maxIndex,
           );
           // If moving away from index 0 in api-key-input step, disable input mode
-          if (step === 'api-key-input' && newIndex !== 0) {
+          // Handle input mode for api-key-input step
+          if (step === 'api-key-input') {
+            const existingKey = getApiKey(provider);
+            if (existingKey) {
+              // With existing key: Use existing (0), Enter new (1), Back (2)
+              // Only enable input mode for index 1 (Enter new)
+              setIsInputMode(newIndex === 1);
+            } else {
+              // Without existing key: Enter new (0), Back (1)
+              // Enable input mode for index 0 (Enter new)
+              setIsInputMode(newIndex === 0);
+            }
+          } else {
             setIsInputMode(false);
           }
           return newIndex;
@@ -727,10 +730,17 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
 
   // Auto-focus input when entering api-key-input step
   useEffect(() => {
-    if (step === 'api-key-input' && highlightedIndex === 0) {
-      setIsInputMode(true);
+    if (step === 'api-key-input') {
+      const existingKey = getApiKey(provider);
+      if (existingKey) {
+        // With existing key: only enable input mode for index 1 (Enter new)
+        setIsInputMode(highlightedIndex === 1);
+      } else {
+        // Without existing key: enable input mode for index 0 (Enter new)
+        setIsInputMode(highlightedIndex === 0);
+      }
     }
-  }, [step, highlightedIndex]);
+  }, [step, highlightedIndex, provider]);
 
   // Don't render anything during auto-complete
   if (step === 'auto-complete') {
@@ -957,89 +967,158 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
         );
       }
 
-      case 'api-key-input':
+      case 'api-key-input': {
+        const existingKey = getApiKey(provider);
+        
         return (
           <Box flexDirection="column" width={width}>
-            <Text color={Colors.Gray}>
-              Enter your API key (typically 30-60 characters)
-            </Text>
-            <Text> </Text>
-
-            {validationError && (
+            {existingKey ? (
               <>
-                <Text color={Colors.AccentRed}>{validationError}</Text>
+                <Text color={Colors.Gray}>
+                  API key configuration for {getProviderDisplayName()}
+                </Text>
+                <Text> </Text>
+                <Text color={Colors.AccentGreen}>
+                  ✓ API key already configured: {existingKey.substring(0, 6)}...{existingKey.slice(-4)}
+                </Text>
+                <Text> </Text>
+                
+                {/* Use existing API key option */}
+                <Box paddingLeft={1}>
+                  <Text
+                    color={
+                      highlightedIndex === 0 ? Colors.AccentBlue : Colors.Foreground
+                    }
+                    bold={highlightedIndex === 0}
+                  >
+                    {highlightedIndex === 0 ? '> ' : '  '}Use Existing API Key
+                    <Text color={highlightedIndex === 0 ? Colors.Comment : Colors.Gray}>
+                      {' '}Continue with current configuration
+                    </Text>
+                  </Text>
+                </Box>
+                
+                {/* Enter new API key option */}
+                <Box paddingLeft={1}>
+                  <Text
+                    color={
+                      highlightedIndex === 1 ? Colors.AccentBlue : Colors.Foreground
+                    }
+                    bold={highlightedIndex === 1}
+                  >
+                    {highlightedIndex === 1 ? '> ' : '  '}Enter New API Key
+                    <Text color={highlightedIndex === 1 ? Colors.Comment : Colors.Gray}>
+                      {' '}Replace with a different key
+                    </Text>
+                  </Text>
+                </Box>
+                
+                {/* Back option */}
+                <Box paddingLeft={1}>
+                  <Text
+                    color={
+                      highlightedIndex === 2 ? Colors.AccentBlue : Colors.Foreground
+                    }
+                    bold={highlightedIndex === 2}
+                  >
+                    {highlightedIndex === 2 ? '> ' : '  '}← Back
+                  </Text>
+                </Box>
+              </>
+            ) : (
+              <>
+                <Text color={Colors.Gray}>
+                  Enter your API key (typically 30-60 characters)
+                </Text>
+                <Text> </Text>
+
+                {validationError && (
+                  <>
+                    <Text color={Colors.AccentRed}>{validationError}</Text>
+                    <Text> </Text>
+                  </>
+                )}
+
+                <Text bold>How to get your API key:</Text>
+                {getApiKeyInstructions().map((instruction, index) => (
+                  <Text key={index} color={Colors.Gray}>
+                    {instruction}
+                  </Text>
+                ))}
+                <Text> </Text>
+
+                {/* Enter API Key option */}
+                <Box paddingLeft={1}>
+                  <Text
+                    color={
+                      highlightedIndex === 0 ? Colors.AccentBlue : Colors.Foreground
+                    }
+                    bold={highlightedIndex === 0}
+                  >
+                    {highlightedIndex === 0 ? '> ' : '  '}Enter API Key:
+                  </Text>
+                </Box>
+              </>
+            )}
+            
+            {/* Show input box when in input mode (new key entry) */}
+            {((!existingKey && highlightedIndex === 0) || (existingKey && highlightedIndex === 1)) && isInputMode && (
+              <>
+                {/* Input box - always visible, active when selected and in input mode */}
+                <Box paddingLeft={1} paddingRight={1}>
+                  <Box
+                    borderStyle="single"
+                    borderColor={
+                      highlightedIndex === 0 && !isInputMode
+                        ? Colors.AccentBlue
+                        : isInputMode
+                          ? Colors.AccentBlue
+                          : Colors.Gray
+                    }
+                    paddingX={1}
+                    paddingY={0}
+                    width={width - 4}
+                  >
+                    {isInputMode ? (
+                      apiKey.length > 0 ? (
+                        <>
+                          <Text wrap="wrap" color={Colors.AccentYellow}>
+                            {apiKey.replace(/./g, '*')}
+                          </Text>
+                          <Text color={Colors.AccentBlue}>█</Text>
+                        </>
+                      ) : (
+                        <>
+                          <Text color={Colors.AccentBlue}>█</Text>
+                          <Text color={Colors.Gray}>
+                            Paste your API key here...
+                          </Text>
+                        </>
+                      )
+                    ) : (
+                      <Text color={Colors.Gray}>Paste your API key here...</Text>
+                    )}
+                  </Box>
+                </Box>
+
                 <Text> </Text>
               </>
             )}
-
-            <Text bold>How to get your API key:</Text>
-            {getApiKeyInstructions().map((instruction, index) => (
-              <Text key={index} color={Colors.Gray}>
-                {instruction}
-              </Text>
-            ))}
-            <Text> </Text>
-
-            {/* Enter API Key option */}
-            <Box paddingLeft={1}>
-              <Text
-                color={
-                  highlightedIndex === 0 ? Colors.AccentBlue : Colors.Foreground
-                }
-                bold={highlightedIndex === 0}
-              >
-                {highlightedIndex === 0 ? '> ' : '  '}Enter API Key:
-              </Text>
-            </Box>
-
-            {/* Input box - always visible, active when selected and in input mode */}
-            <Box paddingLeft={1} paddingRight={1}>
-              <Box
-                borderStyle="single"
-                borderColor={
-                  highlightedIndex === 0 && !isInputMode
-                    ? Colors.AccentBlue
-                    : isInputMode
-                      ? Colors.AccentBlue
-                      : Colors.Gray
-                }
-                paddingX={1}
-                paddingY={0}
-                width={width - 4}
-              >
-                {isInputMode ? (
-                  apiKey.length > 0 ? (
-                    <>
-                      <Text wrap="wrap" color={Colors.AccentYellow}>
-                        {apiKey.replace(/./g, '*')}
-                      </Text>
-                      <Text color={Colors.AccentBlue}>█</Text>
-                    </>
-                  ) : (
-                    <>
-                      <Text color={Colors.AccentBlue}>█</Text>
-                      <Text color={Colors.Gray}>
-                        Paste your API key here...
-                      </Text>
-                    </>
-                  )
-                ) : (
-                  <Text color={Colors.Gray}>Paste your API key here...</Text>
-                )}
+            
+            {/* Show back option when no existing key */}
+            {!existingKey && (
+              <Box paddingLeft={1}>
+                <Text
+                  color={highlightedIndex === 1 ? Colors.AccentBlue : Colors.Gray}
+                  bold={highlightedIndex === 1}
+                >
+                  {highlightedIndex === 1 ? '> ' : '  '}← Back
+                </Text>
               </Box>
-            </Box>
-
-            {/* Back option - directly after input box */}
-            <Box paddingLeft={1}>
-              <Text
-                color={highlightedIndex === 1 ? Colors.AccentBlue : Colors.Gray}
-                bold={highlightedIndex === 1}
-              >
-                {highlightedIndex === 1 ? '> ' : '  '}← Back
-              </Text>
-            </Box>
+            )}
           </Box>
         );
+      }
 
       case 'api-key-validation':
         return (

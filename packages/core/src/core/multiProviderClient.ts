@@ -50,11 +50,6 @@ export class MultiProviderClient {
       return ProviderType.OPENAI;
     }
 
-    // Anthropic models
-    if (modelLower.includes('claude') || modelLower.includes('anthropic')) {
-      return ProviderType.ANTHROPIC;
-    }
-
     // Gemini models
     if (modelLower.includes('gemini')) {
       return ProviderType.GEMINI;
@@ -69,28 +64,60 @@ export class MultiProviderClient {
       return ProviderType.MISTRAL;
     }
 
-    // Ollama models (expanded to include qwen, deepseek)
+    // Ollama models (comprehensive pattern matching)
     if (
       modelLower.includes('llama') ||
       modelLower.includes('codellama') ||
       modelLower.includes('ollama') ||
       modelLower.includes('qwen') ||
       modelLower.includes('deepseek') ||
-      modelLower.includes(':')
+      modelLower.includes('phi') ||
+      modelLower.includes('mistral') ||
+      modelLower.includes('gemma') ||
+      modelLower.includes('vicuna') ||
+      modelLower.includes('alpaca') ||
+      modelLower.includes('orca') ||
+      modelLower.includes('nous') ||
+      modelLower.includes('yi') ||
+      modelLower.includes('solar') ||
+      modelLower.includes('dolphin') ||
+      modelLower.includes('mixtral') ||
+      modelLower.includes('openchat') ||
+      modelLower.includes('starling') ||
+      modelLower.includes('neural') ||
+      modelLower.includes('tinyllama') ||
+      modelLower.includes('wizard') ||
+      modelLower.includes('zephyr') ||
+      modelLower.includes('stable') ||
+      modelLower.includes('falcon') ||
+      modelLower.includes('mpt') ||
+      modelLower.includes('redpajama') ||
+      modelLower.includes('ggml') ||
+      modelLower.includes('gguf') ||
+      modelLower.includes(':') // Ollama tag format (model:tag)
     ) {
       return ProviderType.OLLAMA;
     }
 
-    // HuggingFace models (models with / or specific prefixes)
-    if (
-      modelLower.includes('huggingface') ||
-      modelLower.includes('hf') ||
-      model.includes('/') ||
-      modelLower.startsWith('meta-') ||
-      modelLower.startsWith('microsoft/')
-    ) {
-      return ProviderType.HUGGINGFACE;
+    // LM Studio models
+    if (modelLower.includes('lmstudio') || modelLower.includes('local-model')) {
+      return ProviderType.LMSTUDIO;
     }
+
+    // OpenRouter models (prefixed routing patterns)
+    if (
+      modelLower.includes('openrouter') ||
+      modelLower.startsWith('anthropic/') ||
+      modelLower.startsWith('openai/') ||
+      modelLower.startsWith('google/') ||
+      modelLower.startsWith('meta-llama/') ||
+      modelLower.startsWith('mistralai/') ||
+      modelLower.startsWith('nous-hermes') ||
+      modelLower.startsWith('phind/')
+    ) {
+      return ProviderType.OPENROUTER;
+    }
+
 
     // For unknown models, default to Ollama with a helpful message
     console.log(
@@ -111,20 +138,18 @@ export class MultiProviderClient {
       case ProviderType.OPENAI:
         apiKey = process.env.OPENAI_API_KEY;
         break;
-      case ProviderType.ANTHROPIC:
-        apiKey = process.env.ANTHROPIC_API_KEY;
-        break;
       case ProviderType.GEMINI:
         apiKey = process.env.GEMINI_API_KEY;
         break;
       case ProviderType.MISTRAL:
         apiKey = process.env.MISTRAL_API_KEY;
         break;
-      case ProviderType.HUGGINGFACE:
-        apiKey = process.env.HUGGINGFACE_API_KEY;
+      case ProviderType.OPENROUTER:
+        apiKey = process.env.OPENROUTER_API_KEY;
         break;
       case ProviderType.OLLAMA:
-        return undefined; // Local provider, no API key needed
+      case ProviderType.LMSTUDIO:
+        return undefined; // Local providers, no API key needed
       default:
         return undefined;
     }
@@ -317,14 +342,12 @@ export class MultiProviderClient {
     switch (providerType) {
       case ProviderType.OPENAI:
         return 'OPENAI_API_KEY';
-      case ProviderType.ANTHROPIC:
-        return 'ANTHROPIC_API_KEY';
       case ProviderType.GEMINI:
         return 'GEMINI_API_KEY';
       case ProviderType.MISTRAL:
         return 'MISTRAL_API_KEY';
-      case ProviderType.HUGGINGFACE:
-        return 'HUGGINGFACE_API_KEY';
+      case ProviderType.OPENROUTER:
+        return 'OPENROUTER_API_KEY';
       case ProviderType.OLLAMA:
         return 'OLLAMA_BASE_URL';
       default:
@@ -359,15 +382,86 @@ export class MultiProviderContentGeneratorWrapper implements ContentGenerator {
   constructor(config: ContentGeneratorConfig) {
     this.config = config;
     this.client = new MultiProviderClient({} as Config); // We don't need full Config for this wrapper
-    // Pre-initialize if we have API key to avoid provider mismatch
+    
+    // Set API key in environment if provided in config
     if (config.apiKey) {
+      const providerType = this.getProviderTypeFromModel(config.model);
+      const envVar = this.getEnvVarForProvider(providerType);
+      if (envVar && !process.env[envVar]) {
+        process.env[envVar] = config.apiKey;
+      }
       this.client.initialize(config.model).catch(console.error);
     }
+  }
+  
+  private getProviderTypeFromModel(model: string): ProviderType {
+    const modelLower = model.toLowerCase();
+
+    // OpenAI models
+    if (
+      modelLower.includes('gpt') ||
+      modelLower.includes('openai') ||
+      modelLower.startsWith('o3') ||
+      modelLower.startsWith('o4')
+    ) {
+      return ProviderType.OPENAI;
+    }
+
+    // Gemini models
+    if (modelLower.includes('gemini')) {
+      return ProviderType.GEMINI;
+    }
+
+    // Mistral models
+    if (
+      modelLower.includes('mistral') ||
+      modelLower.includes('codestral') ||
+      modelLower.includes('devstral')
+    ) {
+      return ProviderType.MISTRAL;
+    }
+
+    // OpenRouter models
+    if (modelLower.includes('openrouter') || modelLower.includes('OR/')) {
+      return ProviderType.OPENROUTER;
+    }
+
+    // Ollama models
+    if (modelLower.includes('ollama') || modelLower.includes('llama')) {
+      return ProviderType.OLLAMA;
+    }
+
+    // LMStudio models
+    if (modelLower.includes('lmstudio')) {
+      return ProviderType.LMSTUDIO;
+    }
+
+    // Default to Gemini for unknown models
+    return ProviderType.GEMINI;
+  }
+  
+  private getEnvVarForProvider(providerType: ProviderType): string | undefined {
+    const envVarMap: { [key: string]: string } = {
+      [ProviderType.OPENAI]: 'OPENAI_API_KEY',
+      [ProviderType.GEMINI]: 'GEMINI_API_KEY',
+      [ProviderType.MISTRAL]: 'MISTRAL_API_KEY',
+      [ProviderType.OPENROUTER]: 'OPENROUTER_API_KEY',
+    };
+    return envVarMap[providerType];
   }
 
   async generateContent(
     request: GenerateContentParameters,
   ): Promise<GenerateContentResponse> {
+    // Ensure API key is set in environment before initialization
+    if (this.config.apiKey) {
+      const providerType = this.getProviderTypeFromModel(this.config.model);
+      const envVar = this.getEnvVarForProvider(providerType);
+      if (envVar && !process.env[envVar]) {
+        process.env[envVar] = this.config.apiKey;
+      }
+    }
+    
     await this.client.initialize(this.config.model);
 
     // Convert contents to proper Content[] format
@@ -385,6 +479,15 @@ export class MultiProviderContentGeneratorWrapper implements ContentGenerator {
   async generateContentStream(
     request: GenerateContentParameters,
   ): Promise<AsyncGenerator<GenerateContentResponse>> {
+    // Ensure API key is set in environment before initialization
+    if (this.config.apiKey) {
+      const providerType = this.getProviderTypeFromModel(this.config.model);
+      const envVar = this.getEnvVarForProvider(providerType);
+      if (envVar && !process.env[envVar]) {
+        process.env[envVar] = this.config.apiKey;
+      }
+    }
+    
     await this.client.initialize(this.config.model);
 
     // Convert contents to proper Content[] format

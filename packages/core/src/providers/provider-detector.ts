@@ -48,12 +48,12 @@ export async function detectLocalProviders(): Promise<DetectedProvider[]> {
     });
   }
 
-  // Detect vLLM (default port: 8000)
+  // Detect LM Studio (default port: 1234)
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-    const response = await fetch('http://localhost:8000/v1/models', {
+    const response = await fetch('http://localhost:1234/v1/models', {
       method: 'GET',
       signal: controller.signal,
     });
@@ -61,15 +61,15 @@ export async function detectLocalProviders(): Promise<DetectedProvider[]> {
     clearTimeout(timeoutId);
     if (response.ok) {
       providers.push({
-        type: ProviderType.VLLM,
+        type: ProviderType.LMSTUDIO,
         available: true,
-        defaultModel: 'local-model',
+        defaultModel: 'loaded-model',
         reason: 'Running',
       });
     }
   } catch {
     providers.push({
-      type: ProviderType.VLLM,
+      type: ProviderType.LMSTUDIO,
       available: false,
       reason: 'Not running',
     });
@@ -94,15 +94,6 @@ export function detectCloudProviders(): DetectedProvider[] {
       : 'API key required',
   });
 
-  // Anthropic
-  providers.push({
-    type: ProviderType.ANTHROPIC,
-    available: !!process.env.ANTHROPIC_API_KEY,
-    defaultModel: 'claude-3-5-sonnet-20241022',
-    reason: process.env.ANTHROPIC_API_KEY
-      ? 'API key configured'
-      : 'API key required',
-  });
 
   // Gemini
   providers.push({
@@ -113,6 +104,26 @@ export function detectCloudProviders(): DetectedProvider[] {
       process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY
         ? 'API key configured'
         : 'API key required',
+  });
+
+  // Mistral
+  providers.push({
+    type: ProviderType.MISTRAL,
+    available: !!process.env.MISTRAL_API_KEY,
+    defaultModel: 'mistral-large-24.11',
+    reason: process.env.MISTRAL_API_KEY
+      ? 'API key configured'
+      : 'API key required',
+  });
+
+  // OpenRouter
+  providers.push({
+    type: ProviderType.OPENROUTER,
+    available: !!process.env.OPENROUTER_API_KEY,
+    defaultModel: 'anthropic/claude-3.5-sonnet',
+    reason: process.env.OPENROUTER_API_KEY
+      ? 'API key configured'
+      : 'API key required',
   });
 
   return providers;

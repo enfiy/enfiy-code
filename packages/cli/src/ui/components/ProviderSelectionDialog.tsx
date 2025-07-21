@@ -112,10 +112,7 @@ export const ProviderSelectionDialog: React.FC<
           return true; // Connection failed, needs setup
         }
       }
-      if (provider === ProviderType.HUGGINGFACE) {
-        // For local HuggingFace, check if local server is configured
-        return true; // Needs setup - show configuration guide
-      }
+      // No other local providers currently supported
       // Other local providers need actual availability check
       return true; // Default to needs setup for unimplemented local providers
     } else {
@@ -580,9 +577,6 @@ export const ProviderSelectionDialog: React.FC<
                 {t('noModelsAvailable')} {selectedProvider}.
                 {(() => {
                   if (selectedCategory === 'local') {
-                    if (selectedProvider === ProviderType.HUGGINGFACE) {
-                      return ' Please verify that HuggingFace local models are configured properly.';
-                    }
                     return ` ${t('installModels')}`;
                   }
                   return ` ${t('checkApiKey')}`;

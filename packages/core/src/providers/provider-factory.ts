@@ -8,10 +8,9 @@ import { Provider, ProviderType, ProviderConfig } from './types.js';
 import { GeminiProvider } from './gemini-provider.js';
 import { OllamaProvider } from './ollama-provider.js';
 import { OpenAIProvider } from './openai-provider.js';
-import { AnthropicProvider } from './anthropic-provider.js';
 import { MistralProvider } from './mistral-provider.js';
-import { HuggingFaceProvider } from './huggingface-provider.js';
 import { OpenRouterProvider } from './openrouter-provider.js';
+import { LMStudioProvider } from './lmstudio-provider.js';
 
 export class ProviderFactory {
   static createProvider(type: ProviderType): Provider {
@@ -19,16 +18,14 @@ export class ProviderFactory {
       // Local Providers
       case ProviderType.OLLAMA:
         return new OllamaProvider();
-      case ProviderType.HUGGINGFACE:
-        return new HuggingFaceProvider();
+      case ProviderType.LMSTUDIO:
+        return new LMStudioProvider();
 
       // Cloud Providers
       case ProviderType.GEMINI:
         return new GeminiProvider();
       case ProviderType.OPENAI:
         return new OpenAIProvider();
-      case ProviderType.ANTHROPIC:
-        return new AnthropicProvider();
       case ProviderType.MISTRAL:
         return new MistralProvider();
       case ProviderType.OPENROUTER:
@@ -45,12 +42,11 @@ export class ProviderFactory {
     const providers = [
       // Local Providers
       { type: ProviderType.OLLAMA, name: 'Ollama (Local)' },
-      { type: ProviderType.HUGGINGFACE, name: 'HuggingFace (Local)' },
+      { type: ProviderType.LMSTUDIO, name: 'LM Studio (Local)' },
 
       // Cloud Providers
       { type: ProviderType.GEMINI, name: 'Google Gemini' },
       { type: ProviderType.OPENAI, name: 'OpenAI' },
-      { type: ProviderType.ANTHROPIC, name: 'Anthropic Claude' },
       { type: ProviderType.MISTRAL, name: 'Mistral AI' },
       { type: ProviderType.OPENROUTER, name: 'OpenRouter' },
     ];
@@ -123,10 +119,9 @@ export class ProviderFactory {
   static getImplementedProviderTypes(): ProviderType[] {
     return [
       ProviderType.OLLAMA,
-      ProviderType.HUGGINGFACE,
+      ProviderType.LMSTUDIO,
       ProviderType.GEMINI,
       ProviderType.OPENAI,
-      ProviderType.ANTHROPIC,
       ProviderType.MISTRAL,
       ProviderType.OPENROUTER,
     ];
@@ -136,7 +131,10 @@ export class ProviderFactory {
    * Get local provider types
    */
   static getLocalProviderTypes(): ProviderType[] {
-    return [ProviderType.OLLAMA, ProviderType.HUGGINGFACE];
+    return [
+      ProviderType.OLLAMA, 
+      ProviderType.LMSTUDIO,
+    ];
   }
 
   /**
@@ -145,7 +143,6 @@ export class ProviderFactory {
   static getCloudProviderTypes(): ProviderType[] {
     return [
       ProviderType.OPENAI,
-      ProviderType.ANTHROPIC,
       ProviderType.GEMINI,
       ProviderType.MISTRAL,
       ProviderType.OPENROUTER,

@@ -48,6 +48,7 @@ export const HistoryItemDisplay: React.FC<HistoryItemDisplayProps> = ({
         availableTerminalHeight={availableTerminalHeight}
         terminalWidth={terminalWidth}
         model={item.model}
+        config={config}
       />
     )}
     {item.type === 'enfiy_content' && (
