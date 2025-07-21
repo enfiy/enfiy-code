@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,18 +26,18 @@ jobs:
           npm update
           npm audit fix --force
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'chore: update dependencies'
-          title: 'chore: weekly dependency update'
-          body: |
-            This PR updates dependencies to their latest versions.
+      - name: Check for changes and commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "chore: update dependencies
 
             - Updated npm dependencies
-            - Fixed security vulnerabilities
-
-            Please review the changes before merging.
-          branch: deps/update-dependencies
-          delete-branch: true
+            - Fixed security vulnerabilities"
+            git push
+            echo "Dependencies updated and committed"
+          else
+            echo "No dependency updates needed"
+          fi
