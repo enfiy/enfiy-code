@@ -834,16 +834,6 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       capabilities: ['chat', 'code', 'vision', 'reasoning', 'complex'],
     },
     {
-      id: 'openai/gpt-4',
-      name: 'GPT-4',
-      provider: ProviderType.OPENROUTER,
-      category: 'cloud',
-      description: 'Original GPT-4 model via OpenRouter',
-      contextLength: 8192,
-      pricing: { input: 30, output: 60, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'complex'],
-    },
-    {
       id: 'openai/gpt-3.5-turbo',
       name: 'GPT-3.5 Turbo',
       provider: ProviderType.OPENROUTER,

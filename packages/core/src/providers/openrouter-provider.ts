@@ -133,7 +133,6 @@ export class OpenRouterProvider extends BaseProvider {
 
       // GPT models
       'openai/gpt-4-turbo',
-      'openai/gpt-4',
       'openai/gpt-3.5-turbo',
       'openai/gpt-3.5-turbo-16k',
 

@@ -16,7 +16,7 @@ export const DEFAULT_GEMINI_MODEL = 'gemini-2.5-pro';
 export const DEFAULT_GEMINI_FLASH_MODEL = 'gemini-2.5-flash';
 export const DEFAULT_GEMINI_EMBEDDING_MODEL = 'gemini-embedding-001';
 
-export const DEFAULT_OPENAI_MODEL = 'gpt-4o';
+export const DEFAULT_OPENAI_MODEL = 'gpt-4o'; // Using GPT-4o instead of deprecated GPT-4
 export const DEFAULT_ANTHROPIC_MODEL = 'claude-3-5-sonnet-20241022';
 export const DEFAULT_MISTRAL_MODEL = 'mistral-large-24.11';
 export const DEFAULT_HUGGINGFACE_MODEL =

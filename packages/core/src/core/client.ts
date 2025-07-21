@@ -64,6 +64,19 @@ function formatModelNameForGemini(modelName: string): string {
   return modelName;
 }
 
+/**
+ * Gets the correct model name for the current provider
+ */
+function getModelForProvider(config: Config, modelName: string): string {
+  const provider = config.getSelectedProvider();
+  // Only apply Gemini formatting for Gemini provider
+  if (provider === 'gemini') {
+    return formatModelNameForGemini(modelName);
+  }
+  // Return original model name for all other providers (Anthropic, OpenAI, etc.)
+  return modelName;
+}
+
 function isThinkingSupported(model: string) {
   if (model.startsWith('gemini-2.5')) return true;
   return false;
@@ -159,6 +172,7 @@ export class EnfiyClient {
     const platform = process.platform;
     const folderStructure = await getFolderStructure(cwd, {
       fileService: this.config.getFileService(),
+      maxItems: 200, // Restored to full context - Anthropic issue resolved
     });
     const context = `
   This is the Enfiy Code. We are setting up the context for our chat.
@@ -392,7 +406,7 @@ export class EnfiyClient {
     generationConfig: GenerateContentConfig,
     abortSignal: AbortSignal,
   ): Promise<GenerateContentResponse> {
-    const modelToUse = formatModelNameForGemini(this.config.getModel());
+    const modelToUse = getModelForProvider(this.config, this.config.getModel());
     const configToUse: GenerateContentConfig = {
       ...this.generateContentConfig,
       ...generationConfig,
@@ -487,7 +501,7 @@ export class EnfiyClient {
     }
 
     const currentModel = this.config.getModel(); // Always get current model from config
-    const formattedModel = formatModelNameForGemini(currentModel);
+    const formattedModel = getModelForProvider(this.config, currentModel);
     console.log('[CLIENT] CountTokens with model:', {
       original: currentModel,
       formatted: formattedModel,
@@ -542,7 +556,7 @@ export class EnfiyClient {
     ];
     this.chat = await this.startChat(newHistory);
     const currentModelForNew = this.config.getModel(); // Always get current model from config
-    const formattedModelForNew = formatModelNameForGemini(currentModelForNew);
+    const formattedModelForNew = getModelForProvider(this.config, currentModelForNew);
     console.log('[CLIENT] CountTokens for new history with model:', {
       original: currentModelForNew,
       formatted: formattedModelForNew,

@@ -142,7 +142,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
           {
             id: 'api-key',
             name: 'API Key',
-            description: 'Use Anthropic API key from console.anthropic.com',
+            description: 'Use API key from Anthropic console',
           },
         ];
       default:
@@ -625,16 +625,20 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
 
             {authMethods.map((method, index) => (
               <Box key={method.id} paddingLeft={1}>
-                <Text
-                  color={
-                    index === highlightedIndex
-                      ? Colors.AccentBlue
-                      : Colors.Foreground
-                  }
-                  bold={index === highlightedIndex}
-                >
-                  {index === highlightedIndex ? '> ' : '  '}
-                  {method.name.padEnd(16)}
+                <Box width={35}>
+                  <Text
+                    color={
+                      index === highlightedIndex
+                        ? Colors.AccentBlue
+                        : Colors.Foreground
+                    }
+                    bold={index === highlightedIndex}
+                  >
+                    {index === highlightedIndex ? '> ' : '  '}
+                    {method.name}
+                  </Text>
+                </Box>
+                <Box flexGrow={1}>
                   <Text
                     color={
                       index === highlightedIndex ? Colors.Comment : Colors.Gray
@@ -642,7 +646,7 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
                   >
                     {method.description}
                   </Text>
-                </Text>
+                </Box>
               </Box>
             ))}
 

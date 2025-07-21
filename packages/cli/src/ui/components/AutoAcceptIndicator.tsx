@@ -27,7 +27,7 @@ export const AutoAcceptIndicator: React.FC<AutoAcceptIndicatorProps> = ({
       subText = ' (shift + tab to toggle)';
       break;
     case ApprovalMode.AUTO:
-      textColor = Colors.AccentRed;
+      textColor = Colors.AccentYellow;
       textContent = 'AUTO mode';
       subText = ' (ctrl + y to toggle)';
       break;

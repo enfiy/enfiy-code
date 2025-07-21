@@ -57,7 +57,7 @@ export const Footer: React.FC<FooterProps> = ({
   totalTokenCount,
   isSlashCommand = false,
   selectedProvider,
-  approvalMode,
+  approvalMode: _approvalMode,
 }) => {
   const limit = tokenLimit(model);
   const percentage = totalTokenCount / limit;
@@ -279,13 +279,6 @@ export const Footer: React.FC<FooterProps> = ({
               </>
             )}
           </Box>
-
-          {/* Auto-approval mode indicator */}
-          {approvalMode === ApprovalMode.AUTO && (
-            <Box alignItems="center" marginTop={0}>
-              <Text color={Colors.AccentGreen}>Mode : auto</Text>
-            </Box>
-          )}
         </Box>
       )}
     </Box>

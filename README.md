@@ -11,6 +11,10 @@
 
 </div>
 
+## Screenshot
+
+![Enfiy Code Screenshot](./docs/assets/enfiy-cli-screenshot.png)
+
 ## Quickstart
 
 Ensure you have [Node.js v18 or higher](https://nodejs.org/en/download) installed.

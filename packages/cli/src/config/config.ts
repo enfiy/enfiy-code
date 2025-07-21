@@ -148,7 +148,7 @@ async function parseArguments(): Promise<CliArgs> {
     .help()
     .alias('h', 'help')
     .example('$0', 'Start interactive mode')
-    .example('$0 -m "gpt-4"', 'Use specific model')
+    .example('$0 -m "gpt-4o"', 'Use specific model')
     .example('$0 -p "Review my code"', 'Start with a prompt')
     .example('$0 --auto', 'Auto-approve all actions')
     .epilog('For more information, visit: https://github.com/enfiy/enfiy-code')

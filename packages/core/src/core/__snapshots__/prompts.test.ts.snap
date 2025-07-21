@@ -82,7 +82,7 @@ When requested to perform tasks like fixing bugs, adding features, refactoring, 
 - **Security First:** Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
 
 ## Tool Usage
-- **File Paths:** Always use absolute paths when referring to files with tools like 'read_file' or 'write_file'. Relative paths are not supported. You must provide an absolute path.
+- **File Paths:** Use absolute paths when referring to files with tools like 'read_file' or 'write_file'. You can also use relative paths, which will be resolved relative to the current working directory provided in the context.
 - **Parallelism:** Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
 - **Command Execution:** Use the 'run_shell_command' tool for running shell commands, remembering the safety rule to explain modifying commands first.
 - **Background Processes:** Use background processes (via \`&\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &\`. If unsure, ask the user.
@@ -284,7 +284,7 @@ When requested to perform tasks like fixing bugs, adding features, refactoring, 
 - **Security First:** Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
 
 ## Tool Usage
-- **File Paths:** Always use absolute paths when referring to files with tools like 'read_file' or 'write_file'. Relative paths are not supported. You must provide an absolute path.
+- **File Paths:** Use absolute paths when referring to files with tools like 'read_file' or 'write_file'. You can also use relative paths, which will be resolved relative to the current working directory provided in the context.
 - **Parallelism:** Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
 - **Command Execution:** Use the 'run_shell_command' tool for running shell commands, remembering the safety rule to explain modifying commands first.
 - **Background Processes:** Use background processes (via \`&\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &\`. If unsure, ask the user.
@@ -312,10 +312,26 @@ You are running outside of a sandbox container, directly on the user's system. F
 - Combine shell commands whenever possible to save time/steps, e.g. \`git status && git diff HEAD && git log -n 3\`.
 - Always propose a draft commit message. Never just ask the user to give you the full commit message.
 - Prefer commit messages that are clear, concise, and focused more on "why" and less on "what".
+- Use the following default commit message format: "
+
+🤖 Generated with [Enfiy Code](https://enfiy.com)
+
+Co-authored-by: enfiy-ai <enfiy-ai@users.noreply.github.com>"
 - Keep the user informed and ask for clarification or confirmation where needed.
 - After each commit, confirm that it was successful by running \`git status\`.
 - If a commit fails, never attempt to work around the issues without being asked to do so.
 - Never push changes to a remote repository without being asked explicitly by the user.
+
+## Natural Language Git Operations
+- Recognize natural language requests for git operations and respond appropriately:
+  - When user says "commit this" or "create a commit", follow the commit workflow above
+  - When user says "push" or "push this" or "push to remote", use \`git push\` after ensuring changes are committed
+  - When user says "add these files" or "stage this", use \`git add\` appropriately
+  - When user asks to "show changes" or "what changed", use \`git diff\` or \`git status\`
+  - When user asks for "git status" or "repository status", use \`git status\`
+  - For push operations, add a co-authored-by trailer: \`Co-authored-by: enfiy-ai <enfiy-ai@users.noreply.github.com>\`
+- Always explain what git command you're running and why before executing it
+- For push operations, ensure all changes are committed first before pushing
 
 
 # Examples (Illustrating Tone and Workflow)
@@ -496,7 +512,7 @@ When requested to perform tasks like fixing bugs, adding features, refactoring, 
 - **Security First:** Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
 
 ## Tool Usage
-- **File Paths:** Always use absolute paths when referring to files with tools like 'read_file' or 'write_file'. Relative paths are not supported. You must provide an absolute path.
+- **File Paths:** Use absolute paths when referring to files with tools like 'read_file' or 'write_file'. You can also use relative paths, which will be resolved relative to the current working directory provided in the context.
 - **Parallelism:** Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
 - **Command Execution:** Use the 'run_shell_command' tool for running shell commands, remembering the safety rule to explain modifying commands first.
 - **Background Processes:** Use background processes (via \`&\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &\`. If unsure, ask the user.
@@ -693,7 +709,7 @@ When requested to perform tasks like fixing bugs, adding features, refactoring, 
 - **Security First:** Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
 
 ## Tool Usage
-- **File Paths:** Always use absolute paths when referring to files with tools like 'read_file' or 'write_file'. Relative paths are not supported. You must provide an absolute path.
+- **File Paths:** Use absolute paths when referring to files with tools like 'read_file' or 'write_file'. You can also use relative paths, which will be resolved relative to the current working directory provided in the context.
 - **Parallelism:** Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
 - **Command Execution:** Use the 'run_shell_command' tool for running shell commands, remembering the safety rule to explain modifying commands first.
 - **Background Processes:** Use background processes (via \`&\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &\`. If unsure, ask the user.
@@ -890,7 +906,7 @@ When requested to perform tasks like fixing bugs, adding features, refactoring, 
 - **Security First:** Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
 
 ## Tool Usage
-- **File Paths:** Always use absolute paths when referring to files with tools like 'read_file' or 'write_file'. Relative paths are not supported. You must provide an absolute path.
+- **File Paths:** Use absolute paths when referring to files with tools like 'read_file' or 'write_file'. You can also use relative paths, which will be resolved relative to the current working directory provided in the context.
 - **Parallelism:** Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
 - **Command Execution:** Use the 'run_shell_command' tool for running shell commands, remembering the safety rule to explain modifying commands first.
 - **Background Processes:** Use background processes (via \`&\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &\`. If unsure, ask the user.
@@ -1087,7 +1103,7 @@ When requested to perform tasks like fixing bugs, adding features, refactoring, 
 - **Security First:** Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
 
 ## Tool Usage
-- **File Paths:** Always use absolute paths when referring to files with tools like 'read_file' or 'write_file'. Relative paths are not supported. You must provide an absolute path.
+- **File Paths:** Use absolute paths when referring to files with tools like 'read_file' or 'write_file'. You can also use relative paths, which will be resolved relative to the current working directory provided in the context.
 - **Parallelism:** Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
 - **Command Execution:** Use the 'run_shell_command' tool for running shell commands, remembering the safety rule to explain modifying commands first.
 - **Background Processes:** Use background processes (via \`&\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &\`. If unsure, ask the user.
@@ -1284,7 +1300,7 @@ When requested to perform tasks like fixing bugs, adding features, refactoring, 
 - **Security First:** Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
 
 ## Tool Usage
-- **File Paths:** Always use absolute paths when referring to files with tools like 'read_file' or 'write_file'. Relative paths are not supported. You must provide an absolute path.
+- **File Paths:** Use absolute paths when referring to files with tools like 'read_file' or 'write_file'. You can also use relative paths, which will be resolved relative to the current working directory provided in the context.
 - **Parallelism:** Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
 - **Command Execution:** Use the 'run_shell_command' tool for running shell commands, remembering the safety rule to explain modifying commands first.
 - **Background Processes:** Use background processes (via \`&\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &\`. If unsure, ask the user.
@@ -1481,7 +1497,7 @@ When requested to perform tasks like fixing bugs, adding features, refactoring, 
 - **Security First:** Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
 
 ## Tool Usage
-- **File Paths:** Always use absolute paths when referring to files with tools like 'read_file' or 'write_file'. Relative paths are not supported. You must provide an absolute path.
+- **File Paths:** Use absolute paths when referring to files with tools like 'read_file' or 'write_file'. You can also use relative paths, which will be resolved relative to the current working directory provided in the context.
 - **Parallelism:** Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
 - **Command Execution:** Use the 'run_shell_command' tool for running shell commands, remembering the safety rule to explain modifying commands first.
 - **Background Processes:** Use background processes (via \`&\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &\`. If unsure, ask the user.
@@ -1678,7 +1694,7 @@ When requested to perform tasks like fixing bugs, adding features, refactoring, 
 - **Security First:** Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
 
 ## Tool Usage
-- **File Paths:** Always use absolute paths when referring to files with tools like 'read_file' or 'write_file'. Relative paths are not supported. You must provide an absolute path.
+- **File Paths:** Use absolute paths when referring to files with tools like 'read_file' or 'write_file'. You can also use relative paths, which will be resolved relative to the current working directory provided in the context.
 - **Parallelism:** Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
 - **Command Execution:** Use the 'run_shell_command' tool for running shell commands, remembering the safety rule to explain modifying commands first.
 - **Background Processes:** Use background processes (via \`&\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &\`. If unsure, ask the user.

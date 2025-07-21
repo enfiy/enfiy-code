@@ -213,15 +213,6 @@ export class ModelManager {
           isAvailable: true,
         },
         {
-          name: 'gpt-4',
-          description: 'OpenAI GPT-4 - Reliable high performance',
-          provider: 'openai',
-          capabilities: ['code', 'reasoning'],
-          costTier: 'high',
-          contextLength: 128000,
-          isAvailable: true,
-        },
-        {
           name: 'o3-mini',
           description: 'OpenAI o3-mini - Advanced reasoning model',
           provider: 'openai',

@@ -405,5 +405,115 @@
         "sizeFormatted": "0.97MB"
       }
     }
+  },
+  {
+    "timestamp": "2025-07-21T20:22:32.397Z",
+    "totalSize": 1016525,
+    "totalSizeFormatted": "0.97MB",
+    "files": {
+      "enfiy.js": {
+        "size": 1016525,
+        "sizeFormatted": "0.97MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-21T20:25:46.532Z",
+    "totalSize": 1016403,
+    "totalSizeFormatted": "0.97MB",
+    "files": {
+      "enfiy.js": {
+        "size": 1016403,
+        "sizeFormatted": "0.97MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-21T20:29:31.747Z",
+    "totalSize": 1016406,
+    "totalSizeFormatted": "0.97MB",
+    "files": {
+      "enfiy.js": {
+        "size": 1016406,
+        "sizeFormatted": "0.97MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-21T20:34:33.833Z",
+    "totalSize": 1016622,
+    "totalSizeFormatted": "0.97MB",
+    "files": {
+      "enfiy.js": {
+        "size": 1016622,
+        "sizeFormatted": "0.97MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-21T20:38:53.245Z",
+    "totalSize": 1016634,
+    "totalSizeFormatted": "0.97MB",
+    "files": {
+      "enfiy.js": {
+        "size": 1016634,
+        "sizeFormatted": "0.97MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-21T20:40:13.211Z",
+    "totalSize": 1016694,
+    "totalSizeFormatted": "0.97MB",
+    "files": {
+      "enfiy.js": {
+        "size": 1016694,
+        "sizeFormatted": "0.97MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-21T20:40:17.967Z",
+    "totalSize": 1016694,
+    "totalSizeFormatted": "0.97MB",
+    "files": {
+      "enfiy.js": {
+        "size": 1016694,
+        "sizeFormatted": "0.97MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-21T20:42:44.561Z",
+    "totalSize": 1016894,
+    "totalSizeFormatted": "0.97MB",
+    "files": {
+      "enfiy.js": {
+        "size": 1016894,
+        "sizeFormatted": "0.97MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-21T20:46:35.162Z",
+    "totalSize": 1016893,
+    "totalSizeFormatted": "0.97MB",
+    "files": {
+      "enfiy.js": {
+        "size": 1016893,
+        "sizeFormatted": "0.97MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-21T20:54:35.541Z",
+    "totalSize": 1016459,
+    "totalSizeFormatted": "0.97MB",
+    "files": {
+      "enfiy.js": {
+        "size": 1016459,
+        "sizeFormatted": "0.97MB"
+      }
+    }
   }
 ]

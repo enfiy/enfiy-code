@@ -94,7 +94,29 @@ export async function retryWithBackoff<T>(
         _consecutive429Count = 0; // Reset counter for non-429 errors
       }
 
-      // No fallback for API key users
+      // Check for persistent 429 errors and trigger fallback if available
+      // Only trigger fallback for OAuth users (not API key users)
+      if (
+        _consecutive429Count >= 2 &&
+        _onPersistent429 &&
+        _authType !== 'gemini-api-key'
+      ) {
+        try {
+          const fallbackResult = await _onPersistent429(_authType);
+          // Only reset and continue if fallback returned a non-null value
+          if (fallbackResult !== null) {
+            // Reset attempt counter after successful fallback to allow continuation
+            attempt = 0;
+            currentDelay = initialDelayMs;
+            _consecutive429Count = 0;
+            continue; // Try again after fallback
+          }
+          // If fallback returned null (user rejected), continue with normal retry logic
+        } catch (fallbackError) {
+          // If fallback fails, continue with normal retry logic without resetting counters
+          console.warn('Fallback failed:', fallbackError);
+        }
+      }
 
       // Check if we've exhausted retries or shouldn't retry
       if (attempt >= maxAttempts || !shouldRetry(error as Error)) {

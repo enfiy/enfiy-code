@@ -71,11 +71,11 @@ describe('ReadFileTool', () => {
       expect(tool.validateToolParams(params)).toBeNull();
     });
 
-    it('should return error for relative path', () => {
+    it('should accept relative path and convert to absolute', () => {
       const params: ReadFileToolParams = { absolute_path: 'test.txt' };
-      expect(tool.validateToolParams(params)).toMatch(
-        /File path must be absolute/,
-      );
+      const result = tool.validateToolParams(params);
+      expect(result).toBeNull(); // Should succeed
+      expect(path.isAbsolute(params.absolute_path)).toBe(true); // Should be converted to absolute
     });
 
     it('should return error for path outside root', () => {
@@ -140,11 +140,23 @@ describe('ReadFileTool', () => {
   });
 
   describe('execute', () => {
-    it('should return validation error if params are invalid', async () => {
+    it('should return file not found error for relative path after conversion', async () => {
       const params: ReadFileToolParams = { absolute_path: 'relative/path.txt' };
+      const errorMessage = 'File not found';
+      mockProcessSingleFileContent.mockResolvedValue({
+        error: errorMessage,
+        llmContent: errorMessage,
+        returnDisplay: errorMessage,
+      });
       const result = await tool.execute(params, abortSignal);
-      expect(result.llmContent).toMatch(/Error: Invalid parameters provided/);
-      expect(result.returnDisplay).toMatch(/File path must be absolute/);
+      expect(result.llmContent).toMatch(/File not found/);
+      // Verify that the relative path was converted to absolute before calling processSingleFileContent
+      expect(mockProcessSingleFileContent).toHaveBeenCalledWith(
+        path.resolve(tempRootDir, 'relative/path.txt'),
+        tempRootDir,
+        undefined,
+        undefined,
+      );
     });
 
     it('should return error from processSingleFileContent if it fails', async () => {
