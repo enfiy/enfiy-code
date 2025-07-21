@@ -1,94 +1,336 @@
-# Git ignore file for Enfiy Code project
+# =============================================================================
+# Enfiy Code Project - Git Ignore Configuration
+# =============================================================================
+# Comprehensive ignore patterns organized by category for maintainability
 
-# -----------------------------------------------------------------------------
-# Compiled and Built Artifacts
-# -----------------------------------------------------------------------------
-# Ignore all compiled TypeScript output directories
+# =============================================================================
+# 📦 Build Artifacts and Compiled Output
+# =============================================================================
+# TypeScript compilation output
 dist/
+build/
 bundle/
+lib/
+out/
 packages/*/dist/
 packages/*/lib/
 packages/*/build/
+packages/*/out/
 
-# TypeScript build info files
+# TypeScript build information
 *.tsbuildinfo
+tsconfig.tsbuildinfo
 
-# -----------------------------------------------------------------------------
-# Dependency Directories
-# -----------------------------------------------------------------------------
+# Webpack and bundler outputs
+public/build/
+public/dist/
+static/js/
+static/css/
+
+# =============================================================================
+# 📚 Dependencies and Package Management
+# =============================================================================
+# Node.js dependencies
 node_modules/
 packages/*/node_modules/
-bower_components/
+*/node_modules/
 
-# -----------------------------------------------------------------------------
-# Editor and IDE Specific Files
-# -----------------------------------------------------------------------------
+# Package manager files
+package-lock.json.backup
+yarn.lock.backup
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Legacy package managers
+bower_components/
+jspm_packages/
+
+# =============================================================================
+# 🔧 Development Tools and IDEs
+# =============================================================================
+# JetBrains IDEs (IntelliJ, WebStorm, etc.)
 .idea/
-.vscode/
+*.iws
 *.iml
+*.ipr
+
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json.example
+!.vscode/tasks.json.example
+!.vscode/launch.json.example
+!.vscode/extensions.json.example
+
+# Vim/Neovim
 *.swp
 *.swo
+*.swn
 *~
+.vim/
+.nvim/
 
-# -----------------------------------------------------------------------------
-# Operating System Generated Files
-# -----------------------------------------------------------------------------
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# =============================================================================
+# 🖥️ Operating System Files
+# =============================================================================
+# macOS
 .DS_Store
-Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Icon?
 
-# -----------------------------------------------------------------------------
-# Configuration and Sensitive Files
-# -----------------------------------------------------------------------------
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================================================
+# 🔐 Security and Configuration Files
+# =============================================================================
 # Environment variables and secrets
 .env
+.env.*
 .env.local
-.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging
+.env.backup
 .env~
 
-# Enfiy CLI settings (formerly .gemini)
+# API keys and credentials
+*.key
+*.pem
+*.p12
+*.pfx
+auth.json
+credentials.json
+service-account.json
+
+# Configuration files with sensitive data
+config/secrets.json
+config/production.json
+config/staging.json
+*.secret.json
+
+# Enfiy CLI settings and user data
 .enfiy/
-!/.enfiy/config.yaml # Do not ignore the config.yaml within .enfiy
+!/.enfiy/config.yaml.example
+.gemini/ # Legacy directory name
 
-# Docker related files
+# Docker secrets and configs
+docker-compose.override.yml
 .docker/
+docker-compose.prod.yml
+docker-compose.staging.yml
 
-# -----------------------------------------------------------------------------
-# Test and Coverage Files
-# -----------------------------------------------------------------------------
-junit.xml
+# =============================================================================
+# 🧪 Testing and Quality Assurance
+# =============================================================================
+# Test results and coverage
 coverage/
 packages/*/coverage/
 .nyc_output/
-.integration-tests/ # Temporary integration test directories
+junit.xml
+test-results.xml
+*.lcov
 
-# -----------------------------------------------------------------------------
-# Log and Temporary Files
-# -----------------------------------------------------------------------------
+# Test databases and fixtures
+test.db
+test.sqlite
+test-data/
+fixtures/temp/
+
+# E2E and integration tests
+.integration-tests/
+e2e-results/
+playwright-report/
+test-results/
+
+# Jest
+jest.config.local.js
+jest-stare/
+
+# =============================================================================
+# 📊 Monitoring and Analytics
+# =============================================================================
+# Bundle analysis
+bundle-size-history.json
+webpack-bundle-analyzer-report.html
+stats.json
+
+# Performance monitoring
+lighthouse-results/
+perf-results/
+
+# Error tracking
+.sentry/
+sentry.properties
+
+# =============================================================================
+# 📝 Logs and Temporary Files
+# =============================================================================
+# Application logs
 *.log
-*.tmp
-*.temp
-.cache/
-tmp/
+logs/
+log/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+pnpm-debug.log*
 
-# -----------------------------------------------------------------------------
-# Runtime Data
-# -----------------------------------------------------------------------------
+# Runtime logs
+runtime.log
+application.log
+error.log
+access.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+.cache/
+tmp/
+temp/
+.temp/
+
+# Lock files (runtime)
+*.lock
+!package-lock.json
+!yarn.lock
+!pnpm-lock.yaml
+
+# =============================================================================
+# 🚀 Runtime and Process Files
+# =============================================================================
+# Process IDs
 pids/
 *.pid
 *.seed
 *.pid.lock
+.grunt
 
-# -----------------------------------------------------------------------------
-# Bundle Analysis and History
-# -----------------------------------------------------------------------------
-bundle-size-history.json
+# Runtime data
+lib-cov/
+coverage/
+.nyc_output/
+.cache-loader/
 
-# -----------------------------------------------------------------------------
-# Debug and Development Specific Files
-# -----------------------------------------------------------------------------
+# =============================================================================
+# 🔄 Version Control and Git
+# =============================================================================
+# Git patches and diffs
+*.patch
+*.diff
+*.orig
+*.rej
+
+# Backup files created by version control
+*.backup
+*.bak
+*~.nib
+
+# =============================================================================
+# 🌐 Web and Browser Specific
+# =============================================================================
+# Browser downloads folder (if used for testing)
+downloads/
+
+# Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+
+# =============================================================================
+# 📱 Mobile Development (if applicable)
+# =============================================================================
+# React Native
+# (Add if needed for mobile extensions)
+
+# =============================================================================
+# ☁️ Cloud and Deployment
+# =============================================================================
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# AWS
+.aws/
+aws-exports.js
+
+# Vercel
+.vercel
+
+# Netlify
+.netlify/
+
+# =============================================================================
+# 🎯 Project Specific Ignores
+# =============================================================================
+# Debug and development files
 test-browser-open.js
-packages/core/src/utils/debugLogger.ts.npmrc
+debug-output/
+benchmark-results/
+
+# Generated documentation
+docs/generated/
+api-docs/
+
+# Backup configurations
+config.backup.json
+settings.backup.json
+
+# Local development overrides
+local-config.json
+dev-overrides.json
+
+# MCP server binaries (if bundled)
+mcp-servers/bin/
+
+# =============================================================================
+# 📋 TODO and Notes (Optional)
+# =============================================================================
+# Personal notes and TODOs (optional)
+# TODO.md
+# NOTES.md
+# .personal-notes/
