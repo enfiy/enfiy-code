@@ -556,7 +556,10 @@ export class EnfiyClient {
     ];
     this.chat = await this.startChat(newHistory);
     const currentModelForNew = this.config.getModel(); // Always get current model from config
-    const formattedModelForNew = getModelForProvider(this.config, currentModelForNew);
+    const formattedModelForNew = getModelForProvider(
+      this.config,
+      currentModelForNew,
+    );
     console.log('[CLIENT] CountTokens for new history with model:', {
       original: currentModelForNew,
       formatted: formattedModelForNew,
