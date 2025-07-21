@@ -74,8 +74,8 @@ export class AnthropicProvider extends BaseProvider {
     contents: Content[],
   ): Anthropic.MessageParam[] {
     // Extract system message if present
-    const _systemMessages = contents.filter(c => c.role === 'system');
-    const nonSystemMessages = contents.filter(c => c.role !== 'system');
+    const _systemMessages = contents.filter((c) => c.role === 'system');
+    const nonSystemMessages = contents.filter((c) => c.role !== 'system');
 
     return nonSystemMessages.map((content) => {
       const textParts = content.parts?.filter((part) => 'text' in part) || [];
@@ -91,9 +91,10 @@ export class AnthropicProvider extends BaseProvider {
   }
 
   private getSystemPrompt(contents: Content[]): string | undefined {
-    const systemMessage = contents.find(c => c.role === 'system');
+    const systemMessage = contents.find((c) => c.role === 'system');
     if (systemMessage) {
-      const textParts = systemMessage.parts?.filter((part) => 'text' in part) || [];
+      const textParts =
+        systemMessage.parts?.filter((part) => 'text' in part) || [];
       return textParts
         .map((part) => (part as { text: string }).text)
         .join('\n');
@@ -198,9 +199,12 @@ export class AnthropicProvider extends BaseProvider {
     });
 
     let _accumulatedText = '';
-    
+
     for await (const chunk of stream) {
-      if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
+      if (
+        chunk.type === 'content_block_delta' &&
+        chunk.delta.type === 'text_delta'
+      ) {
         _accumulatedText += chunk.delta.text;
         yield {
           text: chunk.delta.text,

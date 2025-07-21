@@ -228,7 +228,10 @@ const App = ({ config, settings, startupWarnings = [] }: AppProps) => {
       );
 
       // Show ready message only in development environment
-      if (process.env.NODE_ENV === 'development' || process.env.ENFIY_SHOW_READY_MESSAGE === 'true') {
+      if (
+        process.env.NODE_ENV === 'development' ||
+        process.env.ENFIY_SHOW_READY_MESSAGE === 'true'
+      ) {
         addItem(
           {
             type: MessageType.INFO,

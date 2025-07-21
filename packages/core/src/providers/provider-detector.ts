@@ -51,7 +51,6 @@ export async function detectLocalProviders(): Promise<DetectedProvider[]> {
     });
   }
 
-
   return providers;
 }
 

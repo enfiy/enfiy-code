@@ -10,7 +10,12 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
-import { shortenPath, tildeifyPath, tokenLimit, ApprovalMode } from '@enfiy/core';
+import {
+  shortenPath,
+  tildeifyPath,
+  tokenLimit,
+  ApprovalMode,
+} from '@enfiy/core';
 import { ConsoleSummaryDisplay } from './ConsoleSummaryDisplay.js';
 import process from 'node:process';
 import { MemoryUsageDisplay } from './MemoryUsageDisplay.js';
@@ -274,13 +279,11 @@ export const Footer: React.FC<FooterProps> = ({
               </>
             )}
           </Box>
-          
+
           {/* Auto-approval mode indicator */}
           {approvalMode === ApprovalMode.AUTO && (
             <Box alignItems="center" marginTop={0}>
-              <Text color={Colors.AccentGreen}>
-                Mode : auto
-              </Text>
+              <Text color={Colors.AccentGreen}>Mode : auto</Text>
             </Box>
           )}
         </Box>

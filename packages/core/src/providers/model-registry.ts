@@ -25,7 +25,6 @@ export interface ModelInfo {
 }
 
 export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
-
   [ProviderType.OLLAMA]: [
     {
       id: 'llama3.2:3b',
@@ -760,7 +759,14 @@ export const MODEL_REGISTRY: Record<string, ModelInfo[]> = {
       description: 'Most powerful Claude model for complex tasks',
       contextLength: 200000,
       pricing: { input: 15, output: 75, unit: '$/1M tokens' },
-      capabilities: ['chat', 'code', 'reasoning', 'analysis', 'complex', 'long-context'],
+      capabilities: [
+        'chat',
+        'code',
+        'reasoning',
+        'analysis',
+        'complex',
+        'long-context',
+      ],
     },
     {
       id: 'claude-3-5-haiku-20241022',

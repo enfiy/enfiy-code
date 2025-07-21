@@ -83,10 +83,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
 
   // Check if local provider is installed
   useEffect(() => {
-    if (
-      isLocalProvider &&
-      provider === ProviderType.OLLAMA
-    ) {
+    if (isLocalProvider && provider === ProviderType.OLLAMA) {
       checkOllamaInstallation();
     } else if (isCloudProvider) {
       // For cloud providers, always start with method selection

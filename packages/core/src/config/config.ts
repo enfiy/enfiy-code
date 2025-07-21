@@ -402,7 +402,9 @@ export class Config {
 
   getEnfiyClient(): EnfiyClient {
     if (!this.enfiyClient) {
-      throw new Error('EnfiyClient not initialized. Please run /provider command to configure authentication.');
+      throw new Error(
+        'EnfiyClient not initialized. Please run /provider command to configure authentication.',
+      );
     }
     return this.enfiyClient;
   }

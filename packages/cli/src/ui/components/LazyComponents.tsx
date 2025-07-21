@@ -55,8 +55,10 @@ const LazyHelp = lazy(() =>
 const LazyAboutBox = lazy(() =>
   import('./AboutBox.js').then((m) => ({ default: m.AboutBox })),
 );
-const LazyModelSelectionDialog = lazy(
-  () => import('./ModelSelectionDialog.js').then((m) => ({ default: m.ModelSelectionDialog })),
+const LazyModelSelectionDialog = lazy(() =>
+  import('./ModelSelectionDialog.js').then((m) => ({
+    default: m.ModelSelectionDialog,
+  })),
 );
 
 // Loading component

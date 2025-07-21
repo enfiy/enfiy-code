@@ -155,7 +155,10 @@ export const ModelSelectionDialog: React.FC<ModelSelectionDialogProps> = ({
       }
 
       if (models[highlightedIndex]) {
-        onSelect(models[highlightedIndex].name, models[highlightedIndex].provider);
+        onSelect(
+          models[highlightedIndex].name,
+          models[highlightedIndex].provider,
+        );
       }
     }
   });
@@ -258,8 +261,7 @@ export const ModelSelectionDialog: React.FC<ModelSelectionDialogProps> = ({
               }
               bold={highlightedIndex === models.length}
             >
-              {highlightedIndex === models.length ? '> ' : '  '}
-              ← Close
+              {highlightedIndex === models.length ? '> ' : '  '}← Close
             </Text>
           </Box>
           <Box flexGrow={1}>

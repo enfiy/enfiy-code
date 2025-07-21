@@ -157,11 +157,7 @@ export function isCloudModel(modelName: string): boolean {
   if (!modelName) return false;
 
   const provider = getProviderFromModel(modelName);
-  return (
-    provider !== null &&
-    provider !== ProviderType.OLLAMA &&
-    true
-  );
+  return provider !== null && provider !== ProviderType.OLLAMA && true;
 }
 
 /**

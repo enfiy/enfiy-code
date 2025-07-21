@@ -81,7 +81,7 @@ export class ModelManager {
       ollama: await this.checkOllamaAvailability(),
       openrouter: hasStoredCredentials(ProviderType.OPENROUTER),
     };
-    
+
     return authStatus;
   }
 
@@ -116,10 +116,13 @@ export class ModelManager {
         const getModelDescription = (modelName: string): string => {
           if (modelName.includes('llama')) return 'Meta Llama - Local AI model';
           if (modelName.includes('qwen')) return 'Qwen - Local AI model';
-          if (modelName.includes('gemma')) return 'Google Gemma - Local AI model';
-          if (modelName.includes('phi')) return 'Microsoft Phi - Local AI model';
+          if (modelName.includes('gemma'))
+            return 'Google Gemma - Local AI model';
+          if (modelName.includes('phi'))
+            return 'Microsoft Phi - Local AI model';
           if (modelName.includes('mistral')) return 'Mistral - Local AI model';
-          if (modelName.includes('codellama')) return 'Code Llama - Local coding model';
+          if (modelName.includes('codellama'))
+            return 'Code Llama - Local coding model';
           return 'Local AI model';
         };
 

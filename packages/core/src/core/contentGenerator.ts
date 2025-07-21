@@ -256,7 +256,6 @@ function getProviderTypeFromModel(model: string): string {
     return 'ollama';
   }
 
-
   // OpenRouter models (prefixed routing patterns)
   if (
     modelLower.includes('openrouter') ||

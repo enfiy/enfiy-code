@@ -157,11 +157,14 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
   }, [provider]);
 
   // Get available auth methods for provider
-  const getAuthMethods = useCallback((): Array<{
-    id: string;
-    name: string;
-    description: string;
-  }> => getBaseAuthMethods(), [getBaseAuthMethods]);
+  const getAuthMethods = useCallback(
+    (): Array<{
+      id: string;
+      name: string;
+      description: string;
+    }> => getBaseAuthMethods(),
+    [getBaseAuthMethods],
+  );
 
   // Get provider display name
   const getProviderDisplayName = useCallback((): string => {
@@ -244,23 +247,19 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
     }
   }, [step, getAuthMethods, provider]);
 
+  const cleanApiKey = useCallback((key: string): string => {
+    // Remove bracketed paste mode escape sequences and other unwanted characters
+    const cleaned = key
+      .replace(/\[200~/g, '') // Remove bracketed paste start
+      .replace(/\[201~/g, '') // Remove bracketed paste end
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\x00-\x08\x0E-\x1F\x7F]/gu, '') // Remove control characters except tab, newline, carriage return
+      .replace(/\r?\n/g, '') // Remove line breaks
+      .replace(/\t/g, ''); // Remove tabs
 
-  const cleanApiKey = useCallback(
-    (key: string): string => {
-      // Remove bracketed paste mode escape sequences and other unwanted characters
-      const cleaned = key
-        .replace(/\[200~/g, '') // Remove bracketed paste start
-        .replace(/\[201~/g, '') // Remove bracketed paste end
-        // eslint-disable-next-line no-control-regex
-        .replace(/[\x00-\x08\x0E-\x1F\x7F]/gu, '') // Remove control characters except tab, newline, carriage return
-        .replace(/\r?\n/g, '') // Remove line breaks
-        .replace(/\t/g, ''); // Remove tabs
-      
-      // Only trim leading/trailing whitespace, preserve internal spaces for API keys that might need them
-      return cleaned.trim();
-    },
-    [],
-  );
+    // Only trim leading/trailing whitespace, preserve internal spaces for API keys that might need them
+    return cleaned.trim();
+  }, []);
 
   const validateAndSaveApiKey = useCallback(async () => {
     // Prevent duplicate calls
@@ -750,7 +749,9 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
                     </Text>
                   </Box>
                   <Box flexGrow={1}>
-                    <Text color={Colors.Comment}>Return to authentication method selection</Text>
+                    <Text color={Colors.Comment}>
+                      Return to authentication method selection
+                    </Text>
                   </Box>
                 </Box>
               </>
@@ -854,7 +855,9 @@ export const CloudAISetupDialog: React.FC<CloudAISetupDialogProps> = ({
                   </Text>
                 </Box>
                 <Box flexGrow={1}>
-                  <Text color={Colors.Comment}>Return to authentication method selection</Text>
+                  <Text color={Colors.Comment}>
+                    Return to authentication method selection
+                  </Text>
                 </Box>
               </Box>
             )}

@@ -107,7 +107,6 @@ export class MultiProviderClient {
       return ProviderType.OLLAMA;
     }
 
-
     // OpenRouter models (prefixed routing patterns)
     if (
       modelLower.includes('openrouter') ||
@@ -442,7 +441,6 @@ export class MultiProviderContentGeneratorWrapper implements ContentGenerator {
     if (modelLower.includes('ollama') || modelLower.includes('llama')) {
       return ProviderType.OLLAMA;
     }
-
 
     // Default to Gemini for unknown models
     return ProviderType.GEMINI;
