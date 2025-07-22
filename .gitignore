@@ -4,7 +4,7 @@
 # Comprehensive ignore patterns organized by category for maintainability
 
 # =============================================================================
-# 📦 Build Artifacts and Compiled Output
+# Build Artifacts and Compiled Output
 # =============================================================================
 # TypeScript compilation output
 dist/

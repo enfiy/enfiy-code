@@ -3,7 +3,7 @@
 
 # Enfiy Code
 
-### Universal AI Coding Agent for you
+### Your Universal AI Coding Agent
 
 <img src="https://skillicons.dev/icons?i=npm,nodejs,typescript,windows,linux,apple" />
 
@@ -235,7 +235,7 @@ enfiy
 
 ### Prerequisites for Development
 
-- Node.js v20 or higher
+- Node.js v18 or higher
 - npm or yarn package manager
 - Git
 
