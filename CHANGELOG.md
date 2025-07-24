@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2025-07-24
+
+### Added
+- Enhanced error handling for network requests
+- Improved performance for large file operations
+- Better support for workspace configurations
+
+### Changed
+- Updated dependencies to latest versions
+- Optimized bundle size for faster installation
+- Improved CLI startup time
+
+### Fixed
+- Fixed issue with file path resolution on Windows
+- Resolved memory leak in long-running sessions
+- Corrected provider authentication flow
+
 ## [0.1.0] - 2025-07-21
 
 ### Added
