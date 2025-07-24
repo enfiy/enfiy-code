@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed runtime error when installing package globally via npm by moving @modelcontextprotocol/sdk to production dependencies
+- Fixed "Cannot find package '@modelcontextprotocol/sdk'" error on macOS by bundling the dependency into the build
+- Increased bundle size from 0.97MB to 1.24MB to include MCP SDK
 
 ## [0.1.2] - 2025-07-24
 

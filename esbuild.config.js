@@ -103,8 +103,7 @@ esbuild
       'simple-git',
       // HTML processing
       'html-to-text',
-      // MCP SDK
-      '@modelcontextprotocol/sdk',
+      // MCP SDK - removed from external to bundle it
       // Additional heavy dependencies
       'yargs',
       'chalk',
