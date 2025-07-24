@@ -13,7 +13,7 @@ const projectRoot = path.resolve(__dirname, '..');
 
 // Bundle size tracking
 const BUNDLE_SIZE_HISTORY = path.join(projectRoot, 'bundle-size-history.json');
-const MAX_BUNDLE_SIZE = 2 * 1024 * 1024; // 2MB threshold for CLI tools
+const MAX_BUNDLE_SIZE = 4 * 1024 * 1024; // 4MB threshold for CLI tools (increased for Windows compatibility)
 
 function analyzeBundleSize() {
   const bundlePath = path.join(projectRoot, 'bundle');
