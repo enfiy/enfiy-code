@@ -80,7 +80,6 @@
   ],
   "devDependencies": {
     "@eslint/js": "^9.31.0",
-    "@modelcontextprotocol/sdk": "^1.15.1",
     "@types/micromatch": "^4.0.9",
     "@types/mime-types": "^3.0.1",
     "@types/minimatch": "^6.0.0",
@@ -110,6 +109,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.9.0",
+    "@modelcontextprotocol/sdk": "^1.15.1",
     "@opentelemetry/api-logs": "^0.203.0",
     "@opentelemetry/otlp-exporter-base": "^0.203.0",
     "@opentelemetry/resources": "^2.0.1",
