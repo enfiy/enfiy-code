@@ -1,6 +1,6 @@
 {
   "name": "@enfiy/core",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Enfiy Code Server",
   "repository": "enfiy/enfiy-code",
   "type": "module",
