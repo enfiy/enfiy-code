@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2025-07-24
+
+### Fixed
+- **CRITICAL**: Fixed Windows compatibility by bundling all required dependencies (shell-quote, chalk, zod, etc.)
+- Fixed "Cannot find package 'shell-quote'" error on Windows that prevented CLI from running
+- Bundled OpenTelemetry packages and AI SDK dependencies for reliable cross-platform operation
+- Bundle size increased from 1.24MB to 2.85MB to ensure all platforms work correctly
+
+### Changed
+- Modified esbuild configuration to bundle critical dependencies instead of marking them as external
+- Improved cross-platform compatibility for Windows, macOS, and Linux
+
 ## [0.1.3] - 2025-07-24
 
 ### Fixed

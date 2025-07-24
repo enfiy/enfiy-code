@@ -66,63 +66,50 @@ esbuild
     legalComments: isProduction ? 'none' : 'inline',
     external: [
       'react-devtools-core',
-      // OpenTelemetry packages (heavy and currently disabled)
+      // OpenTelemetry packages (heavy but in dependencies - bundle them)
+      // Commenting out to bundle these as they're in dependencies
+      // '@opentelemetry/api-logs',
+      // '@opentelemetry/otlp-exporter-base', 
+      // '@opentelemetry/resources',
+      // '@opentelemetry/sdk-logs',
+      // '@opentelemetry/sdk-metrics',
+      // '@opentelemetry/sdk-trace-node',
+      // '@opentelemetry/semantic-conventions',
+      
+      // Only keep truly optional/heavy external dependencies
       '@opentelemetry/api',
       '@opentelemetry/exporter-logs-otlp-grpc',
-      '@opentelemetry/exporter-metrics-otlp-grpc',
+      '@opentelemetry/exporter-metrics-otlp-grpc', 
       '@opentelemetry/exporter-trace-otlp-grpc',
       '@opentelemetry/instrumentation-http',
       '@opentelemetry/sdk-node',
-      '@opentelemetry/api-logs',
-      '@opentelemetry/otlp-exporter-base',
-      '@opentelemetry/resources',
-      '@opentelemetry/sdk-logs',
-      '@opentelemetry/sdk-metrics',
-      '@opentelemetry/sdk-trace-node',
-      '@opentelemetry/semantic-conventions',
-      // UI related dependencies
+      
+      // UI related dependencies - keep external for now
       'ink',
-      'react',
+      'react', 
       'react/jsx-runtime',
       'ink-select-input',
       'read-package-up',
       'open',
       'ink-spinner',
-      // Large AI SDKs - can be dynamically imported
-      '@google/genai',
-      'openai',
-      // Heavy utilities
+      
+      // Large AI SDKs - keep external but they're in dependencies
+      // Commenting out to bundle core functionality
+      // '@google/genai',
+      // 'openai',
+      
+      // Heavy utilities that aren't critical - keep external
       'lowlight',
       'highlight.js',
-      // HTTP clients
       'gaxios',
-      'undici',
-      // Google auth
+      'undici', 
       'google-auth-library',
-      // Git operations
       'simple-git',
-      // HTML processing
       'html-to-text',
-      // MCP SDK - removed from external to bundle it
-      // Additional heavy dependencies
-      'yargs',
-      'chalk',
       'update-notifier',
-      'glob',
-      'diff',
-      'mime-types',
-      'micromatch',
-      'minimatch',
-      'shell-quote',
-      'command-exists',
-      'dotenv',
-      'strip-ansi',
-      'wrap-ansi',
-      'string-width',
-      'ansi-regex',
-      'node-fetch',
-      'ws',
-      'zod',
+      
+      // Bundle all critical CLI dependencies that are in package.json dependencies
+      // Removed: shell-quote, chalk, zod, mime-types, etc.
     ],
   })
   .then((result) => {
