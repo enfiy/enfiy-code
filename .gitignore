@@ -200,6 +200,10 @@ webpack-bundle-analyzer-report.html
 stats.json
 bundle-analyzer-report.html
 
+# Auto-generated files
+packages/*/src/generated/
+**/generated/git-commit.ts
+
 # Performance monitoring
 lighthouse-results/
 perf-results/
