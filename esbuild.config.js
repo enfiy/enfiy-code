@@ -89,7 +89,6 @@ esbuild
       'react',
       'react/jsx-runtime',
       'ink-select-input',
-      'read-package-up',
       'open',
       'ink-spinner',
 
