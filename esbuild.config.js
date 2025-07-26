@@ -134,9 +134,9 @@ esbuild
         // 10MB critical threshold
         console.error('ERROR: Bundle size is critically large (>10MB)');
         process.exit(1);
-      } else if (totalSize > 5 * 1024 * 1024) {
-        // 5MB warning threshold
-        console.warn('WARNING: Bundle size is large (>5MB)');
+      } else if (totalSize > 8 * 1024 * 1024) {
+        // 8MB warning threshold - don't fail build
+        console.warn('WARNING: Bundle size is large (>8MB)');
       } else {
         console.log('Bundle size is acceptable for CLI tool');
       }
