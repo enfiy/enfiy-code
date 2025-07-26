@@ -64,6 +64,58 @@ Enfiy Code is a command-line AI workflow tool that integrates with your developm
 | -------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | <img src="./docs/assets/provider/provider-ollama.png" height="42" /> | **[Ollama](https://ollama.com/)**<br>Run models locally with full privacy |
 
+## Development
+
+### Prerequisites for Development
+
+- Node.js v18 or higher
+- npm or yarn package manager
+- Git
+
+### Setting Up Development Environment
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/enfiy/enfiy-code.git
+cd enfiy-code
+```
+
+2. **Install dependencies**
+
+```bash
+npm install
+```
+
+This will install all required packages listed in `package.json`.
+
+3. **Build the project**
+
+```bash
+npm run build
+```
+
+This compiles TypeScript and prepares the application for execution.
+
+4. **Start the development version**
+
+```bash
+npm start
+```
+
+This launches Enfiy Code in development mode.
+
+### Development Commands
+
+- `npm run start` - Start in development mode
+- `npm run debug` - Start with debugging enabled
+- `npm run build` - Build for production
+- `npm run test` - Run test suite
+- `npm run lint` - Check code style and quality
+- `npm run format` - Format code automatically
+- `npm run typecheck` - TypeScript type checking
+- `npm run preflight` - Complete CI pipeline check
+
 ## Authentication
 
 ### OAuth Configuration (Optional)
@@ -230,58 +282,6 @@ enfiy
 - **[Security Overview](./docs/security/README.md)** – Security policies and best practices
 - **[Privacy Policy](./docs/security/privacy-policy.md)** – Data handling and privacy rights
 - **[Telemetry](./docs/security/telemetry.md)** – Data collection and opt-out options
-
-## Development
-
-### Prerequisites for Development
-
-- Node.js v18 or higher
-- npm or yarn package manager
-- Git
-
-### Setting Up Development Environment
-
-1. **Clone the repository**
-
-```bash
-git clone https://github.com/enfiy-ecosystem/enfiy-code.git
-cd enfiy-code
-```
-
-2. **Install dependencies**
-
-```bash
-npm install
-```
-
-This will install all required packages listed in `package.json`.
-
-3. **Build the project**
-
-```bash
-npm run build
-```
-
-This compiles TypeScript and prepares the application for execution.
-
-4. **Start the development version**
-
-```bash
-npm start
-```
-
-This launches Enfiy Code in development mode.
-
-### Development Commands
-
-- `npm run start` - Start in development mode
-- `npm run debug` - Start with debugging enabled
-- `npm run build` - Build for production
-- `npm run test` - Run test suite
-- `npm run lint` - Check code style and quality
-- `npm run format` - Format code automatically
-- `npm run typecheck` - TypeScript type checking
-- `npm run preflight` - Complete CI pipeline check
 
 ## Project Structure
 
