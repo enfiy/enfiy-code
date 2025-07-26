@@ -14,9 +14,8 @@ import fs from 'fs';
 import os from 'os';
 import pathMod from 'path';
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import stringWidth from 'string-width';
 import { unescapePath } from '@enfiy/core';
-import { toCodePoints, cpLen, cpSlice } from '../../utils/textUtils.js';
+import { toCodePoints, cpLen, cpSlice, platformStringWidth } from '../../utils/textUtils.js';
 
 export type Direction =
   | 'left'
@@ -228,7 +227,7 @@ function calculateVisualLayout(
         // Iterate through code points to build the current visual line (chunk)
         for (let i = currentPosInLogLine; i < codePointsInLogLine.length; i++) {
           const char = codePointsInLogLine[i];
-          const charVisualWidth = stringWidth(char);
+          const charVisualWidth = platformStringWidth(char);
 
           if (currentChunkVisualWidth + charVisualWidth > viewportWidth) {
             // Character would exceed viewport width

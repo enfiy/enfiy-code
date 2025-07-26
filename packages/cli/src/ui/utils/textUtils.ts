@@ -78,25 +78,30 @@ export function cpSlice(str: string, start: number, end?: number): string {
 export function platformStringWidth(str: string): number {
   // Import stringWidth lazily to avoid issues
   const stringWidth = require('string-width');
-  
+
   // On Windows, use a more conservative approach
   if (process.platform === 'win32') {
     // Strip ANSI codes first
     const stripAnsi = require('strip-ansi');
     const cleaned = stripAnsi(str);
-    
+
     // Fallback to character count for Windows terminals
     // This helps with VSCode terminal compatibility
     const width = stringWidth(cleaned);
-    
+
     // If stringWidth gives unexpected results, fallback to character count
-    if (width !== cleaned.length && !/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]/u.test(cleaned)) {
+    if (
+      width !== cleaned.length &&
+      !/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]/u.test(
+        cleaned,
+      )
+    ) {
       return cleaned.length;
     }
-    
+
     return width;
   }
-  
+
   // Use standard stringWidth for other platforms
   return stringWidth(str);
 }
