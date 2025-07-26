@@ -105,8 +105,8 @@ esbuild
       // 'gaxios', // Bundle for better compatibility
       // 'undici', // Bundle for better compatibility
       // 'google-auth-library', // Bundle for better compatibility
-      // 'simple-git', // Bundle this for Windows compatibility
-      // 'html-to-text', // Bundle this for Windows compatibility
+      // 'simple-git', // Bundle this for Windows compatibility (BUNDLED)
+      // 'html-to-text', // Bundle this for Windows compatibility (BUNDLED)
       'update-notifier',
 
       // Bundle all critical CLI dependencies that are in package.json dependencies
