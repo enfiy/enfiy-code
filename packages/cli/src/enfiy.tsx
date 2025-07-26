@@ -221,7 +221,7 @@ export async function main() {
     if (updateMessage) {
       console.log(`\n${updateMessage}\n`);
     }
-  } catch (error) {
+  } catch (_error) {
     // Silently ignore update check errors to avoid disrupting the CLI
   }
 
