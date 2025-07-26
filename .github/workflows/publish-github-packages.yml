@@ -19,7 +19,6 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@enfiy'
           
       - name: Install dependencies
         run: npm ci
@@ -30,12 +29,7 @@ jobs:
       - name: Bundle
         run: npm run bundle:prod
         
-      - name: Configure npm authentication
-        run: |
-          echo "@enfiy:registry=https://npm.pkg.github.com" >> ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=\${NODE_AUTH_TOKEN}" >> ~/.npmrc
-        
       - name: Publish to GitHub Packages
-        run: npm publish --registry=https://npm.pkg.github.com
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
