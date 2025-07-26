@@ -32,10 +32,8 @@ export const useThemeCommand = (
   // Determine the effective theme
   const effectiveTheme = loadedSettings.merged.theme;
 
-  // Initial state: Open dialog if no theme is set in either user or workspace settings
-  const [isThemeDialogOpen, setIsThemeDialogOpen] = useState(
-    effectiveTheme === undefined && !process.env.NO_COLOR,
-  );
+  // Initial state: Never open dialog on startup
+  const [isThemeDialogOpen, setIsThemeDialogOpen] = useState(false);
   // TODO: refactor how theme's are accessed to avoid requiring a forced render.
   const [, setForceRender] = useState(0);
 
@@ -56,7 +54,7 @@ export const useThemeCommand = (
     }
 
     if (!themeManager.setActiveTheme(effectiveTheme)) {
-      setIsThemeDialogOpen(true);
+      // Don't open dialog automatically, just set error
       setThemeError(`Theme "${effectiveTheme}" not found.`);
     } else {
       setThemeError(null);
@@ -80,8 +78,7 @@ export const useThemeCommand = (
   const applyTheme = useCallback(
     (themeName: string | undefined) => {
       if (!themeManager.setActiveTheme(themeName)) {
-        // If theme is not found, open the theme selection dialog and set error message
-        setIsThemeDialogOpen(true);
+        // If theme is not found, just set error message
         setThemeError(`Theme "${themeName}" not found.`);
       } else {
         setForceRender((v) => v + 1); // Trigger potential re-render
