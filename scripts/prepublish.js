@@ -11,12 +11,12 @@ import fs from 'fs';
 import path from 'path';
 
 const packageJsonPath = path.resolve(process.cwd(), 'package.json');
-// For CLI package, check root README.md and LICENSE
-const isCliPackage = process.cwd().includes('packages/cli');
-const readmePath = isCliPackage ? 
+// For workspace packages, check root README.md and LICENSE
+const isWorkspacePackage = process.cwd().includes('packages/');
+const readmePath = isWorkspacePackage ? 
   path.resolve(process.cwd(), '../../README.md') : 
   path.resolve(process.cwd(), 'README.md');
-const licensePath = isCliPackage ? 
+const licensePath = isWorkspacePackage ? 
   path.resolve(process.cwd(), '../../LICENSE') : 
   path.resolve(process.cwd(), 'LICENSE');
 
