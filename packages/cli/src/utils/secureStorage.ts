@@ -311,7 +311,6 @@ export function storeApiKey(
     throw new Error('API key is too long');
   }
 
-
   config.providers[provider] = {
     apiKey: cleanedApiKey,
     endpoint,

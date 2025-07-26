@@ -1,49 +1,5 @@
 [
   {
-    "timestamp": "2025-07-21T14:50:23.289Z",
-    "totalSize": 1014155,
-    "totalSizeFormatted": "0.97MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1014155,
-        "sizeFormatted": "0.97MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-21T14:53:07.080Z",
-    "totalSize": 1014605,
-    "totalSizeFormatted": "0.97MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1014605,
-        "sizeFormatted": "0.97MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-21T14:55:34.469Z",
-    "totalSize": 1014751,
-    "totalSizeFormatted": "0.97MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1014751,
-        "sizeFormatted": "0.97MB"
-      }
-    }
-  },
-  {
-    "timestamp": "2025-07-21T14:59:09.908Z",
-    "totalSize": 1014924,
-    "totalSizeFormatted": "0.97MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1014924,
-        "sizeFormatted": "0.97MB"
-      }
-    }
-  },
-  {
     "timestamp": "2025-07-21T15:02:43.500Z",
     "totalSize": 1015040,
     "totalSizeFormatted": "0.97MB",
@@ -546,6 +502,50 @@
       "enfiy.js": {
         "size": 4158103,
         "sizeFormatted": "3.97MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-26T07:45:35.767Z",
+    "totalSize": 4158103,
+    "totalSizeFormatted": "3.97MB",
+    "files": {
+      "enfiy.js": {
+        "size": 4158103,
+        "sizeFormatted": "3.97MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-26T07:46:12.851Z",
+    "totalSize": 4448133,
+    "totalSizeFormatted": "4.24MB",
+    "files": {
+      "enfiy.js": {
+        "size": 4448133,
+        "sizeFormatted": "4.24MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-26T07:48:03.997Z",
+    "totalSize": 4448133,
+    "totalSizeFormatted": "4.24MB",
+    "files": {
+      "enfiy.js": {
+        "size": 4448133,
+        "sizeFormatted": "4.24MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-26T07:51:01.712Z",
+    "totalSize": 4447888,
+    "totalSizeFormatted": "4.24MB",
+    "files": {
+      "enfiy.js": {
+        "size": 4447888,
+        "sizeFormatted": "4.24MB"
       }
     }
   }

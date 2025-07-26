@@ -7,6 +7,8 @@
  * Based on original work by Google LLC (2025)
  * Modified and extended by Hayate Esaki (2025)
  */
+import stringWidth from 'string-width';
+import stripAnsi from 'strip-ansi';
 /**
  * Calculates the maximum width of a multi-line ASCII art string.
  * @param asciiArt The ASCII art string.
@@ -76,13 +78,9 @@ export function cpSlice(str: string, start: number, end?: number): string {
  * Windows terminals sometimes have different width calculation behavior
  */
 export function platformStringWidth(str: string): number {
-  // Import stringWidth lazily to avoid issues
-  const stringWidth = require('string-width');
-
   // On Windows, use a more conservative approach
   if (process.platform === 'win32') {
     // Strip ANSI codes first
-    const stripAnsi = require('strip-ansi');
     const cleaned = stripAnsi(str);
 
     // Fallback to character count for Windows terminals
