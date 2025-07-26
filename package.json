@@ -8,7 +8,13 @@
   "bugs": {
     "url": "https://github.com/enfiy/enfiy-code/issues"
   },
-  "repository": "enfiy/enfiy-code",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enfiy/enfiy-code.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "keywords": [
     "cli",
     "ai",

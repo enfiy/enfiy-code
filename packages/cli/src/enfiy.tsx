@@ -34,6 +34,7 @@ import {
 } from '@enfiy/core';
 import { validateAuthMethod } from './config/auth.js';
 import { setMaxSizedBoxDebugging } from './ui/components/shared/MaxSizedBox.js';
+import { checkForUpdates } from './ui/utils/updateCheck.js';
 
 function getNodeMemoryArgs(config: Config): string[] {
   const totalMemoryMB = os.totalmem() / (1024 * 1024);
@@ -213,6 +214,16 @@ export async function main() {
   }
   let input = config.getQuestion();
   const startupWarnings = await getStartupWarnings();
+
+  // Check for updates and show notification if available
+  try {
+    const updateMessage = await checkForUpdates();
+    if (updateMessage) {
+      console.log(`\n${updateMessage}\n`);
+    }
+  } catch (error) {
+    // Silently ignore update check errors to avoid disrupting the CLI
+  }
 
   // Render UI, passing necessary config values. Check that there is no command line question.
   if (process.stdin.isTTY && input?.length === 0) {
