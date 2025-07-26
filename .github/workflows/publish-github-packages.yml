@@ -11,6 +11,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       
@@ -19,6 +20,7 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://npm.pkg.github.com'
+          scope: '@enfiy'
           
       - name: Install dependencies
         run: npm ci
@@ -29,7 +31,27 @@ jobs:
       - name: Bundle
         run: npm run bundle:prod
         
+      - name: Debug workflow context
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Token starts with: $(echo ${{ secrets.GITHUB_TOKEN }} | cut -c1-10)..."
+          whoami
+        
+      - name: Create .npmrc
+        run: |
+          cat > ~/.npmrc << EOF
+          @enfiy:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+          EOF
+          cat ~/.npmrc
+        
+      - name: Test authentication
+        run: npm whoami --registry=https://npm.pkg.github.com
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
       - name: Publish to GitHub Packages
-        run: npm publish
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
