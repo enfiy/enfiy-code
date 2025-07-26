@@ -199,6 +199,7 @@ bundle-size-history.json
 webpack-bundle-analyzer-report.html
 stats.json
 bundle-analyzer-report.html
+# Bundle analysis should not be committed
 
 # Auto-generated files
 packages/*/src/generated/

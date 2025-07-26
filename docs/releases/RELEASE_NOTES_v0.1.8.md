@@ -3,11 +3,13 @@
 ## Package Management
 
 ### Core Package Publishing
+
 - Added @enfiy/core package to NPM registry
 - Fixed package publishing workflow for all workspace packages
 - Added proper README and metadata for core package
 
 ### Build System
+
 - Fixed workspace package structure for proper NPM publishing
 - Enhanced prepublish checks for multi-package repository
 - Improved package metadata and configuration
@@ -15,11 +17,13 @@
 ## Bug Fixes
 
 ### Package Configuration
+
 - Set proper public flag for core package publishing
 - Added README files to all publishable packages
 - Fixed package repository references and metadata
 
 ### Project Structure
+
 - Cleaned up remaining release notes from project root
 - Organized all release documentation in docs/releases directory
 - Improved package file organization

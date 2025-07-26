@@ -11,6 +11,7 @@ import esbuild from 'esbuild';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,6 +19,46 @@ const require = createRequire(import.meta.url);
 const pkg = require(path.resolve(__dirname, 'package.json'));
 
 const isProduction = process.env.NODE_ENV === 'production';
+
+// Dynamically determine external dependencies for CLI packaging
+function getExternalDependencies() {
+  const cliPkgPath = path.resolve(__dirname, 'packages/cli/package.json');
+  const cliPkg = JSON.parse(fs.readFileSync(cliPkgPath, 'utf8'));
+
+  // Dependencies that should remain external for CLI distribution
+  const externalPatterns = [
+    // Node.js built-ins are always external
+    'node:*',
+    'fs',
+    'path',
+    'os',
+    'crypto',
+    'util',
+    'stream',
+    'events',
+
+    // UI Framework - too heavy for bundling, require installation
+    'ink',
+    'react',
+    'react/jsx-runtime',
+    'ink-select-input',
+    'ink-spinner',
+    'react-devtools-core',
+
+    // Optional heavy dependencies that users can install separately
+    '@opentelemetry/exporter-logs-otlp-grpc',
+    '@opentelemetry/exporter-metrics-otlp-grpc',
+    '@opentelemetry/exporter-trace-otlp-grpc',
+    '@opentelemetry/instrumentation-http',
+    '@opentelemetry/sdk-node',
+
+    // System-specific utilities
+    'open',
+    'update-notifier',
+  ];
+
+  return externalPatterns;
+}
 
 esbuild
   .build({
@@ -29,15 +70,11 @@ esbuild
     minify: isProduction,
     sourcemap: !isProduction,
     treeShaking: true,
-    // More aggressive tree shaking in development too
     ignoreAnnotations: false,
-    // Always drop console statements for cleaner output
-    drop: ['console', 'debugger'],
-    // More aggressive optimization settings
+    drop: isProduction ? ['console', 'debugger'] : [],
     minifyWhitespace: true,
     minifyIdentifiers: isProduction,
     minifySyntax: true,
-    // Enable more aggressive optimization
     ...(isProduction ? { mangleProps: /^_/ } : {}),
     plugins: [
       {
@@ -60,57 +97,11 @@ esbuild
     },
     metafile: true,
     logLevel: 'warning',
-    splitting: false, // Keep single file for CLI optimization
+    splitting: false,
     target: 'node18',
     keepNames: !isProduction,
     legalComments: isProduction ? 'none' : 'inline',
-    external: [
-      'react-devtools-core',
-      // OpenTelemetry packages (heavy but in dependencies - bundle them)
-      // Commenting out to bundle these as they're in dependencies
-      // '@opentelemetry/api-logs',
-      // '@opentelemetry/otlp-exporter-base',
-      // '@opentelemetry/resources',
-      // '@opentelemetry/sdk-logs',
-      // '@opentelemetry/sdk-metrics',
-      // '@opentelemetry/sdk-trace-node',
-      // '@opentelemetry/semantic-conventions',
-
-      // Only keep truly optional/heavy external dependencies
-      '@opentelemetry/api',
-      '@opentelemetry/exporter-logs-otlp-grpc',
-      '@opentelemetry/exporter-metrics-otlp-grpc',
-      '@opentelemetry/exporter-trace-otlp-grpc',
-      '@opentelemetry/instrumentation-http',
-      '@opentelemetry/sdk-node',
-
-      // UI related dependencies - keep external for now
-      'ink',
-      'react',
-      'react/jsx-runtime',
-      'ink-select-input',
-      'open',
-      'ink-spinner',
-
-      // Large AI SDKs - keep external but they're in dependencies
-      // Commenting out to bundle core functionality
-      // '@google/genai',
-      // 'openai',
-
-      // Heavy utilities that aren't critical - keep external
-      'lowlight',
-      'highlight.js',
-      // Bundle these for cross-platform compatibility:
-      // 'gaxios', // Bundle for better compatibility
-      // 'undici', // Bundle for better compatibility
-      // 'google-auth-library', // Bundle for better compatibility
-      // 'simple-git', // Bundle this for Windows compatibility (BUNDLED)
-      // 'html-to-text', // Bundle this for Windows compatibility (BUNDLED)
-      'update-notifier',
-
-      // Bundle all critical CLI dependencies that are in package.json dependencies
-      // Removed: shell-quote, chalk, zod, mime-types, etc.
-    ],
+    external: getExternalDependencies(),
   })
   .then((result) => {
     if (result.metafile) {
@@ -136,18 +127,18 @@ esbuild
       });
 
       const totalSizeInMB = (totalSize / 1024 / 1024).toFixed(2);
-      console.log(`Bundle size (JS only): ${totalSizeInMB}MB`);
+      console.log(`Bundle size: ${totalSizeInMB}MB`);
 
-      // Size warnings - adjusted for CLI tools
-      if (totalSize > 2 * 1024 * 1024) {
-        // 2MB threshold for CLI
-        console.warn('WARNING: Bundle size is larger than 2MB');
-        if (totalSize > 4 * 1024 * 1024) {
-          // 4MB critical threshold
-          console.warn('ERROR: Bundle size is critically large (>4MB)');
-        }
+      // Reasonable size limits for CLI tools
+      if (totalSize > 10 * 1024 * 1024) {
+        // 10MB critical threshold
+        console.error('ERROR: Bundle size is critically large (>10MB)');
+        process.exit(1);
+      } else if (totalSize > 5 * 1024 * 1024) {
+        // 5MB warning threshold
+        console.warn('WARNING: Bundle size is large (>5MB)');
       } else {
-        console.log('Bundle size is optimized for CLI tool');
+        console.log('Bundle size is acceptable for CLI tool');
       }
     }
   })

@@ -13,12 +13,12 @@ import path from 'path';
 const packageJsonPath = path.resolve(process.cwd(), 'package.json');
 // For workspace packages, check root README.md and LICENSE
 const isWorkspacePackage = process.cwd().includes('packages/');
-const readmePath = isWorkspacePackage ? 
-  path.resolve(process.cwd(), '../../README.md') : 
-  path.resolve(process.cwd(), 'README.md');
-const licensePath = isWorkspacePackage ? 
-  path.resolve(process.cwd(), '../../LICENSE') : 
-  path.resolve(process.cwd(), 'LICENSE');
+const readmePath = isWorkspacePackage
+  ? path.resolve(process.cwd(), '../../README.md')
+  : path.resolve(process.cwd(), 'README.md');
+const licensePath = isWorkspacePackage
+  ? path.resolve(process.cwd(), '../../LICENSE')
+  : path.resolve(process.cwd(), 'LICENSE');
 
 const errors = [];
 

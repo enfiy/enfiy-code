@@ -5,7 +5,7 @@ import { execSync } from 'child_process';
 try {
   execSync('prettier --write .', {
     stdio: ['inherit', 'pipe', 'pipe'],
-    encoding: 'utf8'
+    encoding: 'utf8',
   });
 } catch (error) {
   // Only show actual errors, not warnings or info
