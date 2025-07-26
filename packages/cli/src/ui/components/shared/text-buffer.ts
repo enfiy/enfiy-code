@@ -15,7 +15,12 @@ import os from 'os';
 import pathMod from 'path';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { unescapePath } from '@enfiy/core';
-import { toCodePoints, cpLen, cpSlice, platformStringWidth } from '../../utils/textUtils.js';
+import {
+  toCodePoints,
+  cpLen,
+  cpSlice,
+  platformStringWidth,
+} from '../../utils/textUtils.js';
 
 export type Direction =
   | 'left'

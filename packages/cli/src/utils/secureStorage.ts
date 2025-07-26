@@ -367,13 +367,39 @@ export function getConfiguredProviders(): string[] {
 export function loadApiKeysIntoEnvironment(): void {
   const config = loadSecureConfig();
 
+  debugLogger.info('secure-storage', 'Loading API keys into environment', {
+    providersCount: Object.keys(config.providers).length,
+    providers: Object.keys(config.providers),
+  });
+
   for (const [provider, providerConfig] of Object.entries(config.providers)) {
     if (providerConfig.apiKey) {
       // Map provider names to environment variable names
       const envVar = getEnvVarForProvider(provider);
       if (envVar && !process.env[envVar]) {
         process.env[envVar] = providerConfig.apiKey;
+        debugLogger.info('secure-storage', 'Loaded API key into environment', {
+          provider,
+          envVar,
+        });
+      } else if (envVar && process.env[envVar]) {
+        debugLogger.info('secure-storage', 'Environment variable already set', {
+          provider,
+          envVar,
+        });
+      } else {
+        debugLogger.warn(
+          'secure-storage',
+          'No environment variable mapping for provider',
+          {
+            provider,
+          },
+        );
       }
+    } else {
+      debugLogger.warn('secure-storage', 'No API key found for provider', {
+        provider,
+      });
     }
   }
 }
@@ -383,18 +409,26 @@ export function loadApiKeysIntoEnvironment(): void {
  */
 function getEnvVarForProvider(provider: string): string | undefined {
   const envVarMap: { [key: string]: string } = {
-    // Cloud AI Providers
+    // Cloud AI Providers (lowercase)
     openai: 'OPENAI_API_KEY',
     gemini: 'GEMINI_API_KEY',
     google: 'GOOGLE_API_KEY',
     mistral: 'MISTRAL_API_KEY',
     anthropic: 'ANTHROPIC_API_KEY',
 
+    // Cloud AI Providers (uppercase)
+    OPENAI: 'OPENAI_API_KEY',
+    GEMINI: 'GEMINI_API_KEY',
+    GOOGLE: 'GOOGLE_API_KEY',
+    MISTRAL: 'MISTRAL_API_KEY',
+    ANTHROPIC: 'ANTHROPIC_API_KEY',
+
     // OpenRouter
     openrouter: 'OPENROUTER_API_KEY',
+    OPENROUTER: 'OPENROUTER_API_KEY',
   };
 
-  return envVarMap[provider.toLowerCase()];
+  return envVarMap[provider] || envVarMap[provider.toLowerCase()];
 }
 
 /**
