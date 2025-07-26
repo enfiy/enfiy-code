@@ -7,7 +7,6 @@
  * Based on original work by Google LLC (2025)
  * Modified and extended by Hayate Esaki (2025)
  */
-import { debugLogger } from './debugLogger.js';
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -49,7 +48,7 @@ function _getEncryptionKey(): Buffer {
         return keyData;
       }
       // Invalid key, regenerate
-      debugLogger.warn('secure-storage', 'Invalid key file, regenerating');
+      console.warn('Invalid key file, regenerating');
     }
   } catch (_error) {
     // If we can't read the key file, generate a new one
@@ -312,11 +311,6 @@ export function storeApiKey(
     throw new Error('API key is too long');
   }
 
-  console.log('Storing API key for', provider, {
-    originalLength: apiKey.length,
-    cleanedLength: cleanedApiKey.length,
-    hasControlChars: apiKey !== cleanedApiKey,
-  });
 
   config.providers[provider] = {
     apiKey: cleanedApiKey,
@@ -367,39 +361,13 @@ export function getConfiguredProviders(): string[] {
 export function loadApiKeysIntoEnvironment(): void {
   const config = loadSecureConfig();
 
-  debugLogger.info('secure-storage', 'Loading API keys into environment', {
-    providersCount: Object.keys(config.providers).length,
-    providers: Object.keys(config.providers),
-  });
-
   for (const [provider, providerConfig] of Object.entries(config.providers)) {
     if (providerConfig.apiKey) {
       // Map provider names to environment variable names
       const envVar = getEnvVarForProvider(provider);
       if (envVar && !process.env[envVar]) {
         process.env[envVar] = providerConfig.apiKey;
-        debugLogger.info('secure-storage', 'Loaded API key into environment', {
-          provider,
-          envVar,
-        });
-      } else if (envVar && process.env[envVar]) {
-        debugLogger.info('secure-storage', 'Environment variable already set', {
-          provider,
-          envVar,
-        });
-      } else {
-        debugLogger.warn(
-          'secure-storage',
-          'No environment variable mapping for provider',
-          {
-            provider,
-          },
-        );
       }
-    } else {
-      debugLogger.warn('secure-storage', 'No API key found for provider', {
-        provider,
-      });
     }
   }
 }
@@ -435,27 +403,19 @@ function getEnvVarForProvider(provider: string): string | undefined {
  * Validate API key format
  */
 export function validateApiKey(provider: string, apiKey: string): boolean {
-  debugLogger.info('api-validation', 'Starting API key validation', {
-    provider,
-    providerType: typeof provider,
-    keyLength: apiKey.length,
-    keyPrefix: apiKey.substring(0, 6),
-    fullKey: apiKey,
-  });
-
   // Enhanced validation patterns for security
   const patterns = {
     // OpenAI
-    openai: /^sk-.*$/, // Modified to be more permissive
+    openai: /^sk-.*$/,
 
-    // Google (Gemini) - Very flexible pattern to accept any reasonable key format
+    // Google (Gemini)
     gemini: /^AIza.{20,}$/,
     google: /^AIza.{20,}$/,
 
     // Mistral
     mistral: /^[A-Za-z0-9]{32,}$/,
 
-    // Anthropic - More flexible pattern to handle different key formats
+    // Anthropic
     anthropic: /^sk-ant-[A-Za-z0-9\-_]{20,}$/,
 
     // OpenRouter
@@ -465,41 +425,16 @@ export function validateApiKey(provider: string, apiKey: string): boolean {
   const providerKey = provider.toLowerCase();
   const pattern = patterns[providerKey as keyof typeof patterns];
 
-  debugLogger.info('api-validation', 'Pattern matching details', {
-    providerKey,
-    patternFound: !!pattern,
-    pattern: pattern?.toString(),
-    availablePatterns: Object.keys(patterns),
-  });
-
   if (pattern) {
     const result = pattern.test(apiKey);
-    debugLogger.info('api-validation', 'Pattern test result', { result });
 
     if (!result && (providerKey === 'gemini' || providerKey === 'google')) {
-      debugLogger.warn('api-validation', 'Gemini pattern match failed', {
-        actualKey: apiKey,
-        keyLength: apiKey.length,
-        startsWithAIza: apiKey.startsWith('AIza'),
-        afterAIza: apiKey.substring(4),
-        afterAIzaLength: apiKey.substring(4).length,
-        pattern: pattern.toString(),
-        characterCodes: apiKey
-          .substring(4)
-          .split('')
-          .map((c) => ({ char: c, code: c.charCodeAt(0) })),
-      });
-
-      // Temporary: Allow any key that starts with AIza and is reasonable length
+      // Allow any key that starts with AIza and is reasonable length
       if (
         apiKey.startsWith('AIza') &&
         apiKey.length >= 20 &&
         apiKey.length <= 200
       ) {
-        debugLogger.info(
-          'api-validation',
-          'Allowing Gemini key via fallback criteria',
-        );
         return true;
       }
     }
