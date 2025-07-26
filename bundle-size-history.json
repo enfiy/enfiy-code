@@ -1,16 +1,5 @@
 [
   {
-    "timestamp": "2025-07-21T15:06:13.519Z",
-    "totalSize": 1015321,
-    "totalSizeFormatted": "0.97MB",
-    "files": {
-      "enfiy.js": {
-        "size": 1015321,
-        "sizeFormatted": "0.97MB"
-      }
-    }
-  },
-  {
     "timestamp": "2025-07-21T15:11:04.603Z",
     "totalSize": 1015402,
     "totalSizeFormatted": "0.97MB",
@@ -545,6 +534,17 @@
     "files": {
       "enfiy.js": {
         "size": 4447888,
+        "sizeFormatted": "4.24MB"
+      }
+    }
+  },
+  {
+    "timestamp": "2025-07-26T08:11:29.296Z",
+    "totalSize": 4447866,
+    "totalSizeFormatted": "4.24MB",
+    "files": {
+      "enfiy.js": {
+        "size": 4447866,
         "sizeFormatted": "4.24MB"
       }
     }

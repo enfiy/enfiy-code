@@ -6,3 +6,4 @@ bundle/
 *.map
 CHANGELOG.md
 packages/*/dist/
+packages/cli/dist/
