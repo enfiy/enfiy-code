@@ -13,9 +13,8 @@ import { Colors } from '../colors.js';
 import { SuggestionsDisplay } from './SuggestionsDisplay.js';
 import { useInputHistory } from '../hooks/useInputHistory.js';
 import { TextBuffer } from './shared/text-buffer.js';
-import { cpSlice, cpLen } from '../utils/textUtils.js';
+import { cpSlice, cpLen, platformStringWidth } from '../utils/textUtils.js';
 import chalk from 'chalk';
-import stringWidth from 'string-width';
 import process from 'node:process';
 import { useShellHistory } from '../hooks/useShellHistory.js';
 import { useCompletion } from '../hooks/useCompletion.js';
@@ -405,7 +404,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
               const cursorVisualRow = cursorVisualRowAbsolute - scrollVisualRow;
 
               let display = cpSlice(lineText, 0, inputWidth);
-              const currentVisualWidth = stringWidth(display);
+              const currentVisualWidth = platformStringWidth(display);
               if (currentVisualWidth < inputWidth) {
                 display = display + ' '.repeat(inputWidth - currentVisualWidth);
               }
