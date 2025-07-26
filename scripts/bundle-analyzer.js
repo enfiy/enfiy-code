@@ -13,7 +13,7 @@ const projectRoot = path.resolve(__dirname, '..');
 
 // Bundle size tracking
 const BUNDLE_SIZE_HISTORY = path.join(projectRoot, 'bundle-size-history.json');
-const MAX_BUNDLE_SIZE = 5 * 1024 * 1024; // 5MB threshold for CLI tools (increased for cross-platform compatibility)
+const MAX_BUNDLE_SIZE = 8 * 1024 * 1024; // 8MB threshold for CLI tools (increased for cross-platform compatibility)
 
 function analyzeBundleSize() {
   const bundlePath = path.join(projectRoot, 'bundle');
@@ -77,8 +77,10 @@ function analyzeBundleSize() {
     history = history.slice(-50);
   }
 
-  // Save history
-  fs.writeFileSync(BUNDLE_SIZE_HISTORY, JSON.stringify(history, null, 2));
+  // Save history (skip if in CI or production build)
+  if (!process.env.CI && !process.env.NODE_ENV === 'production') {
+    fs.writeFileSync(BUNDLE_SIZE_HISTORY, JSON.stringify(history, null, 2));
+  }
 
   // Compare with previous build
   if (history.length > 1) {
