@@ -37,14 +37,17 @@ execSync('node ./scripts/check-build-status.js', {
 
 const nodeArgs = [];
 let sandboxCommand = undefined;
-try {
-  sandboxCommand = execSync('node scripts/sandbox_command.js', {
-    cwd: root,
-  })
-    .toString()
-    .trim();
-} catch {
-  // ignore
+// Skip sandbox command on Windows to avoid hangs
+if (process.platform !== 'win32') {
+  try {
+    sandboxCommand = execSync('node scripts/sandbox_command.js', {
+      cwd: root,
+    })
+      .toString()
+      .trim();
+  } catch {
+    // ignore
+  }
 }
 // if debugging is enabled and sandboxing is disabled, use --inspect-brk flag
 // note with sandboxing this flag is passed to the binary inside the sandbox

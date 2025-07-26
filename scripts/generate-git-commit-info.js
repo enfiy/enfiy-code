@@ -38,18 +38,24 @@ if (!existsSync(generatedDir)) {
 try {
   const gitHash = execSync('git rev-parse --short HEAD', {
     encoding: 'utf-8',
+    stdio: ['ignore', 'pipe', 'ignore'], // Suppress stderr
   }).trim();
   if (gitHash) {
     gitCommitInfo = gitHash;
-    const gitStatus = execSync('git status --porcelain', {
-      encoding: 'utf-8',
-    }).trim();
-    if (gitStatus) {
-      gitCommitInfo = `${gitHash} (local modifications)`;
+    try {
+      const gitStatus = execSync('git status --porcelain', {
+        encoding: 'utf-8',
+        stdio: ['ignore', 'pipe', 'ignore'], // Suppress stderr
+      }).trim();
+      if (gitStatus) {
+        gitCommitInfo = `${gitHash} (local modifications)`;
+      }
+    } catch {
+      // ignore git status errors
     }
   }
 } catch {
-  // ignore
+  // ignore - git not available or not in a git repository
 }
 
 const fileContent = `/**

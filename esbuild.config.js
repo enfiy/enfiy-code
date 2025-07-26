@@ -101,10 +101,10 @@ esbuild
       // Heavy utilities that aren't critical - keep external
       'lowlight',
       'highlight.js',
-      // Bundle these for Windows compatibility:
-      // 'gaxios',
-      // 'undici',
-      'google-auth-library',
+      // Bundle these for cross-platform compatibility:
+      // 'gaxios', // Bundle for better compatibility
+      // 'undici', // Bundle for better compatibility
+      // 'google-auth-library', // Bundle for better compatibility
       // 'simple-git', // Bundle this for Windows compatibility
       // 'html-to-text', // Bundle this for Windows compatibility
       'update-notifier',
