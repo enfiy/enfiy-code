@@ -28,6 +28,7 @@ npm install -g @enfiy/enfiy-code@latest
 ### Verification
 
 After installation, verify the fix by running:
+
 ```bash
 enfiy --version
 ```

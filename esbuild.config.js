@@ -69,46 +69,46 @@ esbuild
       // OpenTelemetry packages (heavy but in dependencies - bundle them)
       // Commenting out to bundle these as they're in dependencies
       // '@opentelemetry/api-logs',
-      // '@opentelemetry/otlp-exporter-base', 
+      // '@opentelemetry/otlp-exporter-base',
       // '@opentelemetry/resources',
       // '@opentelemetry/sdk-logs',
       // '@opentelemetry/sdk-metrics',
       // '@opentelemetry/sdk-trace-node',
       // '@opentelemetry/semantic-conventions',
-      
+
       // Only keep truly optional/heavy external dependencies
       '@opentelemetry/api',
       '@opentelemetry/exporter-logs-otlp-grpc',
-      '@opentelemetry/exporter-metrics-otlp-grpc', 
+      '@opentelemetry/exporter-metrics-otlp-grpc',
       '@opentelemetry/exporter-trace-otlp-grpc',
       '@opentelemetry/instrumentation-http',
       '@opentelemetry/sdk-node',
-      
+
       // UI related dependencies - keep external for now
       'ink',
-      'react', 
+      'react',
       'react/jsx-runtime',
       'ink-select-input',
       'read-package-up',
       'open',
       'ink-spinner',
-      
+
       // Large AI SDKs - keep external but they're in dependencies
       // Commenting out to bundle core functionality
       // '@google/genai',
       // 'openai',
-      
+
       // Heavy utilities that aren't critical - keep external
       'lowlight',
       'highlight.js',
       // Bundle these for Windows compatibility:
-      // 'gaxios', 
-      // 'undici', 
+      // 'gaxios',
+      // 'undici',
       'google-auth-library',
       // 'simple-git', // Bundle this for Windows compatibility
       // 'html-to-text', // Bundle this for Windows compatibility
       'update-notifier',
-      
+
       // Bundle all critical CLI dependencies that are in package.json dependencies
       // Removed: shell-quote, chalk, zod, mime-types, etc.
     ],
