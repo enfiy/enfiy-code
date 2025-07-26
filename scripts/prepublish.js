@@ -11,8 +11,14 @@ import fs from 'fs';
 import path from 'path';
 
 const packageJsonPath = path.resolve(process.cwd(), 'package.json');
-const readmePath = path.resolve(process.cwd(), 'README.md');
-const licensePath = path.resolve(process.cwd(), 'LICENSE');
+// For CLI package, check root README.md and LICENSE
+const isCliPackage = process.cwd().includes('packages/cli');
+const readmePath = isCliPackage ? 
+  path.resolve(process.cwd(), '../../README.md') : 
+  path.resolve(process.cwd(), 'README.md');
+const licensePath = isCliPackage ? 
+  path.resolve(process.cwd(), '../../LICENSE') : 
+  path.resolve(process.cwd(), 'LICENSE');
 
 const errors = [];
 
