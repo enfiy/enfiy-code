@@ -39,20 +39,23 @@ execSync('npm run build:packages', { stdio: 'inherit', cwd: root });
 
 // also build container image if sandboxing is enabled
 // skip (-s) npm install + build since we did that above
-try {
-  execSync('node scripts/sandbox_command.js -q', {
-    stdio: 'inherit',
-    cwd: root,
-  });
-  if (
-    process.env.BUILD_SANDBOX === '1' ||
-    process.env.BUILD_SANDBOX === 'true'
-  ) {
-    execSync('node scripts/build_sandbox.js -s', {
+// Skip sandbox commands on Windows as they can cause hangs
+if (process.platform !== 'win32') {
+  try {
+    execSync('node scripts/sandbox_command.js -q', {
       stdio: 'inherit',
       cwd: root,
     });
+    if (
+      process.env.BUILD_SANDBOX === '1' ||
+      process.env.BUILD_SANDBOX === 'true'
+    ) {
+      execSync('node scripts/build_sandbox.js -s', {
+        stdio: 'inherit',
+        cwd: root,
+      });
+    }
+  } catch {
+    // ignore
   }
-} catch {
-  // ignore
 }
