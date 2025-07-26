@@ -101,11 +101,12 @@ esbuild
       // Heavy utilities that aren't critical - keep external
       'lowlight',
       'highlight.js',
-      'gaxios',
-      'undici', 
+      // Bundle these for Windows compatibility:
+      // 'gaxios', 
+      // 'undici', 
       'google-auth-library',
-      'simple-git',
-      'html-to-text',
+      // 'simple-git', // Bundle this for Windows compatibility
+      // 'html-to-text', // Bundle this for Windows compatibility
       'update-notifier',
       
       // Bundle all critical CLI dependencies that are in package.json dependencies
