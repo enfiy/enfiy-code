@@ -46,7 +46,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "lint:ci": "npm run lint:ci --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "format": "prettier --write .",
+    "format": "prettier --write . --loglevel warn",
     "format:check": "prettier --check .",
     "pre-commit": "npm run format && git add -A",
     "preflight": "npm run clean && npm ci && npm run format && npm run lint:ci && npm run build && npm run typecheck && npm run test:ci",
