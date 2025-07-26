@@ -141,7 +141,7 @@ export class MultiProviderClient {
         apiKey = process.env.OPENAI_API_KEY;
         break;
       case ProviderType.GEMINI:
-        apiKey = process.env.GEMINI_API_KEY;
+        apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
         break;
       case ProviderType.MISTRAL:
         apiKey = process.env.MISTRAL_API_KEY;
@@ -347,7 +347,7 @@ export class MultiProviderClient {
       case ProviderType.OPENAI:
         return 'OPENAI_API_KEY';
       case ProviderType.GEMINI:
-        return 'GEMINI_API_KEY';
+        return 'GEMINI_API_KEY or GOOGLE_API_KEY';
       case ProviderType.MISTRAL:
         return 'MISTRAL_API_KEY';
       case ProviderType.ANTHROPIC:
