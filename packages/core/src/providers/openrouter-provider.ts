@@ -105,16 +105,12 @@ export class OpenRouterProvider extends BaseProvider {
       const data = await response.json();
       const models = data.data || [];
 
-      // Filter and map model IDs
+      // Return all available models without filtering
+      // This allows users to access all models available on OpenRouter
+      // including qwen3-coder, kimi-k2, and other free models
       return models
         .map((model: { id: string }) => model.id)
-        .filter(
-          (id: string) =>
-            id.includes('claude') ||
-            id.includes('gpt') ||
-            id.includes('gemini') ||
-            id.includes('mistral'),
-        );
+        .sort((a: string, b: string) => a.localeCompare(b));
     } catch {
       return this.getRecommendedModels();
     }
@@ -146,12 +142,18 @@ export class OpenRouterProvider extends BaseProvider {
       'mistralai/mistral-medium',
       'mistralai/mistral-large',
 
-      // Other popular models
+      // Free and popular models
       'meta-llama/llama-2-70b-chat',
       'meta-llama/llama-2-13b-chat',
       'meta-llama/codellama-34b-instruct',
       'nous-hermes-2-mixtral-8x7b-dpo',
       'phind/phind-codellama-34b',
+      
+      // Additional free models requested by users
+      'qwen/qwen-2.5-coder-32b-instruct',
+      'kimi/k2-65b',
+      'deepseek/deepseek-coder-33b-instruct',
+      'codellama/codellama-70b-instruct',
     ];
   }
 

@@ -1441,7 +1441,8 @@ export function useTextBuffer({
               .some((c) => c.charCodeAt(0) > 127),
             beforeText: text,
           });
-          insert(input);
+          // Use insertStr directly for paste to bypass file path detection
+          insertStr(input);
           console.log('[HANDLE_INPUT] After paste insertion:', {
             afterText: text,
             cursor: [cursorRow, cursorCol],

@@ -101,6 +101,119 @@ export class ModelManager {
   }
 
   /**
+   * Get available OpenRouter models dynamically
+   */
+  private async getOpenRouterModels(): Promise<ModelInfo[]> {
+    try {
+      // For now, return a comprehensive list of OpenRouter models
+      // In the future, this could be fetched dynamically from the OpenRouter API
+      const modelIds = [
+        // Claude models
+        'anthropic/claude-3.5-sonnet',
+        'anthropic/claude-3-opus',
+        'anthropic/claude-3-sonnet',
+        'anthropic/claude-3-haiku',
+        
+        // Free models
+        'qwen/qwen-2.5-coder-32b-instruct',
+        'kimi/k2-65b',
+        'deepseek/deepseek-coder-33b-instruct',
+        'codellama/codellama-70b-instruct',
+        
+        // GPT models
+        'openai/gpt-4-turbo',
+        'openai/gpt-3.5-turbo',
+        
+        // Llama models
+        'meta-llama/llama-3.2-90b-instruct',
+        'meta-llama/llama-2-70b-chat',
+        
+        // Other popular models
+        'mistralai/mistral-large',
+        'google/gemini-pro',
+      ];
+      
+      return modelIds.map((modelId: string) => {
+        // Determine cost tier based on model name
+        let costTier: 'free' | 'low' | 'medium' | 'high' = 'medium';
+        if (modelId.includes('free') || modelId.includes('qwen') || modelId.includes('kimi')) {
+          costTier = 'free';
+        } else if (modelId.includes('3.5') || modelId.includes('flash') || modelId.includes('haiku')) {
+          costTier = 'low';
+        } else if (modelId.includes('opus') || modelId.includes('gpt-4') || modelId.includes('70b')) {
+          costTier = 'high';
+        }
+
+        // Extract display name from model ID
+        const displayName = modelId.split('/').pop() || modelId;
+
+        // Determine capabilities based on model name
+        const capabilities: string[] = ['code', 'reasoning'];
+        if (modelId.includes('vision') || modelId.includes('multimodal')) {
+          capabilities.push('vision');
+        }
+        if (modelId.includes('coder') || modelId.includes('code')) {
+          capabilities.push('advanced-code');
+        }
+
+        // Estimate context length
+        let contextLength = 128000; // Default
+        if (modelId.includes('16k')) contextLength = 16000;
+        else if (modelId.includes('32k')) contextLength = 32000;
+        else if (modelId.includes('100k')) contextLength = 100000;
+        else if (modelId.includes('200k')) contextLength = 200000;
+        else if (modelId.includes('256k')) contextLength = 256000;
+
+        return {
+          name: modelId,
+          description: `${displayName} via OpenRouter`,
+          provider: 'openrouter',
+          capabilities,
+          costTier,
+          contextLength,
+          isAvailable: true,
+          displayName,
+        };
+      });
+    } catch (error) {
+      console.warn('Failed to fetch OpenRouter models:', error);
+      // Return fallback models if API fails
+      return [
+        {
+          name: 'anthropic/claude-3.5-sonnet',
+          description: 'Claude 3.5 Sonnet via OpenRouter',
+          provider: 'openrouter',
+          capabilities: ['code', 'reasoning', 'analysis'],
+          costTier: 'medium',
+          contextLength: 200000,
+          isAvailable: true,
+          displayName: 'claude-3.5-sonnet',
+        },
+        {
+          name: 'qwen/qwen-2.5-coder-32b-instruct',
+          description: 'Qwen 2.5 Coder via OpenRouter (Free)',
+          provider: 'openrouter',
+          capabilities: ['code', 'reasoning', 'advanced-code'],
+          costTier: 'free',
+          contextLength: 32000,
+          isAvailable: true,
+          displayName: 'qwen-2.5-coder-32b',
+        },
+        {
+          name: 'kimi/k2-65b',
+          description: 'Kimi K2 via OpenRouter (Free, 256k context)',
+          provider: 'openrouter',
+          capabilities: ['code', 'reasoning'],
+          costTier: 'free',
+          contextLength: 256000,
+          isAvailable: true,
+          displayName: 'kimi-k2-65b',
+        },
+      ];
+    }
+  }
+
+  /**
    * Get available Ollama models
    */
   private async getOllamaModels(): Promise<ModelInfo[]> {
@@ -286,28 +399,9 @@ export class ModelManager {
     }
 
     if (authStatus.openrouter) {
-      availableModels.push(
-        {
-          name: 'anthropic/claude-3.5-sonnet',
-          description: 'Claude 3.5 Sonnet via OpenRouter',
-          provider: 'openrouter',
-          capabilities: ['code', 'reasoning', 'analysis'],
-          costTier: 'medium',
-          contextLength: 200000,
-          isAvailable: true,
-          displayName: 'claude-3.5-sonnet',
-        },
-        {
-          name: 'meta-llama/llama-3.2-90b-instruct',
-          description: 'Llama 3.2 90B Instruct via OpenRouter',
-          provider: 'openrouter',
-          capabilities: ['code', 'reasoning'],
-          costTier: 'high',
-          contextLength: 128000,
-          isAvailable: true,
-          displayName: 'llama-3.2-90b-instruct',
-        },
-      );
+      // Get models from OpenRouter dynamically
+      const openrouterModels = await this.getOpenRouterModels();
+      availableModels.push(...openrouterModels);
     }
 
     return availableModels;
