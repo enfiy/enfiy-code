@@ -29,8 +29,9 @@ export class AnthropicProvider extends BaseProvider {
     }
 
     // Log a masked version of the API key for debugging
+    const keyLength = config.apiKey.length;
     console.log(
-      `[Anthropic Provider] Initializing with API key: ${config.apiKey.substring(0, 3)}***`,
+      `[Anthropic Provider] Initializing with API key: ${config.apiKey.substring(0, 8)}***${config.apiKey.substring(keyLength - 4)} (length: ${keyLength})`,
     );
 
     this.client = new Anthropic({
@@ -65,8 +66,12 @@ export class AnthropicProvider extends BaseProvider {
     return [
       'claude-3-5-sonnet-20241022',
       'claude-3-5-sonnet-20240620',
+      'claude-3-sonnet-20240229',
       'claude-3-opus-20240229',
+      'claude-3-haiku-20240307',
       'claude-3-5-haiku-20241022',
+      'claude-2.1',
+      'claude-2.0',
     ];
   }
 
@@ -156,14 +161,35 @@ export class AnthropicProvider extends BaseProvider {
     const messages = this.convertToAnthropicMessages(params.contents);
     const systemPrompt = this.getSystemPrompt(params.contents);
 
-    const response = await this.client.messages.create({
-      model: params.model,
-      messages,
-      system: systemPrompt,
-      max_tokens: params.config?.maxOutputTokens || 4096,
-      temperature: params.config?.temperature,
-      top_p: params.config?.topP,
-    });
+    let response;
+    try {
+      response = await this.client.messages.create({
+        model: params.model,
+        messages,
+        system: systemPrompt,
+        max_tokens: params.config?.maxOutputTokens || 4096,
+        temperature: params.config?.temperature,
+        top_p: params.config?.topP,
+      });
+    } catch (error) {
+      // Handle Anthropic-specific errors
+      if (error instanceof Anthropic.APIError) {
+        console.error('[Anthropic] API Error:', {
+          status: error.status,
+          message: error.message,
+          type: (error.error as any)?.type,
+        });
+        
+        // Re-throw with more context
+        const errorData = error.error as { type?: string };
+        if (errorData?.type === 'overloaded_error') {
+          throw new Error('Anthropic API is currently overloaded. Please try again in a few moments.');
+        }
+        
+        throw error;
+      }
+      throw error;
+    }
 
     return this.convertToStandardResponse(response);
   }
@@ -188,15 +214,36 @@ export class AnthropicProvider extends BaseProvider {
     const messages = this.convertToAnthropicMessages(params.contents);
     const systemPrompt = this.getSystemPrompt(params.contents);
 
-    const stream = await this.client.messages.create({
-      model: params.model,
-      messages,
-      system: systemPrompt,
-      max_tokens: params.config?.maxOutputTokens || 4096,
-      temperature: params.config?.temperature,
-      top_p: params.config?.topP,
-      stream: true,
-    });
+    let stream;
+    try {
+      stream = await this.client.messages.create({
+        model: params.model,
+        messages,
+        system: systemPrompt,
+        max_tokens: params.config?.maxOutputTokens || 4096,
+        temperature: params.config?.temperature,
+        top_p: params.config?.topP,
+        stream: true,
+      });
+    } catch (error) {
+      // Handle Anthropic-specific errors
+      if (error instanceof Anthropic.APIError) {
+        console.error('[Anthropic] API Error:', {
+          status: error.status,
+          message: error.message,
+          type: (error.error as any)?.type,
+        });
+        
+        // Re-throw with more context
+        const errorData = error.error as { type?: string };
+        if (errorData?.type === 'overloaded_error') {
+          throw new Error('Anthropic API is currently overloaded. Please try again in a few moments.');
+        }
+        
+        throw error;
+      }
+      throw error;
+    }
 
     let _accumulatedText = '';
 

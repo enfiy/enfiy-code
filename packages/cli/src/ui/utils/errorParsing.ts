@@ -70,6 +70,17 @@ export function parseAndFormatApiError(
     return text;
   }
 
+  // Handle Anthropic error format
+  if (typeof error === 'object' && error !== null && 'error' in error) {
+    const err = error as any;
+    if (err.error?.type === 'overloaded_error') {
+      return '[API Error: Anthropic API is currently overloaded. Please try again in a few moments.]';
+    }
+    if (err.error?.message) {
+      return `[API Error: ${err.error.message}]`;
+    }
+  }
+
   // The error message might be a string containing a JSON object.
   if (typeof error === 'string') {
     const jsonStart = error.indexOf('{');
