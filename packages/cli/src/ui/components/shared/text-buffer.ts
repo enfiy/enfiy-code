@@ -1490,6 +1490,7 @@ export function useTextBuffer({
       backspace,
       del,
       insert,
+      insertStr,
     ],
   );
 

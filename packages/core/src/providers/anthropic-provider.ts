@@ -177,7 +177,7 @@ export class AnthropicProvider extends BaseProvider {
         console.error('[Anthropic] API Error:', {
           status: error.status,
           message: error.message,
-          type: (error.error as any)?.type,
+          type: (error.error as { type?: string })?.type,
         });
         
         // Re-throw with more context
@@ -231,7 +231,7 @@ export class AnthropicProvider extends BaseProvider {
         console.error('[Anthropic] API Error:', {
           status: error.status,
           message: error.message,
-          type: (error.error as any)?.type,
+          type: (error.error as { type?: string })?.type,
         });
         
         // Re-throw with more context

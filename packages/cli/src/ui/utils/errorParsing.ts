@@ -72,7 +72,7 @@ export function parseAndFormatApiError(
 
   // Handle Anthropic error format
   if (typeof error === 'object' && error !== null && 'error' in error) {
-    const err = error as any;
+    const err = error as { error?: { type?: string; message?: string } };
     if (err.error?.type === 'overloaded_error') {
       return '[API Error: Anthropic API is currently overloaded. Please try again in a few moments.]';
     }
