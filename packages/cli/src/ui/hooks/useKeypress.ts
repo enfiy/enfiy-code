@@ -77,7 +77,6 @@ export function useKeypress(
     };
 
     const handleKeypress = (_: unknown, key: Key) => {
-
       // Skip paste handling - let it go through normal processing
       if (key.name === 'paste-start') {
         isPaste = true;
