@@ -25,7 +25,12 @@ export class AnthropicProvider extends BaseProvider {
 
   protected async performInitialization(config: ProviderConfig): Promise<void> {
     if (!config.apiKey) {
-      throw new Error('Anthropic API key is required');
+      throw new Error('Please check your API key configuration');
+    }
+
+    // Validate API key format
+    if (!config.apiKey.startsWith('sk-ant-') || config.apiKey.length < 30) {
+      throw new Error('Please check your API key configuration');
     }
 
     // Log a masked version of the API key for debugging
@@ -179,13 +184,20 @@ export class AnthropicProvider extends BaseProvider {
           message: error.message,
           type: (error.error as { type?: string })?.type,
         });
-        
+
+        // Handle authentication errors
+        if (error.status === 401) {
+          throw new Error('Please check your API key configuration');
+        }
+
         // Re-throw with more context
         const errorData = error.error as { type?: string };
         if (errorData?.type === 'overloaded_error') {
-          throw new Error('Anthropic API is currently overloaded. Please try again in a few moments.');
+          throw new Error(
+            'Anthropic API is currently overloaded. Please try again in a few moments.',
+          );
         }
-        
+
         throw error;
       }
       throw error;
@@ -233,13 +245,20 @@ export class AnthropicProvider extends BaseProvider {
           message: error.message,
           type: (error.error as { type?: string })?.type,
         });
-        
+
+        // Handle authentication errors
+        if (error.status === 401) {
+          throw new Error('Please check your API key configuration');
+        }
+
         // Re-throw with more context
         const errorData = error.error as { type?: string };
         if (errorData?.type === 'overloaded_error') {
-          throw new Error('Anthropic API is currently overloaded. Please try again in a few moments.');
+          throw new Error(
+            'Anthropic API is currently overloaded. Please try again in a few moments.',
+          );
         }
-        
+
         throw error;
       }
       throw error;
