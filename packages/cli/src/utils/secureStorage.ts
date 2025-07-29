@@ -366,6 +366,9 @@ export function loadApiKeysIntoEnvironment(): void {
       const envVar = getEnvVarForProvider(provider);
       if (envVar && !process.env[envVar]) {
         process.env[envVar] = providerConfig.apiKey;
+        console.log(
+          `[Secure Storage] Loaded API key for ${provider} into ${envVar}`,
+        );
       }
     }
   }

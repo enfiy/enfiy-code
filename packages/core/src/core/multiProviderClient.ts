@@ -177,9 +177,7 @@ export class MultiProviderClient {
       const apiKey = this.getApiKeyForProvider(providerType);
 
       if (providerType !== ProviderType.OLLAMA && !apiKey) {
-        throw new Error(
-          `API key not found for ${providerType}. Please set the corresponding environment variable.`,
-        );
+        throw new Error('Please check your API key configuration');
       }
 
       const providerConfig: ProviderConfig = {

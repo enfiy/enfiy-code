@@ -113,34 +113,46 @@ export class ModelManager {
         'anthropic/claude-3-opus',
         'anthropic/claude-3-sonnet',
         'anthropic/claude-3-haiku',
-        
+
         // Free models
         'qwen/qwen-2.5-coder-32b-instruct',
         'kimi/k2-65b',
         'deepseek/deepseek-coder-33b-instruct',
         'codellama/codellama-70b-instruct',
-        
+
         // GPT models
         'openai/gpt-4-turbo',
         'openai/gpt-3.5-turbo',
-        
+
         // Llama models
         'meta-llama/llama-3.2-90b-instruct',
         'meta-llama/llama-2-70b-chat',
-        
+
         // Other popular models
         'mistralai/mistral-large',
         'google/gemini-pro',
       ];
-      
+
       return modelIds.map((modelId: string) => {
         // Determine cost tier based on model name
         let costTier: 'free' | 'low' | 'medium' | 'high' = 'medium';
-        if (modelId.includes('free') || modelId.includes('qwen') || modelId.includes('kimi')) {
+        if (
+          modelId.includes('free') ||
+          modelId.includes('qwen') ||
+          modelId.includes('kimi')
+        ) {
           costTier = 'free';
-        } else if (modelId.includes('3.5') || modelId.includes('flash') || modelId.includes('haiku')) {
+        } else if (
+          modelId.includes('3.5') ||
+          modelId.includes('flash') ||
+          modelId.includes('haiku')
+        ) {
           costTier = 'low';
-        } else if (modelId.includes('opus') || modelId.includes('gpt-4') || modelId.includes('70b')) {
+        } else if (
+          modelId.includes('opus') ||
+          modelId.includes('gpt-4') ||
+          modelId.includes('70b')
+        ) {
           costTier = 'high';
         }
 

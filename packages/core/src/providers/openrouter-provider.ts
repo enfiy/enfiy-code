@@ -148,7 +148,7 @@ export class OpenRouterProvider extends BaseProvider {
       'meta-llama/codellama-34b-instruct',
       'nous-hermes-2-mixtral-8x7b-dpo',
       'phind/phind-codellama-34b',
-      
+
       // Additional free models requested by users
       'qwen/qwen-2.5-coder-32b-instruct',
       'kimi/k2-65b',
