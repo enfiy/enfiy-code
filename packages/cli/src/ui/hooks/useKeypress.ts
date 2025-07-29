@@ -52,7 +52,6 @@ export function useKeypress(
 
     // Simple universal buffer for all input types
     let inputBuffer = '';
-    let lastInputTime = 0;
     const INPUT_FLUSH_TIMEOUT = 30; // ms - universal timeout for all input types
     let flushTimer: NodeJS.Timeout | null = null;
 
@@ -78,7 +77,6 @@ export function useKeypress(
     };
 
     const handleKeypress = (_: unknown, key: Key) => {
-      const currentTime = Date.now();
 
       // Skip paste handling - let it go through normal processing
       if (key.name === 'paste-start') {
@@ -137,7 +135,6 @@ export function useKeypress(
       if (key.sequence && key.sequence.length > 0) {
         // Add to buffer
         inputBuffer += key.sequence;
-        lastInputTime = currentTime;
 
         // Clear existing timer
         if (flushTimer) {

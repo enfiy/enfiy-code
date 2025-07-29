@@ -776,7 +776,7 @@ export function useTextBuffer({
         }
       } catch (error) {
         console.error('[APPLY_OPS] Error during operations:', {
-          error: error,
+          error,
           errorMessage: error instanceof Error ? error.message : String(error),
           stack: error instanceof Error ? error.stack : undefined,
           opsLength: ops.length,
@@ -886,7 +886,7 @@ export function useTextBuffer({
       } catch (error) {
         console.error('[INSERT] Error during insertion:', {
           input: ch,
-          error: error,
+          error,
           errorMessage: error instanceof Error ? error.message : String(error),
           stack: error instanceof Error ? error.stack : undefined,
         });
