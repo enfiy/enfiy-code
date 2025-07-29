@@ -10,7 +10,7 @@
   },
   "repository": "enfiy/enfiy-code",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "keywords": [
     "cli",
