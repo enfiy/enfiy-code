@@ -584,227 +584,330 @@ export function useTextBuffer({
 
   const applyOperations = useCallback(
     (ops: UpdateOperation[]) => {
-      if (ops.length === 0) return;
+      try {
+        if (ops.length === 0) return;
 
-      const expandedOps: UpdateOperation[] = [];
-      for (const op of ops) {
-        if (op.type === 'insert') {
-          let currentText = '';
-          for (const char of toCodePoints(op.payload)) {
-            if (char.codePointAt(0) === 127) {
-              // \x7f
-              if (currentText.length > 0) {
-                expandedOps.push({ type: 'insert', payload: currentText });
-                currentText = '';
+        if (process.env['TEXTBUFFER_DEBUG'] === '1') {
+          console.log('[APPLY_OPS] Starting operations:', {
+            opsCount: ops.length,
+            ops: ops.map((op, i) => ({
+              index: i,
+              type: op.type,
+              payload: op.type === 'insert' ? op.payload : 'N/A',
+              payloadLength: op.type === 'insert' ? op.payload.length : 0,
+            })),
+          });
+        }
+
+        const expandedOps: UpdateOperation[] = [];
+        for (const op of ops) {
+          if (op.type === 'insert') {
+            let currentText = '';
+            for (const char of toCodePoints(op.payload)) {
+              if (char.codePointAt(0) === 127) {
+                // \x7f
+                if (currentText.length > 0) {
+                  expandedOps.push({ type: 'insert', payload: currentText });
+                  currentText = '';
+                }
+                expandedOps.push({ type: 'backspace' });
+              } else {
+                currentText += char;
               }
-              expandedOps.push({ type: 'backspace' });
+            }
+            if (currentText.length > 0) {
+              expandedOps.push({ type: 'insert', payload: currentText });
+            }
+          } else {
+            expandedOps.push(op);
+          }
+        }
+
+        if (expandedOps.length === 0) {
+          return;
+        }
+
+        pushUndo(); // Snapshot before applying batch of updates
+
+        const newLines = [...lines];
+        let newCursorRow = cursorRow;
+        let newCursorCol = cursorCol;
+
+        const currentLine = (r: number) => newLines[r] ?? '';
+
+        for (const op of expandedOps) {
+          if (op.type === 'insert') {
+            const originalPayload = op.payload;
+            const normalizedPayload = op.payload
+              .replace(/\r\n/g, '\n')
+              .replace(/\r/g, '\n');
+            const str = stripUnsafeCharacters(normalizedPayload);
+
+            // Debug for all character operations - enabled for IME diagnosis
+            const hasMixedChars =
+              originalPayload.length > 1 &&
+              originalPayload.split('').some((c) => c.charCodeAt(0) > 127) &&
+              originalPayload.split('').some((c) => c.charCodeAt(0) <= 127);
+
+            if (
+              originalPayload.length > 1 ||
+              originalPayload.charCodeAt(0) > 127
+            ) {
+              console.log('[APPLY_OPS] Processing insert operation:', {
+                originalPayload,
+                normalizedPayload,
+                strippedPayload: str,
+                hasMixedChars,
+                payloadDetails: Array.from(originalPayload).map((c) => ({
+                  char: c,
+                  code: c.charCodeAt(0),
+                  isAscii: c.charCodeAt(0) <= 127,
+                })),
+                beforeText: newLines.join('\n'),
+                currentCursor: [newCursorRow, newCursorCol],
+              });
+            }
+
+            const parts = str.split('\n');
+            const lineContent = currentLine(newCursorRow);
+            const before = cpSlice(lineContent, 0, newCursorCol);
+            const after = cpSlice(lineContent, newCursorCol);
+
+            if (parts.length > 1) {
+              newLines[newCursorRow] = before + parts[0];
+              const remainingParts = parts.slice(1);
+              const lastPartOriginal = remainingParts.pop() ?? '';
+              newLines.splice(newCursorRow + 1, 0, ...remainingParts);
+              newLines.splice(
+                newCursorRow + parts.length - 1,
+                0,
+                lastPartOriginal + after,
+              );
+              newCursorRow = newCursorRow + parts.length - 1;
+              newCursorCol = cpLen(lastPartOriginal);
             } else {
-              currentText += char;
+              const resultLine = before + parts[0] + after;
+              newLines[newCursorRow] = resultLine;
+              newCursorCol = cpLen(before) + cpLen(parts[0]);
+
+              // Debug logging for Japanese text insertion - disabled
+            }
+          } else if (op.type === 'backspace') {
+            console.log('[APPLY_OPS] Processing backspace:', {
+              cursor: [newCursorRow, newCursorCol],
+              currentText: newLines.join('\n'),
+            });
+
+            if (newCursorCol === 0 && newCursorRow === 0) {
+              console.log('[APPLY_OPS] Backspace at beginning, skipping');
+              continue;
+            }
+
+            if (newCursorCol > 0) {
+              const lineContent = currentLine(newCursorRow);
+              console.log('[APPLY_OPS] Backspace within line:', {
+                lineContent,
+                cursorCol: newCursorCol,
+                charToDelete: cpSlice(
+                  lineContent,
+                  newCursorCol - 1,
+                  newCursorCol,
+                ),
+              });
+
+              newLines[newCursorRow] =
+                cpSlice(lineContent, 0, newCursorCol - 1) +
+                cpSlice(lineContent, newCursorCol);
+              newCursorCol--;
+
+              console.log('[APPLY_OPS] After backspace within line:', {
+                newLineContent: newLines[newCursorRow],
+                newCursor: [newCursorRow, newCursorCol],
+              });
+            } else if (newCursorRow > 0) {
+              const prevLineContent = currentLine(newCursorRow - 1);
+              const currentLineContentVal = currentLine(newCursorRow);
+              const newCol = cpLen(prevLineContent);
+              console.log(
+                '[APPLY_OPS] Backspace at line beginning, merging lines:',
+                {
+                  prevLine: prevLineContent,
+                  currentLine: currentLineContentVal,
+                  mergedLine: prevLineContent + currentLineContentVal,
+                },
+              );
+
+              newLines[newCursorRow - 1] =
+                prevLineContent + currentLineContentVal;
+              newLines.splice(newCursorRow, 1);
+              newCursorRow--;
+              newCursorCol = newCol;
+
+              console.log('[APPLY_OPS] After line merge:', {
+                newCursor: [newCursorRow, newCursorCol],
+                newLines,
+              });
             }
           }
-          if (currentText.length > 0) {
-            expandedOps.push({ type: 'insert', payload: currentText });
-          }
-        } else {
-          expandedOps.push(op);
         }
-      }
 
-      if (expandedOps.length === 0) {
-        return;
-      }
-
-      pushUndo(); // Snapshot before applying batch of updates
-
-      const newLines = [...lines];
-      let newCursorRow = cursorRow;
-      let newCursorCol = cursorCol;
-
-      const currentLine = (r: number) => newLines[r] ?? '';
-
-      for (const op of expandedOps) {
-        if (op.type === 'insert') {
-          const originalPayload = op.payload;
-          const normalizedPayload = op.payload
-            .replace(/\r\n/g, '\n')
-            .replace(/\r/g, '\n');
-          const str = stripUnsafeCharacters(normalizedPayload);
-
-          // Debug for mixed character operations
-          const hasMixedChars =
-            originalPayload.length > 1 &&
-            originalPayload.split('').some((c) => c.charCodeAt(0) > 127) &&
-            originalPayload.split('').some((c) => c.charCodeAt(0) <= 127);
-
-          if (
-            hasMixedChars ||
-            (originalPayload.length > 0 && originalPayload.charCodeAt(0) > 127)
-          ) {
-            console.log('[APPLY_OPS] Processing insert operation:', {
-              originalPayload,
-              normalizedPayload,
-              strippedPayload: str,
-              hasMixedChars,
-              payloadDetails: Array.from(originalPayload).map((c) => ({
-                char: c,
-                code: c.charCodeAt(0),
-                isAscii: c.charCodeAt(0) <= 127,
-              })),
-              beforeText: newLines.join('\n'),
-            });
-          }
-
-          const parts = str.split('\n');
-          const lineContent = currentLine(newCursorRow);
-          const before = cpSlice(lineContent, 0, newCursorCol);
-          const after = cpSlice(lineContent, newCursorCol);
-
-          if (parts.length > 1) {
-            newLines[newCursorRow] = before + parts[0];
-            const remainingParts = parts.slice(1);
-            const lastPartOriginal = remainingParts.pop() ?? '';
-            newLines.splice(newCursorRow + 1, 0, ...remainingParts);
-            newLines.splice(
-              newCursorRow + parts.length - 1,
-              0,
-              lastPartOriginal + after,
-            );
-            newCursorRow = newCursorRow + parts.length - 1;
-            newCursorCol = cpLen(lastPartOriginal);
-          } else {
-            const resultLine = before + parts[0] + after;
-            newLines[newCursorRow] = resultLine;
-            newCursorCol = cpLen(before) + cpLen(parts[0]);
-
-            // Debug logging for Japanese text insertion - disabled
-          }
-        } else if (op.type === 'backspace') {
-          console.log('[APPLY_OPS] Processing backspace:', {
-            cursor: [newCursorRow, newCursorCol],
-            currentText: newLines.join('\n'),
+        // Debug logging before state update
+        if (
+          expandedOps.some(
+            (op) => op.type === 'insert' && op.payload.charCodeAt(0) > 127,
+          )
+        ) {
+          console.log('[APPLY_OPS] Before state update:', {
+            oldLines: lines,
+            newLines,
+            oldText: lines.join('\n'),
+            newText: newLines.join('\n'),
           });
+        }
 
-          if (newCursorCol === 0 && newCursorRow === 0) {
-            console.log('[APPLY_OPS] Backspace at beginning, skipping');
-            continue;
-          }
+        // Single batch update for optimal performance
+        setLines(newLines);
+        setCursorRow(newCursorRow);
+        setCursorCol(newCursorCol);
+        setPreferredCol(null);
 
-          if (newCursorCol > 0) {
-            const lineContent = currentLine(newCursorRow);
-            console.log('[APPLY_OPS] Backspace within line:', {
-              lineContent,
-              cursorCol: newCursorCol,
-              charToDelete: cpSlice(
-                lineContent,
-                newCursorCol - 1,
-                newCursorCol,
-              ),
-            });
+        if (process.env['TEXTBUFFER_DEBUG'] === '1') {
+          console.log('[APPLY_OPS] Successfully completed operations');
+        }
+      } catch (error) {
+        console.error('[APPLY_OPS] Error during operations:', {
+          error: error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+          opsLength: ops.length,
+          currentCursor: [cursorRow, cursorCol],
+          currentText: lines.join('\n'),
+        });
 
-            newLines[newCursorRow] =
-              cpSlice(lineContent, 0, newCursorCol - 1) +
-              cpSlice(lineContent, newCursorCol);
-            newCursorCol--;
-
-            console.log('[APPLY_OPS] After backspace within line:', {
-              newLineContent: newLines[newCursorRow],
-              newCursor: [newCursorRow, newCursorCol],
-            });
-          } else if (newCursorRow > 0) {
-            const prevLineContent = currentLine(newCursorRow - 1);
-            const currentLineContentVal = currentLine(newCursorRow);
-            const newCol = cpLen(prevLineContent);
-            console.log(
-              '[APPLY_OPS] Backspace at line beginning, merging lines:',
-              {
-                prevLine: prevLineContent,
-                currentLine: currentLineContentVal,
-                mergedLine: prevLineContent + currentLineContentVal,
-              },
-            );
-
-            newLines[newCursorRow - 1] =
-              prevLineContent + currentLineContentVal;
-            newLines.splice(newCursorRow, 1);
-            newCursorRow--;
-            newCursorCol = newCol;
-
-            console.log('[APPLY_OPS] After line merge:', {
-              newCursor: [newCursorRow, newCursorCol],
-              newLines,
-            });
-          }
+        // Don't apply any changes if there was an error
+        if (process.env['TEXTBUFFER_DEBUG'] === '1') {
+          console.log('[APPLY_OPS] Operations failed, state unchanged');
         }
       }
-
-      // Debug logging before state update
-      if (
-        expandedOps.some(
-          (op) => op.type === 'insert' && op.payload.charCodeAt(0) > 127,
-        )
-      ) {
-        console.log('[APPLY_OPS] Before state update:', {
-          oldLines: lines,
-          newLines,
-          oldText: lines.join('\n'),
-          newText: newLines.join('\n'),
-        });
-      }
-
-      // Single batch update for optimal performance
-      setLines(newLines);
-      setCursorRow(newCursorRow);
-      setCursorCol(newCursorCol);
-      setPreferredCol(null);
     },
     [lines, cursorRow, cursorCol, pushUndo],
   );
 
   const insert = useCallback(
     (ch: string): void => {
-      if (/[\n\r]/.test(ch)) {
-        insertStr(ch);
-        return;
-      }
-      dbg('insert', { ch, beforeCursor: [cursorRow, cursorCol] });
+      try {
+        if (/[\n\r]/.test(ch)) {
+          insertStr(ch);
+          return;
+        }
 
-      // Clean the input while preserving all printable characters
-      ch = stripUnsafeCharacters(ch);
+        if (process.env['TEXTBUFFER_DEBUG'] === '1') {
+          console.log('[INSERT] Function called with:', {
+            input: ch,
+            length: ch.length,
+            charCodes: Array.from(ch).map((c) => c.charCodeAt(0)),
+            beforeCursor: [cursorRow, cursorCol],
+            beforeText: text,
+          });
+        }
 
-      // Check for drag and drop of file paths
-      // Only consider it a file path if it looks like a path (contains / or \)
-      // This prevents Japanese IME input from being treated as file paths
-      const looksLikePath =
-        ch.includes('/') || ch.includes('\\') || ch.includes('~');
-      const minLengthToInferAsDragDrop = 3;
+        dbg('insert', { ch, beforeCursor: [cursorRow, cursorCol] });
 
-      if (ch.length >= minLengthToInferAsDragDrop && looksLikePath) {
-        // Possible drag and drop of a file path.
-        let potentialPath = ch;
+        // Clean the input while preserving all printable characters
+        const originalCh = ch;
+        ch = stripUnsafeCharacters(ch);
+
+        if (originalCh !== ch && process.env['TEXTBUFFER_DEBUG'] === '1') {
+          console.log('[INSERT] Input was stripped:', {
+            original: originalCh,
+            stripped: ch,
+            originalCodes: Array.from(originalCh).map((c) => c.charCodeAt(0)),
+            strippedCodes: Array.from(ch).map((c) => c.charCodeAt(0)),
+          });
+        }
+
+        // Early return if input was completely stripped
+        if (!ch || ch.length === 0) {
+          if (process.env['TEXTBUFFER_DEBUG'] === '1') {
+            console.log('[INSERT] Input was completely stripped, skipping');
+          }
+          return;
+        }
+
+        // Check for drag and drop of file paths
+        // Only consider it a file path if it looks like a path (contains / or \)
+        // This prevents Japanese IME input from being treated as file paths
+        const looksLikePath =
+          ch.includes('/') || ch.includes('\\') || ch.includes('~');
+        const minLengthToInferAsDragDrop = 3;
+
+        // Additional check: Don't treat multi-byte characters as file paths
+        const hasMultiByteChars = ch
+          .split('')
+          .some((c) => c.charCodeAt(0) > 127);
+
+        // Skip file path detection for Japanese/multi-byte input
         if (
-          potentialPath.length > 2 &&
-          potentialPath.startsWith("'") &&
-          potentialPath.endsWith("'")
+          ch.length >= minLengthToInferAsDragDrop &&
+          looksLikePath &&
+          !hasMultiByteChars
         ) {
-          potentialPath = ch.slice(1, -1);
+          // Possible drag and drop of a file path.
+          let potentialPath = ch;
+          if (
+            potentialPath.length > 2 &&
+            potentialPath.startsWith("'") &&
+            potentialPath.endsWith("'")
+          ) {
+            potentialPath = ch.slice(1, -1);
+          }
+
+          potentialPath = potentialPath.trim();
+          // Be conservative and only add an @ if the path is valid.
+          if (isValidPath(unescapePath(potentialPath))) {
+            ch = `@${potentialPath}`;
+          }
         }
 
-        potentialPath = potentialPath.trim();
-        // Be conservative and only add an @ if the path is valid.
-        if (isValidPath(unescapePath(potentialPath))) {
-          ch = `@${potentialPath}`;
+        // Direct insertion for optimal performance
+        applyOperations([{ type: 'insert', payload: ch }]);
+
+        // Debug logging after insertion
+        if (ch.length > 0 && ch.charCodeAt(0) > 127) {
+          console.log('[INSERT] After insertion:', {
+            newText: text,
+            cursor: [cursorRow, cursorCol],
+          });
         }
-      }
 
-      // Direct insertion for optimal performance
-      applyOperations([{ type: 'insert', payload: ch }]);
-
-      // Debug logging after insertion
-      if (ch.length > 0 && ch.charCodeAt(0) > 127) {
-        console.log('[INSERT] After insertion:', {
-          newText: text,
-          cursor: [cursorRow, cursorCol],
+        if (process.env['TEXTBUFFER_DEBUG'] === '1') {
+          console.log('[INSERT] Successfully processed:', ch);
+        }
+      } catch (error) {
+        console.error('[INSERT] Error during insertion:', {
+          input: ch,
+          error: error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
         });
+
+        // Fallback: try to process character by character for multi-character input
+        if (ch.length > 1) {
+          console.log('[INSERT] Attempting character-by-character fallback');
+          for (let i = 0; i < ch.length; i++) {
+            try {
+              const singleChar = ch[i];
+              console.log('[INSERT] Processing single character:', singleChar);
+              applyOperations([{ type: 'insert', payload: singleChar }]);
+            } catch (charError) {
+              console.error(
+                '[INSERT] Error processing single character:',
+                ch[i],
+                charError,
+              );
+            }
+          }
+        }
       }
     },
     [applyOperations, cursorRow, cursorCol, isValidPath, insertStr, text],
@@ -820,6 +923,11 @@ export function useTextBuffer({
       beforeCursor: [cursorRow, cursorCol],
       beforeText: lines.join('\n'),
       canDelete: !(cursorCol === 0 && cursorRow === 0),
+      currentLine: lines[cursorRow] || '',
+      charAtCursor:
+        cursorCol > 0
+          ? cpSlice(lines[cursorRow] || '', cursorCol - 1, cursorCol)
+          : 'N/A',
     });
 
     dbg('backspace', { beforeCursor: [cursorRow, cursorCol] });
