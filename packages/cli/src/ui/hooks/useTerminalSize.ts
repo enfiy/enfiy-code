@@ -10,17 +10,27 @@
 import { useEffect, useState } from 'react';
 
 const TERMINAL_PADDING_X = 8;
+// Extra padding on Windows to account for IME candidate windows
+const WINDOWS_IME_PADDING = process.platform === 'win32' ? 10 : 0;
 
 export function useTerminalSize(): { columns: number; rows: number } {
   const [size, setSize] = useState({
-    columns: (process.stdout.columns || 60) - TERMINAL_PADDING_X,
+    columns: Math.max(
+      20,
+      (process.stdout.columns || 60) - TERMINAL_PADDING_X - WINDOWS_IME_PADDING,
+    ),
     rows: process.stdout.rows || 20,
   });
 
   useEffect(() => {
     function updateSize() {
       setSize({
-        columns: (process.stdout.columns || 60) - TERMINAL_PADDING_X,
+        columns: Math.max(
+          20,
+          (process.stdout.columns || 60) -
+            TERMINAL_PADDING_X -
+            WINDOWS_IME_PADDING,
+        ),
         rows: process.stdout.rows || 20,
       });
     }
