@@ -26,7 +26,7 @@ export interface Key {
  * adding a 'paste' flag for characters input as part of a bracketed
  * paste (when enabled).
  *
- * Enhanced with basic Japanese IME support.
+ * Simplified universal input handling for all languages and input methods.
  */
 export function useKeypress(
   onKeypress: (key: Key) => void,
@@ -50,138 +50,43 @@ export function useKeypress(
     let isPaste = false;
     let pasteBuffer = Buffer.alloc(0);
 
-    // IME composition state management
-    let imeBuffer = '';
-    let imeComposing = false;
-    let lastJapaneseTime = 0;
-    const IME_COMPOSITION_TIMEOUT = 200; // ms
+    // Simple universal buffer for all input types
+    let inputBuffer = '';
+    let lastInputTime = 0;
+    const INPUT_FLUSH_TIMEOUT = 30; // ms - universal timeout for all input types
+    let flushTimer: NodeJS.Timeout | null = null;
+
+    const flushInputBuffer = () => {
+      if (inputBuffer && inputBuffer.length > 0) {
+        console.log('[INPUT] Flushing buffer:', {
+          buffer: inputBuffer,
+          length: inputBuffer.length,
+          charCodes: Array.from(inputBuffer).map((c) => c.charCodeAt(0)),
+        });
+
+        onKeypressRef.current({
+          name: '',
+          ctrl: false,
+          meta: false,
+          shift: false,
+          paste: false,
+          sequence: inputBuffer,
+        });
+
+        inputBuffer = '';
+      }
+    };
 
     const handleKeypress = (_: unknown, key: Key) => {
-      // Debug Japanese IME input
-      if (process.env['TEXTBUFFER_DEBUG'] === '1') {
-        console.log('[KEYPRESS] Raw key event:', {
-          name: key.name,
-          sequence: key.sequence,
-          ctrl: key.ctrl,
-          meta: key.meta,
-          length: key.sequence?.length,
-          charCodes: key.sequence
-            ? Array.from(key.sequence).map((c) => c.charCodeAt(0))
-            : [],
-          imeBuffer,
-          imeComposing,
-        });
-      }
+      const currentTime = Date.now();
 
-      // Handle Japanese IME composition (but not during paste operations)
-      if (!isPaste && key.sequence && key.sequence.length > 0) {
-        const firstCharCode = key.sequence.charCodeAt(0);
-        const currentTime = Date.now();
-
-        // Check if this is a Japanese/multi-byte character
-        if (firstCharCode > 127 && !key.name && !key.ctrl && !key.meta) {
-          if (process.env['TEXTBUFFER_DEBUG'] === '1') {
-            console.log('[KEYPRESS] Japanese character detected:', {
-              sequence: key.sequence,
-              imeComposing,
-              imeBuffer,
-              timeSinceLastChar: currentTime - lastJapaneseTime,
-            });
-          }
-
-          // If this is part of IME composition (characters coming in quick succession)
-          if (
-            !imeComposing ||
-            currentTime - lastJapaneseTime < IME_COMPOSITION_TIMEOUT
-          ) {
-            imeComposing = true;
-            imeBuffer += key.sequence;
-            lastJapaneseTime = currentTime;
-
-            if (process.env['TEXTBUFFER_DEBUG'] === '1') {
-              console.log('[KEYPRESS] Accumulating in IME buffer:', {
-                newBuffer: imeBuffer,
-                addedChar: key.sequence,
-              });
-            }
-
-            // Set a timeout to flush the buffer if no more characters come
-            setTimeout(() => {
-              if (
-                imeComposing &&
-                Date.now() - lastJapaneseTime >= IME_COMPOSITION_TIMEOUT
-              ) {
-                if (process.env['TEXTBUFFER_DEBUG'] === '1') {
-                  console.log(
-                    '[KEYPRESS] IME composition timeout, flushing buffer:',
-                    imeBuffer,
-                  );
-                }
-
-                // Flush the accumulated IME buffer
-                onKeypressRef.current({
-                  name: '',
-                  ctrl: false,
-                  meta: false,
-                  shift: false,
-                  paste: false,
-                  sequence: imeBuffer,
-                });
-
-                imeBuffer = '';
-                imeComposing = false;
-              }
-            }, IME_COMPOSITION_TIMEOUT + 10);
-
-            return; // Don't process this character individually
-          } else {
-            // Composition ended, this is a new character sequence
-            if (imeBuffer) {
-              // First flush the previous buffer
-              onKeypressRef.current({
-                name: '',
-                ctrl: false,
-                meta: false,
-                shift: false,
-                paste: false,
-                sequence: imeBuffer,
-              });
-            }
-
-            // Start new composition with this character
-            imeBuffer = key.sequence;
-            imeComposing = true;
-            lastJapaneseTime = currentTime;
-            return;
-          }
-        } else if (imeComposing) {
-          // Non-Japanese character while IME was composing - flush the buffer first
-          if (imeBuffer) {
-            if (process.env['TEXTBUFFER_DEBUG'] === '1') {
-              console.log(
-                '[KEYPRESS] Non-Japanese char while composing, flushing buffer:',
-                imeBuffer,
-              );
-            }
-
-            onKeypressRef.current({
-              name: '',
-              ctrl: false,
-              meta: false,
-              shift: false,
-              paste: false,
-              sequence: imeBuffer,
-            });
-
-            imeBuffer = '';
-            imeComposing = false;
-          }
-        }
-      }
-
+      // Skip paste handling - let it go through normal processing
       if (key.name === 'paste-start') {
         isPaste = true;
-      } else if (key.name === 'paste-end') {
+        return;
+      }
+
+      if (key.name === 'paste-end') {
         isPaste = false;
         const pastedText = pasteBuffer.toString('utf8');
         onKeypressRef.current({
@@ -193,49 +98,64 @@ export function useKeypress(
           sequence: pastedText,
         });
         pasteBuffer = Buffer.alloc(0);
-      } else {
-        if (isPaste) {
-          pasteBuffer = Buffer.concat([
-            pasteBuffer,
-            Buffer.from(key.sequence, 'utf8'),
-          ]);
-        } else {
-          // Handle special keys
-          if (key.name === 'return' && key.sequence === '\x1B\r') {
-            key.meta = true;
-          }
+        return;
+      }
 
-          // If Enter is pressed while IME is composing, flush the buffer first
-          if (key.name === 'return' && imeComposing && imeBuffer) {
-            if (process.env['TEXTBUFFER_DEBUG'] === '1') {
-              console.log(
-                '[KEYPRESS] Enter pressed during IME composition, flushing buffer:',
-                imeBuffer,
-              );
-            }
+      if (isPaste) {
+        pasteBuffer = Buffer.concat([
+          pasteBuffer,
+          Buffer.from(key.sequence, 'utf8'),
+        ]);
+        return;
+      }
 
-            // Flush IME buffer first
-            onKeypressRef.current({
-              name: '',
-              ctrl: false,
-              meta: false,
-              shift: false,
-              paste: false,
-              sequence: imeBuffer,
-            });
-
-            imeBuffer = '';
-            imeComposing = false;
-
-            // Then process the Enter key
-            setTimeout(() => {
-              onKeypressRef.current({ ...key, paste: isPaste });
-            }, 10);
-            return;
-          }
-
-          onKeypressRef.current({ ...key, paste: isPaste });
+      // Handle special keys immediately (Enter, Backspace, Arrow keys, etc.)
+      if (
+        key.name &&
+        (key.name === 'return' ||
+          key.name === 'backspace' ||
+          key.name === 'delete' ||
+          key.name.startsWith('arrow') ||
+          key.ctrl ||
+          key.meta ||
+          key.name === 'tab' ||
+          key.name === 'escape')
+      ) {
+        // Flush any pending input first
+        if (flushTimer) {
+          clearTimeout(flushTimer);
+          flushTimer = null;
         }
+        flushInputBuffer();
+
+        // Process special key immediately
+        onKeypressRef.current({ ...key, paste: false });
+        return;
+      }
+
+      // For all text input (including IME output), use simple buffering
+      if (key.sequence && key.sequence.length > 0) {
+        // Add to buffer
+        inputBuffer += key.sequence;
+        lastInputTime = currentTime;
+
+        // Clear existing timer
+        if (flushTimer) {
+          clearTimeout(flushTimer);
+        }
+
+        // Set new timer to flush buffer
+        flushTimer = setTimeout(() => {
+          flushInputBuffer();
+          flushTimer = null;
+        }, INPUT_FLUSH_TIMEOUT);
+
+        console.log('[INPUT] Buffering input:', {
+          added: key.sequence,
+          buffer: inputBuffer,
+          length: inputBuffer.length,
+          timeout: INPUT_FLUSH_TIMEOUT,
+        });
       }
     };
 
@@ -246,6 +166,13 @@ export function useKeypress(
       stdin.removeListener('keypress', handleKeypress);
       rl.close();
       setRawMode(false);
+
+      // Cleanup: flush any pending input
+      if (flushTimer) {
+        clearTimeout(flushTimer);
+        flushTimer = null;
+      }
+      flushInputBuffer();
 
       // If we are in the middle of a paste, send what we have.
       if (isPaste) {
@@ -258,23 +185,6 @@ export function useKeypress(
           sequence: pasteBuffer.toString('utf8'),
         });
         pasteBuffer = Buffer.alloc(0);
-      }
-
-      // If we are in the middle of IME composition, send what we have.
-      if (imeComposing && imeBuffer) {
-        if (process.env['TEXTBUFFER_DEBUG'] === '1') {
-          console.log('[KEYPRESS] Cleanup: flushing IME buffer:', imeBuffer);
-        }
-        onKeypressRef.current({
-          name: '',
-          ctrl: false,
-          meta: false,
-          shift: false,
-          paste: false,
-          sequence: imeBuffer,
-        });
-        imeBuffer = '';
-        imeComposing = false;
       }
     };
   }, [isActive, stdin, setRawMode]);
