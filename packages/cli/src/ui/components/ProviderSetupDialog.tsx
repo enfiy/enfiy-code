@@ -49,6 +49,26 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
   const [_isLocalInstalled, setIsLocalInstalled] = useState(false);
   const [currentInput, setCurrentInput] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [ollamaModel, setOllamaModel] = useState<string>('');
+  const [ollamaModels, setOllamaModels] = useState<string[]>([]);
+
+  const getDefaultModel = useCallback(
+    (provider: ProviderType): string => {
+      switch (provider) {
+        case ProviderType.OLLAMA:
+          return ollamaModel || ''; // Use detected model or empty
+        case ProviderType.OPENAI:
+          return 'gpt-4o-mini';
+        case ProviderType.MISTRAL:
+          return 'mistral-large-latest';
+        case ProviderType.GEMINI:
+          return 'gemini-2.0-flash-exp';
+        default:
+          return 'default';
+      }
+    },
+    [ollamaModel],
+  );
 
   const isLocalProvider = [ProviderType.OLLAMA].includes(provider);
   const isCloudProvider = [
@@ -241,24 +261,6 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
   );
 
   useInput(handleInput);
-
-  const [ollamaModel, setOllamaModel] = useState<string>('');
-  const [ollamaModels, setOllamaModels] = useState<string[]>([]);
-
-  const getDefaultModel = useCallback((provider: ProviderType): string => {
-    switch (provider) {
-      case ProviderType.OLLAMA:
-        return ollamaModel || ''; // Use detected model or empty
-      case ProviderType.OPENAI:
-        return 'gpt-4o-mini';
-      case ProviderType.MISTRAL:
-        return 'mistral-large-latest';
-      case ProviderType.GEMINI:
-        return 'gemini-2.0-flash-exp';
-      default:
-        return 'default';
-    }
-  }, [ollamaModel]);
 
   const getProviderInstructions = () => {
     switch (provider) {

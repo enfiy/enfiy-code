@@ -46,4 +46,3 @@ enfiy
 ```
 
 This release ensures full compatibility with all Ollama models, making local AI usage more flexible and reliable.
-
