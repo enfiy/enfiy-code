@@ -106,17 +106,47 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
     switch (type) {
       case ProviderType.OLLAMA: {
         // Get the first available installed model for Ollama
-        let model = 'llama3.2:3b'; // Default fallback
+        let model = ''; // Start with empty model
+        let installedModels: string[] = [];
         try {
           const { checkOllamaInstallation } = await import(
             '../../utils/ollamaSetup.js'
           );
           const status = await checkOllamaInstallation();
-          if (status.installedModels.length > 0) {
-            model = status.installedModels[0];
+          installedModels = status.installedModels;
+
+          if (installedModels.length > 0) {
+            // Prefer commonly used models in this order
+            const preferredModels = [
+              'llama3.2:8b',
+              'llama3.2:3b',
+              'qwen3:latest',
+              'qwen3:8b',
+              'qwen2.5:7b',
+              'mistral:latest',
+              'mistral:7b',
+              'gemma2:2b',
+              'phi4:14b',
+              'deepseek-r1:7b',
+              'llama3.3:70b',
+              'codellama:13b',
+            ];
+
+            // Find first preferred model that's installed
+            for (const preferred of preferredModels) {
+              if (installedModels.includes(preferred)) {
+                model = preferred;
+                break;
+              }
+            }
+
+            // If no preferred model found, use the first installed model
+            if (!model) {
+              model = installedModels[0];
+            }
           }
         } catch (error) {
-          console.debug('Could not check Ollama models, using default:', error);
+          console.debug('Could not check Ollama models:', error);
         }
 
         return {

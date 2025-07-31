@@ -236,31 +236,136 @@ export class ModelManager {
       const data = await response.json();
       const models = data.models || [];
 
-      return models.map((model: { name: string; [key: string]: unknown }) => {
-        // Create a more user-friendly description based on model name
-        const getModelDescription = (modelName: string): string => {
-          if (modelName.includes('llama')) return 'Meta Llama - Local AI model';
-          if (modelName.includes('qwen')) return 'Qwen - Local AI model';
-          if (modelName.includes('gemma'))
-            return 'Google Gemma - Local AI model';
-          if (modelName.includes('phi'))
-            return 'Microsoft Phi - Local AI model';
-          if (modelName.includes('mistral')) return 'Mistral - Local AI model';
-          if (modelName.includes('codellama'))
-            return 'Code Llama - Local coding model';
-          return 'Local AI model';
-        };
+      return models.map(
+        (model: {
+          name: string;
+          size?: number;
+          modified_at?: string;
+          [key: string]: unknown;
+        }) => {
+          // Create a more user-friendly description based on model name
+          const getModelDescription = (modelName: string): string => {
+            const name = modelName.toLowerCase();
 
-        return {
-          name: model.name,
-          description: getModelDescription(model.name),
-          provider: 'ollama',
-          capabilities: ['code', 'reasoning'],
-          costTier: 'free' as const,
-          contextLength: 32000,
-          isAvailable: true,
-        };
-      });
+            // Model families and their descriptions
+            if (name.includes('deepseek-r1'))
+              return 'DeepSeek R1 - Advanced reasoning model';
+            if (name.includes('qwen3')) return 'Qwen 3 - Latest Alibaba model';
+            if (name.includes('qwen2.5-coder'))
+              return 'Qwen 2.5 Coder - Specialized for code';
+            if (name.includes('qwen2.5'))
+              return 'Qwen 2.5 - Fast and efficient';
+            if (name.includes('qwen')) return 'Qwen - Chinese/English AI model';
+            if (name.includes('llama3.3'))
+              return 'Llama 3.3 - Latest Meta model';
+            if (name.includes('llama3.2'))
+              return 'Llama 3.2 - Efficient Meta model';
+            if (name.includes('llama3.1'))
+              return 'Llama 3.1 - Advanced Meta model';
+            if (name.includes('llama'))
+              return 'Meta Llama - General purpose AI';
+            if (name.includes('phi4'))
+              return 'Phi 4 - Microsoft reasoning model';
+            if (name.includes('phi3')) return 'Phi 3 - Microsoft small model';
+            if (name.includes('phi')) return 'Microsoft Phi - Efficient AI';
+            if (name.includes('gemma3'))
+              return 'Gemma 3 - Google efficient model';
+            if (name.includes('gemma2'))
+              return 'Gemma 2 - Google lightweight AI';
+            if (name.includes('gemma')) return 'Google Gemma - Efficient AI';
+            if (name.includes('mistral')) return 'Mistral - European AI model';
+            if (name.includes('mixtral')) return 'Mixtral - MoE architecture';
+            if (name.includes('codellama'))
+              return 'Code Llama - Coding specialist';
+            if (name.includes('starcoder2'))
+              return 'StarCoder 2 - Code generation';
+            if (name.includes('deepseek-coder'))
+              return 'DeepSeek Coder - Advanced coding';
+            if (name.includes('llava'))
+              return 'LLaVA - Vision + language model';
+            if (name.includes('smollm2')) return 'SmolLM2 - Tiny but capable';
+            if (name.includes('dolphin')) return 'Dolphin - Uncensored model';
+            if (name.includes('neural-chat'))
+              return 'Neural Chat - Intel optimized';
+            if (name.includes('vicuna')) return 'Vicuna - Fine-tuned LLaMA';
+            if (name.includes('orca')) return 'Orca - Microsoft research model';
+            if (name.includes('falcon')) return 'Falcon - TII model';
+            return 'Local AI model';
+          };
+
+          // Determine capabilities based on model name
+          const getCapabilities = (modelName: string): string[] => {
+            const name = modelName.toLowerCase();
+            const capabilities = ['code', 'reasoning'];
+
+            if (
+              name.includes('coder') ||
+              name.includes('codellama') ||
+              name.includes('starcoder')
+            ) {
+              capabilities.push('advanced-code');
+            }
+            if (name.includes('vision') || name.includes('llava')) {
+              capabilities.push('vision');
+            }
+            if (
+              name.includes('r1') ||
+              name.includes('o3') ||
+              name.includes('phi4')
+            ) {
+              capabilities.push('advanced-reasoning');
+            }
+
+            return capabilities;
+          };
+
+          // Estimate context length based on model name and size
+          const getContextLength = (modelName: string): number => {
+            const name = modelName.toLowerCase();
+
+            // Specific model context lengths
+            if (name.includes('qwen2.5') && name.includes('128k'))
+              return 128000;
+            if (name.includes('llama3.3') && name.includes('70b'))
+              return 128000;
+            if (name.includes('llama3.1') && name.includes('128k'))
+              return 128000;
+            if (name.includes('mixtral')) return 32768;
+            if (name.includes('gemma3')) return 16384;
+            if (name.includes('phi4')) return 16384;
+            if (name.includes('deepseek-r1')) return 64000;
+
+            // Default based on model size
+            if (name.includes('70b') || name.includes('65b')) return 8192;
+            if (name.includes('32b') || name.includes('34b')) return 32768;
+            if (name.includes('13b') || name.includes('14b')) return 8192;
+            if (name.includes('7b') || name.includes('8b')) return 8192;
+            if (name.includes('3b')) return 4096;
+            if (name.includes('1b') || name.includes('2b')) return 2048;
+
+            return 8192; // Default
+          };
+
+          // Format size for display
+          const formatSize = (bytes?: number): string => {
+            if (!bytes) return '';
+            const gb = bytes / (1024 * 1024 * 1024);
+            return ` (${gb.toFixed(1)}GB)`;
+          };
+
+          return {
+            name: model.name,
+            description:
+              getModelDescription(model.name) + formatSize(model.size),
+            provider: 'ollama',
+            capabilities: getCapabilities(model.name),
+            costTier: 'free' as const,
+            contextLength: getContextLength(model.name),
+            isAvailable: true,
+            displayName: model.name,
+          };
+        },
+      );
     } catch {
       return [];
     }

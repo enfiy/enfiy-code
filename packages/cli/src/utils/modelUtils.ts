@@ -94,17 +94,7 @@ export function getProviderFromModel(
     return ProviderType.OPENAI;
   }
 
-  // Mistral models
-  if (normalizedModel.includes('mistral')) {
-    return ProviderType.MISTRAL;
-  }
-
-  // Anthropic models
-  if (normalizedModel.includes('claude')) {
-    return ProviderType.ANTHROPIC;
-  }
-
-  // Local models (Ollama, etc.)
+  // Local models (Ollama, etc.) - Check first to catch Ollama variants
   if (
     normalizedModel.includes('llama') ||
     normalizedModel.includes('phi') ||
@@ -113,6 +103,7 @@ export function getProviderFromModel(
     normalizedModel.includes('ollama') ||
     normalizedModel.includes('codellama') ||
     normalizedModel.includes('mistral:') || // Ollama Mistral variant
+    normalizedModel.includes(':latest') || // Any model with :latest tag is likely Ollama
     normalizedModel.includes('vicuna') ||
     normalizedModel.includes('alpaca') ||
     normalizedModel.includes('orca') ||
@@ -135,6 +126,16 @@ export function getProviderFromModel(
     normalizedModel.includes('dolphin')
   ) {
     return ProviderType.OLLAMA;
+  }
+
+  // Mistral models (cloud) - Check after Ollama to avoid conflicts
+  if (normalizedModel.includes('mistral') && !normalizedModel.includes(':')) {
+    return ProviderType.MISTRAL;
+  }
+
+  // Anthropic models
+  if (normalizedModel.includes('claude')) {
+    return ProviderType.ANTHROPIC;
   }
 
   return null;

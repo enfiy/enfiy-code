@@ -60,19 +60,50 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
 
   const checkOllamaInstallation = useCallback(async () => {
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const { checkOllamaInstallation: checkStatus } = await import(
+        '../../utils/ollamaSetup.js'
+      );
+      const status = await checkStatus();
 
-      const response = await fetch('http://localhost:11434/api/tags', {
-        method: 'GET',
-        signal: controller.signal,
-      });
+      setIsLocalInstalled(status.isRunning);
+      setOllamaModels(status.installedModels);
 
-      clearTimeout(timeoutId);
-      setIsLocalInstalled(response.ok);
-      if (response.ok) {
+      if (status.isRunning && status.installedModels.length > 0) {
+        // Select best available model
+        const preferredModels = [
+          'llama3.2:8b',
+          'llama3.2:3b',
+          'qwen3:latest',
+          'qwen3:8b',
+          'qwen2.5:7b',
+          'mistral:latest',
+          'mistral:7b',
+          'gemma2:2b',
+          'phi4:14b',
+          'deepseek-r1:7b',
+          'llama3.3:70b',
+          'codellama:13b',
+        ];
+
+        let selectedModel = '';
+        for (const preferred of preferredModels) {
+          if (status.installedModels.includes(preferred)) {
+            selectedModel = preferred;
+            break;
+          }
+        }
+
+        if (!selectedModel && status.installedModels.length > 0) {
+          selectedModel = status.installedModels[0];
+        }
+
+        setOllamaModel(selectedModel);
         setStep('model');
+      } else if (status.isRunning) {
+        // Ollama is running but no models installed
+        setStep('local-install');
       } else {
+        // Ollama is not running
         setStep('local-install');
       }
     } catch {
@@ -210,10 +241,13 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
 
   useInput(handleInput);
 
+  const [ollamaModel, setOllamaModel] = useState<string>('');
+  const [ollamaModels, setOllamaModels] = useState<string[]>([]);
+
   const getDefaultModel = (provider: ProviderType): string => {
     switch (provider) {
       case ProviderType.OLLAMA:
-        return 'llama3.2:8b';
+        return ollamaModel || ''; // Use detected model or empty
       case ProviderType.OPENAI:
         return 'gpt-4o-mini';
       case ProviderType.MISTRAL:
@@ -608,7 +642,15 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
 
               <Box marginBottom={1}>
                 <Text color={Colors.Foreground}>
-                  Default model: {getDefaultModel(provider)}
+                  {provider === ProviderType.OLLAMA &&
+                  ollamaModels.length > 1 ? (
+                    <>
+                      Selected model: {getDefaultModel(provider)} (
+                      {ollamaModels.length} models available)
+                    </>
+                  ) : (
+                    <>Default model: {getDefaultModel(provider)}</>
+                  )}
                 </Text>
               </Box>
 

@@ -25,6 +25,7 @@ import {
   isLocalModel,
   getProviderDisplayNameFromModel,
 } from '../../utils/modelUtils.js';
+import { ProviderType } from '@enfiy/core';
 
 interface FooterProps {
   model: string;
@@ -66,12 +67,21 @@ export const Footer: React.FC<FooterProps> = ({
   const isModelAvailable = (modelName: string): boolean => {
     if (!modelName) return false;
 
-    // Local models are always available
+    const provider = getProviderFromModel(modelName, selectedProvider);
+
+    // For Ollama, check if it's actually running and model exists
+    if (provider === ProviderType.OLLAMA) {
+      // Since we can't do async checks here, we'll rely on the model being set
+      // If a model is set for Ollama, we assume it's available
+      // The actual availability check happens during provider setup
+      return true;
+    }
+
+    // Local models (non-Ollama) are always available
     if (isLocalModel(modelName)) {
       return true;
     }
 
-    const provider = getProviderFromModel(modelName, selectedProvider);
     if (!provider) return true; // Unknown models are assumed available
 
     const apiKey = getApiKey(provider);
