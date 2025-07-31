@@ -236,6 +236,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
       highlightedIndex,
       checkOllamaInstallation,
       isCloudProvider,
+      getDefaultModel,
     ],
   );
 
@@ -244,7 +245,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
   const [ollamaModel, setOllamaModel] = useState<string>('');
   const [ollamaModels, setOllamaModels] = useState<string[]>([]);
 
-  const getDefaultModel = (provider: ProviderType): string => {
+  const getDefaultModel = useCallback((provider: ProviderType): string => {
     switch (provider) {
       case ProviderType.OLLAMA:
         return ollamaModel || ''; // Use detected model or empty
@@ -257,7 +258,7 @@ export const ProviderSetupDialog: React.FC<ProviderSetupDialogProps> = ({
       default:
         return 'default';
     }
-  };
+  }, [ollamaModel]);
 
   const getProviderInstructions = () => {
     switch (provider) {

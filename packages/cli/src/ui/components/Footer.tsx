@@ -15,6 +15,7 @@ import {
   tildeifyPath,
   tokenLimit,
   ApprovalMode,
+  ProviderType,
 } from '@enfiy/core';
 import { ConsoleSummaryDisplay } from './ConsoleSummaryDisplay.js';
 import process from 'node:process';
@@ -25,7 +26,6 @@ import {
   isLocalModel,
   getProviderDisplayNameFromModel,
 } from '../../utils/modelUtils.js';
-import { ProviderType } from '@enfiy/core';
 
 interface FooterProps {
   model: string;
