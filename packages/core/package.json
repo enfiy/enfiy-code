@@ -38,7 +38,7 @@
     "@opentelemetry/exporter-metrics-otlp-grpc": "^0.203.0",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.203.0",
     "@opentelemetry/instrumentation-http": "^0.203.0",
-    "@opentelemetry/sdk-node": "^0.203.0",
+    "@opentelemetry/sdk-node": "^0.218.0",
     "diff": "^8.0.2",
     "dotenv": "^17.2.0",
     "gaxios": "^7.1.1",
