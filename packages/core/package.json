@@ -59,7 +59,7 @@
     "@types/mime-types": "^3.0.1",
     "@types/ws": "^8.18.1",
     "typescript": "^5.8.3",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.8"
   },
   "engines": {
     "node": ">=20.0.0"
