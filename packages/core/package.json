@@ -51,7 +51,7 @@
     "mime-types": "^3.0.1",
     "open": "^10.1.2",
     "shell-quote": "^1.8.3",
-    "simple-git": "^3.28.0",
+    "simple-git": "^4.0.2",
     "strip-ansi": "^7.1.0",
     "undici": "^7.11.0"
   },
